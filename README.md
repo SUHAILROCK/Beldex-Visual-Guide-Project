@@ -1,7 +1,5 @@
 # Beldex-Visual-Guide-Project
 
-🚀 Beldex Visual Guide Project
-
 An interactive visual learning platform explaining the core technologies behind the Beldex privacy blockchain ecosystem.
 
 🌐 Live Demo:
