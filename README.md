@@ -2,10 +2,11 @@
 
 An interactive visual learning platform explaining the core technologies behind the Beldex privacy blockchain ecosystem.
 
-🌐 Live Demo:
+Live Demo:
 https://suhailrock.github.io/Beldex-Visual-Guide-Project/
+https://beldex-guide-project.vercel.app/
 
-📌 About The Project
+**About The Project**
 
 Beldex Visual Guide is a structured, beginner-friendly educational website that visually explains:
 
@@ -21,8 +22,9 @@ The goal is to simplify complex blockchain concepts using diagrams, flowcharts, 
 
 This project was built to make blockchain privacy concepts understandable without needing to read multiple technical papers.
 
-🧠 What This Project Covers
-🔐 Privacy Layer
+**What This Project Covers**
+
+**Privacy Layer**
 
 CryptoNote Protocol
 
@@ -36,7 +38,7 @@ Privacy Technology Map
 
 CryptoNote Lineage Flowchart
 
-⚙ Consensus & Core
+**Consensus & Core**
 
 UTXO Model
 
@@ -44,7 +46,7 @@ Proof of Stake (PoS)
 
 Bulletproof++
 
-🌐 Network & Infrastructure
+**Network & Infrastructure**
 
 Masternode Network
 
@@ -52,7 +54,7 @@ BelNet
 
 LayerZero Bridge
 
-🔬 Research
+**Research**
 
 zk-SNARKs
 
@@ -60,7 +62,7 @@ VRF (Verifiable Random Function)
 
 EVM Integration
 
-🛠 Built With
+**Built With**
 
 HTML5
 
@@ -72,7 +74,7 @@ Git & GitHub Pages
 
 Deployed via GitHub Pages / Vercel
 
-🎯 Project Goals
+**Project Goals**
 
 Simplify complex blockchain privacy topics
 
@@ -84,35 +86,7 @@ Provide a centralized learning resource
 
 Improve visual storytelling of technical systems
 
-📂 Project Structure
-Beldex-Visual-Guide-Project
-│
-├── index.html
-├── beldex-tree.html
-├── script.js
-├── style.css
-├── README.md
-│
-└── TEST
-    ├── images
-    ├── tech
-        ├── privacy
-        ├── consensus
-        ├── network
-        └── research
-🚀 How To Run Locally
-
-Clone the repository:
-
-git clone https://github.com/SUHAILROCK/Beldex-Visual-Guide-Project.git
-
-Navigate into the project:
-
-cd Beldex-Visual-Guide-Project
-
-Open index.html in your browser.
-
-🔄 Deployment
+**Deployment**
 
 This project is automatically deployed using:
 
@@ -138,18 +112,6 @@ This project centralizes everything into a single, visually structured guide.
 
 GitHub:
 https://github.com/SUHAILROCK
-
-⭐ Future Improvements
-
-Add animated flow diagrams
-
-Add search functionality
-
-Improve mobile responsiveness
-
-Add multilingual support
-
-Expand research section
 
 🏁 Final Note
 
