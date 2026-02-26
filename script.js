@@ -78,13 +78,12 @@
       }
     });
 
-    // Refresh iframe when switching to ecosystem tab to show latest changes
+    // Do not force reload ecosystem iframe on tab switches.
+    // Only set src if missing as a safe fallback.
     if (safeTab === 'ecosystem') {
       const iframe = document.getElementById('eco-tree-frame');
-      if (iframe) {
-        const cacheBuster = new Date().getTime();
-        const baseUrl = 'beldex-tree.html?embed=1';
-        iframe.src = baseUrl + '&v=' + cacheBuster;
+      if (iframe && !iframe.getAttribute('src')) {
+        iframe.setAttribute('src', 'beldex-tree.html?embed=1');
       }
     }
 

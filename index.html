@@ -3037,19 +3037,11 @@
 
           <iframe
             id="eco-tree-frame"
-            src=""
+            src="beldex-tree.html?embed=1"
             style="width:100%;min-height:1200px;border:none;background:transparent;display:block;"
             title="Beldex Ecosystem Tree"
             scrolling="auto"
           ></iframe>
-          <script>
-            // Cache-busting for iframe - forces reload of latest beldex-tree.html
-            (function() {
-              var iframe = document.getElementById('eco-tree-frame');
-              var cacheBuster = new Date().getTime();
-              iframe.src = 'beldex-tree.html?embed=1&v=' + cacheBuster;
-            })();
-          </script>
           <!-- Old inline tree replaced with iframe. Content is now served from beldex-tree.html -->
           <div style="display:none;"><!-- removed eco-tree -->
 
