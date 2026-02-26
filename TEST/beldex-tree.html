@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex Ecosystem — Tree Hierarchy</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script>
+  (function() {
+    var t = localStorage.getItem('beldex-theme');
+    if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  })();
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #080d18;
+    color: #e2e8f0;
+    font-family: 'Sora', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(rgba(56,189,126,0.04) 1px, transparent 1px),
+      radial-gradient(rgba(99,102,241,0.03) 1px, transparent 1px);
+    background-size: 30px 30px, 50px 50px;
+    background-position: 0 0, 25px 25px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 1020px; margin: 0 auto; }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 48px; }
+  .header .pill {
+    display: inline-block;
+    background: linear-gradient(135deg, #38bd7e, #22d3ee);
+    color: #080d18;
+    font-weight: 700;
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 18px;
+    border-radius: 50px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 20px rgba(56,189,126,0.15);
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #fff 30%, #38bd7e 60%, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .header .sub { color: #64748b; font-size: 0.88rem; margin-top: 6px; }
+  .header .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #64748b; text-decoration: none; font-size: 0.78rem;
+    margin-bottom: 16px; padding: 6px 14px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    transition: all 0.25s ease;
+  }
+  .header .back-link:hover { color: #38bd7e; border-color: rgba(56,189,126,0.25); background: rgba(56,189,126,0.05); }
+
+  /* ─── TREE ─── */
+  .tree-level { display: flex; flex-direction: column; align-items: center; }
+
+  /* ─── NODES ─── */
+  .node-box {
+    border-radius: 16px; padding: 16px 24px; text-align: center;
+    position: relative; overflow: visible;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .node-box:hover { transform: translateY(-3px); }
+
+  /* Root */
+  .node-root {
+    background: linear-gradient(135deg, #0f2a1e, #153a2a);
+    border: 2px solid #38bd7e;
+    box-shadow: 0 0 50px rgba(56,189,126,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
+    padding: 22px 44px;
+  }
+  .node-root:hover { box-shadow: 0 0 60px rgba(56,189,126,0.2); }
+  .node-root .n-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 1.2rem;
+    font-weight: 700; color: #38bd7e; letter-spacing: 2px;
+  }
+  .node-root .n-desc { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
+
+  /* Pillar */
+  .node-pillar {
+    background: linear-gradient(145deg, rgba(18,24,38,0.95), rgba(12,18,30,0.98));
+    border: 1.5px solid rgba(255,255,255,0.08);
+    padding: 16px 20px; min-width: 140px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px -6px rgba(0,0,0,0.4);
+  }
+  .node-pillar .n-emoji { font-size: 1.3rem; margin-bottom: 6px; }
+  .node-pillar .n-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+    font-weight: 700; color: #f1f5f9;
+  }
+  .node-pillar .n-desc { font-size: 0.65rem; color: #64748b; margin-top: 3px; }
+
+  /* Per-pillar accent colors */
+  .pillar-group:nth-child(1) .node-pillar { border-color: rgba(56,189,126,0.2); }
+  .pillar-group:nth-child(1) .node-pillar:hover { border-color: rgba(56,189,126,0.5); box-shadow: 0 8px 30px -8px rgba(56,189,126,0.15); }
+  .pillar-group:nth-child(2) .node-pillar { border-color: rgba(139,92,246,0.2); }
+  .pillar-group:nth-child(2) .node-pillar:hover { border-color: rgba(139,92,246,0.5); box-shadow: 0 8px 30px -8px rgba(139,92,246,0.15); }
+  .pillar-group:nth-child(3) .node-pillar { border-color: rgba(59,130,246,0.2); }
+  .pillar-group:nth-child(3) .node-pillar:hover { border-color: rgba(59,130,246,0.5); box-shadow: 0 8px 30px -8px rgba(59,130,246,0.15); }
+
+  /* Row 2 pillar accents: cyan, amber, rose */
+  .pillars-row:nth-of-type(2) .pillar-group:nth-child(1) .node-pillar { border-color: rgba(34,211,238,0.2); }
+  .pillars-row:nth-of-type(2) .pillar-group:nth-child(1) .node-pillar:hover { border-color: rgba(34,211,238,0.5); box-shadow: 0 8px 30px -8px rgba(34,211,238,0.15); }
+  .pillars-row:nth-of-type(2) .pillar-group:nth-child(2) .node-pillar { border-color: rgba(251,191,36,0.2); }
+  .pillars-row:nth-of-type(2) .pillar-group:nth-child(2) .node-pillar:hover { border-color: rgba(251,191,36,0.5); box-shadow: 0 8px 30px -8px rgba(251,191,36,0.15); }
+  .pillars-row:nth-of-type(2) .pillar-group:nth-child(3) .node-pillar { border-color: rgba(251,146,60,0.2); }
+  .pillars-row:nth-of-type(2) .pillar-group:nth-child(3) .node-pillar:hover { border-color: rgba(251,146,60,0.5); box-shadow: 0 8px 30px -8px rgba(251,146,60,0.15); }
+
+  /* Component */
+  .node-comp {
+    background: linear-gradient(145deg, rgba(14,20,32,0.96), rgba(10,16,26,0.98));
+    border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px;
+    border-radius: 12px; min-width: 105px;
+    box-shadow: 0 2px 12px -4px rgba(0,0,0,0.3);
+  }
+  .node-comp .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 600; color: #cbd5e1; }
+  .node-comp .n-desc { font-size: 0.58rem; color: #475569; margin-top: 2px; }
+  .node-comp:hover { border-color: rgba(56,189,126,0.3); box-shadow: 0 6px 24px -6px rgba(56,189,126,0.1); }
+
+  /* Leaf */
+  .node-leaf {
+    background: rgba(56,189,126,0.04); border: 1px dashed rgba(56,189,126,0.15);
+    padding: 8px 12px; border-radius: 10px; min-width: 88px;
+  }
+  .node-leaf .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; font-weight: 600; color: #38bd7e; }
+  .node-leaf .n-desc { font-size: 0.5rem; color: #4a7a64; margin-top: 2px; }
+  .node-leaf:hover { border-color: rgba(56,189,126,0.35); background: rgba(56,189,126,0.08); }
+
+  /* Status */
+  .status {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.42rem; font-weight: 700;
+    letter-spacing: 1px; padding: 2px 7px; border-radius: 4px; display: inline-block; margin-top: 4px;
+  }
+  .status.live { background: rgba(56,189,126,0.15); color: #38bd7e; }
+  .status.progress { background: rgba(250,204,21,0.12); color: #facc15; }
+  .status.roadmap { background: rgba(99,102,241,0.12); color: #818cf8; }
+
+  /* ─── HOVER TOOLTIP ─── */
+  .tt {
+    position: absolute; bottom: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%) translateY(8px) scale(0.95);
+    min-width: 220px; max-width: 260px; padding: 14px 16px;
+    background: linear-gradient(145deg, rgba(14,18,30,0.98), rgba(20,26,42,0.96));
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+    box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
+    opacity: 0; pointer-events: none; z-index: 50;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    text-align: left;
+  }
+  .tt::after {
+    content: ''; position: absolute; bottom: -6px; left: 50%;
+    transform: translateX(-50%) rotate(45deg); width: 12px; height: 12px;
+    background: rgba(20,26,42,0.96);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .node-box:hover > .tt {
+    opacity: 1; pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  .tt-head {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #38bd7e; margin-bottom: 8px; padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .tt-row { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; }
+  .tt-row + .tt-row { border-top: 1px solid rgba(255,255,255,0.03); }
+  .tt-l { font-size: 0.58rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
+  .tt-v { font-size: 0.64rem; color: #e2e8f0; text-align: right; line-height: 1.35; }
+
+  /* ─── LAYOUT ─── */
+  .pillars-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; }
+  .pillar-group { display: flex; flex-direction: column; align-items: center; }
+  .children-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .leaves-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+
+  /* Connectors */
+  .root-split { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .root-split .trunk { width: 2px; height: 22px; background: linear-gradient(to bottom, #38bd7e, #1e3a2f); }
+  .root-split .branches-bar { width: 85%; height: 2px; background: linear-gradient(90deg, rgba(56,189,126,0.1), #1e3a2f, rgba(56,189,126,0.1)); position: relative; }
+  .root-split .branch-drops { display: flex; justify-content: space-between; width: 85%; }
+  .branch-drop { display: flex; flex-direction: column; align-items: center; }
+  .branch-drop .bd-line { width: 2px; height: 18px; background: #1e3a2f; position: relative; }
+  .branch-drop .bd-line::after {
+    content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #38bd7e;
+  }
+  .inner-split { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .inner-split .is-trunk { width: 2px; height: 14px; background: #1e3a2f; }
+  .inner-split .is-bar { height: 2px; background: #1e3a2f; }
+  .inner-split .is-drops { display: flex; justify-content: space-between; }
+  .is-drop { display: flex; flex-direction: column; align-items: center; }
+  .is-drop .isd-line { width: 2px; height: 14px; background: #1e3a2f; position: relative; }
+  .is-drop .isd-line::after {
+    content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #38bd7e;
+  }
+  .leaf-trunk { width: 1.5px; height: 12px; background: repeating-linear-gradient(to bottom, #2a5a42 0px, #2a5a42 3px, transparent 3px, transparent 6px); }
+  .leaf-trunk-arr { width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #38bd7e; margin-bottom: 2px; }
+
+  .level-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 1.5px; text-transform: uppercase; color: #38bd7e;
+    background: rgba(56,189,126,0.06); border: 1px solid rgba(56,189,126,0.12);
+    padding: 4px 14px; border-radius: 50px; margin: 28px 0 12px;
+  }
+
+  .row-sep {
+    margin: 28px 0 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 1.5px; text-transform: uppercase; color: #64748b;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    margin-top: 52px; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #64748b;
+    padding: 16px 24px; border-radius: 14px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 4px; }
+  .legend-swatch-root { background: #38bd7e; }
+  .legend-swatch-pillar { background: rgba(18,24,38,0.95); border: 1.5px solid rgba(255,255,255,0.15); }
+  .legend-swatch-comp { background: rgba(14,20,32,0.96); border: 1px solid rgba(255,255,255,0.1); }
+  .legend-swatch-leaf { background: rgba(56,189,126,0.04); border: 1px dashed rgba(56,189,126,0.3); }
+  .legend-swatch-conn { width: 16px; height: 2px; border-radius: 0; background: #1e3a2f; }
+  .legend-badge {
+    font-size: 0.42rem; font-weight: 700; letter-spacing: 1px;
+    padding: 2px 7px; border-radius: 4px; display: inline-block;
+  }
+  .legend-badge.live { background: rgba(56,189,126,0.15); color: #38bd7e; }
+  .legend-badge.progress { background: rgba(250,204,21,0.12); color: #facc15; }
+  .legend-badge.roadmap { background: rgba(99,102,241,0.12); color: #818cf8; }
+
+  @media (max-width: 768px) {
+    .pillars-row { grid-template-columns: 1fr; gap: 28px; }
+    .root-split .branches-bar, .root-split .branch-drops { width: 60%; }
+    .header h1 { font-size: 1.5rem; }
+    body { padding: 24px 12px 60px; }
+    .tt { min-width: 190px; max-width: 230px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .node-box { transition: none; } .node-box:hover { transform: none; } }
+
+  /* ── Light Theme ── */
+  [data-theme="light"] body { background: #f5f7fa; color: #1e293b; }
+  [data-theme="light"] body::before {
+    background-image:
+      radial-gradient(rgba(13,147,115,0.03) 1px, transparent 1px),
+      radial-gradient(rgba(37,99,235,0.02) 1px, transparent 1px);
+  }
+  [data-theme="light"] .header h1 {
+    background: linear-gradient(135deg, #1a1a2e 30%, #0d9373 60%, #2563eb);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  [data-theme="light"] .header .sub { color: #64748b; }
+  [data-theme="light"] .header .back-link {
+    color: #64748b; border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);
+  }
+  [data-theme="light"] .header .back-link:hover { color: #0d9373; border-color: rgba(13,147,115,0.25); background: rgba(13,147,115,0.05); }
+  [data-theme="light"] .node-root {
+    background: linear-gradient(135deg, #effff8, #e0fff2);
+    border-color: #0d9373;
+    box-shadow: 0 4px 24px rgba(13,147,115,0.1);
+  }
+  [data-theme="light"] .node-root .n-title { color: #0d9373; }
+  [data-theme="light"] .node-root .n-desc { color: #64748b; }
+  [data-theme="light"] .node-pillar {
+    background: #ffffff; border-color: rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  [data-theme="light"] .node-pillar .n-title { color: #1a1a2e; }
+  [data-theme="light"] .node-pillar .n-desc { color: #64748b; }
+  [data-theme="light"] .node-comp {
+    background: #ffffff; border-color: rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  [data-theme="light"] .node-comp .n-title { color: #1e293b; }
+  [data-theme="light"] .node-comp .n-desc { color: #64748b; }
+  [data-theme="light"] .node-leaf {
+    background: rgba(13,147,115,0.04); border-color: rgba(13,147,115,0.15);
+  }
+  [data-theme="light"] .node-leaf .n-title { color: #0d9373; }
+  [data-theme="light"] .node-leaf .n-desc { color: #4a7a64; }
+  [data-theme="light"] .tt {
+    background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+    border-color: rgba(0,0,0,0.1);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  }
+  [data-theme="light"] .tt::after {
+    background: rgba(248,250,252,0.96);
+    border-right-color: rgba(0,0,0,0.1); border-bottom-color: rgba(0,0,0,0.1);
+  }
+  [data-theme="light"] .tt-head { border-bottom-color: rgba(0,0,0,0.06); }
+  [data-theme="light"] .tt-row + .tt-row { border-top-color: rgba(0,0,0,0.04); }
+  [data-theme="light"] .tt-v { color: #1e293b; }
+  [data-theme="light"] .root-split .trunk { background: linear-gradient(to bottom, #0d9373, rgba(13,147,115,0.2)); }
+  [data-theme="light"] .root-split .branches-bar { background: linear-gradient(90deg, rgba(13,147,115,0.1), rgba(13,147,115,0.2), rgba(13,147,115,0.1)); }
+  [data-theme="light"] .branch-drop .bd-line,
+  [data-theme="light"] .inner-split .is-trunk,
+  [data-theme="light"] .inner-split .is-bar,
+  [data-theme="light"] .is-drop .isd-line { background: rgba(13,147,115,0.2); }
+  [data-theme="light"] .legend {
+    background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); color: #64748b;
+  }
+  [data-theme="light"] .legend-swatch-pillar { background: #ffffff; border-color: rgba(0,0,0,0.12); }
+  [data-theme="light"] .legend-swatch-comp { background: #ffffff; border-color: rgba(0,0,0,0.08); }
+  [data-theme="light"] .legend-swatch-conn { background: rgba(13,147,115,0.2); }
+  [data-theme="light"] .row-sep { color: #64748b; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <a href="Index.html" class="back-link">&larr; Back to Visual Guide</a>
+    <div class="pill">Privacy Blockchain</div>
+    <h1>Beldex Ecosystem</h1>
+    <div class="sub">Complete hierarchy &middot; Top &rarr; Bottom</div>
+  </div>
+
+  <div class="tree-level">
+
+    <!-- ════════════════════════════════════════ -->
+    <!-- LEVEL 0: ROOT -->
+    <!-- ════════════════════════════════════════ -->
+    <div class="node-box node-root">
+      <div class="n-title">BELDEX ECOSYSTEM</div>
+      <div class="n-desc">Confidential Transactions &amp; Communications &middot; Monero Fork &middot; Conceptualized 2018</div>
+    </div>
+
+    <!-- Root split into 6 -->
+    <div class="root-split">
+      <div class="trunk"></div>
+      <div class="branches-bar"></div>
+    </div>
+    <div class="root-split" style="margin-top:-2px;">
+      <div class="branch-drops">
+        <div class="branch-drop"><div class="bd-line"></div></div>
+        <div class="branch-drop"><div class="bd-line"></div></div>
+        <div class="branch-drop"><div class="bd-line"></div></div>
+        <div class="branch-drop"><div class="bd-line"></div></div>
+        <div class="branch-drop"><div class="bd-line"></div></div>
+        <div class="branch-drop"><div class="bd-line"></div></div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════ -->
+    <!-- LEVEL 1: 6 PILLARS (in 2 rows of 3) -->
+    <!-- ════════════════════════════════════════ -->
+    <div class="level-tag">Level 1 — Core Pillars</div>
+
+    <!-- Row 1: first 3 pillars -->
+    <div class="pillars-row">
+
+      <!-- ──── PILLAR 1: Blockchain Core ──── -->
+      <div class="pillar-group">
+        <div class="node-box node-pillar">
+          <div class="n-emoji">⛓️</div>
+          <div class="n-title">Blockchain Core</div>
+          <div class="n-desc">PoS Consensus &middot; Masternodes</div>
+        </div>
+        <div class="inner-split">
+          <div class="is-trunk"></div>
+          <div class="is-bar" style="width:90%;"></div>
+          <div class="is-drops" style="width:90%;">
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+          </div>
+        </div>
+        <div class="children-row">
+          <div class="node-box node-comp"><div class="n-title">PoS Consensus</div><div class="n-desc">Block validation</div></div>
+          <div class="node-box node-comp"><div class="n-title">Masternodes</div><div class="n-desc">10K BDX stake</div></div>
+          <div class="node-box node-comp"><div class="n-title">Major Upgrades</div><div class="n-desc">Bucephalus &rarr; Bern &rarr; Obscura</div></div>
+        </div>
+        <div class="leaves-row" style="margin-top:8px;">
+          <div class="node-box node-leaf"><div class="n-title">Block Proposer</div><div class="n-desc">Energy efficient</div></div>
+          <div class="node-box node-leaf"><div class="n-title">2,000+ Masternodes</div><div class="n-desc">Live count varies</div></div>
+          <div class="node-box node-leaf"><div class="n-title">EVM Integration</div><div class="n-desc"><span class="status roadmap">ROADMAP</span> Mid-2026</div></div>
+        </div>
+      </div>
+
+      <!-- ──── PILLAR 2: Privacy Protocol ──── -->
+      <div class="pillar-group">
+        <div class="node-box node-pillar">
+          <div class="n-emoji">🛡️</div>
+          <div class="n-title">Privacy Protocol</div>
+          <div class="n-desc">Cryptography Layer</div>
+        </div>
+        <div class="inner-split">
+          <div class="is-trunk"></div>
+          <div class="is-bar" style="width:90%;"></div>
+          <div class="is-drops" style="width:90%;">
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+          </div>
+        </div>
+        <div class="children-row">
+          <div class="node-box node-comp"><div class="n-title">Ring Signatures</div><div class="n-desc">Sender privacy</div></div>
+          <div class="node-box node-comp"><div class="n-title">Stealth Addresses</div><div class="n-desc">Receiver privacy</div></div>
+          <div class="node-box node-comp"><div class="n-title">RingCT</div><div class="n-desc">Amount privacy</div></div>
+        </div>
+        <div class="leaves-row" style="margin-top:8px;">
+          <div class="node-box node-leaf"><div class="n-title">Ring Size = 11</div><div class="n-desc">10 decoys per tx</div></div>
+          <div class="node-box node-leaf"><div class="n-title">One-Time Keys</div><div class="n-desc">Unlinkable</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Bulletproofs++</div><div class="n-desc">Compact range proofs</div></div>
+        </div>
+      </div>
+
+      <!-- ──── PILLAR 3: Privacy Apps ──── -->
+      <div class="pillar-group">
+        <div class="node-box node-pillar">
+          <div class="n-emoji">📱</div>
+          <div class="n-title">Privacy Apps</div>
+          <div class="n-desc">Products &amp; Services</div>
+        </div>
+        <div class="inner-split">
+          <div class="is-trunk"></div>
+          <div class="is-bar" style="width:95%;"></div>
+          <div class="is-drops" style="width:95%;">
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+          </div>
+        </div>
+        <div class="children-row">
+          <div class="node-box node-comp"><div class="n-title">💬 BChat</div><div class="n-desc">Messenger</div><div class="status live">LIVE</div></div>
+          <div class="node-box node-comp"><div class="n-title">🌐 BelNet</div><div class="n-desc">dVPN</div><div class="status live">LIVE</div></div>
+          <div class="node-box node-comp"><div class="n-title">🧭 Browser</div><div class="n-desc">Private Web</div></div>
+          <div class="node-box node-comp"><div class="n-title">👛 Wallet</div><div class="n-desc">Multi-platform</div></div>
+        </div>
+        <div class="leaves-row" style="margin-top:8px;">
+          <div class="node-box node-leaf"><div class="n-title">E2E Encrypted</div><div class="n-desc">Calls &middot; Pay rolling out</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Onion Routing</div><div class="n-desc">IP masking</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Ad &amp; Tracker Block</div><div class="n-desc">AI summaries planned</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Chrome &middot; Firefox</div><div class="n-desc">Mobile &middot; Desktop</div></div>
+        </div>
+      </div>
+
+    </div><!-- /.pillars-row (Row 1) -->
+
+    <!-- Row separator -->
+    <div class="row-sep">More Core Pillars</div>
+
+    <!-- ═══ LEVEL 1 — ROW 2: 3 MORE PILLARS ═══ -->
+    <div class="level-tag">Level 1 — Continued</div>
+
+    <div class="pillars-row">
+
+      <!-- ──── PILLAR 4: Interoperability ──── -->
+      <div class="pillar-group">
+        <div class="node-box node-pillar">
+          <div class="n-emoji">🌉</div>
+          <div class="n-title">Interoperability</div>
+          <div class="n-desc">Cross-Chain &middot; Naming</div>
+        </div>
+        <div class="inner-split">
+          <div class="is-trunk"></div>
+          <div class="is-bar" style="width:90%;"></div>
+          <div class="is-drops" style="width:90%;">
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+          </div>
+        </div>
+        <div class="children-row">
+          <div class="node-box node-comp"><div class="n-title">Beldex Bridge</div><div class="n-desc">Legacy wBDX path</div></div>
+          <div class="node-box node-comp"><div class="n-title">LayerZero OFT</div><div class="n-desc">Multichain transport</div><div class="status live">LIVE</div></div>
+          <div class="node-box node-comp"><div class="n-title">BNS</div><div class="n-desc">.bdx domains</div><div class="status live">LIVE</div></div>
+        </div>
+        <div class="leaves-row" style="margin-top:8px;">
+          <div class="node-box node-leaf"><div class="n-title">BSC wBDX</div><div class="n-desc">Wrapped asset swap</div></div>
+          <div class="node-box node-leaf"><div class="n-title">ETH &middot; SOL &middot; ARB</div><div class="n-desc">Via Stargate &middot; 1:1</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Chat &middot; VPN &middot; Pay</div><div class="n-desc">Human-readable</div></div>
+        </div>
+      </div>
+
+      <!-- ──── PILLAR 5: BDX Token ──── -->
+      <div class="pillar-group">
+        <div class="node-box node-pillar">
+          <div class="n-emoji">🪙</div>
+          <div class="n-title">BDX Token</div>
+          <div class="n-desc">Tokenomics &middot; Economics</div>
+        </div>
+        <div class="inner-split">
+          <div class="is-trunk"></div>
+          <div class="is-bar" style="width:90%;"></div>
+          <div class="is-drops" style="width:90%;">
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+          </div>
+        </div>
+        <div class="children-row">
+          <div class="node-box node-comp"><div class="n-title">Staking</div><div class="n-desc">10K BDX lock</div></div>
+          <div class="node-box node-comp"><div class="n-title">Burn Mechanism</div><div class="n-desc">Deflationary</div></div>
+          <div class="node-box node-comp"><div class="n-title">Exchanges</div><div class="n-desc">CEX listings</div></div>
+        </div>
+        <div class="leaves-row" style="margin-top:8px;">
+          <div class="node-box node-leaf"><div class="n-title">Block Rewards</div><div class="n-desc">Masternode queue</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Flash + BNS</div><div class="n-desc">Fee burns</div></div>
+          <div class="node-box node-leaf"><div class="n-title">KuCoin &middot; MEXC</div><div class="n-desc">Gate &middot; Bitget</div></div>
+        </div>
+      </div>
+
+      <!-- ──── PILLAR 6: BeldexAI ──── -->
+      <div class="pillar-group">
+        <div class="node-box node-pillar">
+          <div class="n-emoji">🤖</div>
+          <div class="n-title">BeldexAI</div>
+          <div class="n-desc">Intelligence &middot; In Progress</div>
+        </div>
+        <div class="inner-split">
+          <div class="is-trunk"></div>
+          <div class="is-bar" style="width:90%;"></div>
+          <div class="is-drops" style="width:90%;">
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+            <div class="is-drop"><div class="isd-line"></div></div>
+          </div>
+        </div>
+        <div class="children-row">
+          <div class="node-box node-comp"><div class="n-title">Federated Learning</div><div class="n-desc">On-device AI</div></div>
+          <div class="node-box node-comp"><div class="n-title">Spam Detection</div><div class="n-desc">Fraud filtering</div></div>
+          <div class="node-box node-comp"><div class="n-title">Optimization</div><div class="n-desc">Traffic routing</div></div>
+        </div>
+        <div class="leaves-row" style="margin-top:8px;">
+          <div class="node-box node-leaf"><div class="n-title">No Data Shared</div><div class="n-desc">Privacy-first</div></div>
+          <div class="node-box node-leaf"><div class="n-title">BChat + BelNet</div><div class="n-desc">Scam prevention</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Smart Routing</div><div class="n-desc">Network speed</div></div>
+        </div>
+      </div>
+
+    </div><!-- /.pillars-row (Row 2) -->
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch legend-swatch-root"></div>Root</div>
+      <div class="legend-item"><div class="legend-swatch legend-swatch-pillar"></div>Pillar</div>
+      <div class="legend-item"><div class="legend-swatch legend-swatch-comp"></div>Component</div>
+      <div class="legend-item"><div class="legend-swatch legend-swatch-leaf"></div>Detail</div>
+      <div class="legend-item"><div class="legend-swatch legend-swatch-conn"></div>Connection</div>
+      <div class="legend-item"><span class="legend-badge live">LIVE</span> Confirmed live</div>
+      <div class="legend-item"><span class="legend-badge progress">IN PROGRESS</span> Rolling out</div>
+      <div class="legend-item"><span class="legend-badge roadmap">ROADMAP</span> Planned</div>
+    </div>
+
+  </div><!-- /.tree-level -->
+
+</div><!-- /.page -->
+
+<!-- Theme Toggle -->
+<button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme"
+  style="position:fixed;top:24px;right:24px;z-index:9999;width:48px;height:48px;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.35rem;background:rgba(15,16,20,0.7);color:#fbbf24;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:all 0.35s ease;">☀️</button>
+<script>
+  (function() {
+    var btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    btn.textContent = isLight ? '🌙' : '☀️';
+    btn.addEventListener('click', function() {
+      var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (nowLight) {
+        document.documentElement.removeAttribute('data-theme');
+        btn.textContent = '☀️';
+        localStorage.setItem('beldex-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        btn.textContent = '🌙';
+        localStorage.setItem('beldex-theme', 'light');
+      }
+    });
+  })();
+</script>
+</body>
+</html>

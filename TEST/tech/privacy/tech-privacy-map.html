@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Technology Map - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ===== Privacy Map Page ===== */
+      :root {
+        --pm-green: #29e0a9;
+        --pm-green-dim: rgba(41,224,169,0.12);
+        --pm-blue: #3b82f6;
+        --pm-purple: #a78bfa;
+        --pm-amber: #f59e0b;
+        --pm-pink: #f472b6;
+        --pm-dark: #080a10;
+        --pm-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --pm-border: rgba(255,255,255,0.06);
+        --pm-text: #cbd5e1;
+        --pm-text-dim: rgba(203,213,225,0.5);
+      }
+
+      .pm-page {
+        min-height: 100vh;
+        background: var(--pm-dark);
+        color: var(--pm-text);
+        font-family: 'Inter', sans-serif;
+      }
+
+      /* ===== HERO ===== */
+      .pm-hero {
+        position: relative;
+        padding: 60px 32px 48px;
+        background:
+          radial-gradient(ellipse at 20% 0%, rgba(41,224,169,0.08), transparent 50%),
+          radial-gradient(ellipse at 80% 100%, rgba(59,130,246,0.06), transparent 50%),
+          radial-gradient(ellipse at 50% 50%, rgba(167,139,250,0.04), transparent 60%),
+          linear-gradient(180deg, #0c0e14 0%, #080a10 100%);
+        border-bottom: 1px solid var(--pm-border);
+        overflow: hidden;
+      }
+
+      .pm-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .pm-hero-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .pm-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.35);
+        text-decoration: none;
+        margin-bottom: 28px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        transition: all 0.25s ease;
+      }
+      .pm-back:hover {
+        color: var(--pm-green);
+        border-color: rgba(41,224,169,0.2);
+        background: rgba(41,224,169,0.04);
+      }
+
+      .pm-hero-badge {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        padding: 5px 14px;
+        border-radius: 100px;
+        background: var(--pm-green-dim);
+        color: var(--pm-green);
+        border: 1px solid rgba(41,224,169,0.2);
+        margin-bottom: 16px;
+      }
+
+      .pm-hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.6rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin: 0 0 12px 0;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+
+      .pm-hero-sub {
+        font-size: 1.08rem;
+        color: rgba(203,213,225,0.6);
+        margin: 0;
+        max-width: 600px;
+        line-height: 1.65;
+      }
+
+      .pm-hero-sub strong {
+        color: var(--pm-green);
+        font-weight: 600;
+      }
+
+      /* ===== MAIN BODY ===== */
+      .pm-body {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 32px 60px;
+      }
+
+      .pm-intro {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .pm-intro p {
+        font-size: 0.92rem;
+        color: var(--pm-text-dim);
+        line-height: 1.7;
+      }
+
+      /* ===== FLOWCHART ===== */
+      .pm-chart {
+        position: relative;
+        padding: 20px 0;
+      }
+
+      /* Row */
+      .pm-row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        gap: 24px;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* ===== CONNECTORS ===== */
+
+      /* Simple vertical line */
+      .pm-vline {
+        display: flex;
+        justify-content: center;
+        height: 50px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .pm-vline::before {
+        content: "";
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--pm-green), var(--pm-blue));
+        border-radius: 4px;
+        box-shadow: 0 0 14px rgba(41,224,169,0.3);
+      }
+
+      /* Arrow indicator */
+      .pm-vline::after {
+        content: "▼";
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.6rem;
+        color: var(--pm-green);
+        opacity: 0.7;
+      }
+
+      /* Connector wrapper */
+      .pm-connector {
+        position: relative;
+        height: 56px;
+        z-index: 1;
+      }
+
+      /* Top vertical stem (center, goes down to the horizontal bar) */
+      .pm-connector-stem-top {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 28px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, var(--pm-green), var(--pm-blue));
+        box-shadow: 0 0 14px rgba(41,224,169,0.25);
+      }
+
+      /* Bottom vertical stem (center, goes from horizontal bar down) */
+      .pm-connector-stem-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 28px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, var(--pm-blue), var(--pm-purple));
+        box-shadow: 0 0 14px rgba(59,130,246,0.25);
+      }
+
+      /* Horizontal bar */
+      .pm-connector-bar {
+        position: absolute;
+        top: 28px;
+        height: 4px;
+        border-radius: 4px;
+        box-shadow: 0 0 14px rgba(59,130,246,0.2);
+      }
+
+      /* 2-way bar: aligns with 2 boxes centered in a ~936px container */
+      .pm-connector-bar-2 {
+        left: 34%;
+        right: 34%;
+        background: linear-gradient(90deg, var(--pm-purple), var(--pm-amber));
+      }
+
+      /* 3-way bar: aligns with 3 boxes centered */
+      .pm-connector-bar-3 {
+        left: 18%;
+        right: 18%;
+        background: linear-gradient(90deg, var(--pm-purple), var(--pm-blue), var(--pm-amber));
+      }
+
+      /* Vertical legs dropping from bar to boxes */
+      .pm-connector-legs {
+        position: absolute;
+        top: 28px;
+        bottom: 0;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .pm-connector-legs-2 {
+        left: 34%;
+        right: 34%;
+      }
+
+      .pm-connector-legs-3 {
+        left: 18%;
+        right: 18%;
+      }
+
+      .pm-connector-leg {
+        width: 4px;
+        height: 100%;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(41,224,169,0.15);
+      }
+
+      /* Leg colors */
+      .pm-leg-purple { background: var(--pm-purple); opacity: 0.6; }
+      .pm-leg-blue { background: var(--pm-blue); opacity: 0.6; }
+      .pm-leg-amber { background: var(--pm-amber); opacity: 0.6; }
+
+      /* Merge: legs come up from boxes into bar, then bar goes down to stem */
+      .pm-connector-merge .pm-connector-legs {
+        top: 0;
+        bottom: 28px;
+      }
+
+      .pm-connector-merge .pm-connector-bar {
+        top: auto;
+        bottom: 28px;
+      }
+
+      .pm-connector-merge .pm-connector-stem-bottom {
+        bottom: 0;
+      }
+
+      /* ===== BOX ===== */
+      .pm-box {
+        position: relative;
+        padding: 24px 28px;
+        background: rgba(255,255,255,0.025);
+        border: 2px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        flex: 1;
+        max-width: 280px;
+        overflow: visible;
+      }
+
+      .pm-box::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 16px;
+        padding: 2px;
+        background: linear-gradient(135deg, transparent 30%, rgba(41,224,169,0.15));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        pointer-events: none;
+      }
+
+      .pm-box:hover::before {
+        opacity: 1;
+      }
+
+      .pm-box:hover {
+        transform: translateY(-4px);
+        z-index: 100;
+        box-shadow:
+          0 20px 40px -12px rgba(0,0,0,0.5),
+          0 0 30px -5px var(--box-glow, rgba(41,224,169,0.15));
+        border-color: var(--box-color, rgba(41,224,169,0.3));
+      }
+
+      /* Box color variants */
+      .pm-box-green { --box-color: rgba(41,224,169,0.4); --box-glow: rgba(41,224,169,0.2); border-color: rgba(41,224,169,0.2); background: rgba(41,224,169,0.04); }
+      .pm-box-amber { --box-color: rgba(245,158,11,0.4); --box-glow: rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.2); background: rgba(245,158,11,0.04); }
+      .pm-box-blue { --box-color: rgba(59,130,246,0.4); --box-glow: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.2); background: rgba(59,130,246,0.04); }
+      .pm-box-purple { --box-color: rgba(167,139,250,0.4); --box-glow: rgba(167,139,250,0.2); border-color: rgba(167,139,250,0.2); background: rgba(167,139,250,0.04); }
+      .pm-box-pink { --box-color: rgba(244,114,182,0.4); --box-glow: rgba(244,114,182,0.2); border-color: rgba(244,114,182,0.2); background: rgba(244,114,182,0.04); }
+
+      .pm-box-icon {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .pm-box-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 50%;
+        margin: 0 auto 14px;
+        display: block;
+        background: transparent;
+        padding: 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      }
+      .pm-box-img-light {
+        background: rgba(255,255,255,0.97);
+        padding: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 3px rgba(255,255,255,0.15);
+      }
+
+      .pm-box h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin: 0 0 6px 0;
+      }
+
+      .pm-box-tag {
+        display: inline-block;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-bottom: 6px;
+      }
+
+      .pm-tag-green { background: rgba(41,224,169,0.12); color: var(--pm-green); }
+      .pm-tag-amber { background: rgba(245,158,11,0.12); color: var(--pm-amber); }
+      .pm-tag-blue { background: rgba(59,130,246,0.12); color: var(--pm-blue); }
+      .pm-tag-purple { background: rgba(167,139,250,0.12); color: var(--pm-purple); }
+
+      .pm-box-sub {
+        font-size: 0.78rem;
+        color: var(--pm-text-dim);
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* ===== TOOLTIP (always above) ===== */
+      .pm-tooltip {
+        position: absolute;
+        bottom: calc(100% + 18px);
+        left: 50%;
+        transform: translateX(-50%) translateY(6px);
+        width: 340px;
+        background: #141821;
+        border: 1px solid rgba(41,224,169,0.2);
+        border-radius: 14px;
+        padding: 22px 24px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+        z-index: 500;
+        box-shadow:
+          0 20px 50px -10px rgba(0,0,0,0.8),
+          0 0 20px rgba(41,224,169,0.08);
+      }
+
+      .pm-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 10px solid transparent;
+        border-top-color: #141821;
+      }
+
+      .pm-box:hover .pm-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+        pointer-events: auto;
+      }
+
+      .pm-tooltip-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .pm-tooltip-icon {
+        font-size: 1.3rem;
+      }
+
+      .pm-tooltip h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin: 0;
+      }
+
+      .pm-tooltip h4 span {
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-top: 3px;
+      }
+
+      .pm-tooltip p {
+        font-size: 0.82rem;
+        color: var(--pm-text);
+        line-height: 1.7;
+        margin: 0 0 10px 0;
+      }
+
+      .pm-tooltip p:last-child {
+        margin-bottom: 0;
+      }
+
+      .pm-tooltip-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .pm-tooltip-list li {
+        font-size: 0.8rem;
+        color: var(--pm-text);
+        padding: 4px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+      }
+
+      .pm-tooltip-list li span {
+        flex-shrink: 0;
+        font-size: 0.75rem;
+      }
+
+      /* ===== TOOLTIP "KNOW MORE" LINK ===== */
+      .pm-tooltip-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 8px 18px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: var(--pm-green);
+        background: rgba(41,224,169,0.06);
+        border: 1px solid rgba(41,224,169,0.2);
+        border-radius: 100px;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        cursor: pointer;
+      }
+      .pm-tooltip-link:hover {
+        background: rgba(41,224,169,0.14);
+        border-color: rgba(41,224,169,0.4);
+        box-shadow: 0 4px 16px rgba(41,224,169,0.15);
+        transform: translateX(2px);
+      }
+      .pm-tooltip-link .pm-link-arrow {
+        display: inline-block;
+        transition: transform 0.3s ease;
+        font-size: 0.9rem;
+      }
+      .pm-tooltip-link:hover .pm-link-arrow {
+        transform: translateX(4px);
+      }
+
+      /* Color variants */
+      .pm-tooltip-link-purple {
+        color: var(--pm-purple);
+        background: rgba(167,139,250,0.06);
+        border-color: rgba(167,139,250,0.2);
+      }
+      .pm-tooltip-link-purple:hover {
+        background: rgba(167,139,250,0.14);
+        border-color: rgba(167,139,250,0.4);
+        box-shadow: 0 4px 16px rgba(167,139,250,0.15);
+      }
+
+      .pm-tooltip-link-blue {
+        color: var(--pm-blue);
+        background: rgba(59,130,246,0.06);
+        border-color: rgba(59,130,246,0.2);
+      }
+      .pm-tooltip-link-blue:hover {
+        background: rgba(59,130,246,0.14);
+        border-color: rgba(59,130,246,0.4);
+        box-shadow: 0 4px 16px rgba(59,130,246,0.15);
+      }
+
+      .pm-tooltip-link-amber {
+        color: var(--pm-amber);
+        background: rgba(245,158,11,0.06);
+        border-color: rgba(245,158,11,0.2);
+      }
+      .pm-tooltip-link-amber:hover {
+        background: rgba(245,158,11,0.14);
+        border-color: rgba(245,158,11,0.4);
+        box-shadow: 0 4px 16px rgba(245,158,11,0.15);
+      }
+
+      .pm-tooltip-link-pink {
+        color: var(--pm-pink);
+        background: rgba(244,114,182,0.06);
+        border-color: rgba(244,114,182,0.2);
+      }
+      .pm-tooltip-link-pink:hover {
+        background: rgba(244,114,182,0.14);
+        border-color: rgba(244,114,182,0.4);
+        box-shadow: 0 4px 16px rgba(244,114,182,0.15);
+      }
+
+      /* ===== SINGLE CENTER BOX (wider) ===== */
+      .pm-box-wide {
+        max-width: 360px;
+      }
+
+
+      /* ===== FOOTER ===== */
+      .pm-footer {
+        text-align: center;
+        padding: 28px 32px;
+        border-top: 1px solid var(--pm-border);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.25);
+      }
+
+      .pm-footer a {
+        color: var(--pm-green);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .pm-footer a:hover {
+        opacity: 0.7;
+      }
+
+      /* ===== LEGEND ===== */
+      .pm-legend {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-bottom: 32px;
+        padding: 16px 24px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--pm-border);
+        border-radius: 12px;
+      }
+
+      .pm-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        color: var(--pm-text-dim);
+      }
+
+      .pm-legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid;
+      }
+
+      .pm-legend-dot-green { border-color: var(--pm-green); background: rgba(41,224,169,0.2); }
+      .pm-legend-dot-purple { border-color: var(--pm-purple); background: rgba(167,139,250,0.2); }
+      .pm-legend-dot-blue { border-color: var(--pm-blue); background: rgba(59,130,246,0.2); }
+      .pm-legend-dot-amber { border-color: var(--pm-amber); background: rgba(245,158,11,0.2); }
+      .pm-legend-dot-pink { border-color: var(--pm-pink); background: rgba(244,114,182,0.2); }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .pm-hero { padding: 40px 20px 36px; }
+        .pm-hero h1 { font-size: 1.8rem; }
+        .pm-body { padding: 28px 16px 40px; }
+        .pm-row { flex-direction: column; align-items: center; gap: 16px; }
+        .pm-box { max-width: 100%; }
+        .pm-box-wide { max-width: 100%; }
+        .pm-connector { height: 40px; }
+        .pm-connector-bar, .pm-connector-legs { display: none; }
+        .pm-connector-stem-top, .pm-connector-stem-bottom { height: 100%; }
+        .pm-connector-stem-top { position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; }
+        .pm-connector-stem-bottom { position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; bottom: auto; }
+        .pm-tooltip { width: 280px; padding: 16px; }
+        .pm-legend { gap: 14px; padding: 12px 16px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .pm-box { transition: none; }
+        .pm-box:hover { transform: none; }
+        .pm-tooltip { transition: none; }
+      }
+
+/* ── Privacy Map Light Theme ── */
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Hero */
+      [data-theme="light"] .pm-hero {
+        background: linear-gradient(180deg, rgba(13,147,115,0.04) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] .pm-hero h1 { color: #1a1a2e !important; }
+      [data-theme="light"] .pm-hero-sub { color: rgba(26,26,46,0.55) !important; }
+      [data-theme="light"] .pm-hero-sub strong { color: #0d9373 !important; }
+      [data-theme="light"] .pm-hero-badge {
+        background: rgba(13,147,115,0.08) !important;
+        color: #0d9373 !important;
+        border-color: rgba(13,147,115,0.2) !important;
+      }
+      [data-theme="light"] .pm-back {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+      [data-theme="light"] .pm-back:hover {
+        color: #0d9373 !important;
+        border-color: rgba(13,147,115,0.25) !important;
+        background: rgba(13,147,115,0.04) !important;
+      }
+
+      /* Boxes */
+      [data-theme="light"] .pm-box {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.08) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] .pm-box:hover {
+        box-shadow: 0 12px 32px rgba(0,0,0,0.1), 0 0 24px -8px var(--box-glow, rgba(13,147,115,0.15)) !important;
+        border-color: var(--box-color, rgba(13,147,115,0.3)) !important;
+      }
+      [data-theme="light"] .pm-box h3 { color: #1a1a2e !important; }
+      [data-theme="light"] .pm-box-sub { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] .pm-box-green { background: rgba(13,147,115,0.03) !important; border-color: rgba(13,147,115,0.15) !important; }
+      [data-theme="light"] .pm-box-amber { background: rgba(217,119,6,0.03) !important; border-color: rgba(217,119,6,0.15) !important; }
+      [data-theme="light"] .pm-box-blue { background: rgba(37,99,235,0.03) !important; border-color: rgba(37,99,235,0.15) !important; }
+      [data-theme="light"] .pm-box-purple { background: rgba(139,92,246,0.03) !important; border-color: rgba(139,92,246,0.15) !important; }
+      [data-theme="light"] .pm-box-pink { background: rgba(219,39,119,0.03) !important; border-color: rgba(219,39,119,0.15) !important; }
+      [data-theme="light"] .pm-box-img { box-shadow: 0 2px 12px rgba(0,0,0,0.12) !important; }
+
+      /* Tags */
+      [data-theme="light"] .pm-tag-green { background: rgba(13,147,115,0.08) !important; color: #0d9373 !important; }
+      [data-theme="light"] .pm-tag-amber { background: rgba(217,119,6,0.08) !important; color: #b45309 !important; }
+      [data-theme="light"] .pm-tag-blue { background: rgba(37,99,235,0.08) !important; color: #2563eb !important; }
+      [data-theme="light"] .pm-tag-purple { background: rgba(139,92,246,0.08) !important; color: #7c3aed !important; }
+
+      /* Tooltip */
+      [data-theme="light"] .pm-tooltip {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.1) !important;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.12), 0 0 16px rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] .pm-tooltip::after { border-top-color: #ffffff !important; }
+      [data-theme="light"] .pm-tooltip-header { border-bottom-color: rgba(0,0,0,0.06) !important; }
+      [data-theme="light"] .pm-tooltip h4 { color: #1a1a2e !important; }
+      [data-theme="light"] .pm-tooltip p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] .pm-tooltip-list li { color: rgba(26,26,46,0.55) !important; }
+      [data-theme="light"] .pm-tooltip-list li strong { color: #1a1a2e !important; }
+      [data-theme="light"] .pm-tooltip-link {
+        background: rgba(13,147,115,0.06) !important;
+        border-color: rgba(13,147,115,0.2) !important;
+        color: #0d9373 !important;
+      }
+      [data-theme="light"] .pm-tooltip-link:hover {
+        background: rgba(13,147,115,0.12) !important;
+        border-color: rgba(13,147,115,0.35) !important;
+        box-shadow: 0 4px 16px rgba(13,147,115,0.12) !important;
+      }
+      [data-theme="light"] .pm-tooltip-link-purple { color: #7c3aed !important; }
+      [data-theme="light"] .pm-tooltip-link-blue { color: #2563eb !important; }
+      [data-theme="light"] .pm-tooltip-link-amber { color: #b45309 !important; }
+      [data-theme="light"] .pm-tooltip-link-pink { color: #db2777 !important; }
+
+
+      /* Connectors */
+      [data-theme="light"] .pm-vline::before { box-shadow: 0 0 10px rgba(13,147,115,0.15) !important; }
+      [data-theme="light"] .pm-connector-stem-top { box-shadow: 0 0 10px rgba(13,147,115,0.12) !important; }
+      [data-theme="light"] .pm-connector-stem-bottom { box-shadow: 0 0 10px rgba(37,99,235,0.12) !important; }
+
+      /* Legend */
+      [data-theme="light"] .pm-legend {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] .pm-legend-item { color: rgba(26,26,46,0.5) !important; }
+
+      /* Footer */
+      [data-theme="light"] .pm-footer {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+      [data-theme="light"] .pm-intro p { color: rgba(26,26,46,0.5) !important; }
+    </style>
+    <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="pm-page">
+
+      <!-- ===== HERO ===== -->
+      <div class="pm-hero">
+        <div class="pm-hero-inner">
+          <a href="../../Index.html" class="pm-back">&larr; Back to Visual Guide</a>
+          <div class="pm-hero-badge">Privacy Layer</div>
+          <h1>Privacy Technology Map</h1>
+          <p class="pm-hero-sub">How Beldex's privacy technologies evolved &mdash; from <strong>CryptoNote</strong> origins to a complete privacy ecosystem. Hover each box to explore.</p>
+        </div>
+      </div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="pm-body">
+
+        <div class="pm-intro">
+          <!-- <p>This map traces the lineage of every privacy technology used in Beldex today.</p> -->
+        </div>
+
+        <!-- Legend -->
+        <div class="pm-legend">
+          <div class="pm-legend-item"><span class="pm-legend-dot pm-legend-dot-green"></span> Protocol Origin</div>
+          <div class="pm-legend-item"><span class="pm-legend-dot pm-legend-dot-purple"></span> Sender Privacy</div>
+          <div class="pm-legend-item"><span class="pm-legend-dot pm-legend-dot-blue"></span> Amount Privacy</div>
+          <div class="pm-legend-item"><span class="pm-legend-dot pm-legend-dot-amber"></span> Receiver Privacy</div>
+          <div class="pm-legend-item"><span class="pm-legend-dot pm-legend-dot-pink"></span> Beldex</div>
+        </div>
+
+        <!-- ===== FLOWCHART ===== -->
+        <div class="pm-chart">
+
+          <!-- ROW 1: CryptoNote Protocol -->
+          <div class="pm-row">
+            <div class="pm-box pm-box-green pm-box-wide">
+              <img class="pm-box-img" src="../../images/logos/Cryptonote logo.png" alt="CryptoNote">
+              <div class="pm-box-tag pm-tag-green">Founded 2012 &ndash; 2013</div>
+              <h3>CryptoNote Protocol</h3>
+              <p class="pm-box-sub">The foundational privacy protocol</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <img class="pm-box-img" src="../../images/logos/Cryptonote logo.png" alt="CryptoNote" style="width:42px;height:42px;margin:0;padding:6px;border-radius:50%;">
+                  <h4>CryptoNote Protocol <span style="color: var(--pm-green);">Core Foundation</span></h4>
+                </div>
+                <p>The foundational privacy protocol that introduced cryptographic techniques to hide transaction details on the blockchain.</p>
+                <p>Published in 2013 as a whitepaper, first implemented in Bytecoin (2012). It introduced two key innovations:</p>
+                <ul class="pm-tooltip-list">
+                  <!-- <li><span>🔹</span> <strong>Ring Signatures</strong> &mdash; Hide who sent a transaction</li> -->
+                  <!-- <li><span>🔹</span> <strong>Stealth Addresses</strong> &mdash; Hide who received a transaction</li> -->
+                  <li><span>🔹</span> <strong>Unlinkability</strong> &mdash; No two transactions can be connected</li>
+                  <li><span>🔹</span> <strong>Untraceability</strong> &mdash; No sender can be identified</li>
+                </ul>
+                <a href="tech-cryptonote.html" class="pm-tooltip-link">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR: Split into 2 -->
+          <div class="pm-connector">
+            <div class="pm-connector-stem-top"></div>
+            <div class="pm-connector-bar pm-connector-bar-2"></div>
+            <div class="pm-connector-legs pm-connector-legs-2">
+              <div class="pm-connector-leg pm-leg-purple"></div>
+              <div class="pm-connector-leg pm-leg-amber"></div>
+            </div>
+          </div>
+
+          <!-- ROW 2: Ring Signatures & Stealth Addresses -->
+          <div class="pm-row">
+            <div class="pm-box pm-box-purple">
+              <span class="pm-box-icon">🔮</span>
+              <div class="pm-box-tag pm-tag-purple">Sender Privacy</div>
+              <h3>Ring Signatures</h3>
+              <p class="pm-box-sub">Hide who sent it</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <span class="pm-tooltip-icon">🔮</span>
+                  <h4>Ring Signatures <span style="color: var(--pm-purple);">Sender Privacy</span></h4>
+                </div>
+                <p>First proposed in 2001 by Ron Rivest, Adi Shamir, and Yael Tauman. Applied to blockchain in CryptoNote (2013).</p>
+                <p>Your transaction is mixed with decoys so nobody can tell who really sent it. Like signing a document on behalf of a group.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>✔</span> Sender identity is hidden among decoys</li>
+                  <li><span>✔</span> Beldex uses minimum ring size of 11</li>
+                  <li><span>✔</span> Key Images prevent double-spending</li>
+                  <li><span>✔</span> Computationally untraceable</li>
+                </ul>
+                <a href="tech-ring-signatures.html" class="pm-tooltip-link pm-tooltip-link-purple">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+
+            <div class="pm-box pm-box-amber">
+              <span class="pm-box-icon">👁️‍🗨️</span>
+              <div class="pm-box-tag pm-tag-amber">Receiver Privacy</div>
+              <h3>Stealth Addresses</h3>
+              <p class="pm-box-sub">Hide who received it</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <span class="pm-tooltip-icon">👁️‍🗨️</span>
+                  <h4>Stealth Addresses <span style="color: var(--pm-amber);">Receiver Privacy</span></h4>
+                </div>
+                <p>Concept first proposed by David Chaum in 1984. Implemented in CryptoNote (2013), mandatory in Monero (2014).</p>
+                <p>Every payment creates a unique one-time address. Even 100 payments to the same person look completely unrelated.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>✔</span> One-time address per transaction</li>
+                  <li><span>✔</span> Payments cannot be publicly linked</li>
+                  <li><span>✔</span> Wallet balance stays private</li>
+                  <li><span>✔</span> Uses public view key &amp; spend key</li>
+                </ul>
+                <a href="tech-stealth-addresses.html" class="pm-tooltip-link pm-tooltip-link-amber">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR: Merge into Bytecoin -->
+          <div class="pm-connector pm-connector-merge">
+            <div class="pm-connector-legs pm-connector-legs-2">
+              <div class="pm-connector-leg pm-leg-purple"></div>
+              <div class="pm-connector-leg pm-leg-amber"></div>
+            </div>
+            <div class="pm-connector-bar pm-connector-bar-2"></div>
+            <div class="pm-connector-stem-bottom"></div>
+          </div>
+
+          <!-- ROW 3: Bytecoin -->
+          <div class="pm-row">
+            <div class="pm-box pm-box-wide" style="border-color: rgba(239,68,68,0.2); background: rgba(239,68,68,0.03);">
+              <img class="pm-box-img" src="../../images/logos/Byte coin logo.png" alt="Bytecoin">
+              <h3>Bytecoin</h3>
+              <p class="pm-box-sub">1st CryptoNote Blockchain &mdash; had issues</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <img class="pm-box-img" src="../../images/logos/Byte coin logo.png" alt="Bytecoin" style="width:42px;height:42px;margin:0;padding:6px;border-radius:50%;">
+                  <h4>Bytecoin <span style="color: #f87171;">First Implementation (Issues)</span></h4>
+                </div>
+                <p>The first blockchain to implement CryptoNote technology. However, it had controversial origins including a suspected pre-mine and questionable launch.</p>
+                <p>These issues led the community to create a clean fork, which became Monero.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>❌</span> Suspected large pre-mine</li>
+                  <li><span>❌</span> Questionable launch history</li>
+                  <li><span>✔</span> Proved CryptoNote technology worked</li>
+                  <li><span>→</span> Led directly to Monero's creation</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR -->
+          <div class="pm-vline"></div>
+
+          <!-- ROW 4: Monero -->
+          <div class="pm-row">
+            <div class="pm-box pm-box-blue pm-box-wide">
+              <img class="pm-box-img" src="../../images/logos/Monero Logo.jpg" alt="Monero">
+              <div class="pm-box-tag pm-tag-blue">2014</div>
+              <h3>Monero</h3>
+              <p class="pm-box-sub">Privacy-based blockchain</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <img class="pm-box-img" src="../../images/logos/Monero Logo.jpg" alt="Monero" style="width:42px;height:42px;margin:0;padding:6px;border-radius:50%;">
+                  <h4>Monero <span style="color: var(--pm-blue);">Privacy Blockchain</span></h4>
+                </div>
+                <p>Improved and popularized CryptoNote technology. Became the most well-known privacy cryptocurrency.</p>
+                <p>Made critical improvements including mandatory privacy, enhanced ring signatures, and later added RingCT for amount privacy.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>✔</span> Clean fork of Bytecoin's code</li>
+                  <li><span>✔</span> Mandatory privacy for all transactions</li>
+                  <li><span>✔</span> Introduced RingCT (2017)</li>
+                  <li><span>✔</span> Added Bulletproofs (2018)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR: Split into 3 enhanced technologies -->
+          <div class="pm-connector">
+            <div class="pm-connector-stem-top"></div>
+            <div class="pm-connector-bar pm-connector-bar-3"></div>
+            <div class="pm-connector-legs pm-connector-legs-3">
+              <div class="pm-connector-leg pm-leg-purple"></div>
+              <div class="pm-connector-leg pm-leg-blue"></div>
+              <div class="pm-connector-leg pm-leg-amber"></div>
+            </div>
+          </div>
+
+          <!-- ROW 5: Enhanced Technologies -->
+          <div class="pm-row">
+            <div class="pm-box pm-box-purple">
+              <span class="pm-box-icon">🔮</span>
+              <div class="pm-box-tag pm-tag-purple">Enhanced</div>
+              <h3>Ring Signatures</h3>
+              <p class="pm-box-sub">Hide Sender</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <span class="pm-tooltip-icon">🔮</span>
+                  <h4>Enhanced Ring Signatures <span style="color: var(--pm-purple);">Hide Sender</span></h4>
+                </div>
+                <p>Monero enhanced the original CryptoNote ring signatures with larger ring sizes and improved mixing algorithms.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>✔</span> Increased ring size to 11 members</li>
+                  <li><span>✔</span> Better decoy selection algorithm</li>
+                  <li><span>✔</span> Stronger anonymity guarantees</li>
+                  <li><span>✔</span> Key Images prevent double-spending</li>
+                </ul>
+                <a href="tech-ring-signatures.html" class="pm-tooltip-link pm-tooltip-link-purple">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+
+            <div class="pm-box pm-box-blue">
+              <span class="pm-box-icon">💎</span>
+              <div class="pm-box-tag pm-tag-blue">New</div>
+              <h3>RingCT</h3>
+              <p class="pm-box-sub">Hide Amount</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <span class="pm-tooltip-icon">💎</span>
+                  <h4>Ring Confidential Transactions <span style="color: var(--pm-blue);">Hide Amount</span></h4>
+                </div>
+                <p>Created in January 2016 by combining Ring Signatures with Greg Maxwell's Confidential Transactions (2015). The first time sender, receiver, and amount were all hidden.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>✔</span> Cryptographic commitments hide amounts</li>
+                  <li><span>✔</span> Network verifies: Inputs = Outputs</li>
+                  <li><span>✔</span> Range proofs ensure valid amounts</li>
+                  <li><span>✔</span> Bulletproof++ reduces proof size by ~38%</li>
+                </ul>
+                <a href="tech-ringct.html" class="pm-tooltip-link pm-tooltip-link-blue">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+
+            <div class="pm-box pm-box-amber">
+              <span class="pm-box-icon">👁️‍🗨️</span>
+              <div class="pm-box-tag pm-tag-amber">Enhanced</div>
+              <h3>Stealth Addresses</h3>
+              <p class="pm-box-sub">Hide Receiver</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <span class="pm-tooltip-icon">👁️‍🗨️</span>
+                  <h4>Enhanced Stealth Addresses <span style="color: var(--pm-amber);">Hide Receiver</span></h4>
+                </div>
+                <p>Improved implementation that ensures every payment is unlinkable and untraceable to the receiver's wallet.</p>
+                <ul class="pm-tooltip-list">
+                  <li><span>✔</span> Mandatory for all transactions</li>
+                  <li><span>✔</span> Prevents address reuse tracking</li>
+                  <li><span>✔</span> Private scanning with view key</li>
+                  <li><span>✔</span> Stops wallet balance analysis</li>
+                </ul>
+                <a href="tech-stealth-addresses.html" class="pm-tooltip-link pm-tooltip-link-amber">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTOR: Merge into Beldex -->
+          <div class="pm-connector pm-connector-merge">
+            <div class="pm-connector-legs pm-connector-legs-3">
+              <div class="pm-connector-leg pm-leg-purple"></div>
+              <div class="pm-connector-leg pm-leg-blue"></div>
+              <div class="pm-connector-leg pm-leg-amber"></div>
+            </div>
+            <div class="pm-connector-bar pm-connector-bar-3"></div>
+            <div class="pm-connector-stem-bottom"></div>
+          </div>
+
+          <!-- ROW 6: Beldex -->
+          <div class="pm-row">
+            <div class="pm-box pm-box-pink pm-box-wide">
+              <img class="pm-box-img" src="../../images/logos/Beldex logo.png" alt="Beldex">
+              <div class="pm-box-tag" style="background: rgba(244,114,182,0.12); color: var(--pm-pink);">2018 &ndash; Present</div>
+              <h3>Beldex</h3>
+              <p class="pm-box-sub">Built on CryptoNote &amp; Monero enhanced privacy stack for its own ecosystem</p>
+
+              <div class="pm-tooltip">
+                <div class="pm-tooltip-header">
+                  <img class="pm-box-img" src="../../images/logos/Beldex logo.png" alt="Beldex" style="width:42px;height:42px;margin:0;padding:6px;border-radius:50%;">
+                  <h4>Beldex <span style="color: var(--pm-pink);">Complete Privacy Ecosystem</span></h4>
+                </div>
+                <p>Forked from Monero in 2018 and evolved independently. Adopted all privacy enhancements and built a broader privacy ecosystem on top.</p>
+                <p>Today, every Beldex transaction hides:</p>
+                <ul class="pm-tooltip-list">
+                  <li><span style="color: var(--pm-purple);">✔</span> <strong>Sender</strong> &mdash; Ring Signatures</li>
+                  <li><span style="color: var(--pm-blue);">✔</span> <strong>Amount</strong> &mdash; RingCT</li>
+                  <li><span style="color: var(--pm-amber);">✔</span> <strong>Receiver</strong> &mdash; Stealth Addresses</li>
+                </ul>
+                <a href="../../Index.html" class="pm-tooltip-link pm-tooltip-link-pink">Know More <span class="pm-link-arrow">→</span></a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- End Flowchart -->
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="pm-footer">
+        <p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p>
+      </div>
+
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

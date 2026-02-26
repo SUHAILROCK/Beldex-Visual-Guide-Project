@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ring Signatures - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ===== Ring Signatures Page — Premium Design ===== */
+      :root {
+        --rs-purple: #a78bfa;
+        --rs-purple-dim: rgba(167,139,250,0.12);
+        --rs-green: #29e0a9;
+        --rs-blue: #3b82f6;
+        --rs-amber: #f59e0b;
+        --rs-pink: #f472b6;
+        --rs-dark: #080a10;
+        --rs-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --rs-border: rgba(255,255,255,0.06);
+        --rs-text: #cbd5e1;
+        --rs-text-dim: rgba(203,213,225,0.5);
+      }
+
+      .rs-page {
+        min-height: 100vh;
+        background: var(--rs-dark);
+        color: var(--rs-text);
+        font-family: 'Inter', sans-serif;
+      }
+
+      /* ===== HERO ===== */
+      .rs-hero {
+        position: relative;
+        padding: 60px 32px 48px;
+        background:
+          radial-gradient(ellipse at 20% 0%, rgba(167,139,250,0.08), transparent 50%),
+          radial-gradient(ellipse at 80% 100%, rgba(244,114,182,0.05), transparent 50%),
+          linear-gradient(180deg, #0c0e14 0%, #080a10 100%);
+        border-bottom: 1px solid var(--rs-border);
+        overflow: hidden;
+      }
+
+      .rs-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .rs-hero-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .rs-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.35);
+        text-decoration: none;
+        margin-bottom: 28px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        transition: all 0.25s ease;
+      }
+      .rs-back:hover {
+        color: var(--rs-purple);
+        border-color: rgba(167,139,250,0.2);
+        background: rgba(167,139,250,0.04);
+      }
+
+      .rs-hero-badge {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        padding: 5px 14px;
+        border-radius: 100px;
+        background: var(--rs-purple-dim);
+        color: var(--rs-purple);
+        border: 1px solid rgba(167,139,250,0.2);
+        margin-bottom: 16px;
+      }
+
+      .rs-hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin: 0 0 12px 0;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+
+      .rs-hero-sub {
+        font-size: 1rem;
+        color: rgba(203,213,225,0.55);
+        margin: 0 0 32px 0;
+        max-width: 620px;
+        line-height: 1.7;
+      }
+
+      /* Stats chips */
+      .rs-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .rs-stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--rs-border);
+        backdrop-filter: blur(6px);
+      }
+
+      .rs-stat-emoji { font-size: 1.15rem; }
+
+      .rs-stat-label {
+        font-size: 0.68rem;
+        color: rgba(255,255,255,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+      }
+
+      .rs-stat-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.86rem;
+        font-weight: 600;
+        color: #f1f5f9;
+      }
+
+      .rs-live-dot {
+        display: inline-block;
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--rs-green);
+        box-shadow: 0 0 8px rgba(41,224,169,0.5);
+        margin-right: 5px;
+        animation: rsPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes rsPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .rs-body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 32px 60px;
+      }
+
+      /* ===== SECTION CARD ===== */
+      .rs-card {
+        background: var(--rs-card-bg);
+        border: 1px solid var(--rs-border);
+        border-radius: 18px;
+        padding: 36px 32px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 8px 32px -12px rgba(0,0,0,0.5),
+          inset 0 1px 0 rgba(255,255,255,0.03);
+      }
+
+      .rs-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%);
+        pointer-events: none;
+      }
+
+      .rs-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin: 0 0 20px 0;
+        line-height: 1.3;
+        padding-left: 16px;
+        border-left: 3px solid var(--rs-purple);
+      }
+      .rs-card:nth-child(3n+1) h2 { border-left-color: var(--rs-green); }
+      .rs-card:nth-child(3n+2) h2 { border-left-color: var(--rs-blue); }
+      .rs-card:nth-child(3n)   h2 { border-left-color: var(--rs-purple); }
+
+      .rs-card p {
+        font-size: 0.92rem;
+        color: var(--rs-text);
+        line-height: 1.75;
+        margin: 0 0 14px 0;
+      }
+      .rs-card p:last-child { margin-bottom: 0; }
+      .rs-card p strong { color: #e2e8f0; }
+
+      /* Highlight box */
+      .rs-highlight {
+        background: rgba(167,139,250,0.05);
+        border: 1px solid rgba(167,139,250,0.12);
+        border-left: 3px solid var(--rs-purple);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin: 18px 0;
+      }
+      .rs-highlight p {
+        color: rgba(203,213,225,0.8);
+        font-size: 0.88rem;
+        margin: 0;
+      }
+
+      /* ===== IMAGE SECTION ===== */
+      .rs-image-wrapper {
+        margin: 20px 0;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+        position: relative;
+      }
+      .rs-image-wrapper img {
+        width: 100%;
+        display: block;
+        border-radius: 14px;
+      }
+      .rs-image-caption {
+        text-align: center;
+        padding: 14px 20px;
+        background: rgba(0,0,0,0.4);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.45);
+        font-style: italic;
+      }
+
+      /* Timeline text */
+      .rs-timeline-text {
+        text-align: center;
+        padding: 16px 0 0;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        color: var(--rs-purple);
+        letter-spacing: 0.3px;
+      }
+      .rs-timeline-text span {
+        color: rgba(255,255,255,0.2);
+        margin: 0 6px;
+      }
+
+      /* ===== HISTORY TIMELINE ===== */
+      .rs-history {
+        position: relative;
+        padding-left: 28px;
+        margin: 20px 0 8px;
+      }
+      .rs-history::before {
+        content: "";
+        position: absolute;
+        left: 8px; top: 4px; bottom: 4px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--rs-purple), var(--rs-blue), var(--rs-amber), var(--rs-green));
+        border-radius: 2px;
+        opacity: 0.4;
+      }
+
+      .rs-history-item {
+        position: relative;
+        margin-bottom: 20px;
+        padding-left: 6px;
+      }
+      .rs-history-item:last-child { margin-bottom: 0; }
+
+      .rs-history-item::before {
+        content: "";
+        position: absolute;
+        left: -22px; top: 6px;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: var(--rs-purple);
+        border: 2px solid var(--rs-dark);
+        box-shadow: 0 0 8px rgba(167,139,250,0.3);
+      }
+      .rs-history-item:nth-child(2)::before { background: var(--rs-blue); box-shadow: 0 0 8px rgba(59,130,246,0.3); }
+      .rs-history-item:nth-child(3)::before { background: var(--rs-amber); box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+      .rs-history-item:nth-child(4)::before { background: var(--rs-green); box-shadow: 0 0 8px rgba(41,224,169,0.3); }
+
+      .rs-history-year {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--rs-purple);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 4px;
+      }
+      .rs-history-item:nth-child(2) .rs-history-year { color: var(--rs-blue); }
+      .rs-history-item:nth-child(3) .rs-history-year { color: var(--rs-amber); }
+      .rs-history-item:nth-child(4) .rs-history-year { color: var(--rs-green); }
+
+      .rs-history-text {
+        font-size: 0.88rem;
+        color: var(--rs-text);
+        line-height: 1.6;
+      }
+
+      /* ===== COMPARISON BOXES ===== */
+      .rs-compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 18px 0 8px;
+      }
+
+      .rs-compare-box {
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--rs-border);
+      }
+      .rs-compare-box.rs-bad {
+        background: rgba(239,68,68,0.04);
+        border-color: rgba(239,68,68,0.12);
+      }
+      .rs-compare-box.rs-good {
+        background: rgba(167,139,250,0.04);
+        border-color: rgba(167,139,250,0.12);
+      }
+      .rs-compare-box h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin: 0 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .rs-compare-box.rs-bad h4 { color: #f87171; }
+      .rs-compare-box.rs-good h4 { color: var(--rs-purple); }
+
+      .rs-compare-list {
+        list-style: none;
+        padding: 0; margin: 0;
+      }
+      .rs-compare-list li {
+        font-size: 0.84rem;
+        color: var(--rs-text);
+        padding: 5px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+      }
+      .rs-compare-list li .rs-bullet {
+        flex-shrink: 0;
+        margin-top: 2px;
+        font-size: 0.8rem;
+      }
+
+      /* ===== MECHANISM CARDS ===== */
+      .rs-mech-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 20px 0 8px;
+      }
+
+      .rs-mech {
+        padding: 22px 20px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--rs-border);
+        border-top: 2px solid var(--rs-purple);
+        transition: all 0.3s ease;
+      }
+      .rs-mech:nth-child(2) { border-top-color: var(--rs-blue); }
+      .rs-mech:nth-child(3) { border-top-color: var(--rs-amber); }
+      .rs-mech:nth-child(4) { border-top-color: var(--rs-pink); }
+
+      .rs-mech:hover {
+        border-color: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.03);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4);
+      }
+
+      .rs-mech-num { font-size: 1.2rem; margin-bottom: 10px; }
+
+      .rs-mech h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        margin: 0 0 8px;
+      }
+      .rs-mech p {
+        font-size: 0.82rem;
+        color: var(--rs-text-dim);
+        line-height: 1.6;
+        margin: 0 0 8px;
+      }
+      .rs-mech p:last-child { margin-bottom: 0; }
+      .rs-mech p strong { color: var(--rs-text); }
+
+      .rs-mech-detail {
+        margin-top: 10px;
+        padding: 10px 14px;
+        background: rgba(167,139,250,0.04);
+        border: 1px solid rgba(167,139,250,0.08);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: rgba(203,213,225,0.6);
+        line-height: 1.5;
+      }
+
+      /* ===== COMPARISON TABLE ===== */
+      .rs-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0 8px;
+        font-size: 0.86rem;
+      }
+      .rs-table thead th {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.35);
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      .rs-table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        color: var(--rs-text);
+      }
+      .rs-table tbody tr:last-child td { border-bottom: none; }
+      .rs-table tbody td:first-child { font-weight: 600; color: #e2e8f0; }
+      .rs-table .rs-weak { color: #f87171; font-weight: 500; }
+      .rs-table .rs-strong { color: var(--rs-green); font-weight: 600; }
+
+      /* ===== REASONS LIST ===== */
+      .rs-reasons {
+        list-style: none;
+        padding: 0; margin: 18px 0 0;
+      }
+      .rs-reasons li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 0.88rem;
+        color: var(--rs-text);
+        line-height: 1.6;
+      }
+      .rs-reasons li:last-child { border-bottom: none; }
+      .rs-reasons li .rs-reason-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--rs-purple);
+        flex-shrink: 0;
+        margin-top: 8px;
+        box-shadow: 0 0 6px rgba(167,139,250,0.3);
+      }
+
+      .rs-closing {
+        text-align: center;
+        padding: 20px 0 0;
+        margin-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .rs-closing p {
+        font-size: 0.9rem;
+        color: var(--rs-text-dim);
+        line-height: 1.7;
+        margin: 4px 0;
+      }
+      .rs-closing strong { color: var(--rs-purple); }
+      .rs-closing .rs-with { color: var(--rs-green); }
+
+      /* ===== FOOTER ===== */
+      .rs-footer {
+        text-align: center;
+        padding: 28px 32px;
+        border-top: 1px solid var(--rs-border);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.25);
+      }
+      .rs-footer a {
+        color: var(--rs-purple);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .rs-footer a:hover { opacity: 0.7; }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .rs-hero { padding: 40px 20px 36px; }
+        .rs-hero h1 { font-size: 1.7rem; }
+        .rs-body { padding: 28px 16px 40px; }
+        .rs-card { padding: 24px 20px; border-radius: 14px; }
+        .rs-compare-grid, .rs-mech-grid { grid-template-columns: 1fr; }
+        .rs-stats { flex-direction: column; gap: 8px; }
+        .rs-table { font-size: 0.8rem; }
+        .rs-table thead th, .rs-table tbody td { padding: 10px 10px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .rs-mech { transition: none; }
+        .rs-mech:hover { transform: none; }
+        .rs-live-dot { animation: none; }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="rs-page">
+
+      <!-- ===== HERO ===== -->
+      <div class="rs-hero">
+        <div class="rs-hero-inner">
+          <a href="../../Index.html" class="rs-back">← Back to Visual Guide</a>
+          <div class="rs-hero-badge">Sender Privacy</div>
+          <h1>Ring Signatures</h1>
+           <!-- <p class="rs-hero-sub">The cryptographic mechanism that <strong style="color: var(--rs-purple);">hides the transaction sender</strong> by mixing them with <strong style="color: var(--rs-purple);">decoys</strong>, making it <strong style="color: var(--rs-purple);">impossible to identify</strong> who actually signed the transaction.</p> -->
+
+          <div class="rs-stats">
+            <div class="rs-stat">
+              <span class="rs-stat-emoji">📄</span>
+              <div>
+                <div class="rs-stat-label">Origin</div>
+                <div class="rs-stat-value">2001 (Rivest, Shamir, Tauman)</div>
+              </div>
+            </div>
+            <div class="rs-stat">
+              <span class="rs-stat-emoji">👤</span>
+              <div>
+                <div class="rs-stat-label">Protects</div>
+                <div class="rs-stat-value">Hide Sender Transaction</div>
+              </div>
+            </div>
+            <div class="rs-stat">
+              <span class="rs-stat-emoji">⚡</span>
+              <div>
+                <div class="rs-stat-label">Status</div>
+                <div class="rs-stat-value"><span class="rs-live-dot"></span> Live</div>
+              </div>
+            </div>
+            <!-- <div class="rs-stat">
+              <span class="rs-stat-emoji">🔢</span>
+              <div>
+                <div class="rs-stat-label">Minimum Ring Size (Beldex)</div>
+                <div class="rs-stat-value">11 Members (1 real + 10 decoys)</div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="rs-body">
+
+        <!-- TL;DR -->
+        <div class="rs-card">
+          <h2>TL;DR</h2>
+          <p>Ring Signatures hide the <strong>real sender</strong> of a transaction.</p>
+          <p>Instead of showing who signed the transaction, the signature is mixed with multiple possible signers, making it extremely difficult to identify the true sender.</p>
+          <div class="rs-highlight">
+            <p>It protects <strong style="color: var(--rs-purple);">the sender’s identity by default.</strong>.</p>
+          </div>
+        </div>
+
+        <!-- Privacy Evolution History -->
+        <div class="rs-card">
+          <h2>Privacy Evolution History</h2>
+          <div class="rs-image-wrapper">
+            <img src="../../images/tech/history-of-ringsign.png" alt="Ring Signature Timeline from academic origins to Beldex adoption" />
+            <div class="rs-image-caption">The evolution of Ring Signatures: from academic research to blockchain privacy</div>
+          </div>
+          <!-- <div class="rs-timeline-text">
+            Academic Ring Signature (2001) <span>→</span> CryptoNote Implementation (2013) <span>→</span> Monero Enhancements (2014) <span>→</span> Adopted by Beldex
+          </div> -->
+          <div class="rs-history">
+            <div class="rs-history-item">
+              <div class="rs-history-year">2001 , Academic Origins</div>
+              <div class="rs-history-text">Ring Signatures were first proposed by cryptographers <strong>Ron Rivest</strong>, <strong>Adi Shamir</strong>, and <strong>Yael Tauman</strong>.</div>
+            </div>
+            <div class="rs-history-item">
+              <div class="rs-history-year">2013 , CryptoNote</div>
+              <div class="rs-history-text">The CryptoNote protocol applied ring signatures to blockchain transactions, allowing senders to <strong>hide within a group</strong> of possible signers.</div>
+            </div>
+            <div class="rs-history-item">
+              <div class="rs-history-year">2014 , Monero</div>
+              <div class="rs-history-text"><strong>Monero</strong> adopted and improved this model, making ring signatures a core privacy feature.</div>
+            </div>
+            <div class="rs-history-item">
+              <div class="rs-history-year">Beldex, Inherited &amp; Enhanced</div>
+              <div class="rs-history-text"><strong>Beldex</strong> inherited ring signatures when it forked from Monero's implementation.</div>
+            </div>
+          </div>
+          <div class="rs-timeline-text">
+            Academic Ring Signature (2001) <span>→</span> CryptoNote Implementation (2013) <span>→</span> Monero Enhancements (2014) <span>→</span> Adopted by Beldex
+          </div>
+        </div>
+
+        <!-- What Are Ring Signatures? -->
+        <div class="rs-card">
+          <h2>What Are Ring Signatures?</h2>
+          <p>A Ring Signature allows a transaction to be <strong>signed by one person</strong>but verified as coming from a <strong>group</strong>.</p>
+
+          <div class="rs-compare-grid">
+            <div class="rs-compare-box rs-bad">
+              <h4>🔓 In Bitcoin</h4>
+              <ul class="rs-compare-list">
+                <li><span class="rs-bullet">❌</span> The sender's address is visible</li>
+              </ul>
+            </div>
+            <div class="rs-compare-box rs-good">
+              <h4>💍 In Beldex</h4>
+              <ul class="rs-compare-list">
+                <li><span class="rs-bullet">✅</span> The real sender is hidden among several decoys</li>
+                <li><span class="rs-bullet">✅</span> The network confirms the transaction is valid</li>
+                <li><span class="rs-bullet">✅</span> But it cannot determine who actually signed it</li>
+              </ul>
+            </div>
+          </div>
+
+          <p><strong>No one can prove it was you.</strong></p>
+
+          <div class="rs-highlight">
+            <p><strong>Key Principle:</strong> When you send BDX, your transaction is signed alongside multiple decoy outputs from the blockchain. Any observer sees a group of possible senders, but <strong>cannot determine which one is real</strong>.</p>
+          </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="rs-card">
+          <h2>How It Works</h2>
+
+          <!-- Ring + Key Image Visual -->
+          <div class="rs-image-wrapper" style="margin-bottom: 12px;">
+            <img src="../../images/tech/ringsign-example.png" alt="Ring Signature Diagram — One real input mixed with decoy inputs forming a ring" />
+            <div class="rs-image-caption">One real input is mixed with multiple decoy inputs to form a ring. A unique key image prevents double-spending without revealing the real spender.</div>
+          </div>
+
+          <p>Ring signatures in Beldex operate through several interconnected mechanisms:</p>
+
+          <div class="rs-mech-grid">
+            <div class="rs-mech">
+              <div class="rs-mech-num">💍</div>
+              <h4>Ring Formation</h4>
+              <p>When spending, your wallet automatically selects multiple decoy outputs from the blockchain to form a <strong>"ring"</strong>, a group of plausible signers that includes your real output.</p>
+              <div class="rs-mech-detail">
+                In Beldex, the minimum ring size is <strong>11 members</strong> (1 real output + 10 decoys). All 11 appear equally likely to be the true spender.
+              </div>
+            </div>
+            <div class="rs-mech">
+              <div class="rs-mech-num">🔑</div>
+              <h4>Signing Process</h4>
+              <p>The signature proves that <strong>one private key in the ring is valid,</strong>but it does not reveal which one.</p>
+              <div class="rs-mech-detail">
+                Every member in the ring appears indistinguishable from the real signer.
+              </div>
+            </div>
+            <div class="rs-mech">
+              <div class="rs-mech-num">🖼️</div>
+              <h4>Key Images</h4>
+              <p>Each spent output generates a unique cryptographic fingerprint called a <strong>key image</strong>.</p>
+              <div class="rs-mech-detail">
+                The network tracks key images to: ensure each output is spent only once, prevent double-spending, without revealing which ring member was real.
+              </div>
+            </div>
+            <div class="rs-mech">
+              <div class="rs-mech-num">✅</div>
+              <h4>Verification</h4>
+              <p>Network confirms the signature is valid and the key image is unique. Transaction approved.</p>
+              <div class="rs-mech-detail">
+                By enforcing a fixed minimum ring size, Beldex ensures every transaction benefits from a strong anonymity set.
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Image visual -->
+          <div class="rs-image-wrapper" style="margin-top: 20px;">
+            <img src="../../images/tech/keyimage.png" alt="Key Image — cryptographic fingerprint that prevents double-spending" />
+            <div class="rs-image-caption">Key images protect security while preserving anonymity</div>
+          </div>
+        </div>
+
+        <!-- Ring Signature Flow -->
+        <div class="rs-card">
+          <h2>Ring Signature Flow</h2>
+          <p>Here's how a ring signature protects the sender in a Beldex transaction:</p>
+          <div class="rs-image-wrapper">
+            <img src="../../images/tech/flow-of-ringsign.png" alt="Ring Signature Flow — step-by-step visualization of sender privacy" />
+          </div>
+          <div class="rs-highlight" style="margin-top: 18px;">
+            <p><strong>Sender identity remains hidden.</strong></p>
+          </div>
+        </div>
+
+        <!-- Ring Signatures vs Traditional Signatures -->
+        <div class="rs-card">
+          <h2>Ring Signatures vs Traditional Signatures</h2>
+          <table class="rs-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Standard Digital Signature</th>
+                <th>Ring Signature (Beldex)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Signer Identity</td>
+                <td class="rs-weak">Publicly known</td>
+                <td class="rs-strong">Hidden among decoys</td>
+              </tr>
+              <tr>
+                <td>Verification</td>
+                <td class="rs-weak">Links to specific key</td>
+                <td class="rs-strong">Proves membership in group</td>
+              </tr>
+              <tr>
+                <td>Double-Spend Prevention</td>
+                <td>Account balance check</td>
+                <td class="rs-strong">Key image uniqueness</td>
+              </tr>
+              <tr>
+                <td>Traceability</td>
+                <td class="rs-weak">Fully traceable</td>
+                <td class="rs-strong">Computationally untraceable</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Why Beldex Uses Ring Signatures -->
+        <div class="rs-card">
+          <h2>Why Beldex Uses Ring Signatures</h2>
+          <ul class="rs-reasons">
+            <li><span class="rs-reason-dot"></span> Protects sender identity</li>
+            <li><span class="rs-reason-dot"></span> Prevents address tracking</li>
+            <li><span class="rs-reason-dot"></span> Adds plausible deniability</li>
+            <li><span class="rs-reason-dot"></span> Strengthens transaction privacy</li>
+            <li><span class="rs-reason-dot"></span> Forms the foundation of CryptoNote privacy</li>
+          </ul>
+
+          <div class="rs-closing">
+            <p>Without ring signatures, sender identities would be visible.</p>
+            <p>With ring signatures, transactions <strong class="rs-with">blend into the crowd</strong>.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="rs-footer">
+        <p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p>
+      </div>
+
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ring Confidential Transactions (RingCT) - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ===== RingCT Page — Premium Design ===== */
+      :root {
+        --rct-blue: #3b82f6;
+        --rct-blue-dim: rgba(59,130,246,0.12);
+        --rct-green: #29e0a9;
+        --rct-purple: #a78bfa;
+        --rct-amber: #f59e0b;
+        --rct-dark: #080a10;
+        --rct-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --rct-border: rgba(255,255,255,0.06);
+        --rct-text: #cbd5e1;
+        --rct-text-dim: rgba(203,213,225,0.5);
+      }
+
+      .rct-page {
+        min-height: 100vh;
+        background: var(--rct-dark);
+        color: var(--rct-text);
+        font-family: 'Inter', sans-serif;
+      }
+
+      /* ===== HERO ===== */
+      .rct-hero {
+        position: relative;
+        padding: 60px 32px 48px;
+        background:
+          radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.08), transparent 50%),
+          radial-gradient(ellipse at 80% 100%, rgba(167,139,250,0.06), transparent 50%),
+          linear-gradient(180deg, #0c0e14 0%, #080a10 100%);
+        border-bottom: 1px solid var(--rct-border);
+        overflow: hidden;
+      }
+
+      .rct-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .rct-hero-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .rct-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.35);
+        text-decoration: none;
+        margin-bottom: 28px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        transition: all 0.25s ease;
+      }
+      .rct-back:hover {
+        color: var(--rct-blue);
+        border-color: rgba(59,130,246,0.2);
+        background: rgba(59,130,246,0.04);
+      }
+
+      .rct-hero-badge {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        padding: 5px 14px;
+        border-radius: 100px;
+        background: var(--rct-blue-dim);
+        color: var(--rct-blue);
+        border: 1px solid rgba(59,130,246,0.2);
+        margin-bottom: 16px;
+      }
+
+      .rct-hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin: 0 0 12px 0;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+
+      .rct-hero-sub {
+        font-size: 1.05rem;
+        color: rgba(203,213,225,0.6);
+        margin: 0 0 32px 0;
+        max-width: 560px;
+        line-height: 1.65;
+      }
+
+      .rct-hero-sub strong {
+        color: var(--rct-blue);
+        font-weight: 600;
+      }
+
+      /* Stats chips */
+      .rct-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .rct-stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--rct-border);
+        backdrop-filter: blur(6px);
+      }
+
+      .rct-stat-emoji { font-size: 1.15rem; }
+
+      .rct-stat-label {
+        font-size: 0.68rem;
+        color: rgba(255,255,255,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+      }
+
+      .rct-stat-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #f1f5f9;
+      }
+
+      .rct-live-dot {
+        display: inline-block;
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--rct-green);
+        box-shadow: 0 0 8px rgba(41,224,169,0.5);
+        margin-right: 5px;
+        animation: rctPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes rctPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .rct-body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 32px 60px;
+      }
+
+      /* ===== SECTION CARD ===== */
+      .rct-card {
+        background: var(--rct-card-bg);
+        border: 1px solid var(--rct-border);
+        border-radius: 18px;
+        padding: 36px 32px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 8px 32px -12px rgba(0,0,0,0.5),
+          inset 0 1px 0 rgba(255,255,255,0.03);
+      }
+
+      .rct-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%);
+        pointer-events: none;
+      }
+
+      .rct-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin: 0 0 20px 0;
+        line-height: 1.3;
+        padding-left: 16px;
+        border-left: 3px solid var(--rct-blue);
+      }
+      .rct-card:nth-child(3n+1) h2 { border-left-color: var(--rct-green); }
+      .rct-card:nth-child(3n+2) h2 { border-left-color: var(--rct-blue); }
+      .rct-card:nth-child(3n)   h2 { border-left-color: var(--rct-purple); }
+
+      .rct-card p {
+        font-size: 0.92rem;
+        color: var(--rct-text);
+        line-height: 1.75;
+        margin: 0 0 14px 0;
+      }
+      .rct-card p:last-child { margin-bottom: 0; }
+      .rct-card p strong { color: #e2e8f0; }
+
+      /* Highlight box */
+      .rct-highlight {
+        background: rgba(59,130,246,0.05);
+        border: 1px solid rgba(59,130,246,0.12);
+        border-left: 3px solid var(--rct-blue);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin: 18px 0;
+      }
+      .rct-highlight p {
+        color: rgba(203,213,225,0.8);
+        font-size: 0.88rem;
+        margin: 0;
+      }
+
+      /* ===== IMAGE SECTION ===== */
+      .rct-image-wrapper {
+        margin: 20px 0;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+        position: relative;
+      }
+      .rct-image-wrapper img {
+        width: 100%;
+        display: block;
+        border-radius: 14px;
+      }
+      .rct-image-caption {
+        text-align: center;
+        padding: 14px 20px;
+        background: rgba(0,0,0,0.4);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.45);
+        font-style: italic;
+      }
+
+      /* Timeline text */
+      .rct-timeline-text {
+        text-align: center;
+        padding: 16px 0 0;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        color: var(--rct-blue);
+        letter-spacing: 0.3px;
+      }
+      .rct-timeline-text span {
+        color: rgba(255,255,255,0.2);
+        margin: 0 6px;
+      }
+
+      /* ===== HISTORY TIMELINE ===== */
+      .rct-history {
+        position: relative;
+        padding-left: 28px;
+        margin: 20px 0 8px;
+      }
+      .rct-history::before {
+        content: "";
+        position: absolute;
+        left: 8px; top: 4px; bottom: 4px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--rct-blue), var(--rct-green), var(--rct-amber), var(--rct-purple));
+        border-radius: 2px;
+        opacity: 0.4;
+      }
+
+      .rct-history-item {
+        position: relative;
+        margin-bottom: 20px;
+        padding-left: 6px;
+      }
+      .rct-history-item:last-child { margin-bottom: 0; }
+
+      .rct-history-item::before {
+        content: "";
+        position: absolute;
+        left: -22px; top: 6px;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: var(--rct-blue);
+        border: 2px solid var(--rct-dark);
+        box-shadow: 0 0 8px rgba(59,130,246,0.3);
+      }
+      .rct-history-item:nth-child(2)::before { background: #60a5fa; box-shadow: 0 0 8px rgba(96,165,250,0.3); }
+      .rct-history-item:nth-child(3)::before { background: var(--rct-green); box-shadow: 0 0 8px rgba(41,224,169,0.3); }
+      .rct-history-item:nth-child(4)::before { background: var(--rct-amber); box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+      .rct-history-item:nth-child(5)::before { background: #f87171; box-shadow: 0 0 8px rgba(248,113,113,0.3); }
+      .rct-history-item:nth-child(6)::before { background: var(--rct-purple); box-shadow: 0 0 8px rgba(167,139,250,0.3); }
+
+      .rct-history-year {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--rct-blue);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 4px;
+      }
+      .rct-history-item:nth-child(2) .rct-history-year { color: #60a5fa; }
+      .rct-history-item:nth-child(3) .rct-history-year { color: var(--rct-green); }
+      .rct-history-item:nth-child(4) .rct-history-year { color: var(--rct-amber); }
+      .rct-history-item:nth-child(5) .rct-history-year { color: #f87171; }
+      .rct-history-item:nth-child(6) .rct-history-year { color: var(--rct-purple); }
+
+      .rct-history-text {
+        font-size: 0.88rem;
+        color: var(--rct-text);
+        line-height: 1.6;
+      }
+
+      /* ===== COMPARISON BOXES ===== */
+      .rct-compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 18px 0 8px;
+      }
+
+      .rct-compare-box {
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--rct-border);
+      }
+      .rct-compare-box.rct-bad {
+        background: rgba(239,68,68,0.04);
+        border-color: rgba(239,68,68,0.12);
+      }
+      .rct-compare-box.rct-good {
+        background: rgba(59,130,246,0.04);
+        border-color: rgba(59,130,246,0.12);
+      }
+      .rct-compare-box h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin: 0 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .rct-compare-box.rct-bad h4 { color: #f87171; }
+      .rct-compare-box.rct-good h4 { color: var(--rct-blue); }
+
+      .rct-compare-list {
+        list-style: none;
+        padding: 0; margin: 0;
+      }
+      .rct-compare-list li {
+        font-size: 0.84rem;
+        color: var(--rct-text);
+        padding: 5px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+      }
+      .rct-compare-list li .rct-bullet {
+        flex-shrink: 0;
+        margin-top: 2px;
+        font-size: 0.8rem;
+      }
+
+      /* ===== MECHANISM CARDS ===== */
+      .rct-mech-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+        margin: 20px 0 8px;
+      }
+
+      .rct-mech {
+        padding: 22px 20px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--rct-border);
+        border-top: 2px solid var(--rct-blue);
+        transition: all 0.3s ease;
+      }
+      .rct-mech:nth-child(2) { border-top-color: var(--rct-green); }
+      .rct-mech:nth-child(3) { border-top-color: var(--rct-purple); }
+
+      .rct-mech:hover {
+        border-color: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.03);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4);
+      }
+
+      .rct-mech-num { font-size: 1.2rem; margin-bottom: 10px; }
+
+      .rct-mech h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        margin: 0 0 8px;
+      }
+      .rct-mech p {
+        font-size: 0.82rem;
+        color: var(--rct-text-dim);
+        line-height: 1.6;
+        margin: 0;
+      }
+      .rct-mech p strong { color: var(--rct-text); }
+
+      .rct-mech-detail {
+        margin-top: 10px;
+        padding: 10px 14px;
+        background: rgba(59,130,246,0.04);
+        border: 1px solid rgba(59,130,246,0.08);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: rgba(203,213,225,0.6);
+        line-height: 1.5;
+      }
+
+      /* ===== TRANSACTION FLOW ===== */
+      .rct-flow {
+        display: flex;
+        align-items: flex-start;
+        gap: 0;
+        margin: 22px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .rct-flow-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px 12px;
+        flex: 1;
+        min-width: 110px;
+        position: relative;
+      }
+      .rct-flow-step::after {
+        content: "→";
+        position: absolute;
+        right: -6px; top: 24px;
+        font-size: 1.2rem;
+        color: rgba(59,130,246,0.4);
+        font-weight: 700;
+      }
+      .rct-flow-step:last-child::after { display: none; }
+
+      .rct-flow-num {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--rct-blue);
+        margin-bottom: 8px;
+        padding: 3px 12px;
+        background: var(--rct-blue-dim);
+        border-radius: 100px;
+        border: 1px solid rgba(59,130,246,0.15);
+      }
+      .rct-flow-label {
+        font-size: 0.8rem;
+        color: var(--rct-text);
+        line-height: 1.45;
+      }
+
+      .rct-result-box {
+        margin-top: 8px;
+        padding: 18px 24px;
+        background: rgba(59,130,246,0.04);
+        border: 1px solid rgba(59,130,246,0.1);
+        border-radius: 12px;
+        text-align: center;
+      }
+      .rct-result-box .rct-result-label {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.3);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 8px;
+      }
+      .rct-result-box .rct-result-text {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--rct-blue);
+      }
+
+      /* ===== COMPARISON TABLE ===== */
+      .rct-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0 8px;
+        font-size: 0.86rem;
+      }
+      .rct-table thead th {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.35);
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+      .rct-table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        color: var(--rct-text);
+      }
+      .rct-table tbody tr:last-child td { border-bottom: none; }
+      .rct-table tbody td:first-child { font-weight: 600; color: #e2e8f0; }
+      .rct-table .rct-yes { color: #f87171; font-weight: 500; }
+      .rct-table .rct-no { color: var(--rct-green); font-weight: 600; }
+
+      /* ===== REASONS LIST ===== */
+      .rct-reasons {
+        list-style: none;
+        padding: 0; margin: 18px 0 0;
+      }
+      .rct-reasons li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 0.88rem;
+        color: var(--rct-text);
+        line-height: 1.6;
+      }
+      .rct-reasons li:last-child { border-bottom: none; }
+      .rct-reasons li .rct-reason-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--rct-blue);
+        flex-shrink: 0;
+        margin-top: 8px;
+        box-shadow: 0 0 6px rgba(59,130,246,0.3);
+      }
+
+      .rct-closing {
+        text-align: center;
+        padding: 20px 0 0;
+        margin-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+      .rct-closing p {
+        font-size: 0.9rem;
+        color: var(--rct-text-dim);
+        line-height: 1.7;
+        margin: 4px 0;
+      }
+      .rct-closing strong { color: var(--rct-blue); }
+      .rct-closing .rct-with { color: var(--rct-green); }
+
+      /* ===== FOOTER ===== */
+      .rct-footer {
+        text-align: center;
+        padding: 28px 32px;
+        border-top: 1px solid var(--rct-border);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.25);
+      }
+      .rct-footer a {
+        color: var(--rct-blue);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .rct-footer a:hover { opacity: 0.7; }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .rct-hero { padding: 40px 20px 36px; }
+        .rct-hero h1 { font-size: 1.7rem; }
+        .rct-body { padding: 28px 16px 40px; }
+        .rct-card { padding: 24px 20px; border-radius: 14px; }
+        .rct-compare-grid { grid-template-columns: 1fr; }
+        .rct-mech-grid { grid-template-columns: 1fr; }
+        .rct-flow { flex-direction: column; align-items: stretch; }
+        .rct-flow-step::after { display: none; }
+        .rct-flow-step { flex-direction: row; text-align: left; gap: 12px; padding: 10px 0; }
+        .rct-stats { flex-direction: column; gap: 8px; }
+        .rct-table { font-size: 0.8rem; }
+        .rct-table thead th, .rct-table tbody td { padding: 10px 10px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .rct-mech { transition: none; }
+        .rct-mech:hover { transform: none; }
+        .rct-live-dot { animation: none; }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="rct-page">
+
+      <!-- ===== HERO ===== -->
+      <div class="rct-hero">
+        <div class="rct-hero-inner">
+          <a href="../../Index.html" class="rct-back">← Back to Visual Guide</a>
+          <div class="rct-hero-badge">Privacy Layer</div>
+          <h1>Ring Confidential Transactions (RingCT)</h1>
+          <!-- <p class="rct-hero-sub">The cryptographic upgrade that <strong>hides transaction amounts</strong> on the Beldex blockchain, completing full transaction-level privacy.</p> -->
+
+          <div class="rct-stats">
+            <div class="rct-stat">
+              <span class="rct-stat-emoji">📄</span>
+              <div>
+                <div class="rct-stat-label">Activated</div>
+                <div class="rct-stat-value">January 2016 (Monero)</div>
+              </div>
+            </div>
+            <div class="rct-stat">
+              <span class="rct-stat-emoji">🔒</span>
+              <div>
+                <div class="rct-stat-label">Purpose</div>
+                <div class="rct-stat-value">Hide Transaction Amount</div>
+              </div>
+            </div>
+            <div class="rct-stat">
+              <span class="rct-stat-emoji">⚡</span>
+              <div>
+                <div class="rct-stat-label">Status on Beldex</div>
+                <div class="rct-stat-value"><span class="rct-live-dot"></span> Active</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="rct-body">
+
+        <!-- TL;DR -->
+        <div class="rct-card">
+          <h2>TL;DR</h2>
+          <p>RingCT is the cryptographic upgrade that hides <strong>transaction amounts</strong> on the Beldex blockchain.</p>
+          <p>Without RingCT, amounts would still be visible. With RingCT, the <strong>sender</strong>, <strong>receiver</strong>, and <strong>amount</strong> are all hidden.</p>
+          <div class="rct-highlight">
+            <p>It completes <strong style="color: var(--rct-blue);">full transaction-level privacy</strong>.</p>
+          </div>
+        </div>
+
+        <!-- Privacy Evolution History -->
+        <div class="rct-card">
+          <h2>Privacy Evolution History</h2>
+          <div class="rct-image-wrapper">
+            <img src="../../images/tech/ringct-history.png" alt="The History of Ring Confidential Transactions (RingCT) — from CryptoNote to Beldex" />
+            <div class="rct-image-caption">The evolution of RingCT: from early CryptoNote to Beldex's full privacy model</div>
+          </div>
+          <!-- <div class="rct-timeline-text">
+            Confidential Transactions (2015) <span>→</span> RingCT Activation (2016) <span>→</span> Bulletproofs (2018) <span>→</span> Adopted &amp; Enhanced by Beldex
+          </div> -->
+          <div class="rct-history">
+            <div class="rct-history-item">
+              <div class="rct-history-year">2013 — CryptoNote</div>
+              <div class="rct-history-text">When CryptoNote was introduced, it already hid the <strong>sender</strong> (via ring signatures) and <strong>receiver</strong> (via stealth addresses). However, <strong>transaction amounts were still visible</strong>.</div>
+            </div>
+            <div class="rct-history-item">
+              <div class="rct-history-year">2015 — Confidential Transactions</div>
+              <div class="rct-history-text">Bitcoin developer <strong>Greg Maxwell</strong> proposed Confidential Transactions (CT) — a method to hide amounts while proving supply integrity.</div>
+            </div>
+            <div class="rct-history-item">
+              <div class="rct-history-year">January 2016 — RingCT Created</div>
+              <div class="rct-history-text">Monero developers combined <strong>Ring Signatures</strong> + <strong>Confidential Transactions</strong> to create RingCT. For the first time, the sender, receiver, and amount were <strong>all hidden</strong>.</div>
+            </div>
+            <div class="rct-history-item">
+              <div class="rct-history-year">2018 — Bulletproofs</div>
+              <div class="rct-history-text">Monero introduced <strong>Bulletproofs</strong>, significantly reducing transaction size and fees.</div>
+            </div>
+            <div class="rct-history-item">
+              <div class="rct-history-year">December 2025 — Bulletproof++</div>
+              <div class="rct-history-text">Beldex adopted <strong>Bulletproof++</strong>, cutting proof sizes by ~38% while maintaining strong security.</div>
+            </div>
+            <div class="rct-history-item">
+              <div class="rct-history-year">Beldex — Adopted &amp; Enhanced</div>
+              <div class="rct-history-text">Beldex adopted RingCT and its upgrades from Monero's codebase, building upon them for its own privacy ecosystem.</div>
+            </div>  
+          </div>
+          <div class="rct-timeline-text">
+            Confidential Transactions (2015) <span>→</span> RingCT Activation (2016) <span>→</span> Bulletproofs (2018) <span>→</span> Adopted &amp; Enhanced by Beldex
+          </div>
+        </div>
+
+        <!-- What is RingCT? -->
+        <div class="rct-card">
+          <h2>What is RingCT?</h2>
+          <p>Ring Confidential Transactions (RingCT) hides the <strong>amount being transferred</strong> in a blockchain transaction.</p>
+
+          <div class="rct-compare-grid">
+            <div class="rct-compare-box rct-bad">
+              <h4>🔓 In Bitcoin</h4>
+              <ul class="rct-compare-list">
+                <li><span class="rct-bullet">❌</span> The amount is publicly visible</li>
+              </ul>
+            </div>
+            <div class="rct-compare-box rct-good">
+              <h4>🔒 In Beldex (with RingCT)</h4>
+              <ul class="rct-compare-list">
+                <li><span class="rct-bullet">✅</span> The amount is cryptographically hidden</li>
+                <li><span class="rct-bullet">✅</span> Only sender and receiver know the real value</li>
+                <li><span class="rct-bullet">✅</span> Network still verifies no new coins are created</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="rct-highlight">
+            <p>This is achieved using <strong>cryptographic commitments and proofs</strong>.</p>
+          </div>
+        </div>
+
+        <!-- How RingCT Works -->
+        <div class="rct-card">
+          <h2>How RingCT Works (Simple)</h2>
+          <p>RingCT uses three key components:</p>
+
+          <div class="rct-mech-grid">
+            <div class="rct-mech">
+              <div class="rct-mech-num">1️⃣</div>
+              <h4>Commitments</h4>
+              <p>The amount is converted into a <strong>hidden cryptographic value</strong>.</p>
+              <div class="rct-mech-detail">
+                Instead of "Send 100 BDX," the blockchain stores a mathematical commitment.
+              </div>
+            </div>
+            <div class="rct-mech">
+              <div class="rct-mech-num">2️⃣</div>
+              <h4>Balance Verification</h4>
+              <p>Even though the amount is hidden, the network verifies:</p>
+              <div class="rct-mech-detail">
+                <strong>Inputs = Outputs</strong><br>No extra coins can be created.
+              </div>
+            </div>
+            <div class="rct-mech">
+              <div class="rct-mech-num">3️⃣</div>
+              <h4>Range Proofs</h4>
+              <p>Range proofs ensure the hidden amount:</p>
+              <div class="rct-mech-detail">
+                • Is not negative<br>
+                • Is within valid limits<br>
+                • Does not break supply rules
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RingCT Transaction Flow -->
+        <div class="rct-card">
+          <h2>RingCT Transaction Flow</h2>
+
+          <div class="rct-image-wrapper">
+            <img src="../../images/tech/flow-of-ring-ct.png" alt="RingCT Transaction Flow — Step-by-step visualization of how a private transaction works" />
+          </div>
+        </div>
+
+        <!-- RingCT vs Transparent Transactions -->
+        <div class="rct-card">
+          <h2>RingCT vs Transparent Transactions</h2>
+          <table class="rct-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Bitcoin</th>
+                <th>Beldex (RingCT)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Amount Visible</td>
+                <td class="rct-yes">Yes</td>
+                <td class="rct-no">No</td>
+              </tr>
+              <tr>
+                <td>Sender Hidden</td>
+                <td class="rct-yes">No</td>
+                <td class="rct-no">Yes</td>
+              </tr>
+              <tr>
+                <td>Receiver Hidden</td>
+                <td class="rct-yes">No</td>
+                <td class="rct-no">Yes</td>
+              </tr>
+              <tr>
+                <td>Supply Verifiable</td>
+                <td>Yes</td>
+                <td class="rct-no">Yes (via cryptographic proofs)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Why Beldex Uses RingCT -->
+        <div class="rct-card">
+          <h2>Why Beldex Uses RingCT</h2>
+          <ul class="rct-reasons">
+            <li><span class="rct-reason-dot"></span> Completes transaction privacy</li>
+            <li><span class="rct-reason-dot"></span> Protects user balances</li>
+            <li><span class="rct-reason-dot"></span> Improves fungibility</li>
+            <li><span class="rct-reason-dot"></span> Maintains mathematically verifiable supply</li>
+          </ul>
+
+          <div class="rct-closing">
+            <p>Without RingCT, amounts would remain visible.</p>
+            <p>With RingCT, transactions are <strong class="rct-with">fully confidential</strong>.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="rct-footer">
+        <p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p>
+      </div>
+
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

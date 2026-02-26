@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VRF Consensus - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ===== Proof of Stake Page — Premium Redesign ===== */
+      :root {
+        --vr-accent: #14b8a6;
+        --vr-accent-dim: rgba(20,184,166,0.12);
+        --vr-green: #29e0a9;
+        --vr-blue: #3b82f6;
+        --vr-purple: #a78bfa;
+        --vr-dark: #080a10;
+        --vr-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --vr-border: rgba(255,255,255,0.06);
+        --vr-text: #cbd5e1;
+        --vr-text-dim: rgba(203,213,225,0.5);
+      }
+
+      .vr-page { min-height: 100vh; background: var(--vr-dark); color: var(--vr-text); font-family: 'Inter', sans-serif; }
+
+      .vr-hero {
+        position: relative; padding: 60px 32px 48px;
+        background: radial-gradient(ellipse at 20% 0%, rgba(20,184,166,0.08), transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(59,130,246,0.06), transparent 50%), linear-gradient(180deg, #0c0e14 0%, #080a10 100%);
+        border-bottom: 1px solid var(--vr-border); overflow: hidden;
+      }
+      .vr-hero::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.5; pointer-events: none; }
+      .vr-hero-inner { max-width: 880px; margin: 0 auto; position: relative; z-index: 1; }
+      .vr-back { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: rgba(255,255,255,0.35); text-decoration: none; margin-bottom: 28px; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); transition: all 0.25s ease; }
+      .vr-back:hover { color: var(--vr-accent); border-color: rgba(20,184,166,0.2); background: rgba(20,184,166,0.04); }
+      .vr-hero-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; padding: 5px 14px; border-radius: 100px; background: var(--vr-accent-dim); color: var(--vr-accent); border: 1px solid rgba(20,184,166,0.2); margin-bottom: 16px; }
+      .vr-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 700; color: #f8fafc; margin: 0 0 12px 0; line-height: 1.15; letter-spacing: -0.02em; }
+      .vr-hero-sub { font-size: 1.08rem; color: rgba(203,213,225,0.6); margin: 0 0 32px 0; max-width: 520px; line-height: 1.65; }
+      .vr-hero-sub strong { color: var(--vr-accent); font-weight: 600; }
+      .vr-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+      .vr-stat { display: flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--vr-border); backdrop-filter: blur(6px); }
+      .vr-stat-emoji { font-size: 1.15rem; }
+      .vr-stat-label { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+      .vr-stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; font-weight: 600; color: #f1f5f9; }
+      .vr-live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--vr-green); box-shadow: 0 0 8px rgba(41,224,169,0.5); margin-right: 5px; animation: vrPulse 2s ease-in-out infinite; }
+      @keyframes vrPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+      .vr-body { max-width: 880px; margin: 0 auto; padding: 40px 32px 60px; }
+      .vr-card { background: var(--vr-card-bg); border: 1px solid var(--vr-border); border-radius: 18px; padding: 36px 32px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03); }
+      .vr-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%); pointer-events: none; }
+      .vr-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #f1f5f9; margin: 0 0 20px 0; line-height: 1.3; padding-left: 16px; border-left: 3px solid var(--vr-accent); }
+      .vr-card:nth-child(3n+1) h2 { border-left-color: var(--vr-green); }
+      .vr-card:nth-child(3n+2) h2 { border-left-color: var(--vr-blue); }
+      .vr-card:nth-child(3n) h2 { border-left-color: var(--vr-purple); }
+      .vr-card p { font-size: 0.92rem; color: var(--vr-text); line-height: 1.75; margin: 0 0 14px 0; }
+      .vr-card p:last-child { margin-bottom: 0; }
+      .vr-card p strong { color: #e2e8f0; }
+      .vr-card ul { list-style: none; padding: 0; margin: 10px 0 0; }
+      .vr-card ul li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; color: var(--vr-text); line-height: 1.6; display: flex; align-items: flex-start; gap: 10px; }
+      .vr-card ul li:last-child { border-bottom: none; }
+      .vr-card ul li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--vr-accent); flex-shrink: 0; margin-top: 8px; }
+      .vr-card ul li strong { color: #e2e8f0; }
+
+      .vr-highlight { background: rgba(20,184,166,0.05); border: 1px solid rgba(20,184,166,0.12); border-left: 3px solid var(--vr-accent); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+      .vr-highlight p { color: rgba(203,213,225,0.8); font-size: 0.88rem; margin: 0 !important; }
+
+      .vr-feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 18px 0; }
+      .vr-feature-item { background: rgba(255,255,255,0.02); border: 1px solid var(--vr-border); border-radius: 14px; padding: 22px 20px; transition: border-color 0.3s, transform 0.3s; }
+      .vr-feature-item:hover { border-color: rgba(20,184,166,0.2); transform: translateY(-2px); }
+      .vr-feature-icon { font-size: 1.3rem; display: block; margin-bottom: 10px; }
+      .vr-feature-item h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin: 0 0 6px 0; }
+      .vr-feature-item p { font-size: 0.84rem; color: var(--vr-text); line-height: 1.6; margin: 0; }
+
+      .vr-flow { display: flex; align-items: center; gap: 0; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
+      .vr-flow-step { background: rgba(255,255,255,0.03); border: 1px solid var(--vr-border); border-radius: 12px; padding: 16px 18px; text-align: center; min-width: 140px; flex: 1; }
+      .vr-step-num { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--vr-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+      .vr-step-label { font-size: 0.82rem; color: var(--vr-text); line-height: 1.4; }
+      .vr-flow-arrow { color: rgba(255,255,255,0.15); font-size: 1.2rem; padding: 0 8px; }
+
+      .vr-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.86rem; }
+      .vr-table thead th { background: rgba(255,255,255,0.04); padding: 12px 16px; text-align: left; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.78rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--vr-border); }
+      .vr-table tbody td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--vr-text); }
+      .vr-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+      .vr-footer { text-align: center; padding: 28px 32px; border-top: 1px solid var(--vr-border); font-size: 0.82rem; color: rgba(255,255,255,0.25); }
+      .vr-footer a { color: var(--vr-accent); text-decoration: none; }
+      .vr-footer a:hover { opacity: 0.7; }
+
+      @media (max-width: 768px) {
+        .vr-hero { padding: 40px 20px 36px; }
+        .vr-hero h1 { font-size: 1.8rem; }
+        .vr-body { padding: 28px 16px 40px; }
+        .vr-card { padding: 24px 20px; border-radius: 14px; }
+        .vr-feature-grid { grid-template-columns: 1fr; }
+        .vr-stats { flex-direction: column; gap: 8px; }
+        .vr-flow { flex-direction: column; }
+        .vr-flow-arrow { transform: rotate(90deg); }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="vr-page">
+
+      <div class="vr-hero">
+        <div class="vr-hero-inner">
+          <a href="../../Index.html" class="vr-back">&larr; Back to Visual Guide</a>
+          <div class="vr-hero-badge">Research</div>
+          <h1>VRF Consensus</h1>
+          <p class="vr-hero-sub">Verifiable Random Function-based consensus that uses <strong>cryptographic randomness</strong> to fairly and unpredictably select validators — preventing manipulation.</p>
+          <div class="vr-stats">
+            <div class="vr-stat"><span class="vr-stat-emoji"></span><div><div class="vr-stat-label">Mechanism</div><div class="vr-stat-value">Random Validator Selection</div></div></div>
+            <div class="vr-stat"><span class="vr-stat-emoji"></span><div><div class="vr-stat-label">Goal</div><div class="vr-stat-value">Fair & Unpredictable</div></div></div>
+            <div class="vr-stat"><span class="vr-stat-emoji"></span><div><div class="vr-stat-label">Status</div><div class="vr-stat-value">Research</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="vr-body">
+        <div class="vr-card"><h2>What is VRF Consensus?</h2><p>A Verifiable Random Function (VRF) is a cryptographic primitive that takes a private key and input, producing a random-looking output along with a proof. In consensus, VRFs fairly and unpredictably select which validator produces the next block.</p><p>Traditional PoS systems can be predictable. VRF-based consensus eliminates this by making validator selection <strong>secretly random yet publicly verifiable</strong>.</p><div class="vr-highlight"><p><strong>Key Principle:</strong> Each validator runs the VRF locally. If their random output falls below a threshold, they're elected. The proof lets everyone verify the election was legitimate — but nobody could predict it.</p></div></div>
+        <div class="vr-card"><h2>How VRF Consensus Works</h2><p>VRF-based validator selection combines randomness with cryptographic proofs:</p><div class="vr-feature-grid"><div class="vr-feature-item"><span class="vr-feature-icon"></span><h4>Secret Leader Election</h4><p>Validators compute VRF(private_key, seed). If output is below threshold, they become block proposer. Election is secret until the block is proposed.</p></div><div class="vr-feature-item"><span class="vr-feature-icon"></span><h4>Verifiable Proof</h4><p>The proposer publishes their VRF proof alongside the block. Any node can verify the selection was legitimate.</p></div><div class="vr-feature-item"><span class="vr-feature-icon"></span><h4>DoS Resistance</h4><p>Because the leader is unknown until they publish the block, attackers cannot target the next block producer.</p></div><div class="vr-feature-item"><span class="vr-feature-icon"></span><h4>Stake-Weighted Probability</h4><p>The selection threshold scales with stake — more BDX staked means proportionally higher chance of being selected.</p></div></div></div>
+        <div class="vr-card"><h2>VRF Block Production Flow</h2><p>How a block would be produced with VRF consensus:</p><div class="vr-flow"><div class="vr-flow-step"><span class="vr-step-num">Step 1</span><span class="vr-step-label">All validators compute VRF with their key</span></div><span class="vr-flow-arrow">&rarr;</span><div class="vr-flow-step"><span class="vr-step-num">Step 2</span><span class="vr-step-label">Winner(s) identified locally by threshold</span></div><span class="vr-flow-arrow">&rarr;</span><div class="vr-flow-step"><span class="vr-step-num">Step 3</span><span class="vr-step-label">Winner proposes block + VRF proof</span></div><span class="vr-flow-arrow">&rarr;</span><div class="vr-flow-step"><span class="vr-step-num">Step 4</span><span class="vr-step-label">Network verifies proof & accepts block</span></div></div></div>
+        <div class="vr-card"><h2>VRF vs Standard PoS Selection</h2><table class="vr-table"><thead><tr><th>Feature</th><th>Standard PoS (Round-Robin)</th><th>VRF Consensus (Planned)</th></tr></thead><tbody><tr><td>Predictability</td><td>Next proposer known in advance</td><td>Unpredictable until block published</td></tr><tr><td>DoS Vulnerability</td><td>Known target for attacks</td><td>Target unknown until revelation</td></tr><tr><td>Manipulation Risk</td><td>Possible to bribe next proposer</td><td>Cannot identify target in advance</td></tr><tr><td>Fairness</td><td>Deterministic rotation</td><td>Cryptographically random</td></tr><tr><td>Complexity</td><td>Simple</td><td>More complex (VRF computation)</td></tr></tbody></table></div>
+        <div class="vr-card"><h2>Why Beldex is Researching VRF</h2><ul><li><strong>Enhanced security:</strong> Secret leader election makes targeted attacks against block producers significantly harder.</li><li><strong>True decentralization:</strong> Unpredictable selection ensures no validator group can game the system.</li><li><strong>Privacy alignment:</strong> VRF consensus aligns with Beldex's privacy-first approach — even consensus uses cryptographic privacy.</li><li><strong>Used by major projects:</strong> VRF-based consensus is used by Algorand, Cardano, and others, providing strong academic validation.</li></ul></div>
+      </div>
+
+      
+      <div class="vr-footer"><p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p></div>
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

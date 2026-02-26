@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UTXO Model - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --ux-accent: #06b6d4;
+        --ux-accent-dim: rgba(6,182,212,0.12);
+        --ux-green: #29e0a9;
+        --ux-blue: #3b82f6;
+        --ux-purple: #a78bfa;
+        --ux-dark: #080a10;
+        --ux-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --ux-border: rgba(255,255,255,0.06);
+        --ux-text: #cbd5e1;
+        --ux-text-dim: rgba(203,213,225,0.5);
+      }
+      .ux-page { min-height: 100vh; background: var(--ux-dark); color: var(--ux-text); font-family: 'Inter', sans-serif; }
+      .ux-hero { position: relative; padding: 60px 32px 48px; background: radial-gradient(ellipse at 20% 0%, rgba(6,182,212,0.08), transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(59,130,246,0.06), transparent 50%), linear-gradient(180deg, #0c0e14 0%, #080a10 100%); border-bottom: 1px solid var(--ux-border); overflow: hidden; }
+      .ux-hero::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.5; pointer-events: none; }
+      .ux-hero-inner { max-width: 880px; margin: 0 auto; position: relative; z-index: 1; }
+      .ux-back { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: rgba(255,255,255,0.35); text-decoration: none; margin-bottom: 28px; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); transition: all 0.25s ease; }
+      .ux-back:hover { color: var(--ux-accent); border-color: rgba(6,182,212,0.2); background: rgba(6,182,212,0.04); }
+      .ux-hero-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; padding: 5px 14px; border-radius: 100px; background: var(--ux-accent-dim); color: var(--ux-accent); border: 1px solid rgba(6,182,212,0.2); margin-bottom: 16px; }
+      .ux-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 700; color: #f8fafc; margin: 0 0 12px 0; line-height: 1.15; letter-spacing: -0.02em; }
+      .ux-hero-sub { font-size: 1.08rem; color: rgba(203,213,225,0.6); margin: 0 0 32px 0; max-width: 520px; line-height: 1.65; }
+      .ux-hero-sub strong { color: var(--ux-accent); font-weight: 600; }
+      .ux-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+      .ux-stat { display: flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--ux-border); backdrop-filter: blur(6px); }
+      .ux-stat-emoji { font-size: 1.15rem; }
+      .ux-stat-label { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+      .ux-stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; font-weight: 600; color: #f1f5f9; }
+      .ux-live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ux-green); box-shadow: 0 0 8px rgba(41,224,169,0.5); margin-right: 5px; animation: uxPulse 2s ease-in-out infinite; }
+      @keyframes uxPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+      .ux-body { max-width: 880px; margin: 0 auto; padding: 40px 32px 60px; }
+      .ux-card { background: var(--ux-card-bg); border: 1px solid var(--ux-border); border-radius: 18px; padding: 36px 32px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03); }
+      .ux-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%); pointer-events: none; }
+      .ux-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #f1f5f9; margin: 0 0 20px 0; line-height: 1.3; padding-left: 16px; border-left: 3px solid var(--ux-accent); }
+      .ux-card:nth-child(3n+1) h2 { border-left-color: var(--ux-green); }
+      .ux-card:nth-child(3n+2) h2 { border-left-color: var(--ux-blue); }
+      .ux-card:nth-child(3n) h2 { border-left-color: var(--ux-purple); }
+      .ux-card p { font-size: 0.92rem; color: var(--ux-text); line-height: 1.75; margin: 0 0 14px 0; }
+      .ux-card p:last-child { margin-bottom: 0; }
+      .ux-card p strong { color: #e2e8f0; }
+      .ux-card ul { list-style: none; padding: 0; margin: 10px 0 0; }
+      .ux-card ul li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; color: var(--ux-text); line-height: 1.6; display: flex; align-items: flex-start; gap: 10px; }
+      .ux-card ul li:last-child { border-bottom: none; }
+      .ux-card ul li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ux-accent); flex-shrink: 0; margin-top: 8px; }
+      .ux-card ul li strong { color: #e2e8f0; }
+
+      .ux-highlight { background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.12); border-left: 3px solid var(--ux-accent); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+      .ux-highlight p { color: rgba(203,213,225,0.8); font-size: 0.88rem; margin: 0 !important; }
+
+      .ux-feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 18px 0; }
+      .ux-feature-item { background: rgba(255,255,255,0.02); border: 1px solid var(--ux-border); border-radius: 14px; padding: 22px 20px; transition: border-color 0.3s, transform 0.3s; }
+      .ux-feature-item:hover { border-color: rgba(6,182,212,0.2); transform: translateY(-2px); }
+      .ux-feature-icon { font-size: 1.3rem; display: block; margin-bottom: 10px; }
+      .ux-feature-item h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin: 0 0 6px 0; }
+      .ux-feature-item p { font-size: 0.84rem; color: var(--ux-text); line-height: 1.6; margin: 0; }
+
+      .ux-flow { display: flex; align-items: center; gap: 0; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
+      .ux-flow-step { background: rgba(255,255,255,0.03); border: 1px solid var(--ux-border); border-radius: 12px; padding: 16px 18px; text-align: center; min-width: 140px; flex: 1; }
+      .ux-step-num { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--ux-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+      .ux-step-label { font-size: 0.82rem; color: var(--ux-text); line-height: 1.4; }
+      .ux-flow-arrow { color: rgba(255,255,255,0.15); font-size: 1.2rem; padding: 0 8px; }
+
+      .ux-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.86rem; }
+      .ux-table thead th { background: rgba(255,255,255,0.04); padding: 12px 16px; text-align: left; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.78rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--ux-border); }
+      .ux-table tbody td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--ux-text); }
+      .ux-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+      .ux-footer { text-align: center; padding: 28px 32px; border-top: 1px solid var(--ux-border); font-size: 0.82rem; color: rgba(255,255,255,0.25); }
+      .ux-footer a { color: var(--ux-accent); text-decoration: none; }
+      .ux-footer a:hover { opacity: 0.7; }
+
+      @media (max-width: 768px) {
+        .ux-hero { padding: 40px 20px 36px; } .ux-hero h1 { font-size: 1.8rem; }
+        .ux-body { padding: 28px 16px 40px; } .ux-card { padding: 24px 20px; border-radius: 14px; }
+        .ux-feature-grid { grid-template-columns: 1fr; } .ux-stats { flex-direction: column; gap: 8px; }
+        .ux-flow { flex-direction: column; } .ux-flow-arrow { transform: rotate(90deg); }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="ux-page">
+      <div class="ux-hero">
+        <div class="ux-hero-inner">
+          <a href="../../Index.html" class="ux-back">&larr; Back to Visual Guide</a>
+          <div class="ux-hero-badge">Core Architecture</div>
+          <h1>UTXO Model</h1>
+          <p class="ux-hero-sub">The Unspent Transaction Output model treats cryptocurrency like individual <strong>digital banknotes</strong> — each output is a discrete, spendable unit that enhances privacy.</p>
+          <div class="ux-stats">
+            <div class="ux-stat"><span class="ux-stat-emoji">📄</span><div><div class="ux-stat-label">Used By</div><div class="ux-stat-value">Bitcoin, Beldex, Monero</div></div></div>
+            <div class="ux-stat"><span class="ux-stat-emoji">🧩</span><div><div class="ux-stat-label">Model</div><div class="ux-stat-value">Coin-Based</div></div></div>
+            <div class="ux-stat"><span class="ux-stat-emoji">⚡</span><div><div class="ux-stat-label">Status</div><div class="ux-stat-value"><span class="ux-live-dot"></span>Live</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ux-body">
+        <div class="ux-card">
+          <h2>What is the UTXO Model?</h2>
+          <p>UTXO stands for <strong>Unspent Transaction Output</strong>. Instead of maintaining account balances like a bank, the UTXO model tracks individual "coins" — each transaction output is a separate, discrete unit that can be spent exactly once.</p>
+          <p>Think of it like physical cash: if you have a $20 bill and want to pay $15, you hand over the $20 and receive $5 in change. Similarly, in UTXO, you consume entire outputs and create new ones.</p>
+          <div class="ux-highlight"><p><strong>Key Principle:</strong> On Beldex, your "balance" is actually the sum of all your unspent transaction outputs. Each output is a separate cryptographic entity that can be independently verified, spent, and mixed into ring signatures.</p></div>
+        </div>
+
+        <div class="ux-card">
+          <h2>How It Works</h2>
+          <p>The UTXO model provides several properties critical for Beldex's privacy architecture:</p>
+          <div class="ux-feature-grid">
+            <div class="ux-feature-item"><span class="ux-feature-icon">💰</span><h4>Discrete Outputs</h4><p>Every transaction creates new outputs. Each output has a specific (hidden) value and can only be spent once. Your wallet manages a collection of these outputs.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">🔀</span><h4>Input → Output Transformation</h4><p>Spending consumes one or more existing outputs (inputs) and creates new outputs — one for the recipient and change outputs back to the sender.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">🔒</span><h4>Privacy Compatibility</h4><p>Each output is an independent entity with its own one-time key and key image — making it perfect for ring signature mixing and stealth address integration.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">⚡</span><h4>Parallel Validation</h4><p>Since each output is independent, validators can verify multiple transactions simultaneously without worrying about shared state conflicts.</p></div>
+          </div>
+        </div>
+
+        <div class="ux-card">
+          <h2>UTXO Transaction Example</h2>
+          <p>How a simple payment works with the UTXO model:</p>
+          <div class="ux-flow">
+            <div class="ux-flow-step"><span class="ux-step-num">Input</span><span class="ux-step-label">You own a 100 BDX output</span></div>
+            <span class="ux-flow-arrow">&rarr;</span>
+            <div class="ux-flow-step"><span class="ux-step-num">Transaction</span><span class="ux-step-label">Send 30 BDX to Alice</span></div>
+            <span class="ux-flow-arrow">&rarr;</span>
+            <div class="ux-flow-step"><span class="ux-step-num">Output 1</span><span class="ux-step-label">30 BDX → Alice (new UTXO)</span></div>
+            <span class="ux-flow-arrow">+</span>
+            <div class="ux-flow-step"><span class="ux-step-num">Output 2</span><span class="ux-step-label">~70 BDX → You (change UTXO)</span></div>
+          </div>
+        </div>
+
+        <div class="ux-card">
+          <h2>UTXO vs Account Model</h2>
+          <table class="ux-table">
+            <thead><tr><th>Feature</th><th>Account Model (Ethereum)</th><th>UTXO Model (Beldex)</th></tr></thead>
+            <tbody>
+              <tr><td>State Tracking</td><td>Single balance per account</td><td>Collection of discrete outputs</td></tr>
+              <tr><td>Privacy</td><td>Balance fully visible</td><td>Outputs hidden via stealth + RingCT</td></tr>
+              <tr><td>Double-Spend Prevention</td><td>Nonce counter</td><td>Key images (one per output)</td></tr>
+              <tr><td>Parallel Processing</td><td>Limited (state conflicts)</td><td>Excellent (independent outputs)</td></tr>
+              <tr><td>Smart Contracts</td><td>Native support</td><td>Requires EVM bridge layer</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ux-card">
+          <h2>Why Beldex Uses UTXO</h2>
+          <ul>
+            <li><strong>Privacy-first architecture:</strong> UTXO outputs are naturally suited for ring signatures — each output is an independent entity that can be used as a decoy in other transactions.</li>
+            <li><strong>No state leakage:</strong> In account models, observing balance changes reveals transaction patterns. UTXO combined with RingCT makes this analysis impossible.</li>
+            <li><strong>Proven reliability:</strong> The UTXO model has been battle-tested since Bitcoin's launch in 2009 and is the foundation of the most secure blockchain networks.</li>
+            <li><strong>EVM bridge:</strong> Beldex's EVM integration creates a bridge between the privacy-focused UTXO layer and the account-based smart contract layer, getting the best of both worlds.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ux-footer"><p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p></div>
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

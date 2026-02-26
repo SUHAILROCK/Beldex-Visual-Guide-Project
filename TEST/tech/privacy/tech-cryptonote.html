@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CryptoNote-style Protocol - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ===== CryptoNote Page — Premium Redesign ===== */
+      :root {
+        --cn-green: #29e0a9;
+        --cn-green-dim: rgba(41,224,169,0.12);
+        --cn-blue: #3b82f6;
+        --cn-purple: #a78bfa;
+        --cn-dark: #080a10;
+        --cn-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --cn-border: rgba(255,255,255,0.06);
+        --cn-text: #cbd5e1;
+        --cn-text-dim: rgba(203,213,225,0.5);
+      }
+
+      .cn-page {
+        min-height: 100vh;
+        background: var(--cn-dark);
+        color: var(--cn-text);
+        font-family: 'Inter', sans-serif;
+      }
+
+      /* ===== HERO ===== */
+      .cn-hero {
+        position: relative;
+        padding: 60px 32px 48px;
+        background:
+          radial-gradient(ellipse at 20% 0%, rgba(41,224,169,0.08), transparent 50%),
+          radial-gradient(ellipse at 80% 100%, rgba(59,130,246,0.06), transparent 50%),
+          linear-gradient(180deg, #0c0e14 0%, #080a10 100%);
+        border-bottom: 1px solid var(--cn-border);
+        overflow: hidden;
+      }
+
+      .cn-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .cn-hero-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .cn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.35);
+        text-decoration: none;
+        margin-bottom: 28px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        transition: all 0.25s ease;
+      }
+      .cn-back:hover {
+        color: var(--cn-green);
+        border-color: rgba(41,224,169,0.2);
+        background: rgba(41,224,169,0.04);
+      }
+
+      .cn-hero-badge {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        padding: 5px 14px;
+        border-radius: 100px;
+        background: var(--cn-green-dim);
+        color: var(--cn-green);
+        border: 1px solid rgba(41,224,169,0.2);
+        margin-bottom: 16px;
+      }
+
+      .cn-hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.6rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin: 0 0 12px 0;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+      }
+
+      .cn-hero-sub {
+        font-size: 1.08rem;
+        color: rgba(203,213,225,0.6);
+        margin: 0 0 32px 0;
+        max-width: 520px;
+        line-height: 1.65;
+      }
+
+      .cn-hero-sub strong {
+        color: var(--cn-green);
+        font-weight: 600;
+      }
+
+      /* Stats chips */
+      .cn-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .cn-stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--cn-border);
+        backdrop-filter: blur(6px);
+      }
+
+      .cn-stat-emoji {
+        font-size: 1.15rem;
+      }
+
+      .cn-stat-label {
+        font-size: 0.68rem;
+        color: rgba(255,255,255,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+      }
+
+      .cn-stat-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #f1f5f9;
+      }
+
+      .cn-live-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--cn-green);
+        box-shadow: 0 0 8px rgba(41,224,169,0.5);
+        margin-right: 5px;
+        animation: cnPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes cnPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .cn-body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 32px 60px;
+      }
+
+      /* ===== SECTION CARD ===== */
+      .cn-card {
+        background: var(--cn-card-bg);
+        border: 1px solid var(--cn-border);
+        border-radius: 18px;
+        padding: 36px 32px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 8px 32px -12px rgba(0,0,0,0.5),
+          inset 0 1px 0 rgba(255,255,255,0.03);
+      }
+
+      .cn-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%);
+        pointer-events: none;
+      }
+
+      .cn-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin: 0 0 20px 0;
+        line-height: 1.3;
+        padding-left: 16px;
+        border-left: 3px solid var(--cn-green);
+      }
+      .cn-card:nth-child(3n+1) h2 { border-left-color: var(--cn-green); }
+      .cn-card:nth-child(3n+2) h2 { border-left-color: var(--cn-blue); }
+      .cn-card:nth-child(3n)   h2 { border-left-color: var(--cn-purple); }
+
+      .cn-card p {
+        font-size: 0.92rem;
+        color: var(--cn-text);
+        line-height: 1.75;
+        margin: 0 0 14px 0;
+      }
+
+      .cn-card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .cn-card p strong {
+        color: #e2e8f0;
+      }
+
+      /* Highlight box */
+      .cn-highlight {
+        background: rgba(41,224,169,0.05);
+        border: 1px solid rgba(41,224,169,0.12);
+        border-left: 3px solid var(--cn-green);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin: 18px 0;
+      }
+
+      .cn-highlight p {
+        color: rgba(203,213,225,0.8);
+        font-size: 0.88rem;
+        margin: 0;
+      }
+
+      /* ===== IMAGE SECTION ===== */
+      .cn-image-wrapper {
+        margin: 20px 0;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+        position: relative;
+      }
+
+      .cn-image-wrapper img {
+        width: 100%;
+        display: block;
+        border-radius: 14px;
+      }
+
+      .cn-image-caption {
+        text-align: center;
+        padding: 14px 20px;
+        background: rgba(0,0,0,0.4);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.45);
+        font-style: italic;
+      }
+
+      /* Timeline text */
+      .cn-timeline-text {
+        text-align: center;
+        padding: 16px 0 0;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.9rem;
+        color: var(--cn-green);
+        letter-spacing: 0.5px;
+      }
+
+      .cn-timeline-text span {
+        color: rgba(255,255,255,0.25);
+        margin: 0 6px;
+      }
+
+      /* ===== HISTORY TIMELINE ===== */
+      .cn-history {
+        position: relative;
+        padding-left: 28px;
+        margin: 20px 0 8px;
+      }
+
+      .cn-history::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 4px;
+        bottom: 4px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--cn-green), var(--cn-blue), var(--cn-purple));
+        border-radius: 2px;
+        opacity: 0.4;
+      }
+
+      .cn-history-item {
+        position: relative;
+        margin-bottom: 22px;
+        padding-left: 6px;
+      }
+
+      .cn-history-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .cn-history-item::before {
+        content: "";
+        position: absolute;
+        left: -22px;
+        top: 6px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--cn-green);
+        border: 2px solid var(--cn-dark);
+        box-shadow: 0 0 8px rgba(41,224,169,0.3);
+      }
+
+      .cn-history-item:nth-child(2)::before { background: #60a5fa; box-shadow: 0 0 8px rgba(96,165,250,0.3); }
+      .cn-history-item:nth-child(3)::before { background: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+      .cn-history-item:nth-child(4)::before { background: var(--cn-purple); box-shadow: 0 0 8px rgba(167,139,250,0.3); }
+
+      .cn-history-year {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--cn-green);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 4px;
+      }
+
+      .cn-history-item:nth-child(2) .cn-history-year { color: #60a5fa; }
+      .cn-history-item:nth-child(3) .cn-history-year { color: #f59e0b; }
+      .cn-history-item:nth-child(4) .cn-history-year { color: var(--cn-purple); }
+
+      .cn-history-text {
+        font-size: 0.88rem;
+        color: var(--cn-text);
+        line-height: 1.6;
+      }
+
+      .cn-family-line {
+        text-align: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        margin: 24px 0 0;
+        padding: 16px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--cn-border);
+        border-radius: 10px;
+      }
+
+      .cn-family-line .cn-arrow {
+        color: var(--cn-green);
+        margin: 0 8px;
+      }
+
+      /* ===== COMPARISON BOXES ===== */
+      .cn-compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 18px 0 8px;
+      }
+
+      .cn-compare-box {
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--cn-border);
+      }
+
+      .cn-compare-box.cn-bad {
+        background: rgba(239,68,68,0.04);
+        border-color: rgba(239,68,68,0.12);
+      }
+
+      .cn-compare-box.cn-good {
+        background: rgba(41,224,169,0.04);
+        border-color: rgba(41,224,169,0.12);
+      }
+
+      .cn-compare-box h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin: 0 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .cn-compare-box.cn-bad h4 { color: #f87171; }
+      .cn-compare-box.cn-good h4 { color: var(--cn-green); }
+
+      .cn-compare-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .cn-compare-list li {
+        font-size: 0.84rem;
+        color: var(--cn-text);
+        padding: 5px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+      }
+
+      .cn-compare-list li .cn-bullet {
+        flex-shrink: 0;
+        margin-top: 2px;
+        font-size: 0.8rem;
+      }
+
+      /* ===== PRIVACY MECHANISM CARDS ===== */
+      .cn-mech-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 20px 0 8px;
+      }
+
+      .cn-mech {
+        padding: 22px 20px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--cn-border);
+        border-top: 2px solid var(--cn-green);
+        transition: all 0.3s ease;
+      }
+
+      .cn-mech:nth-child(2) { border-top-color: var(--cn-blue); }
+      .cn-mech:nth-child(3) { border-top-color: #f59e0b; }
+      .cn-mech:nth-child(4) { border-top-color: var(--cn-purple); }
+
+      .cn-mech:hover {
+        border-color: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.03);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4);
+      }
+
+      .cn-mech-num {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+
+      .cn-mech h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        margin: 0 0 8px;
+      }
+
+      .cn-mech p {
+        font-size: 0.82rem;
+        color: var(--cn-text-dim);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .cn-mech p strong {
+        color: var(--cn-text);
+      }
+
+      /* ===== TRANSACTION FLOW ===== */
+      .cn-flow {
+        display: flex;
+        align-items: flex-start;
+        gap: 0;
+        margin: 22px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .cn-flow-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px 14px;
+        flex: 1;
+        min-width: 120px;
+        position: relative;
+      }
+
+      .cn-flow-step::after {
+        content: "→";
+        position: absolute;
+        right: -6px;
+        top: 24px;
+        font-size: 1.2rem;
+        color: rgba(41,224,169,0.4);
+        font-weight: 700;
+      }
+
+      .cn-flow-step:last-child::after {
+        display: none;
+      }
+
+      .cn-flow-num {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--cn-green);
+        margin-bottom: 8px;
+        padding: 3px 12px;
+        background: var(--cn-green-dim);
+        border-radius: 100px;
+        border: 1px solid rgba(41,224,169,0.15);
+      }
+
+      .cn-flow-label {
+        font-size: 0.8rem;
+        color: var(--cn-text);
+        line-height: 1.45;
+      }
+
+      .cn-result-box {
+        margin-top: 8px;
+        padding: 18px 24px;
+        background: rgba(41,224,169,0.04);
+        border: 1px solid rgba(41,224,169,0.1);
+        border-radius: 12px;
+      }
+
+      .cn-result-box p {
+        font-size: 0.86rem;
+        color: var(--cn-text);
+        margin: 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .cn-result-box p .cn-check {
+        color: var(--cn-green);
+        font-weight: 700;
+      }
+
+      /* ===== COMPARISON TABLE ===== */
+      .cn-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0 8px;
+        font-size: 0.86rem;
+      }
+
+      .cn-table thead th {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.35);
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .cn-table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        color: var(--cn-text);
+      }
+
+      .cn-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .cn-table tbody td:first-child {
+        font-weight: 600;
+        color: #e2e8f0;
+      }
+
+      .cn-table .cn-visible {
+        color: #f87171;
+        font-weight: 500;
+      }
+
+      .cn-table .cn-hidden {
+        color: var(--cn-green);
+        font-weight: 600;
+      }
+
+      /* ===== REASONS LIST ===== */
+      .cn-reasons {
+        list-style: none;
+        padding: 0;
+        margin: 18px 0 0;
+      }
+
+      .cn-reasons li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-size: 0.88rem;
+        color: var(--cn-text);
+        line-height: 1.6;
+      }
+
+      .cn-reasons li:last-child {
+        border-bottom: none;
+      }
+
+      .cn-reasons li .cn-reason-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--cn-green);
+        flex-shrink: 0;
+        margin-top: 8px;
+        box-shadow: 0 0 6px rgba(41,224,169,0.3);
+      }
+
+      .cn-closing {
+        text-align: center;
+        padding: 20px 0 0;
+        margin-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .cn-closing p {
+        font-size: 0.9rem;
+        color: var(--cn-text-dim);
+        line-height: 1.7;
+      }
+
+      .cn-closing strong {
+        color: var(--cn-green);
+      }
+
+      /* ===== FOOTER ===== */
+      .cn-footer {
+        text-align: center;
+        padding: 28px 32px;
+        border-top: 1px solid var(--cn-border);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.25);
+      }
+
+      .cn-footer a {
+        color: var(--cn-green);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .cn-footer a:hover {
+        opacity: 0.7;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .cn-hero { padding: 40px 20px 36px; }
+        .cn-hero h1 { font-size: 1.8rem; }
+        .cn-body { padding: 28px 16px 40px; }
+        .cn-card { padding: 24px 20px; border-radius: 14px; }
+        .cn-compare-grid, .cn-mech-grid { grid-template-columns: 1fr; }
+        .cn-flow { flex-direction: column; align-items: stretch; }
+        .cn-flow-step::after { display: none; }
+        .cn-flow-step { flex-direction: row; text-align: left; gap: 12px; padding: 10px 0; }
+        .cn-stats { flex-direction: column; gap: 8px; }
+        .cn-table { font-size: 0.8rem; }
+        .cn-table thead th, .cn-table tbody td { padding: 10px 10px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .cn-mech { transition: none; }
+        .cn-mech:hover { transform: none; }
+        .cn-live-dot { animation: none; }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="cn-page">
+
+      <!-- ===== HERO ===== -->
+      <div class="cn-hero">
+        <div class="cn-hero-inner">
+          <a href="../../Index.html" class="cn-back">← Back to Visual Guide</a>
+          <div class="cn-hero-badge">Core Protocol</div>
+          <h1>CryptoNote-style Protocol</h1>
+          <!-- <p class="cn-hero-sub">The privacy technology behind Beldex.<br>It makes every transaction <strong>private by default</strong>.</p> -->
+
+          <div class="cn-stats">
+            <div class="cn-stat">
+              <span class="cn-stat-emoji">📄</span>
+              <div>
+                <div class="cn-stat-label">Origin</div>
+                <div class="cn-stat-value">2013 Whitepaper</div>
+              </div>
+            </div>
+            <div class="cn-stat">
+              <span class="cn-stat-emoji">🔒</span>
+              <div>
+                <div class="cn-stat-label">Privacy</div>
+                <div class="cn-stat-value">Always On</div>
+              </div>
+            </div>
+            <div class="cn-stat">
+              <span class="cn-stat-emoji">⚡</span>
+              <div>
+                <div class="cn-stat-label">Status</div>
+                <div class="cn-stat-value"><span class="cn-live-dot"></span> Live</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="cn-body">
+
+        <!-- TL;DR -->
+        <div class="cn-card">
+          <h2>TL;DR</h2>
+          <p>CryptoNote is the privacy base behind Beldex.</p>
+          <p>It hides the sender and receiver.<br>Monero later added amount privacy.</p>
+          <p>Today, Beldex hides sender, receiver, and amount, by default.</p>
+          <div class="cn-highlight">
+            <p>Privacy is <strong>built into every transaction</strong>.</p>
+          </div>
+        </div>
+
+        <!-- Privacy Evolution History -->
+        <div class="cn-card">
+          <h2>Privacy Evolution History</h2>
+          <div class="cn-image-wrapper">
+            <img src="../../images/tech/Lght house.png" alt="CryptoNote Privacy Evolution — Lighthouse showing the lineage from CryptoNote to Bytecoin to Monero to Beldex" />
+          </div>
+          <!-- <div class="cn-timeline-text">
+            CryptoNote (2013) <span>→</span> Bytecoin (2012) <span>→</span> Monero (2014) <span>→</span> Beldex (2018)
+          </div> -->
+          <p style="margin-top:16px; color: var(--cn-text-dim); font-size: 0.88rem; text-align: center;">Beldex started by using Monero's open-source code, which was built on the CryptoNote privacy protocol. Over time, Beldex developed into its own independent network.</p>
+          <div class="cn-history">
+            <div class="cn-history-item">
+              <div class="cn-history-year">2012</div>
+              <div class="cn-history-text"><strong>Bytecoin</strong> launched using early CryptoNote technology</div>
+            </div>
+            <div class="cn-history-item">
+              <div class="cn-history-year">2013</div>
+              <div class="cn-history-text"><strong>CryptoNote</strong> whitepaper officially published</div>
+            </div>
+            <div class="cn-history-item">
+              <div class="cn-history-year">2014</div>
+              <div class="cn-history-text"><strong>Monero</strong> improved the design</div>
+            </div>
+            <div class="cn-history-item">
+              <div class="cn-history-year">2018</div>
+              <div class="cn-history-text"><strong>Beldex</strong> forked from Monero and evolved independently</div>
+            </div>
+          </div>
+          <div class="cn-timeline-text">
+            Bytecoin (2012) <span>→</span> CryptoNote (2013) <span>→</span> Monero (2014) <span>→</span> Beldex (2018)
+          </div>
+        </div>
+
+        <!-- What is CryptoNote? -->
+        <div class="cn-card">
+          <h2>What is CryptoNote?</h2>
+          <p>CryptoNote is a blockchain design that <strong>protects your transaction details</strong>.</p>
+
+          <div class="cn-compare-grid">
+            <div class="cn-compare-box cn-bad">
+              <h4>🔓 In Bitcoin</h4>
+              <ul class="cn-compare-list">
+                <li><span class="cn-bullet">❌</span> Anyone can see who sent money</li>
+                <li><span class="cn-bullet">❌</span> Anyone can see who received money</li>
+                <li><span class="cn-bullet">❌</span> Anyone can see how much was sent</li>
+              </ul>
+            </div>
+            <div class="cn-compare-box cn-good">
+              <h4>🔒 In Beldex (CryptoNote)</h4>
+              <ul class="cn-compare-list">
+                <li><span class="cn-bullet">✅</span> The sender is hidden</li>
+                <li><span class="cn-bullet">✅</span> The receiver is hidden</li>
+                <li><span class="cn-bullet">✅</span> The amount is hidden</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="cn-highlight">
+            <p>Privacy is not something you turn on. It is <strong>built into every transaction</strong>.</p>
+          </div>
+        </div>
+
+        <!-- How Does It Keep Transactions Private? -->
+        <div class="cn-card">
+          <h2>How CryptoNote Keeps Transactions Private</h2>
+          <p>CryptoNote is the privacy foundation that Beldex is built on.</p>
+
+          <div class="cn-mech-grid">
+            <div class="cn-mech">
+              <div class="cn-mech-num">1️⃣</div>
+              <h4>One-Time Addresses</h4>
+              <p><strong>Hide the Receiver</strong></p>
+              <p>Every time someone sends BDX, a unique one-time address is created on the blockchain.</p>
+              <p style="font-size: 0.82rem; margin-top: 8px;">
+                ✔ Payments cannot be publicly linked<br>
+                ✔ Your wallet balance is not visible to others
+              </p>
+              <p style="margin-top: 8px;">Even if you receive 100 payments, they cannot be connected together.</p>
+            </div>
+            <div class="cn-mech">
+              <div class="cn-mech-num">2️⃣</div>
+              <h4>Ring Signatures</h4>
+              <p><strong>Hide the Sender</strong></p>
+              <p>When you send BDX, your payment is mixed with a small group of other payments.</p>
+              <p style="margin-top: 8px;">So on the blockchain it looks like:</p>
+              <p style="font-style: italic; margin-top: 4px;">"One of these people sent it."</p>
+              <p style="margin-top: 8px;">But nobody can tell which one.<br>This keeps the sender private.</p>
+            </div>
+            <div class="cn-mech">
+              <div class="cn-mech-num">3️⃣</div>
+              <h4>Key Images</h4>
+              <p><strong>Stop Double Spending</strong></p>
+              <p>Even though your identity is hidden, the system still makes sure:</p>
+              <p style="font-size: 0.82rem; margin-top: 8px;">
+                ✔ You cannot spend the same coin twice<br>
+                ✔ You cannot cheat the network
+              </p>
+              <p style="margin-top: 8px;">So privacy does NOT mean breaking rules.</p>
+              <p style="margin-top: 8px;">It simply means:<br>Your identity stays hidden, but the system stays secure.</p>
+            </div>
+            <div class="cn-mech" style="background: rgba(59,130,246,0.04); border-top-color: var(--cn-blue);">
+              <div class="cn-mech-num">🔵</div>
+              <h4>Amount Privacy Note</h4>
+              <p>Originally, CryptoNote hid the sender and receiver, but the amount was visible.</p>
+              <p style="margin-top: 8px;">Later, Monero introduced amount hiding.</p>
+              <p style="margin-top: 8px;">Today, Beldex includes this upgrade:</p>
+              <p style="font-size: 0.82rem; margin-top: 8px;">
+                ✔ Sender<br>
+                ✔ Receiver<br>
+                ✔ Amount
+              </p>
+              <p style="margin-top: 8px;"><strong>All by default.</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- What Happens During a Transaction? -->
+        <div class="cn-card">
+          <h2>What Happens During a Transaction?</h2>
+
+          <div class="cn-flow">
+            <div class="cn-flow-step">
+              <span class="cn-flow-num">Step 1</span>
+              <span class="cn-flow-label">Sender creates a private transaction</span>
+            </div>
+            <div class="cn-flow-step">
+              <span class="cn-flow-num">Step 2</span>
+              <span class="cn-flow-label">System creates a one-time address</span>
+            </div>
+            <div class="cn-flow-step">
+              <span class="cn-flow-num">Step 3</span>
+              <span class="cn-flow-label">Sender is mixed with decoys</span>
+            </div>
+            <div class="cn-flow-step">
+              <span class="cn-flow-num">Step 4</span>
+              <span class="cn-flow-label">Amount is hidden</span>
+            </div>
+            <div class="cn-flow-step">
+              <span class="cn-flow-num">Step 5</span>
+              <span class="cn-flow-label">Network confirms everything is valid</span>
+            </div>
+          </div>
+
+          <div class="cn-result-box">
+            <p><span class="cn-check">✔</span> Nobody can trace the sender</p>
+            <p><span class="cn-check">✔</span> Nobody can link the receiver</p>
+            <p><span class="cn-check">✔</span> Nobody can see the amount</p>
+          </div>
+        </div>
+
+        <!-- CryptoNote vs Bitcoin -->
+        <div class="cn-card">
+          <h2>CryptoNote vs Bitcoin</h2>
+          <table class="cn-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Bitcoin</th>
+                <th>Beldex</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sender</td>
+                <td class="cn-visible">Visible</td>
+                <td class="cn-hidden">Hidden</td>
+              </tr>
+              <tr>
+                <td>Receiver</td>
+                <td class="cn-visible">Visible</td>
+                <td class="cn-hidden">Hidden</td>
+              </tr>
+              <tr>
+                <td>Amount</td>
+                <td class="cn-visible">Visible</td>
+                <td class="cn-hidden">Hidden</td>
+              </tr>
+              <tr>
+                <td>Privacy</td>
+                <td class="cn-visible">Optional tools</td>
+                <td class="cn-hidden">Built-in</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Why Beldex Uses CryptoNote -->
+        <div class="cn-card">
+          <h2>Why Beldex Uses CryptoNote</h2>
+          <p>Beldex chose CryptoNote because:</p>
+          <ul class="cn-reasons">
+            <li><span class="cn-reason-dot"></span> Privacy is automatic</li>
+            <li><span class="cn-reason-dot"></span> No "transparent mode"</li>
+            <li><span class="cn-reason-dot"></span> Coins cannot be tracked easily</li>
+            <li><span class="cn-reason-dot"></span> It improves digital cash behavior</li>
+            <li><span class="cn-reason-dot"></span> It has been tested for many years</li>
+          </ul>
+
+          <div class="cn-closing">
+            <p>CryptoNote gives Beldex its <strong>privacy foundation</strong>.<br>Beldex builds the larger ecosystem on top of it.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="cn-footer">
+        <p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p>
+      </div>
+
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

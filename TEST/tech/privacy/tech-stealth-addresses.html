@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stealth Addresses - Beldex Technology</title>
+    <meta name="description" content="Learn how Beldex uses Stealth Addresses to hide the receiver's identity by generating unique one-time addresses for every transaction." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+      /* ===== DESIGN TOKENS ===== */
+      :root {
+        --sa-bg: #0a0e17;
+        --sa-card-bg: rgba(255,255,255,0.02);
+        --sa-border: rgba(255,255,255,0.06);
+        --sa-text: rgba(203,213,225,0.78);
+        --sa-text-dim: rgba(148,163,184,0.6);
+        --sa-orange: #f59e0b;
+        --sa-amber: #fbbf24;
+        --sa-green: #29e0a9;
+        --sa-blue: #3b82f6;
+        --sa-purple: #a78bfa;
+        --sa-red: #ef4444;
+      }
+
+      /* ===== RESET ===== */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background: var(--sa-bg);
+        color: var(--sa-text);
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .sa-page {
+        min-height: 100vh;
+        background:
+          radial-gradient(ellipse 60% 40% at 50% 0%, rgba(245,158,11,0.06), transparent 55%),
+          radial-gradient(ellipse 50% 50% at 80% 100%, rgba(59,130,246,0.04), transparent 50%),
+          var(--sa-bg);
+      }
+
+      /* ===== HERO ===== */
+      .sa-hero {
+        position: relative;
+        padding: 60px 32px 48px;
+        border-bottom: 1px solid var(--sa-border);
+        overflow: hidden;
+      }
+      .sa-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(245,158,11,0.05) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .sa-hero-inner { position: relative; max-width: 880px; margin: 0 auto; }
+
+      .sa-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255,255,255,0.35);
+        text-decoration: none;
+        font-size: 0.82rem;
+        margin-bottom: 28px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        transition: all 0.25s ease;
+      }
+      .sa-back:hover { color: var(--sa-orange); border-color: rgba(245,158,11,0.2); background: rgba(245,158,11,0.04); }
+
+      .sa-hero-badge {
+        display: inline-block;
+        background: rgba(245,158,11,0.08);
+        border: 1px solid rgba(245,158,11,0.15);
+        color: var(--sa-orange);
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      .sa-hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+      }
+
+      .sa-hero-sub {
+        font-size: 1.08rem;
+        color: rgba(203,213,225,0.6);
+        max-width: 520px;
+        margin: 0 0 32px 0;
+        line-height: 1.65;
+      }
+      .sa-hero-sub strong { color: var(--sa-orange); font-weight: 600; }
+
+      /* Stats row */
+      .sa-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .sa-stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--sa-border);
+        border-radius: 12px;
+        padding: 10px 16px;
+      }
+      .sa-stat-emoji { font-size: 1.2rem; }
+      .sa-stat-label { font-size: 0.68rem; color: var(--sa-text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
+      .sa-stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; color: #e2e8f0; font-weight: 600; }
+
+      .sa-live-dot {
+        display: inline-block;
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--sa-green);
+        box-shadow: 0 0 8px rgba(41,224,169,0.5);
+        margin-right: 5px;
+        animation: saPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes saPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .sa-body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 32px 60px;
+      }
+
+      /* ===== SECTION CARD ===== */
+      .sa-card {
+        background: var(--sa-card-bg);
+        border: 1px solid var(--sa-border);
+        border-radius: 18px;
+        padding: 36px 32px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 1px 3px rgba(0,0,0,0.2),
+          inset 0 1px 0 rgba(255,255,255,0.03);
+      }
+
+      .sa-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%);
+        pointer-events: none;
+      }
+
+      .sa-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin: 0 0 20px 0;
+        line-height: 1.3;
+        padding-left: 16px;
+        border-left: 3px solid var(--sa-orange);
+      }
+      .sa-card:nth-child(3n+1) h2 { border-left-color: var(--sa-green); }
+      .sa-card:nth-child(3n+2) h2 { border-left-color: var(--sa-blue); }
+      .sa-card:nth-child(3n)   h2 { border-left-color: var(--sa-purple); }
+
+      .sa-card p {
+        font-size: 0.92rem;
+        color: var(--sa-text);
+        line-height: 1.75;
+        margin: 0 0 14px 0;
+      }
+      .sa-card p:last-child { margin-bottom: 0; }
+      .sa-card p strong { color: #e2e8f0; }
+
+      /* Highlight box */
+      .sa-highlight {
+        background: rgba(245,158,11,0.05);
+        border: 1px solid rgba(245,158,11,0.12);
+        border-left: 3px solid var(--sa-orange);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin: 18px 0;
+      }
+      .sa-highlight p {
+        color: rgba(203,213,225,0.8);
+        font-size: 0.88rem;
+        margin: 0;
+      }
+
+      /* ===== IMAGE SECTION ===== */
+      .sa-image-wrapper {
+        margin: 20px 0;
+        text-align: center;
+      }
+      .sa-image-wrapper img {
+        max-width: 100%;
+        border-radius: 14px;
+        border: 1px solid var(--sa-border);
+      }
+      .sa-image-caption {
+        margin-top: 10px;
+        font-size: 0.78rem;
+        color: var(--sa-text-dim);
+        font-style: italic;
+      }
+
+      /* Timeline text */
+      .sa-timeline-text {
+        text-align: center;
+        padding: 16px 0 0;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.9rem;
+        color: var(--sa-orange);
+        letter-spacing: 0.5px;
+      }
+      .sa-timeline-text span {
+        color: rgba(255,255,255,0.25);
+        margin: 0 6px;
+      }
+
+      /* ===== HISTORY TIMELINE ===== */
+      .sa-history {
+        position: relative;
+        padding-left: 28px;
+        margin: 20px 0 8px;
+      }
+      .sa-history::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 4px;
+        bottom: 4px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--sa-orange), var(--sa-blue), var(--sa-purple));
+        border-radius: 2px;
+        opacity: 0.4;
+      }
+      .sa-history-item {
+        position: relative;
+        margin-bottom: 22px;
+        padding-left: 6px;
+      }
+      .sa-history-item::before {
+        content: "";
+        position: absolute;
+        left: -24px;
+        top: 7px;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        border: 2px solid var(--sa-orange);
+        background: var(--sa-bg);
+      }
+      .sa-history-item:nth-child(2)::before { border-color: var(--sa-blue); }
+      .sa-history-item:nth-child(3)::before { border-color: var(--sa-green); }
+      .sa-history-item:nth-child(4)::before { border-color: var(--sa-purple); }
+      .sa-history-year {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--sa-orange);
+        margin-bottom: 4px;
+      }
+      .sa-history-text {
+        font-size: 0.88rem;
+        color: var(--sa-text);
+        line-height: 1.6;
+      }
+
+      /* ===== COMPARE GRID ===== */
+      .sa-compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .sa-compare-box {
+        border-radius: 14px;
+        padding: 22px 20px;
+        border: 1px solid;
+      }
+      .sa-bad {
+        background: rgba(239,68,68,0.04);
+        border-color: rgba(239,68,68,0.12);
+      }
+      .sa-good {
+        background: rgba(41,224,169,0.04);
+        border-color: rgba(41,224,169,0.12);
+      }
+      .sa-compare-box h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #e2e8f0;
+      }
+      .sa-compare-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sa-compare-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: var(--sa-text);
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .sa-bullet { flex-shrink: 0; font-size: 0.9rem; }
+
+      /* ===== MECHANISM CARDS ===== */
+      .sa-mech-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .sa-mech {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--sa-border);
+        border-radius: 14px;
+        padding: 22px 18px;
+        transition: border-color 0.3s, transform 0.3s;
+      }
+      .sa-mech:hover {
+        border-color: rgba(245,158,11,0.2);
+        transform: translateY(-2px);
+      }
+      .sa-mech-num {
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 10px;
+      }
+      .sa-mech h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #e2e8f0;
+        margin-bottom: 8px;
+      }
+      .sa-mech p {
+        font-size: 0.84rem;
+        color: var(--sa-text);
+        line-height: 1.6;
+        margin: 0;
+      }
+      .sa-mech-detail {
+        margin-top: 8px;
+        font-size: 0.82rem;
+        color: var(--sa-text-dim);
+        line-height: 1.5;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.04);
+      }
+
+      /* ===== TABLE ===== */
+      .sa-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 18px 0;
+        font-size: 0.88rem;
+      }
+      .sa-table thead th {
+        background: rgba(255,255,255,0.04);
+        padding: 12px 16px;
+        text-align: left;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 600;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid var(--sa-border);
+      }
+      .sa-table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+        color: var(--sa-text);
+      }
+      .sa-table tbody tr:hover td {
+        background: rgba(255,255,255,0.02);
+      }
+      .sa-yes { color: var(--sa-red) !important; font-weight: 600; }
+      .sa-no  { color: var(--sa-green) !important; font-weight: 600; }
+
+      /* ===== REASONS LIST ===== */
+      .sa-reasons {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 18px;
+      }
+      .sa-reasons li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        font-size: 0.9rem;
+        color: var(--sa-text);
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+      }
+      .sa-reasons li:last-child { border-bottom: none; }
+      .sa-reason-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--sa-orange);
+        flex-shrink: 0;
+      }
+
+      /* Closing box */
+      .sa-closing {
+        background: rgba(245,158,11,0.04);
+        border: 1px solid rgba(245,158,11,0.1);
+        border-radius: 12px;
+        padding: 18px 22px;
+        text-align: center;
+      }
+      .sa-closing p {
+        font-size: 0.9rem;
+        color: rgba(203,213,225,0.8);
+        margin: 0;
+      }
+
+      /* ===== FOOTER ===== */
+      .sa-footer {
+        text-align: center;
+        padding: 28px 32px;
+        border-top: 1px solid var(--sa-border);
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.25);
+      }
+      .sa-footer a {
+        color: var(--sa-orange);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .sa-footer a:hover { opacity: 0.7; }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 768px) {
+        .sa-hero { padding: 40px 20px 36px; }
+        .sa-hero h1 { font-size: 1.8rem; }
+        .sa-body { padding: 28px 16px 40px; }
+        .sa-card { padding: 24px 20px; border-radius: 14px; }
+        .sa-compare-grid, .sa-mech-grid { grid-template-columns: 1fr; }
+        .sa-stats { flex-direction: column; gap: 8px; }
+        .sa-table { font-size: 0.8rem; }
+        .sa-table thead th, .sa-table tbody td { padding: 10px 10px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .sa-mech { transition: none; }
+        .sa-mech:hover { transform: none; }
+        .sa-live-dot { animation: none; }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="sa-page">
+
+      <!-- ===== HERO ===== -->
+      <div class="sa-hero">
+        <div class="sa-hero-inner">
+          <a href="../../Index.html" class="sa-back">← Back to Visual Guide</a>
+          <div class="sa-hero-badge">Privacy Layer</div>
+          <h1>Stealth Addresses</h1>
+          <!-- <p class="sa-hero-sub">A privacy mechanism that hides the receiver's identity by generating a <strong>unique one-time address</strong> for every transaction.</p> -->
+
+          <div class="sa-stats">
+            <div class="sa-stat">
+              <span class="sa-stat-emoji">📄</span>
+              <div>
+                <div class="sa-stat-label">Origin</div>
+                <div class="sa-stat-value">David Chaum (1984)</div>
+              </div>
+            </div>
+            <div class="sa-stat">
+              <span class="sa-stat-emoji">👤</span>
+              <div>
+                <div class="sa-stat-label">Protects</div>
+                <div class="sa-stat-value">Hide Transaction Receiver</div>
+              </div>
+            </div>
+            <div class="sa-stat">
+              <span class="sa-stat-emoji">⚡</span>
+              <div>
+                <div class="sa-stat-label">Status</div>
+                <div class="sa-stat-value"><span class="sa-live-dot"></span>Live</div>
+              </div>
+            </div>
+            <div class="sa-stat">
+              <span class="sa-stat-emoji">🔐</span>
+              <div>
+                <div class="sa-stat-label">Privacy Model</div>
+                <div class="sa-stat-value">One-time address per tx</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="sa-body">
+
+        <!-- TL;DR -->
+        <div class="sa-card">
+          <h2>TL;DR</h2>
+          <p>Stealth Addresses hide the <strong>receiver</strong> of a transaction.</p>
+          <p>Every time someone receives BDX, a <strong>new one-time address</strong> is automatically created. Even if the same person receives many payments, they <strong>cannot be linked together</strong> publicly.</p>
+          <div class="sa-highlight">
+            <p>Receiver privacy is <strong>automatic and built into every transaction</strong>.</p>
+          </div>
+        </div>
+
+        <!-- Privacy Evolution History -->
+        <div class="sa-card">
+          <h2>Privacy Evolution History</h2>
+          <div class="sa-image-wrapper">
+            <img src="../../images/tech/History of Stealth address.png" alt="Stealth Address Privacy Evolution — from David Chaum's concept to Beldex's implementation" />
+            <div class="sa-image-caption">The evolution of Stealth Addresses: from academic concept to blockchain privacy standard</div>
+          </div>
+          <!-- <div class="sa-timeline-text">
+            David Chaum (1984) <span>→</span> CryptoNote (2013) <span>→</span> Monero Implementation (2014) <span>→</span> Adopted by Beldex
+          </div> -->
+          <div class="sa-history">
+            <div class="sa-history-item">
+              <div class="sa-history-year">1984 — Academic Origins</div>
+              <div class="sa-history-text">Cryptographer <strong>David Chaum</strong> first proposed the concept of unlinkable addresses.</div>
+            </div>
+            <div class="sa-history-item">
+              <div class="sa-history-year">2013 — CryptoNote</div>
+              <div class="sa-history-text">The <strong>CryptoNote protocol</strong> implemented stealth addresses for blockchain transactions.</div>
+            </div>
+            <div class="sa-history-item">
+              <div class="sa-history-year">2014 — Monero</div>
+              <div class="sa-history-text"><strong>Monero</strong> made stealth addresses mandatory for all transactions.</div>
+            </div>
+            <div class="sa-history-item">
+              <div class="sa-history-year">Beldex — Inherited & Enhanced</div>
+              <div class="sa-history-text">Today, <strong>Beldex</strong> uses enhanced stealth addresses where privacy is automatic and built in.</div>
+            </div>
+          </div>
+          <div class="sa-timeline-text">
+            David Chaum (1984) <span>→</span> CryptoNote (2013) <span>→</span> Monero Implementation (2014) <span>→</span> Adopted by Beldex
+          </div>
+        </div>
+
+        <!-- What Are Stealth Addresses? -->
+        <div class="sa-card">
+          <h2>What Are Stealth Addresses?</h2>
+          <p>A stealth address ensures that the receiver's public address is <strong>never directly exposed</strong> on the blockchain.</p>
+
+          <div class="sa-compare-grid">
+            <div class="sa-compare-box sa-bad">
+              <h4>🔓 In Bitcoin</h4>
+              <ul class="sa-compare-list">
+                <li><span class="sa-bullet">❌</span> The same public address can be reused</li>
+                <li><span class="sa-bullet">❌</span> Anyone can track incoming payments</li>
+              </ul>
+            </div>
+            <div class="sa-compare-box sa-good">
+              <h4>🔒 In Beldex</h4>
+              <ul class="sa-compare-list">
+                <li><span class="sa-bullet">✅</span> A new one-time address is created for each payment</li>
+                <li><span class="sa-bullet">✅</span> Observers cannot link multiple payments to the same recipient</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sa-highlight">
+            <p>The receiver's actual wallet address <strong>remains private at all times</strong>.</p>
+          </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="sa-card">
+          <h2>How It Works</h2>
+
+          <div class="sa-image-wrapper" style="margin-bottom: 12px;">
+            <img src="../../images/tech/stealth adress sample.png" alt="Stealth Address mechanism — sender generates a one-time public key from the receiver's address" />
+            <div class="sa-image-caption">Sender generates a one-time public key derived from the receiver's address. Only the receiver can detect and spend it.</div>
+          </div>
+
+          <p>Stealth addresses operate through the following mechanism:</p>
+
+          <div class="sa-mech-grid">
+            <div class="sa-mech">
+              <div class="sa-mech-num">🔑</div>
+              <h4>Public View Key & Spend Key</h4>
+              <p>Each Beldex wallet has a <strong>public view key</strong> and a <strong>public spend key</strong>.</p>
+              <div class="sa-mech-detail">
+                These are used to generate one-time addresses for incoming payments.
+              </div>
+            </div>
+            <div class="sa-mech">
+              <div class="sa-mech-num">📨</div>
+              <h4>One-Time Address Generation</h4>
+              <p>The sender uses the receiver's public keys to <strong>mathematically generate</strong> a unique one-time address.</p>
+              <div class="sa-mech-detail">
+                Even if the same person receives 100 payments, each address looks completely unrelated.
+              </div>
+            </div>
+            <div class="sa-mech">
+              <div class="sa-mech-num">🔍</div>
+              <h4>Private Scanning</h4>
+              <p>Only the receiver, using their <strong>private view key</strong>, can detect which outputs belong to them.</p>
+              <div class="sa-mech-detail">
+                No outside observer can link those outputs together or identify the recipient.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stealth Address Flow -->
+        <div class="sa-card">
+          <h2>Stealth Address Flow</h2>
+          <div class="sa-image-wrapper">
+            <img src="../../images/tech/Stealth flow.png" alt="Stealth Address Flow — step-by-step visualization of one-time address generation" />
+            <div class="sa-image-caption">How a stealth address protects the receiver in a Beldex transaction</div>
+          </div>
+        </div>
+
+        <!-- Stealth Addresses vs Reusable Addresses -->
+        <div class="sa-card">
+          <h2>Stealth Addresses vs Reusable Addresses</h2>
+          <table class="sa-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Bitcoin</th>
+                <th>Beldex (Stealth Address)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Address Reuse</td>
+                <td class="sa-yes">Common</td>
+                <td class="sa-no">Prevented</td>
+              </tr>
+              <tr>
+                <td>Receiver Tracking</td>
+                <td class="sa-yes">Possible</td>
+                <td class="sa-no">Not linkable</td>
+              </tr>
+              <tr>
+                <td>Public Address Visible</td>
+                <td class="sa-yes">Yes</td>
+                <td class="sa-no">No (one-time address shown)</td>
+              </tr>
+              <tr>
+                <td>Wallet Balance Analysis</td>
+                <td class="sa-yes">Possible</td>
+                <td class="sa-no">Obfuscated</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Why Beldex Uses Stealth Addresses -->
+        <div class="sa-card">
+          <h2>Why Beldex Uses Stealth Addresses</h2>
+          <ul class="sa-reasons">
+            <li><span class="sa-reason-dot"></span> Protects receiver identity</li>
+            <li><span class="sa-reason-dot"></span> Prevents address reuse tracking</li>
+            <li><span class="sa-reason-dot"></span> Stops wallet balance analysis</li>
+            <li><span class="sa-reason-dot"></span> Strengthens overall privacy</li>
+            <li><span class="sa-reason-dot"></span> Complements Ring Signatures and RingCT</li>
+          </ul>
+
+          <div class="sa-closing">
+            <p>Without stealth addresses, receiver wallets could be tracked.<br>With stealth addresses, <strong>every payment appears unique and unlinkable</strong>.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="sa-footer">
+        <p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p>
+      </div>
+
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3323 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Beldex Visual Guide — Interactive diagrams explaining blockchain privacy, EVM integration, masternodes, and the complete Beldex ecosystem. Updated February 2026." />
+    <title>Beldex Visual Guide - Interactive Diagrams</title>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      // Prevent flash of wrong theme — runs before paint
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">☀️</button>
+
+    <div class="container">
+      <div class="header" id="pageHeader">
+        <h1 class="header-title">Beldex Complete Visual Guide</h1>
+        <p>Interactive Diagrams & Visual Explanations - Updated January 2026</p>
+      </div>
+
+            <div class="nav-tabs" role="tablist" aria-label="Beldex guide sections">
+        <button
+          class="nav-tab active"
+          type="button"
+          id="tab-overview"
+          role="tab"
+          data-tab="overview"
+          aria-controls="overview"
+          aria-selected="true"
+          tabindex="0"
+        >
+          Overview
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-team"
+          role="tab"
+          data-tab="team"
+          aria-controls="team"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Team & Leadership
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-links"
+          role="tab"
+          data-tab="links"
+          aria-controls="links"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Official Links
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-exchanges"
+          role="tab"
+          data-tab="exchanges"
+          aria-controls="exchanges"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Exchanges
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-research"
+          role="tab"
+          data-tab="research"
+          aria-controls="research"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Research Areas
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-evm"
+          role="tab"
+          data-tab="evm"
+          aria-controls="evm"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          EVM Integration
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-architecture"
+          role="tab"
+          data-tab="architecture"
+          aria-controls="architecture"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Architecture
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-challenges"
+          role="tab"
+          data-tab="challenges"
+          aria-controls="challenges"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Challenges
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-timeline"
+          role="tab"
+          data-tab="timeline"
+          aria-controls="timeline"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Timeline
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
+          id="tab-ecosystem"
+          role="tab"
+          data-tab="ecosystem"
+          aria-controls="ecosystem"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Ecosystem Tree
+        </button>
+      </div>
+      <div class="content">
+        <!-- OVERVIEW TAB -->
+        <div id="overview" class="tab-content active" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+          <div class="diagram">
+            <h2>What is Beldex?</h2>
+            <div class="beldex-intro-card">
+              <p class="beldex-intro">
+                Beldex is a privacy Web3 ecosystem built to protect digital
+                freedom by enabling untraceable transactions, confidential
+                communication, and secure browsing through decentralized,
+                privacy-by-default products powered by the Beldex.
+              </p>
+            </div>
+
+            <div class="stats-container">
+              <div class="stat-box">
+                <h3>2018</h3>
+                <p>Founded</p>
+              </div>
+              <div class="stat-box">
+                <h3>$34.5M</h3>
+                <p>Funding Raised</p>
+              </div>
+              <div class="stat-box">
+                <h3>PoS</h3>
+                <p>Consensus since Dec 2021</p>
+              </div>
+            </div>
+
+            <h3>The Vision</h3>
+            <div class="flow-container">
+              <div class="flow-box">
+                <h3 class="flow-title-monero">Monero</h3>
+                <p>Privacy & Anonymity</p>
+                <p class="flow-text-small">RingCT, Stealth Addresses</p>
+              </div>
+              <div class="flow-arrow">+</div>
+              <div class="flow-box">
+                <h3 class="flow-title-ethereum">Ethereum</h3>
+                <p>Smart Contracts & DeFi</p>
+                <p class="flow-text-small">EVM Compatibility</p>
+              </div>
+              <div class="flow-arrow">=</div>
+              <div class="flow-box flow-box-beldex">
+                <h2 class="flow-title-beldex">Beldex</h2>
+                <p>Privacy-First Smart Contracts</p>
+                <p class="flow-text-small">Complete Privacy Ecosystem</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <h2>🏗️ Core Technology Stack</h2>
+            <p class="ts-section-subtitle">The foundational technologies powering Beldex's privacy blockchain ecosystem</p>
+
+            <!-- Privacy Layer -->
+            <div class="ts-group">
+              <div class="ts-group-label"><span class="ts-dot ts-dot-privacy"></span>Privacy Layer</div>
+              <div class="ts-row">
+                <a href="tech/privacy/tech-cryptonote.html" target="_blank" class="tsc tsc-privacy">
+                  <span class="tsc-emoji">🔐</span>
+                  <div class="tsc-body">
+                    <h3>CryptoNote Protocol</h3>
+                    <p>Privacy-by-default blockchain foundation</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/privacy/tech-ring-signatures.html" target="_blank" class="tsc tsc-privacy">
+                  <span class="tsc-emoji">💍</span>
+                  <div class="tsc-body">
+                    <h3>Ring Signatures</h3>
+                    <p>Untraceable sender identity</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/privacy/tech-stealth-addresses.html" target="_blank" class="tsc tsc-privacy">
+                  <span class="tsc-emoji">👤</span>
+                  <div class="tsc-body">
+                    <h3>Stealth Addresses</h3>
+                    <p>One-time receiver addresses</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/privacy/tech-ringct.html" target="_blank" class="tsc tsc-privacy">
+                  <span class="tsc-emoji">💎</span>
+                  <div class="tsc-body">
+                    <h3>RingCT</h3>
+                    <p>Hidden transaction amounts</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/privacy/tech-privacy-map.html" target="_blank" class="tsc tsc-privacy">
+                  <span class="tsc-emoji">🗺️</span>
+                  <div class="tsc-body">
+                    <h3>Privacy Technology Map</h3>
+                    <p>Combined privacy evolution flowchart</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/privacy/tech-cryptonote-flowchart.html" target="_blank" class="tsc tsc-privacy">
+                  <span class="tsc-emoji">🔗</span>
+                  <div class="tsc-body">
+                    <h3>CryptoNote Protocol Flowchart</h3>
+                    <p>Visual lineage from CryptoNote to Beldex</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Consensus & Core -->
+            <div class="ts-group">
+              <div class="ts-group-label"><span class="ts-dot ts-dot-consensus"></span>Consensus & Core</div>
+              <div class="ts-row">
+                <a href="tech/consensus/tech-utxo.html" target="_blank" class="tsc tsc-consensus">
+                  <span class="tsc-emoji">🧩</span>
+                  <div class="tsc-body">
+                    <h3>UTXO Model</h3>
+                    <p>Coin-based transaction architecture</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/consensus/tech-proof-of-stake.html" target="_blank" class="tsc tsc-consensus">
+                  <span class="tsc-emoji">⚡</span>
+                  <div class="tsc-body">
+                    <h3>Proof of Stake</h3>
+                    <p>Energy-efficient consensus since 2021</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/privacy/tech-bulletproof.html" target="_blank" class="tsc tsc-consensus">
+                  <span class="tsc-emoji">🛡️</span>
+                  <div class="tsc-body">
+                    <h3>Bulletproof++</h3>
+                    <p>Compact zero-knowledge range proofs</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Network & Infrastructure -->
+            <div class="ts-group">
+              <div class="ts-group-label"><span class="ts-dot ts-dot-network"></span>Network & Infrastructure</div>
+              <div class="ts-row">
+                <a href="tech/network/tech-masternode.html" target="_blank" class="tsc tsc-network">
+                  <span class="tsc-emoji">🖥️</span>
+                  <div class="tsc-body">
+                    <h3>Masternode Network</h3>
+                    <p>Decentralized infrastructure backbone</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+                <a href="tech/network/tech-belnet.html" target="_blank" class="tsc tsc-network">
+                  <span class="tsc-emoji">🧅</span>
+                  <div class="tsc-body">
+                    <h3>BelNet</h3>
+                    <p>Onion-routed VPN via masternodes</p>
+                  </div>
+                  <span class="tsc-tag tsc-dev">In Dev</span>
+                </a>
+                <a href="tech/network/tech-layerzero.html" target="_blank" class="tsc tsc-network">
+                  <span class="tsc-emoji">🌉</span>
+                  <div class="tsc-body">
+                    <h3>LayerZero Bridge</h3>
+                    <p>Cross-chain via Stargate</p>
+                  </div>
+                  <span class="tsc-tag tsc-live">Live</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Future & Research -->
+            <div class="ts-group">
+              <div class="ts-group-label"><span class="ts-dot ts-dot-research"></span>Future & Research</div>
+              <div class="ts-row">
+                <a href="tech/research/tech-evm.html" target="_blank" class="tsc tsc-research">
+                  <span class="tsc-emoji">⚙️</span>
+                  <div class="tsc-body">
+                    <h3>EVM Integration</h3>
+                    <p>Smart contracts on CryptoNote</p>
+                  </div>
+                  <span class="tsc-tag tsc-dev">In Dev</span>
+                </a>
+                <a href="tech/research/tech-zk-snarks.html" target="_blank" class="tsc tsc-research">
+                  <span class="tsc-emoji">🧪</span>
+                  <div class="tsc-body">
+                    <h3>zk-SNARKs</h3>
+                    <p>Private smart contract proofs</p>
+                  </div>
+                  <span class="tsc-tag tsc-planned">Planned</span>
+                </a>
+                <a href="tech/research/tech-vrf.html" target="_blank" class="tsc tsc-research">
+                  <span class="tsc-emoji">🎲</span>
+                  <div class="tsc-body">
+                    <h3>VRF Consensus</h3>
+                    <p>Random fair validator selection</p>
+                  </div>
+                  <span class="tsc-tag tsc-planned">Planned</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- ECOSYSTEM (Merged into Overview) -->
+          <div class="diagram">
+            <div class="eco-section-header">
+              <h2>🌐  Complete Beldex Ecosystem</h2>
+              <p class="eco-section-sub">The privacy-first Web3 products and infrastructure powering confidential digital life</p>
+            </div>
+
+            <div class="ecosystem-grid">
+
+              <!-- Layer 1: Blockchain -->
+              <div class="ecosystem-item" data-accent="blockchain">
+                <!-- Hover Tooltip -->
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">Blockchain Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Type</span>
+                    <span class="eco-tooltip-value">Privacy-focused L1</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Consensus</span>
+                    <span class="eco-tooltip-value">Proof of Stake (Dec 2021)</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Use Case</span>
+                    <span class="eco-tooltip-value">Fast, private transactions</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Privacy</span>
+                    <span class="eco-tooltip-value">Ring Signatures + RingCT</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">⛓️</div>
+                  <div>
+                    <h3 class="eco-card-title">Layer 1: Beldex Blockchain</h3>
+                    <p class="eco-card-subtitle">CryptoNote · Monero Fork · Since 2018</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Privacy-focused cryptocurrency powering the entire ecosystem with fast, secure, and untraceable transactions.</p>
+                <span class="eco-status eco-status-live">Live</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+
+              <!-- BChat -->
+              <div class="ecosystem-item" data-accent="bchat">
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">BChat Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Type</span>
+                    <span class="eco-tooltip-value">Privacy messenger</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Privacy</span>
+                    <span class="eco-tooltip-value">No phone number required</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Features</span>
+                    <span class="eco-tooltip-value">E2E encrypted · Calls · Pay</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Upcoming</span>
+                    <span class="eco-tooltip-value">AI spam detection (Q1 2026)</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">💬</div>
+                  <div>
+                    <h3 class="eco-card-title">BChat — Messenger</h3>
+                    <p class="eco-card-subtitle">Decentralized · E2E Encrypted</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Decentralized messaging platform that requires no phone number or personal information for true anonymity.</p>
+                <span class="eco-status eco-status-live">Live</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+
+              <!-- BelNet -->
+              <div class="ecosystem-item" data-accent="belnet">
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">BelNet Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Type</span>
+                    <span class="eco-tooltip-value">Onion routing VPN</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Routing</span>
+                    <span class="eco-tooltip-value">Via masternode network</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Feature</span>
+                    <span class="eco-tooltip-value">Split tunneling (v2.1.0)</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Privacy</span>
+                    <span class="eco-tooltip-value">No logs · IP masked</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">🔐</div>
+                  <div>
+                    <h3 class="eco-card-title">BelNet — VPN</h3>
+                    <p class="eco-card-subtitle">Onion Routing · Masternode-Powered</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Decentralized VPN service using onion routing for complete network privacy, anonymity, and censorship resistance.</p>
+                <span class="eco-status eco-status-live">Live</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+
+              <!-- Beldex Browser -->
+              <div class="ecosystem-item" data-accent="browser">
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">Browser Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Privacy</span>
+                    <span class="eco-tooltip-value">No tracking, encrypted routing</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Features</span>
+                    <span class="eco-tooltip-value">Ad & tracker blocking</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Platforms</span>
+                    <span class="eco-tooltip-value">Desktop · Mobile</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Upcoming</span>
+                    <span class="eco-tooltip-value">AI content summarization</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">🌐</div>
+                  <div>
+                    <h3 class="eco-card-title">Beldex Browser</h3>
+                    <p class="eco-card-subtitle">Privacy-First · Multi-Platform</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Privacy-first web browser built for anonymous browsing, often paired with BelNet VPN for layered protection.</p>
+                <span class="eco-status eco-status-live">Live</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+
+              <!-- Beldex Wallet -->
+              <div class="ecosystem-item" data-accent="wallet">
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">Wallet Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Type</span>
+                    <span class="eco-tooltip-value">Secure crypto wallet</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Integration</span>
+                    <span class="eco-tooltip-value">BChat, BelNet, Browser</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Privacy</span>
+                    <span class="eco-tooltip-value">Non-custodial, encrypted</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Platforms</span>
+                    <span class="eco-tooltip-value">Android · iOS · Desktop</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">👛</div>
+                  <div>
+                    <h3 class="eco-card-title">Beldex Wallet</h3>
+                    <p class="eco-card-subtitle">Non-Custodial · Cross-Platform</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Secure, non-custodial cryptocurrency wallet integrated across all ecosystem products for seamless transactions.</p>
+                <span class="eco-status eco-status-live">Live</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+
+              <!-- Cross-Chain Bridges -->
+              <div class="ecosystem-item" data-accent="bridge">
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">Bridge Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Live</span>
+                    <span class="eco-tooltip-value">LayerZero (Dec 2025)</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Standard</span>
+                    <span class="eco-tooltip-value">OFT via Stargate · 1:1</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Chains</span>
+                    <span class="eco-tooltip-value">ETH · BSC · SOL · ARB</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Planned</span>
+                    <span class="eco-tooltip-value">Polygon, Base</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">🌉</div>
+                  <div>
+                    <h3 class="eco-card-title">Cross-Chain Bridges</h3>
+                    <p class="eco-card-subtitle">LayerZero · OFT Standard</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Enable seamless asset transfers between Beldex and other major blockchain networks with 1:1 token bridging.</p>
+                <span class="eco-status eco-status-live">Live</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+
+              <!-- Smart Contracts -->
+              <div class="ecosystem-item" data-accent="evm">
+                <div class="eco-tooltip">
+                  <div class="eco-tooltip-title">Smart Contracts Details</div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">PoC</span>
+                    <span class="eco-tooltip-value">✓ Complete (May-Jul 2023)</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Research</span>
+                    <span class="eco-tooltip-value">18 months focused R&D</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Production</span>
+                    <span class="eco-tooltip-value">In development (2026)</span>
+                  </div>
+                  <div class="eco-tooltip-row">
+                    <span class="eco-tooltip-label">Privacy</span>
+                    <span class="eco-tooltip-value">zk-SNARKs planned</span>
+                  </div>
+                </div>
+                <div class="eco-card-top">
+                  <div class="eco-icon-wrap">⚙️</div>
+                  <div>
+                    <h3 class="eco-card-title">Smart Contracts (EVM)</h3>
+                    <p class="eco-card-subtitle">First EVM on CryptoNote</p>
+                  </div>
+                </div>
+                <p class="eco-card-desc">Ethereum-compatible smart contract layer for DeFi and dApps with privacy protection via zk-SNARKs.</p>
+                <span class="eco-status eco-status-coming">Coming 2026</span>
+                <div class="eco-hover-hint">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  Hover for details
+                </div>
+              </div>
+              </div>
+
+            </div>
+
+          <div class="diagram">
+            <div class="rt-section-header">
+              <h2 class="rt-title"><span class="section-emoji">👥</span> Research Team</h2>
+              <p class="rt-subtitle">World-class cryptography researchers and blockchain engineers driving Beldex innovation</p>
+            </div>
+            <div class="rt-grid">
+              <!-- Beldex Research Labs -->
+              <div class="rt-card">
+                <div class="rt-card-glow"></div>
+                <div class="rt-card-header">
+                  <div class="rt-icon-badge rt-icon-labs">
+                    <span>🔬</span>
+                  </div>
+                  <div>
+                    <h3 class="rt-card-title">Beldex Research Labs</h3>
+                    <span class="rt-card-tag">Internal R&D</span>
+                  </div>
+                </div>
+                <div class="rt-info-grid">
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">Established</span>
+                    <span class="rt-info-value">January 2022</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">Mission</span>
+                    <span class="rt-info-value">Build next-gen Beldex tech with greater scalability, improved consensus, and EVM compatibility</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">Research Tracks</span>
+                    <span class="rt-info-value">
+                      <span class="rt-track-pill">EVM Integration</span>
+                      <span class="rt-track-pill">zk-SNARKs</span>
+                      <span class="rt-track-pill">BeldexAI</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="rt-links">
+                  <a href="https://www.beldex.io/research-labs" target="_blank" rel="noopener noreferrer" class="rt-link-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    <span>Labs</span>
+                  </a>
+                  <a href="https://www.beldex.io/research-updates" target="_blank" rel="noopener noreferrer" class="rt-link-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54h3.54l4-5.08L12.5 9.5z"/></svg>
+                    <span>Updates</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Geometry Labs Partnership -->
+              <div class="rt-card">
+                <div class="rt-card-glow"></div>
+                <div class="rt-card-header">
+                  <div class="rt-icon-badge rt-icon-partner">
+                    <span>🏢</span>
+                  </div>
+                  <div>
+                    <h3 class="rt-card-title">Geometry Labs Partnership</h3>
+                    <span class="rt-card-tag rt-card-tag-partner">External Partner</span>
+                  </div>
+                </div>
+                <div class="rt-info-grid">
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">Partnership</span>
+                    <span class="rt-info-value">September 2022</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">Goal</span>
+                    <span class="rt-info-value">Collaborate on improving Beldex's scalability and privacy cryptography</span>
+                  </div>
+                  <div class="rt-info-row">
+                    <span class="rt-info-label">About</span>
+                    <span class="rt-info-value">Established 2021; research lab focused on DeFi, blockchain infrastructure, and advanced cryptography</span>
+                  </div>
+                </div>
+                <div class="rt-links">
+                  <a href="https://geometrylabs.io" target="_blank" rel="noopener noreferrer" class="rt-link-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <span>Website</span>
+                  </a>
+                  <a href="https://github.com/geometry-labs" target="_blank" rel="noopener noreferrer" class="rt-link-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <span>GitHub</span>
+                  </a>
+                  <a href="https://medium.com/geometry-labs" target="_blank" rel="noopener noreferrer" class="rt-link-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75c.66 0 1.19 2.58 1.19 5.75z"/></svg>
+                    <span>Medium</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <div class="fs-section-header">
+              <h2 class="fs-title"><span class="section-emoji">💰</span> Funding &amp; Support</h2>
+              <p class="fs-subtitle">Strategic investments from top-tier Web3 venture firms powering Beldex's growth</p>
+            </div>
+            <div class="fs-layout">
+              <!-- Donut Chart Panel -->
+              <div class="fs-chart-panel">
+                <div class="fs-chart-wrapper">
+                  <svg class="fs-donut" viewBox="0 0 240 240" role="img" aria-label="Funding distribution pie chart">
+                    <!-- Glow filter -->
+                    <defs>
+                      <filter id="chartGlow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="4" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>
+                    </defs>
+                    <!-- DWF Labs: 72.46% -->
+                    <circle cx="120" cy="120" r="80" fill="none" stroke="#29e0a9" stroke-width="50" stroke-dasharray="364.22 502.65" stroke-dashoffset="0" class="pie-segment pie-segment-1" filter="url(#chartGlow)"/>
+                    <!-- Bitgert Ventures: 10.14% -->
+                    <circle cx="120" cy="120" r="80" fill="none" stroke="#3b82f6" stroke-width="50" stroke-dasharray="50.97 502.65" stroke-dashoffset="-364.22" class="pie-segment pie-segment-2" filter="url(#chartGlow)"/>
+                    <!-- Block Alpha: 8.70% -->
+                    <circle cx="120" cy="120" r="80" fill="none" stroke="#8b5cf6" stroke-width="50" stroke-dasharray="43.73 502.65" stroke-dashoffset="-415.19" class="pie-segment pie-segment-3" filter="url(#chartGlow)"/>
+                    <!-- Alpha Token Capital: 8.70% -->
+                    <circle cx="120" cy="120" r="80" fill="none" stroke="#f59e0b" stroke-width="50" stroke-dasharray="43.73 502.65" stroke-dashoffset="-458.92" class="pie-segment pie-segment-4" filter="url(#chartGlow)"/>
+                    <!-- Center -->
+                    <circle cx="120" cy="120" r="55" fill="#0c0f16"/>
+                    <circle cx="120" cy="120" r="55" fill="none" stroke="rgba(41,224,169,0.08)" stroke-width="1"/>
+                  </svg>
+                  <div class="fs-chart-center">
+                    <div class="fs-chart-amount">$34.5M</div>
+                    <div class="fs-chart-label">Total Raised</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Investor Cards -->
+              <div class="fs-investors">
+                <div class="fs-investor-card" style="--inv-color: #29e0a9;">
+                  <div class="fs-inv-header">
+                    <span class="fs-inv-dot" style="background: #29e0a9; box-shadow: 0 0 12px rgba(41,224,169,0.5);"></span>
+                    <div class="fs-inv-info">
+                      <span class="fs-inv-name">DWF Labs</span>
+                      <span class="fs-inv-type">Lead Investor</span>
+                    </div>
+                    <span class="fs-inv-amount">$25.0M</span>
+                  </div>
+                  <div class="fs-inv-bar-track">
+                    <div class="fs-inv-bar-fill" style="width: 72.46%; background: linear-gradient(90deg, #29e0a9, #20c997);"></div>
+                  </div>
+                  <span class="fs-inv-share">72.46%</span>
+                </div>
+
+                <div class="fs-investor-card" style="--inv-color: #3b82f6;">
+                  <div class="fs-inv-header">
+                    <span class="fs-inv-dot" style="background: #3b82f6; box-shadow: 0 0 12px rgba(59,130,246,0.5);"></span>
+                    <div class="fs-inv-info">
+                      <span class="fs-inv-name">Bitgert Ventures</span>
+                      <span class="fs-inv-type">Strategic Partner</span>
+                    </div>
+                    <span class="fs-inv-amount">$3.5M</span>
+                  </div>
+                  <div class="fs-inv-bar-track">
+                    <div class="fs-inv-bar-fill" style="width: 10.14%; background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>
+                  </div>
+                  <span class="fs-inv-share">10.14%</span>
+                </div>
+
+                <div class="fs-investor-card" style="--inv-color: #8b5cf6;">
+                  <div class="fs-inv-header">
+                    <span class="fs-inv-dot" style="background: #8b5cf6; box-shadow: 0 0 12px rgba(139,92,246,0.5);"></span>
+                    <div class="fs-inv-info">
+                      <span class="fs-inv-name">Block Alpha</span>
+                      <span class="fs-inv-type">VC Fund</span>
+                    </div>
+                    <span class="fs-inv-amount">$3.0M</span>
+                  </div>
+                  <div class="fs-inv-bar-track">
+                    <div class="fs-inv-bar-fill" style="width: 8.70%; background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>
+                  </div>
+                  <span class="fs-inv-share">8.70%</span>
+                </div>
+
+                <div class="fs-investor-card" style="--inv-color: #f59e0b;">
+                  <div class="fs-inv-header">
+                    <span class="fs-inv-dot" style="background: #f59e0b; box-shadow: 0 0 12px rgba(245,158,11,0.5);"></span>
+                    <div class="fs-inv-info">
+                      <span class="fs-inv-name">Alpha Token Capital</span>
+                      <span class="fs-inv-type">VC Fund</span>
+                    </div>
+                    <span class="fs-inv-amount">$3.0M</span>
+                  </div>
+                  <div class="fs-inv-bar-track">
+                    <div class="fs-inv-bar-fill" style="width: 8.70%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+                  </div>
+                  <span class="fs-inv-share">8.70%</span>
+                </div>
+
+                <!-- Total Row -->
+                <div class="fs-total-row">
+                  <span class="fs-total-label">Total Investment</span>
+                  <span class="fs-total-amount">$34.5M</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVM INTEGRATION TAB -->
+        <div id="evm" class="tab-content" role="tabpanel" aria-labelledby="tab-evm" tabindex="0" hidden>
+          <div class="diagram">
+            <h2>⚙️ EVM Integration Journey</h2>
+
+            <h3>The Fundamental Question (2022-2023)</h3>
+            <div class="flow-container">
+              <div class="flow-box flow-box-problem">
+                <h4>Problem</h4>
+                <p>Can Ethereum code run on privacy blockchain?</p>
+              </div>
+              <div class="flow-arrow"> →</div>
+              <div class="flow-box flow-box-research">
+                <h4>Research</h4>
+                <p>18 months of focused research and experimentation</p>
+              </div>
+              <div class="flow-arrow"> →</div>
+              <div class="flow-box flow-box-answer">
+                <h4>Answer</h4>
+                <p>YES Feasible at Proof-of-Concept level</p>
+              </div>
+            </div>
+
+            <h3>Proof of Concept Achievement (May-July 2023)</h3>
+            <div class="grid poc-grid">
+              <div class="card">
+                <h3>📄 Research Paper</h3>
+                <ul>
+                  <li>
+                    <strong>Published:</strong>
+                    <span>May 5, 2023</span>
+                  </li>
+                  <li>
+                    <strong>Authors:</strong>
+                    <span>Allard Dijk (BitBender) & Dr. Dominique Schröder (University of Erlangen-Nuremberg)</span>
+                  </li>
+                  <li>
+                    <strong>Title:</strong>
+                    <span>"Proof of Concept for EVM on CryptoNote"</span>
+                  </li>
+                  <li>
+                    <strong>Achievement:</strong>
+                    <span>First EVM on CryptoNote blockchain</span>
+                  </li>
+                  <li>
+                    <strong>Significance:</strong>
+                    <span>Groundbreaking blockchain research</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>🧪 Testing</h3>
+                <ul>
+                  <li>
+                    <strong>Network:</strong>
+                    <span>16 synchronized PoS nodes</span>
+                  </li>
+                  <li>
+                    <strong>Implementation:</strong>
+                    <span>Minimized Py-EVM (Python-based)</span>
+                  </li>
+                  <li>
+                    <strong>Tests:</strong>
+                    <span>Smart contract creation, deployment, execution</span>
+                  </li>
+                  <li>
+                    <strong>Validation:</strong>
+                    <span>Transaction triggering and state management</span>
+                  </li>
+                  <li>
+                    <strong>Result:</strong>
+                    <span>All core functionality proven feasible</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="card">
+                <h3>What Was Proven</h3>
+                <ul>
+                  <li>
+                    <strong>Privacy Maintained:</strong>
+                    <span>RingCT still functional on Layer 1</span>
+                  </li>
+                  <li>
+                    <strong>Full EVM Compatibility:</strong>
+                    <span>Can run Ethereum smart contracts</span>
+                  </li>
+                  <li>
+                    <strong>State Management:</strong>
+                    <span>UTXO ↔ Account bridge possible</span>
+                  </li>
+                  <li>
+                    <strong>Production Path:</strong>
+                    <span>Clear roadmap identified</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <h2>🔧 How Smart Contracts Work on Beldex (Proven in PoC)</h2>
+            <div
+              class="flow-container flow-container--steps flow-steps-column"
+            >
+              <div class="flow-box" data-step="1">
+                <h2>Step 1: Contract Creation</h2>
+                <p>
+                  Developer writes Solidity smart contract (exactly like
+                  Ethereum)
+                </p>
+                <p class="step-note">
+                  Tools: Remix, Hardhat, Truffle - all compatible
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="2">
+                <h2>Step 2: Transaction Submission</h2>
+                <p>
+                  User creates Beldex transaction with contract bytecode
+                  embedded
+                </p>
+                <p class="step-note">
+                  Private transaction amounts via RingCT on Layer 1
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="3">
+                <h2>Step 3: Block Inclusion</h2>
+                <p>Contract transaction added to block by PoS validator</p>
+                <p class="step-note">
+                  Validated through masternode network consensus
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="4">
+                <h2>Step 4: EVM Execution</h2>
+                <p>
+                  Python-based Py-EVM processes contract on all synchronized
+                  nodes
+                </p>
+                <p class="step-note">
+                  Contract code is public, execution verified by all
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="5">
+                <h2>Step 5: State Update</h2>
+                <p>
+                  Contract state updated globally, subsequent transactions can
+                  trigger functions
+                </p>
+                <p class="step-note">
+                  Persistent state across the network
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="6">
+                <h2>Step 6: Privacy Preservation</h2>
+                <p>Contract code is PUBLIC (anyone can verify)</p>
+                <p>Transaction amounts & identities remain PRIVATE (RingCT)</p>
+                <p class="step-note">
+                  <strong>Future:</strong> ZK-SNARKs for contract-level privacy
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <h2>🔐 Privacy Strategy Explained</h2>
+
+            <!-- Strategy Comparison -->
+            <div class="strategy-grid">
+              <div class="strategy-card rejected">
+                <div class="strategy-badge rejected-badge">❌ REJECTED</div>
+                <h3>Encrypted Smart Contracts</h3>
+                <div class="strategy-content">
+                  <div class="strategy-point">
+                    <span class="point-label">Idea:</span>
+                    <p>Encrypt the smart contract code itself</p>
+                  </div>
+                  <div class="strategy-point critical">
+                    <span class="point-label">Critical Problem:</span>
+                    <p>Validators cannot execute or verify encrypted code</p>
+                  </div>
+                  <div class="strategy-point">
+                    <span class="point-label">Why It Fails:</span>
+                    <p>
+                      Decentralized networks require public verification for
+                      consensus
+                    </p>
+                  </div>
+                  <div class="strategy-outcome outcome-rejected">
+                    Fundamentally impossible ✗
+                  </div>
+                </div>
+              </div>
+
+              <div class="strategy-card accepted">
+                <div class="strategy-badge accepted-badge">CHOSEN</div>
+                <h3>Layer-Based Privacy</h3>
+                <div class="strategy-content">
+                  <div class="strategy-point">
+                    <span class="point-label">Layer 1 (Main Chain):</span>
+                    <p>RingCT hides amounts, senders, and receivers</p>
+                  </div>
+                  <div class="strategy-point">
+                    <span class="point-label">Smart Contract Layer:</span>
+                    <p>Code is public, but transaction data remains private</p>
+                  </div>
+                  <div class="strategy-point">
+                    <span class="point-label">Future Enhancement:</span>
+                    <p>ZK-SNARKs add privacy to contract inputs/outputs</p>
+                  </div>
+                  <div class="strategy-outcome outcome-accepted">
+                    Transparent + Private ✓
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Privacy Layers Breakdown -->
+            <h3 class="privacy-model-title">
+              Three-Tier Privacy Model
+            </h3>
+            <div class="privacy-layers">
+              <div class="privacy-layer public-layer">
+                <div class="layer-icon">👁️</div>
+                <h4>Tier 1: Public</h4>
+                <p class="layer-title">Contract Code</p>
+                <p class="layer-desc">
+                  Like open-source software - everyone can verify the logic and
+                  execution
+                </p>
+              </div>
+              <div class="privacy-layer private-layer">
+                <div class="layer-icon">🔒</div>
+                <h4>Tier 2: Private</h4>
+                <p class="layer-title">Transaction Data</p>
+                <p class="layer-desc">
+                  Amounts, balances, and user identities - all encrypted and
+                  hidden
+                </p>
+              </div>
+              <div class="privacy-layer protected-layer">
+                <div class="layer-icon">🔐</div>
+                <h4>Tier 3: Protected</h4>
+                <p class="layer-title">Financial Privacy</p>
+                <p class="layer-desc">
+                  ZK-SNARKs prove validity without revealing underlying data
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ARCHITECTURE TAB -->
+        <div id="architecture" class="tab-content" role="tabpanel" aria-labelledby="tab-architecture" tabindex="0" hidden>
+          <div class="diagram">
+            <h2 class="architecture-title">🧬 Beldex Hybrid Architecture</h2>
+
+            <div class="architecture-grid">
+              <!-- Layer 1 -->
+              <div class="arch-layer layer-1">
+                <div class="arch-layer-header">
+                  <h2>Layer 1:</h2>
+                  <h3> Main Chain (UTXO Model)</h3>
+                </div>
+                <div class="arch-layer-content">
+                  <div class="arch-feature">
+                    <span class="feature-label">Purpose</span>
+                    <p>Fast, private financial transactions</p>
+                  </div>
+                  <div class="arch-feature">
+                    <span class="feature-label">Features</span>
+                    <p>RingCT, Bulletproof++, Privacy by Default</p>
+                  </div>
+                  <div class="arch-feature">
+                    <span class="feature-label">Consensus</span>
+                    <p>Proof of Stake (11+1 nodes, VRF planned)</p>
+                  </div>
+                </div>
+                <span class="layer-status">LIVE</span>
+              </div>
+
+              <!-- Bridge Arrow -->
+              <div class="arch-bridge-container">
+                <div class="arch-bridge-arrow down">⬇️ Burn Coins</div>
+              </div>
+
+              <!-- Layer 2 -->
+              <div class="arch-layer layer-2">
+                <div class="arch-layer-header">
+                  <h2>Layer 2:</h2>
+                  <h3> EVM Execution Layer (Research/PoC)</h3>
+                </div>
+                <div class="arch-layer-content">
+                  <div class="arch-feature">
+                    <span class="feature-label">Purpose</span>
+                    <p>Smart contracts, DeFi, dApps</p>
+                  </div>
+                  <div class="arch-feature">
+                    <span class="feature-label">Features</span>
+                    <p>Full EVM, Solidity, Ethereum Tools</p>
+                  </div>
+                  <div class="arch-feature">
+                    <span class="feature-label">Privacy</span>
+                    <p>zk-SNARKs (planned), confidential amounts</p>
+                  </div>
+                </div>
+                <span class="layer-status poc">🧪 PoC</span>
+              </div>
+
+              <!-- Bridge Arrow Back -->
+              <div class="arch-bridge-container">
+                <div class="arch-bridge-arrow up">⬆️ Return to Main Chain</div>
+              </div>
+
+              <!-- Bridge Layer -->
+              <div class="arch-layer bridge-layer">
+                <div class="arch-layer-header">
+                  <h2>Bridge Layer: </h2>
+                  <h3>The Technical Challenge</h3>
+                </div>
+                <div class="arch-layer-content">
+                  <div class="arch-feature solved">
+                    <span class="feature-label"
+                      >UTXO → Account (SOLVED)</span
+                    >
+                    <p>
+                      Users burn coins on main chain, receive credit on EVM layer
+                    </p>
+                     <p>
+                      <strong>Challenge:</strong> Prevent double-spending of burn proofs while maintaining privacy
+                    </p>
+                  </div>
+                  <div class="arch-feature research">
+                    <span class="feature-label"
+                      >🔄 Account → UTXO (IN RESEARCH)</span
+                    >
+                        <p>Moving funds back to private main chain</p>
+                       <p><strong>Challenge:</strong>Generate valid RingCT transactions from smart contract state</p>
+                    <p><strong>Status:</strong> Still under
+                      active research.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <h2>🛡️ UTXO vs Account Model Comparison</h2>
+            <table class="comparison-table">
+              <tr>
+                <th>Feature</th>
+                <th>UTXO Model (Bitcoin/Monero)</th>
+                <th>Account Model (Ethereum)</th>
+                <th>Beldex Hybrid</th>
+              </tr>
+              <tr>
+                <td><strong>Structure</strong></td>
+                <td>Unspent transaction outputs</td>
+                <td>Account balances</td>
+                <td>
+                  Uses UTXO for transfers and account-style state for smart
+                  contracts
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Privacy</strong></td>
+                <td>✅ Strong privacy (RingCT)</td>
+                <td>❌ All public</td>
+                <td>✅ Privacy maintained</td>
+              </tr>
+              <tr>
+                <td><strong>Smart Contracts</strong></td>
+                <td>❌ Very limited</td>
+                <td>✅ Full support</td>
+                <td>✅ EVM-compatible (research PoC)</td>
+              </tr>
+              <tr>
+                <td><strong>Parallel Processing</strong></td>
+                <td>✅ Yes</td>
+                <td>❌ Sequential</td>
+                <td>✅ Yes (Layer 1)</td>
+              </tr>
+              <tr>
+                <td><strong>State Management</strong></td>
+                <td>❌ Stateless</td>
+                <td>✅ Global state</td>
+                <td>✅ Both approaches</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- TIMELINE TAB -->
+        <div id="timeline" class="tab-content" role="tabpanel" aria-labelledby="tab-timeline" tabindex="0" hidden>
+          <div class="diagram">
+            <h2>Complete Timeline: 2018 - 2026</h2>
+
+            <div class="timeline-grid">
+              <div class="timeline-event past">
+                <div class="timeline-year">2018</div>
+                <div class="timeline-event-content">
+                  <h4>Project Launch</h4>
+                  <p>
+                    Beldex origins as a privacy-focused
+                    CryptoNote/Monero-derived project.
+                  </p>
+                  <span class="status-badge status-historical">HISTORICAL</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past">
+                <div class="timeline-year">Dec 2021</div>
+                <div class="timeline-event-content">
+                  <h4>Bucephalus Hardfork (PoS)</h4>
+                  <p>
+                    Major shift: Proof of Work → Proof of Stake for energy
+                    efficiency.
+                  </p>
+                  <span class="status-badge status-complete">Completed</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past">
+                <div class="timeline-year">2022</div>
+                <div class="timeline-event-content">
+                  <h4>Research Effort Begins</h4>
+                  <p>
+                    Beldex Research Labs workstream supporting smart-contract
+                    R&D.
+                  </p>
+                  <span class="status-badge status-research">RESEARCH</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-event-content">
+                  <h4>EVM Proof of Concept</h4>
+                  <p>
+                    Minimized Py-EVM PoC on PoS CryptoNote chain; feasibility
+                    demonstrated.
+                  </p>
+                  <span class="status-badge status-complete">Completed</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past">
+                <div class="timeline-year">Jun 2025</div>
+                <div class="timeline-event-content">
+                  <h4>Bridge Closure (wBDX → BDX)</h4>
+                  <p>Final call deadline to convert wBDX to native BDX.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past">
+                <div class="timeline-year">Aug 2025</div>
+                <div class="timeline-event-content">
+                  <h4>VRF on Testnet</h4>
+                  <p>
+                    VRF-based testing milestone mentioned in official updates.
+                  </p>
+                  <span class="status-badge status-testnet">TESTNET</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past milestone">
+                <div class="timeline-year">Dec 7, 2025</div>
+                <div class="timeline-event-content">
+                  <h4>🎉 Obscura Hardfork</h4>
+                  <p>
+                    Bulletproof++ shipped on mainnet for 38% block size
+                    reduction.
+                  </p>
+                  <span class="status-badge status-complete">Completed</span>
+                </div>
+              </div>
+
+              <div class="timeline-event past milestone">
+                <div class="timeline-year">Dec 2025</div>
+                <div class="timeline-event-content">
+                  <h4>LayerZero Integration Live</h4>
+                  <p>Cross-chain bridge via LayerZero/Stargate goes live.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                </div>
+              </div>
+
+              <div class="timeline-event current">
+                <div class="timeline-year">2026</div>
+                <div class="timeline-event-content">
+                  <h4>EVM Production Track</h4>
+                  <p>
+                    Hardening + contract privacy research continue; audits
+                    planned.
+                  </p>
+                  <span class="status-badge status-progress">IN PROGRESS</span>
+                </div>
+              </div>
+
+              <div class="timeline-event current">
+                <div class="timeline-year">Q1-Q2 2026</div>
+                <div class="timeline-event-content">
+                  <h4>AI Integration</h4>
+                  <p>
+                    AI-powered BChat spam detection & BelNet routing
+                    optimization.
+                  </p>
+                  <span class="status-badge status-progress">IN PROGRESS</span>
+                </div>
+              </div>
+
+              <div class="timeline-event current">
+                <div class="timeline-year">Q2-Q4 2026</div>
+                <div class="timeline-event-content">
+                  <h4>VRF Consensus</h4>
+                  <p>
+                    Verifiable Random Functions for enhanced security &
+                    decentralization.
+                  </p>
+                  <span class="status-badge status-progress">IN PROGRESS</span>
+                </div>
+              </div>
+
+              <div class="timeline-event future">
+                <div class="timeline-year">2026-2027</div>
+                <div class="timeline-event-content">
+                  <h4>Quantum Resistance</h4>
+                  <p>Post-quantum cryptography research and implementation.</p>
+                  <span class="status-badge status-research">RESEARCH</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESEARCH AREAS TAB -->
+        <div id="research" class="tab-content" role="tabpanel" aria-labelledby="tab-research" tabindex="0" hidden>
+          <div class="diagram">
+            <h2>🔬 Active Research Areas (2025-2026)</h2>
+
+            <!-- Legend bar -->
+            <div class="rc-legend">
+              <div class="rcl-pill rcl-complete"><span class="rcl-dot"></span>3 Deployed</div>
+              <div class="rcl-sep"></div>
+              <div class="rcl-pill rcl-indev"><span class="rcl-dot"></span>2 In Dev</div>
+              <div class="rcl-sep"></div>
+              <div class="rcl-pill rcl-research"><span class="rcl-dot"></span>2 Research</div>
+            </div>
+
+            <div class="research-grid">
+
+              <!-- Card 1: Bulletproof++ -->
+              <div class="research-card rc-complete">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">⚡</div>
+                  <span class="rc-chip chip-complete">Deployed</span>
+                </div>
+                <h3 class="rc-title">Bulletproof++</h3>
+                <p class="rc-desc">Zero-Knowledge Proof Compression</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">~38%</span><span class="rc-hl-lbl">Size Reduction</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">Dec '25</span><span class="rc-hl-lbl">Deployed</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-100"></div></div>
+                <div class="rc-tags"><span>ZK Proofs</span><span>Obscura HF</span><span>Faster Sync</span></div>
+              </div>
+
+              <!-- Card 2: VRF Consensus -->
+              <div class="research-card rc-indev">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">🎲</div>
+                  <span class="rc-chip chip-indev">⟳ In Dev</span>
+                </div>
+                <h3 class="rc-title">VRF Consensus</h3>
+                <p class="rc-desc">Validator Randomisation</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">Testnet</span><span class="rc-hl-lbl">Milestone Hit</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">Q2–Q4</span><span class="rc-hl-lbl">2026 Timeline</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-55"></div></div>
+                <div class="rc-tags"><span>Randomness</span><span>Security</span><span>Testnet</span></div>
+              </div>
+
+              <!-- Card 3: BelNet Split Tunneling -->
+              <div class="research-card rc-complete">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">🛡️</div>
+                  <span class="rc-chip chip-complete">Live</span>
+                </div>
+                <h3 class="rc-title">BelNet Split Tunneling</h3>
+                <p class="rc-desc">Decentralised VPN Feature</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">v2.1.0</span><span class="rc-hl-lbl">BelNet Version</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">Live</span><span class="rc-hl-lbl">Status</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-100"></div></div>
+                <div class="rc-tags"><span>dVPN</span><span>App Routing</span><span>Privacy</span></div>
+              </div>
+
+              <!-- Card 4: BeldexAI -->
+              <div class="research-card rc-indev">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">🤖</div>
+                  <span class="rc-chip chip-indev">⟳ In Dev</span>
+                </div>
+                <h3 class="rc-title">BeldexAI</h3>
+                <p class="rc-desc">Privacy-Native AI Layer</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">Q1–Q2</span><span class="rc-hl-lbl">2026 Timeline</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">Federated</span><span class="rc-hl-lbl">Learning Model</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-40"></div></div>
+                <div class="rc-tags"><span>AI</span><span>Spam Filter</span><span>On-chain</span></div>
+              </div>
+
+              <!-- Card 5: Cross-Chain Bridge -->
+              <div class="research-card rc-complete">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">🌉</div>
+                  <span class="rc-chip chip-complete">Live</span>
+                </div>
+                <h3 class="rc-title">Cross-Chain Bridge</h3>
+                <p class="rc-desc">LayerZero / Stargate</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">Dec '25</span><span class="rc-hl-lbl">Launched</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">Multi</span><span class="rc-hl-lbl">Chain Support</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-100"></div></div>
+                <div class="rc-tags"><span>LayerZero</span><span>Stargate</span><span>Interop</span></div>
+              </div>
+
+              <!-- Card 6: Quantum Resistance -->
+              <div class="research-card rc-research">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">⚛️</div>
+                  <span class="rc-chip chip-research">🔬 Research</span>
+                </div>
+                <h3 class="rc-title">Quantum Resistance</h3>
+                <p class="rc-desc">Post-Quantum Cryptography</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">Lattice</span><span class="rc-hl-lbl">Crypto Approach</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">2026–27</span><span class="rc-hl-lbl">Timeline</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-20"></div></div>
+                <div class="rc-tags"><span>FHE</span><span>Post-Quantum</span><span>Future-Proof</span></div>
+              </div>
+
+              <!-- Card 7: Privacy Contracts -->
+              <div class="research-card rc-research">
+                <div class="rc-glow"></div>
+                <div class="rc-card-top">
+                  <div class="rc-icon-wrap">🔐</div>
+                  <span class="rc-chip chip-research">🔬 Research</span>
+                </div>
+                <h3 class="rc-title">Privacy-Preserving Contracts</h3>
+                <p class="rc-desc">ZK Smart Contract Execution</p>
+                <div class="rc-highlights">
+                  <div class="rc-hl"><span class="rc-hl-val">ZK</span><span class="rc-hl-lbl">Proof Method</span></div>
+                  <div class="rc-hl"><span class="rc-hl-val">PoC</span><span class="rc-hl-lbl">Stage</span></div>
+                </div>
+                <div class="rc-progress"><div class="rc-progress-fill progress-15"></div></div>
+                <div class="rc-tags"><span>ZK Contracts</span><span>Smart Contracts</span></div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="diagram">
+            <h2>📌 What’s Verified vs What’s Planned</h2>
+            <div class="verified-grid">
+              <!-- Verified (Shipped) -->
+              <div class="verified-card verified-shipped">
+                <div class="verified-header">
+                  <div class="verified-icon">✅</div>
+                  <h3>Verified (Shipped)</h3>
+                </div>
+                <ul class="verified-list">
+                  <li>
+                    <div class="v-title">Proof of Stake (PoS)</div>
+                    <div class="v-content">Live since Bucephalus hardfork (Dec 2021)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Bulletproof++</div>
+                    <div class="v-content">Shipped via Obscura hardfork (Dec 7, 2025)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Cross-Chain Bridge</div>
+                    <div class="v-content">LayerZero/Stargate integration live (Dec 2025)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">BelNet Split Tunneling</div>
+                    <div class="v-content">Introduced in BelNet v2.1.0</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Network Upgrades</div>
+                    <div class="v-content">4 Successful Hardforks completed</div>
+                  </li>
+                  <li>
+                    <div class="v-title">BNS Mainnet</div>
+                    <div class="v-content">Beldex Name Service via Bern hardfork (Feb 2024)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Hermes Hardfork</div>
+                    <div class="v-content">BNS Ethereum compatibility (Aug 2025)</div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Verified (Research / PoC) -->
+              <div class="verified-card verified-research">
+                <div class="verified-header">
+                  <div class="verified-icon">🧪</div>
+                  <h3>Verified (Research / PoC)</h3>
+                </div>
+                <ul class="verified-list">
+                  <li>
+                    <div class="v-title">EVM Integration PoC</div>
+                    <div class="v-content">Published May 5, 2023 (Dijk & Schröder)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Testing Success</div>
+                    <div class="v-content">Successfully tested on 16 synchronized PoS nodes</div>
+                  </li>
+                  <li>
+                    <div class="v-title">First Achievement</div>
+                    <div class="v-content">First EVM implementation on CryptoNote blockchain</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Current Status</div>
+                    <div class="v-content">Research complete, production hardening ongoing</div>
+                  </li>
+                   <li>
+                    <div class="v-title">Open Challenges</div>
+                    <div class="v-content">Contract-spend safety, privacy preservation under research</div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Planned / In Development -->
+              <div class="verified-card verified-planned">
+                <div class="verified-header">
+                  <div class="verified-icon">🗺️</div>
+                  <h3>Planned / In Development</h3>
+                </div>
+                <ul class="verified-list">
+                  <li>
+                    <div class="v-title">Production EVM</div>
+                    <div class="v-content">Full implementation for mainnet (2026 target)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">Privacy Smart Contracts</div>
+                    <div class="v-content">ZK-SNARK approaches being researched</div>
+                  </li>
+                  <li>
+                    <div class="v-title">VRF Consensus</div>
+                    <div class="v-content">Verifiable Random Functions for enhanced security</div>
+                  </li>
+                  <li>
+                    <div class="v-title">BeldexAI</div>
+                    <div class="v-content">AI-powered spam detection & optimization (Q1-Q2 2026)</div>
+                  </li>
+                  <li>
+                    <div class="v-title">FHE Encryption</div>
+                    <div class="v-content">Fully Homomorphic Encryption for advanced privacy</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <h2>📊 Research Impact Comparison</h2>
+
+            <h3>Bulletproof Evolution</h3>
+            <table class="comparison-table">
+              <tr>
+                <th>Version</th>
+                <th>Year</th>
+                <th>Size (bytes)</th>
+                <th>Reduction</th>
+                <th>Status</th>
+              </tr>
+              <tr>
+                <td>Basic Range Proofs</td>
+                <td>2015</td>
+                <td>4,000-6,000</td>
+                <td>Baseline</td>
+                <td>Deprecated</td>
+              </tr>
+              <tr>
+                <td>Bulletproofs</td>
+                <td>2018</td>
+                <td>600-700</td>
+                <td>~85–90% vs basic</td>
+                <td>Replaced</td>
+              </tr>
+              <tr>
+                <td>Bulletproofs+</td>
+                <td>2020</td>
+                <td>~600 (96 bytes smaller)</td>
+                <td>5-6% ↓</td>
+                <td>Replaced</td>
+              </tr>
+              <tr class="highlight-row">
+                <td><strong>Bulletproof++</strong></td>
+                <td><strong>2025</strong></td>
+                <td><strong>416</strong></td>
+                <td><strong>38% ↓ vs BP</strong></td>
+                <td><strong> LIVE (Beldex)</strong></td>
+              </tr>
+            </table>
+
+            <div class="stats-container stats-top-30">
+              <div class="stat-box">
+                <h3>~38% Smaller</h3>
+                <p>Block Size Reduction</p>
+              </div>
+              <div class="stat-box">
+                <h3>416</h3>
+                <p>Compact proofs</p>
+              </div>
+              <div class="stat-box">
+                <h3>Dec 7</h3>
+                <p>2025 Beldex Deployed</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXCHANGES TAB -->
+        <div id="exchanges" class="tab-content" role="tabpanel" aria-labelledby="tab-exchanges" tabindex="0" hidden>
+          <div class="diagram">
+
+            <!-- Hero Banner -->
+            <div class="exchanges-hero">
+              <h2 class="exchanges-title">💱 Complete BDX Exchange Directory</h2>
+              <p class="exchanges-subtitle">Trade BDX across 50+ venues worldwide</p>
+              <div class="exchanges-stats">
+                <div class="exchange-stat"><span class="exchange-stat-num">15</span><span class="exchange-stat-label">CEX Spot</span></div>
+                <div class="exchange-stat-divider"></div>
+                <div class="exchange-stat"><span class="exchange-stat-num">4</span><span class="exchange-stat-label">🇮🇳 Indian</span></div>
+                <div class="exchange-stat-divider"></div>
+                <div class="exchange-stat"><span class="exchange-stat-num">7</span><span class="exchange-stat-label">Futures</span></div>
+                <div class="exchange-stat-divider"></div>
+                <div class="exchange-stat"><span class="exchange-stat-num">5</span><span class="exchange-stat-label">DEX</span></div>
+                <div class="exchange-stat-divider"></div>
+                <div class="exchange-stat"><span class="exchange-stat-num">9</span><span class="exchange-stat-label">Instant Swap</span></div>
+                <div class="exchange-stat-divider"></div>
+                <div class="exchange-stat"><span class="exchange-stat-num">2</span><span class="exchange-stat-label">Bridges</span></div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 1: CEX SPOT TRADING            -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header exchanges-cex">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <h3>Centralized Exchanges (CEX) — Spot Trading</h3>
+            </div>
+            <div class="exchanges-grid">
+
+              <!-- Gate.io -->
+              <div class="exchange-card exchange-tier-1">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🏛️</div>
+                  <div class="exchange-name"><h4>Gate.io</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BDX/USDT</span>
+                  <span class="market-pair">BDX/BTC</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://www.gate.com/trade/BDX_USDT?ref=35748359" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                  <a href="https://www.gate.com/trade/BDX_BTC?ref=35748359" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/BTC ↗</a>
+                </div>
+              </div>
+
+              <!-- KuCoin -->
+              <div class="exchange-card exchange-tier-1">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🟢</div>
+                  <div class="exchange-name"><h4>KuCoin</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BDX/USDT</span>
+                  <span class="market-pair">BDX/BTC</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://www.kucoin.com/trade/BDX-USDT?rcode=rPH7VCS" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                  <a href="https://www.kucoin.com/trade/BDX-BTC?rcode=rPH7VCS" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/BTC ↗</a>
+                </div>
+              </div>
+
+              <!-- MEXC -->
+              <div class="exchange-card exchange-tier-1">
+                <div class="exchange-header">
+                  <div class="exchange-icon">Ⓜ</div>
+                  <div class="exchange-name"><h4>MEXC</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BDX/USDT</span>
+                  <span class="market-pair">BDX/BTC</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://www.mexc.com/exchange/BDX_USDT?shareCode=mexc-3LzxQ" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                  <a href="https://www.mexc.com/exchange/BDX_BTC?shareCode=mexc-3LzxQ" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/BTC ↗</a>
+                </div>
+              </div>
+
+              <!-- Kraken -->
+              <div class="exchange-card exchange-tier-1">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🐙</div>
+                  <div class="exchange-name"><h4>Kraken</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USD</span></div>
+                <div class="exchange-links">
+                  <a href="https://pro.kraken.com/app/trade/bdx-usd" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USD ↗</a>
+                </div>
+              </div>
+
+              <!-- BingX -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🅱️</div>
+                  <div class="exchange-name"><h4>BingX</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://bingx.com/en-us/spot/BDXUSDT?ref=KUGDGF" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- CoinEx -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">💎</div>
+                  <div class="exchange-name"><h4>CoinEx</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BDX/USDT</span>
+                  <span class="market-pair">BDX/BTC</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://www.coinex.com/exchange/bdx-usdt?rc=awxfr" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                  <a href="https://www.coinex.com/exchange/bdx-btc?rc=awxfr" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/BTC ↗</a>
+                </div>
+              </div>
+
+              <!-- P2PB2B -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">📊</div>
+                  <div class="exchange-name"><h4>P2PB2B</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/BTC</span></div>
+                <div class="exchange-links">
+                  <a href="https://p2pb2b.com/trade/BDX_BTC?referral=9851064e" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/BTC ↗</a>
+                </div>
+              </div>
+
+              <!-- WEEX -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">⚡</div>
+                  <div class="exchange-name"><h4>WEEX</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.weex.com/spot/BDX-USDT" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- BloFin -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🐋</div>
+                  <div class="exchange-name"><h4>BloFin</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://blofin.com/spot/BDX-USDT?referral_code=L8VGeW" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- Blynex -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔷</div>
+                  <div class="exchange-name"><h4>Blynex</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://blynex.com/spot/BDX_USDT" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- AscendEX -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">📈</div>
+                  <div class="exchange-name"><h4>AscendEX</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.ascendex.com/en/cashtrade-spottrading/usdt/bdx?inviteCode=UBZIQ1BGD" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- NonKYC -->
+              <div class="exchange-card exchange-nokyc">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔒</div>
+                  <div class="exchange-name"><h4>NonKYC</h4><span class="exchange-type">CEX Spot · <span class="nokyc-badge">No KYC</span></span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BDX/BTC</span>
+                  <span class="market-pair">BDX/USDT</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://nonkyc.io/market/BDX_BTC?ref=6891b266bf206bef274eaeb0" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/BTC ↗</a>
+                  <a href="https://nonkyc.io/market/BDX_USDT?ref=6891b266bf206bef274eaeb0" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- ByDFi -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔶</div>
+                  <div class="exchange-name"><h4>ByDFi</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.bydfi.com/en/spot/bdx_usdt" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+              <!-- GroveX -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🌿</div>
+                  <div class="exchange-name"><h4>GroveX</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BELDEX/USDC</span>
+                  <span class="market-pair">BELDEX/AUD</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://www.grovex.io/trade/BELDEX_USDC" target="_blank" rel="noopener noreferrer" class="exchange-link">BELDEX/USDC ↗</a>
+                  <a href="https://www.grovex.io/trade/BELDEX_AUD" target="_blank" rel="noopener noreferrer" class="exchange-link">BELDEX/AUD ↗</a>
+                </div>
+              </div>
+
+              <!-- CoinUp -->
+              <div class="exchange-card">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔺</div>
+                  <div class="exchange-name"><h4>CoinUp</h4><span class="exchange-type">CEX Spot</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/USDT</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.coinup.io/en_US/trade/BDX_USDT" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 2: INDIAN EXCHANGES             -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header exchanges-india section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              <h3>🇮🇳 Indian Exchanges</h3>
+            </div>
+            <div class="india-exchanges-note">
+              Trade BDX with Indian Rupee (INR) on SEBI-registered &amp; India-focused platforms
+            </div>
+            <div class="exchanges-grid">
+
+              <!-- CoinDCX -->
+              <div class="exchange-card exchange-indian">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🇮🇳</div>
+                  <div class="exchange-name"><h4>CoinDCX</h4><span class="exchange-type">CEX Spot · <span class="indian-badge">Indian Exchange</span></span></div>
+                </div>
+                <div class="exchange-markets">
+                  <span class="market-pair">BDX/USDT</span>
+                  <span class="market-pair">BDX/INR</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://coindcx.com/trade/BDXUSDT" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/USDT ↗</a>
+                  <a href="https://coindcx.com/trade/BDXINR" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/INR ↗</a>
+                </div>
+              </div>
+
+              <!-- Bitcoiva -->
+              <div class="exchange-card exchange-indian">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🇮🇳</div>
+                  <div class="exchange-name"><h4>Bitcoiva</h4><span class="exchange-type">CEX Spot · <span class="indian-badge">Indian Exchange</span></span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/INR</span></div>
+                <div class="exchange-links">
+                  <a href="https://bitcoiva.com/trade/BDX_INR" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/INR ↗</a>
+                </div>
+              </div>
+
+              <!-- KoinPark -->
+              <div class="exchange-card exchange-indian">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🇮🇳</div>
+                  <div class="exchange-name"><h4>KoinPark</h4><span class="exchange-type">CEX Spot · <span class="indian-badge">Indian Exchange</span></span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/INR</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.koinpark.com/trade/BDX-INR" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/INR ↗</a>
+                </div>
+              </div>
+
+              <!-- KoinBX -->
+              <div class="exchange-card exchange-indian">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🇮🇳</div>
+                  <div class="exchange-name"><h4>KoinBX</h4><span class="exchange-type">CEX Spot · <span class="indian-badge">Indian Exchange</span></span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair">BDX/INR</span></div>
+                <div class="exchange-links">
+                  <a href="https://koinbx.com/trade/BDX-INR?token=33811719" target="_blank" rel="noopener noreferrer" class="exchange-link">BDX/INR ↗</a>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 3: PERPETUAL FUTURES            -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header exchanges-futures section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <h3>Perpetual Futures Contracts</h3>
+            </div>
+            <div class="exchanges-grid">
+
+              <!-- KuCoin Futures -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🟢</div>
+                  <div class="exchange-name"><h4>KuCoin Futures</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/USDT Perp</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.kucoin.com/futures/trade/BDXUSDTM?rcode=rPH7VCS" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+
+              <!-- MEXC Futures -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">Ⓜ</div>
+                  <div class="exchange-name"><h4>MEXC Futures</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/USDT Perp</span></div>
+                <div class="exchange-links">
+                  <a href="https://futures.mexc.com/exchange/BDX_USDT?shareCode=mexc-3LzxQ" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+
+              <!-- BingX Swap -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🅱️</div>
+                  <div class="exchange-name"><h4>BingX Swap</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/USDT Perp</span></div>
+                <div class="exchange-links">
+                  <a href="https://swap.bingx.com/en-us/BDX-USDT?ref=KUGDGF" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+
+              <!-- CoinEx Futures -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">💎</div>
+                  <div class="exchange-name"><h4>CoinEx Futures</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/USDT Perp</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.coinex.com/futures/bdx-usdt?rc=awxfr" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+
+              <!-- WEEX Futures -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">⚡</div>
+                  <div class="exchange-name"><h4>WEEX Futures</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/USDT Perp</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.weex.com/futures/BDX-USDT" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+
+              <!-- AscendEX Futures -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">📈</div>
+                  <div class="exchange-name"><h4>AscendEX Futures</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/PERP</span></div>
+                <div class="exchange-links">
+                  <a href="https://ascendex.com/en/futures-perpetualcontract-trading/bdx-perp?inviteCode=UBZIQ1BGD" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+
+              <!-- KCEX Futures -->
+              <div class="exchange-card exchange-futures">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔴</div>
+                  <div class="exchange-name"><h4>KCEX Futures</h4><span class="exchange-type">CEX Perpetual</span></div>
+                </div>
+                <div class="exchange-markets"><span class="market-pair futures-pair">BDX/USDT Perp</span></div>
+                <div class="exchange-links">
+                  <a href="https://www.kcex.com/futures/exchange/BDX_USDT?inviteCode=MUVNSU" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade Futures ↗</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 3: DEX PLATFORMS                -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header exchanges-dex section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <h3>Decentralized Exchanges (DEX)</h3>
+            </div>
+            <!-- BDX Contract Addresses -->
+            <div class="contract-addresses">
+              <div class="ca-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                BDX Contract Addresses
+              </div>
+              <div class="ca-list">
+
+                <div class="ca-row">
+                  <span class="ca-chain"><span class="ca-dot ca-dot-eth"></span>Ethereum</span>
+                  <code class="ca-addr">0x6ad12E761b438beA3EA09F6C6266556Bb24C2181</code>
+                  <button class="ca-copy-btn" type="button" data-copy-address="0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" title="Copy address">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
+
+                <div class="ca-row">
+                  <span class="ca-chain"><span class="ca-dot ca-dot-bsc"></span>BNB Smart Chain</span>
+                  <code class="ca-addr">0x6ad12E761b438beA3EA09F6C6266556Bb24C2181</code>
+                  <button class="ca-copy-btn" type="button" data-copy-address="0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" title="Copy address">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
+
+                <div class="ca-row">
+                  <span class="ca-chain"><span class="ca-dot ca-dot-sol"></span>Solana</span>
+                  <code class="ca-addr">CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d</code>
+                  <button class="ca-copy-btn" type="button" data-copy-address="CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d" title="Copy address">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
+
+                <div class="ca-row">
+                  <span class="ca-chain"><span class="ca-dot ca-dot-base"></span>Base</span>
+                  <code class="ca-addr">0x6ad12E761b438beA3EA09F6C6266556Bb24C2181</code>
+                  <button class="ca-copy-btn" type="button" data-copy-address="0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" title="Copy address">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
+
+                <div class="ca-row">
+                  <span class="ca-chain"><span class="ca-dot ca-dot-arb"></span>Arbitrum</span>
+                  <code class="ca-addr">0x6ad12E761b438beA3EA09F6C6266556Bb24C2181</code>
+                  <button class="ca-copy-btn" type="button" data-copy-address="0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" title="Copy address">
+                    <svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="exchanges-grid exchanges-grid-dex">
+
+              <!-- Uniswap -->
+              <div class="exchange-card exchange-dex dex-ethereum">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🦄</div>
+                  <div class="exchange-name"><h4>Uniswap</h4><span class="exchange-type">DEX · <span class="dex-badge ethereum">Ethereum</span></span></div>
+                </div>
+                <div class="dex-details">
+                  <span class="dex-function">Liquidity Pool & Swap</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://app.uniswap.org/explore/pools/ethereum/0x41e9f7Cf65Fe0c3c71A077E49023bA3C4f4F65B3" target="_blank" rel="noopener noreferrer" class="exchange-link">Liquidity ↗</a>
+                  <a href="https://app.uniswap.org/explore/pools/ethereum/0x41e9f7Cf65Fe0c3c71A077E49023bA3C4f4F65B3" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Raydium -->
+              <div class="exchange-card exchange-dex dex-solana">
+                <div class="exchange-header">
+                  <div class="exchange-icon">☀️</div>
+                  <div class="exchange-name"><h4>Raydium</h4><span class="exchange-type">DEX · <span class="dex-badge solana">Solana</span></span></div>
+                </div>
+                <div class="dex-details">
+                  <span class="dex-function">Liquidity Pool & Swap</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://raydium.io/liquidity-pools/?token=CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d" target="_blank" rel="noopener noreferrer" class="exchange-link">Liquidity ↗</a>
+                  <a href="https://raydium.io/swap/?inputMint=sol&outputMint=CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Jupiter -->
+              <div class="exchange-card exchange-dex dex-solana">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🪐</div>
+                  <div class="exchange-name"><h4>Jupiter</h4><span class="exchange-type">DEX Aggregator · <span class="dex-badge solana">Solana</span></span></div>
+                </div>
+                <div class="dex-details">
+                  <span class="dex-function">Liquidity Aggregation</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://jup.ag/tokens/CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d" target="_blank" rel="noopener noreferrer" class="exchange-link">Trade ↗</a>
+                </div>
+              </div>
+
+              <!-- Aerodrome -->
+              <div class="exchange-card exchange-dex dex-base">
+                <div class="exchange-header">
+                  <div class="exchange-icon">✈️</div>
+                  <div class="exchange-name"><h4>Aerodrome</h4><span class="exchange-type">DEX · <span class="dex-badge base">Base Chain</span></span></div>
+                </div>
+                <div class="dex-details">
+                  <span class="dex-function">Liquidity Pool & Swap</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://aerodrome.finance/liquidity?filters=unknown&query=0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" target="_blank" rel="noopener noreferrer" class="exchange-link">Liquidity ↗</a>
+                  <a href="https://aerodrome.finance/swap?outputCurrency=0x6ad12e761b438bea3ea09f6c6266556bb24c2181&from=0x4200000000000000000000000000000000000006&to=0x6ad12e761b438bea3ea09f6c6266556bb24c2181&chain0=8453&chain1=8453" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- PancakeSwap -->
+              <div class="exchange-card exchange-dex dex-bsc">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🥞</div>
+                  <div class="exchange-name"><h4>PancakeSwap</h4><span class="exchange-type">DEX · <span class="dex-badge bsc">BSC</span></span></div>
+                </div>
+                <div class="dex-details">
+                  <span class="dex-function">Liquidity Pool & Swap</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://pancakeswap.finance/liquidity/pool/bsc/0xA06eDAe68062d4203D2Eba0D0159d70d5c556Ed7" target="_blank" rel="noopener noreferrer" class="exchange-link">Liquidity ↗</a>
+                  <a href="https://pancakeswap.finance/swap?outputCurrency=0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 4: INSTANT SWAP SERVICES        -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header exchanges-swap section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              <h3>Instant Swap Services (Non-Custodial, KYC-Free)</h3>
+            </div>
+            <div class="exchanges-grid">
+              <!-- Pegasus Swap -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🦅</div>
+                  <div class="exchange-name"><h4>Pegasus Swap</h4><span class="exchange-type">Instant · <span class="swap-badge privacy">Confidential</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://pegasusswap.com/" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Exolix -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔄</div>
+                  <div class="exchange-name"><h4>Exolix</h4><span class="exchange-type">Instant · <span class="swap-badge">Registration-Free</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://exolix.com/" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- SwapSpace -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🌀</div>
+                  <div class="exchange-name"><h4>SwapSpace</h4><span class="exchange-type"><span class="swap-badge">Aggregator</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://swapspace.co/?to=bdx&toNetwork=bdx&from=usdt&fromNetwork=trc20&amount=0.1&direction=direct" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Houdini Swap -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🎩</div>
+                  <div class="exchange-name"><h4>Houdini Swap</h4><span class="exchange-type">Instant · <span class="swap-badge privacy">Privacy-Focused</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://app.houdiniswap.com/?tokenOut=BDX&tokenIn=USDT&amount=0" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Changelly -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🔃</div>
+                  <div class="exchange-name"><h4>Changelly</h4><span class="exchange-type"><span class="swap-badge">Instant Swap</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://changelly.com/" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Trocador -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🕵️</div>
+                  <div class="exchange-name"><h4>Trocador</h4><span class="exchange-type">Instant · <span class="swap-badge privacy">Anonymous</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://trocador.app/en/" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- StealthEX -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">👻</div>
+                  <div class="exchange-name"><h4>StealthEX</h4><span class="exchange-type"><span class="swap-badge">Instant Swap</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://stealthex.io/?amount=35.0123328&from=usdterc20&to=bdx" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+
+              <!-- Simple Swap -->
+              <div class="exchange-card exchange-swap">
+                <div class="exchange-header">
+                  <div class="exchange-icon">⚡</div>
+                  <div class="exchange-name"><h4>Simple Swap</h4><span class="exchange-type">Instant · <span class="swap-badge">Non-Custodial</span></span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://simpleswap.io/" target="_blank" rel="noopener noreferrer" class="exchange-link">Swap ↗</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 5: CROSS-CHAIN BRIDGE           -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header exchanges-bridge section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+              <h3>Cross-Chain Bridge</h3>
+            </div>
+            <div class="exchanges-grid">
+
+              <!-- Stargate Finance -->
+              <div class="exchange-card exchange-bridge">
+                <div class="exchange-header">
+                  <div class="exchange-icon">⭐</div>
+                  <div class="exchange-name"><h4>Stargate Finance</h4><span class="exchange-type"><span class="bridge-badge">Cross-Chain Bridge</span></span></div>
+                </div>
+                <div class="dex-details">
+                  <span class="dex-function">Multi-chain token bridging via LayerZero</span>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://stargate.finance/?srcChain=bsc&srcToken=0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" target="_blank" rel="noopener noreferrer" class="exchange-link official-link">Bridge Now ↗</a>
+                </div>
+              </div>
+
+              <!-- Beldex Bridge -->
+              <div class="exchange-card swap-official">
+                <div class="exchange-header">
+                  <div class="exchange-icon">🌉</div>
+                  <div class="exchange-name"><h4>Beldex Bridge</h4><span class="exchange-type"><span class="official-badge">Official</span> Native Bridge</span></div>
+                </div>
+                <div class="exchange-links">
+                  <a href="https://bridge.beldex.io" target="_blank" rel="noopener noreferrer" class="exchange-link official-link">Open Bridge ↗</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TEAM TAB -->
+        <div id="team" class="tab-content" role="tabpanel" aria-labelledby="tab-team" tabindex="0" hidden>
+          <div class="diagram">
+            <h2>🎯 Beldex Team</h2>
+            <p class="team-intro-text">Strategic visionaries driving Beldex forward</p>
+            <div class="team-grid">
+              <!-- Leadership Members -->
+              <div class="team-member">
+                <div class="member-image-circle">
+                  <img src="images/team/Afanddy B. Hushni.png" alt="Afanddy B. Hushni" class="member-image">
+                </div>
+                <h3 class="member-name">Afanddy B. Hushni</h3>
+                <p class="member-role">Founder & Chairman</p>
+                <ul class="member-points">
+                  <li>20+ years in finance and cryptocurrency economics</li>
+                  <li>Pioneer in cryptoeconomic strategy and protocol design</li>
+                  <li>Visionary for privacy-focused financial systems</li>
+                  <li>Governance and community leadership</li>
+                </ul>
+                <div class="member-socials">
+                  <a href="https://my.linkedin.com/in/afanddy-b-hushni" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                  <a href="https://x.com/AHushni" target="_blank" rel="noopener noreferrer" title="Twitter/X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 9-2.5 9-2.5z"/></svg></a>
+                  <a href="https://www.facebook.com/afanddybeldex/" target="_blank" rel="noopener noreferrer" title="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a6 6 0 00-6 6v3H7v4h2v8h4v-8h3l1-4h-4V8a1 1 0 011-1h3z"/></svg></a>
+                  <a href="https://www.youtube.com/watch?v=bREuTJT65mw" target="_blank" rel="noopener noreferrer" title="YouTube"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.54c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33zM9.75 15.02v-6.04l5.98 3.02-5.98 3.02z"/></svg></a>
+                </div>
+              </div>
+
+              <div class="team-member">
+                <div class="member-image-circle">
+                  <img src="images/team/kim_beldex.png" alt="Kim Beldex" class="member-image">
+                </div>
+                <h3 class="member-name">Kim Beldex</h3>
+                <p class="member-role">Co-Founder</p>
+                <ul class="member-points">
+                  <li>Expert in confidential transaction systems</li>
+                  <li>Deep cryptographic design knowledge</li>
+                  <li>Privacy architecture specialization</li>
+                  <li>Protocol integrity and security assurance</li>
+                </ul>
+                <div class="member-socials">
+                  <a href="https://my.linkedin.com/in/kimbeldex" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                </div>
+              </div>
+
+              <div class="team-member">
+                <div class="member-image-circle">
+                  <img src="images/team/codeman_crypto_cc.png" alt="Codeman Crypto" class="member-image">
+                </div>
+                <h3 class="member-name">Codeman Crypto</h3>
+                <p class="member-role">Chief Technology Officer</p>
+                <ul class="member-points">
+                  <li>Distributed systems architecture expertise</li>
+                  <li>Protocol development and implementation</li>
+                  <li>Scalability and performance optimization</li>
+                  <li>Stability and security engineering</li>
+                </ul>
+                <div class="member-socials">
+                  <a href="https://github.com/codeman-crypto" target="_blank" rel="noopener noreferrer" title="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                  <a href="https://www.linkedin.com/posts/codeman-crypto_beldex-obscura-activity-6976090397853532160-3x13" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                </div>
+              </div>
+
+              <div class="team-member">
+                <div class="member-image-circle">
+                  <img src="images/team/Sanada Yukimura.png" alt="Sanada Yukimura" class="member-image">
+                </div>
+                <h3 class="member-name">Sanada Yukimura</h3>
+                <p class="member-role">Blockchain Architect</p>
+                <ul class="member-points">
+                  <li>CryptoNote protocol expertise and optimization</li>
+                  <li>Consensus mechanism design and research</li>
+                  <li>Feature development and blockchain logic</li>
+                  <li>Advanced cryptographic implementations</li>
+                </ul>
+                <div class="member-socials">
+                  <a href="https://github.com/sanada08" target="_blank" rel="noopener noreferrer" title="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                </div>
+              </div>
+
+              <div class="team-member">
+                <div class="member-image-circle">
+                  <img src="images/team/sam.png" alt="Sam S" class="member-image">
+                </div>
+                <h3 class="member-name">Sam S</h3>
+                <p class="member-role">Marketing & Ecosystem Growth</p>
+                <ul class="member-points">
+                  <li>Strategic branding and community outreach</li>
+                  <li>Ecosystem growth and adoption strategies</li>
+                  <li>Partnership development and business growth</li>
+                  <li>Educational content and thought leadership</li>
+                </ul>
+                <div class="member-socials">
+                  <a href="https://my.linkedin.com/in/sulthanziau" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="team-advisors-section">
+              <h2>🔬 Research, Advisors & Contributors</h2>
+              <p class="team-advisors-intro">Expert guidance from leading researchers and advisors</p>
+              <div class="team-grid">
+                <!-- Advisor Members -->
+                <div class="team-member advisor-member">
+                  <div class="member-image-circle">
+                    <img src="images/team/Mitchell P. Krawiec-Thayer.jpg" alt="Mitchell P. Krawiec-Thayer" class="member-image">
+                  </div>
+                  <h3 class="member-name">Mitchell P. Krawiec-Thayer</h3>
+                  <p class="member-role">Research Advisor</p>
+                  <ul class="member-points">
+                    <li>Blockchain and cryptocurrency research expertise</li>
+                    <li>Experimental concepts and novel protocol design</li>
+                    <li>EVM infrastructure and Layer 2 solutions research</li>
+                  </ul>
+                  <div class="member-socials">
+                    <a href="https://mitchellpkt.com/" target="_blank" rel="noopener noreferrer" title="Personal Site"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg></a>
+                    <a href="https://www.linkedin.com/in/mitchellpkt" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                    <a href="https://github.com/mitchellpkt" target="_blank" rel="noopener noreferrer" title="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                    <a href="https://x.com/Mitchellpkt0" target="_blank" rel="noopener noreferrer" title="Twitter/X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 9-2.5 9-2.5z"/></svg></a>
+                    <a href="https://medium.com/@mitchellpkt" target="_blank" rel="noopener noreferrer" title="Medium"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75c.66 0 1.19 2.58 1.19 5.75z"/></svg></a>
+                    <a href="https://orcid.org/0000-0002-3418-6822" target="_blank" rel="noopener noreferrer" title="orcid ID"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="20" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="11" r="2" fill="currentColor"/><path d="M11 13h6M11 10h6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></a>
+                  </div>
+                </div>
+
+                <div class="team-member advisor-member">
+                  <div class="member-image-circle">
+                    <img src="images/team/Allard Dijk.png" alt="Allard Dijk" class="member-image">
+                  </div>
+                  <h3 class="member-name">Allard Dijk</h3>
+                  <p class="member-role">Strategic Advisor</p>
+                  <ul class="member-points">
+                    <li>Industry guidance and market strategy</li>
+                    <li>Partnership development and growth opportunities</li>
+                    <li>Business development and ecosystem expansion</li>
+                  </ul>
+                  <div class="member-socials">
+                    <a href="https://nl.linkedin.com/in/allarddijk" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                    <a href="https://x.com/allarddijk" target="_blank" rel="noopener noreferrer" title="Twitter/X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 9-2.5 9-2.5z"/></svg></a>
+                    <a href="https://scholar.google.com/citations?hl=nl&user=yUeRO9gAAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c-1.66 0-3-1.34-3-3 0-1.66 1.34-3 3-3s3 1.34 3 3c0 1.66-1.34 3-3 3zm0-8c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 13c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg></a>
+                    <a href="https://orcid.org/0009-0002-1847-7336" target="_blank" rel="noopener noreferrer" title="orcid ID"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="20" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="11" r="2" fill="currentColor"/><path d="M11 13h6M11 10h6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></a>
+
+                  </div>
+                </div>
+
+                <div class="team-member advisor-member">
+                  <div class="member-image-circle">
+                    <img src="images/team/Dominique Schröder.png" alt="Dominique Schröder" class="member-image">
+                  </div>
+                  <h3 class="member-name">Dominique Schröder</h3>
+                  <p class="member-role">Cryptography & Systems Advisor</p>
+                  <ul class="member-points">
+                    <li>Expert in cryptographic systems and protocols</li>
+                    <li>Privacy-focused design and implementation guidance</li>
+                    <li>Advanced encryption and zero-knowledge proof systems</li>
+                  </ul>
+                  <div class="member-socials">
+                    <a href="https://www.linkedin.com/in/dominique-schroeder/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                    <a href="https://x.com/doschroeder" target="_blank" rel="noopener noreferrer" title="Twitter/X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 9-2.5 9-2.5z"/></svg></a>
+                    <a href="https://www.dominique-schroeder.de/" target="_blank" rel="noopener noreferrer" title="Personal Site"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg></a>
+                    <a href="https://scholar.google.com/citations?hl=en&user=JOeLEGcAAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c-1.66 0-3-1.34-3-3 0-1.66 1.34-3 3-3s3 1.34 3 3c0 1.66-1.34 3-3 3zm0-8c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 13c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg></a>
+                    <a href="https://www.chaac.tf.fau.eu/person/dominique-schroder/" target="_blank" rel="noopener noreferrer" title="fau-Profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg></a>
+                    <a href="https://www.tuwien.at/en/tu-wien/organisation/central-divisions/professorships-at-tu-wien/new-professors-since-2019/new-professors-by-alphabetical-order/s/univ-prof-dipl-inform-drrernat-dominique-schroeder" target="_blank" rel="noopener noreferrer" title="tu wien - university profile about"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2z"/></svg></a>
+                    <a href="https://informatics.tuwien.ac.at/people/dominique-schroeder" target="_blank" rel="noopener noreferrer" title="tu wien - university profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h12v16zm-5.5-7h-3c-.55 0-1 .45-1 1s.45 1 1 1h3v2h-4c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h4v2h-3v1z"/></svg></a>
+                    <a href="https://dblp.org/pid/52/6199.html" target="_blank" rel="noopener noreferrer" title="dblp profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L19 9h-6z"/></svg></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHALLENGES TAB -->
+        <div id="challenges" class="tab-content" role="tabpanel" aria-labelledby="tab-challenges" tabindex="0" hidden>
+          <div class="diagram">
+            <h2>⚡ Technical Challenges & Solutions</h2>
+            <p class="challenges-subtitle">Core engineering problems Beldex is solving to enable privacy-preserving smart contracts</p>
+
+            <div class="challenges-container">
+
+              <!-- Challenge 1 -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">01</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>UTXO vs Account Incompatibility</h3>
+                    <p class="challenge-desc">These two systems work in very different ways, so they don't fit together easily.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-poc">✓ PoC Proven</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Fundamental Conflict</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Beldex:</strong> Uses UTXO → best for privacy</li>
+                      <li><strong>Ethereum:</strong> Uses accounts → needed for smart contracts</li>
+                      <li><strong>Issue:</strong> These two systems work in very different ways, so they don't fit together easily.</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">SOLVED</span>
+                      <h4>Hybrid System</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Approach:</strong> Use a hybrid system (combine both styles).</li>
+                      <li><strong>How it works:</strong> Use UTXO-style transactions for privacy, and accounts-style transactions for smart contracts.</li>
+                      <li><strong>Benefit:</strong> Privacy and smart contracts can coexist.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 2 -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">02</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Smart Contract Secrecy</h3>
+                    <p class="challenge-desc">Contracts need to see data to execute, but privacy requires all data to be hidden, a fundamental paradox.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-research">⟳ In Research</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>The Core Paradox</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Contracts:</strong> Need to see data to execute</li>
+                      <li><strong>Privacy:</strong> All data must be hidden</li>
+                      <li><strong>Paradox:</strong> How to execute without seeing?</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">SOLUTION</span>
+                      <h4>Layered Privacy</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Code:</strong> Public (verifiable by all nodes)</li>
+                      <li><strong>Data:</strong> Private via RingCT on Layer 1</li>
+                      <li><strong>Future:</strong> ZK-SNARKs for contract privacy</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 3 -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">03</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Double Spending Prevention</h3>
+                    <p class="challenge-desc">Smart contracts don't use keys, so value locked by a contract could be used twice without a fix.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-poc">✓ PoC Proven</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Value Reuse Risk</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Challenge:</strong> Smart contracts don't use keys</li>
+                      <li><strong>Risk:</strong> Value locked by contract used twice</li>
+                      <li><strong>Core Issue:</strong> One-time usage without breaking privacy</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">SOLUTION (PoC)</span>
+                      <h4>Cryptographic Linking</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Approach:</strong> Protocol-level consensus rules</li>
+                      <li><strong>How it works:</strong> Unique state transitions linked</li>
+                      <li><strong>Benefit:</strong> Reuse prevented + privacy maintained</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 4 -->
+              <div class="challenge-card challenge-solved-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap solved-num">
+                    <span class="challenge-number">04</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Blockchain Size &amp; Scalability</h3>
+                    <p class="challenge-desc">Large privacy proofs caused slow sync times and inflated storage, now solved with Bulletproof++ compression.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-solved"> Solved</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Transaction Bloat</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Before:</strong> 1.2–4 MB per 100 tx</li>
+                      <li><strong>Impact:</strong> Slow sync, large storage</li>
+                      <li><strong>Limitation:</strong> Scalability bottleneck</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section solved">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge solved-badge">SOLVED</span>
+                      <h4>Bulletproof++ Compression</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Technology:</strong> Bulletproof++ ZK-proofs</li>
+                      <li><strong>After:</strong> ~120–400 kB per 100 tx</li>
+                      <li><strong>Status:</strong> Deployed Dec 7, 2025</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 5 -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">05</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Two-Way Bridge Architecture</h3>
+                    <p class="challenge-desc">Moving value between the privacy chain and EVM layer needs to work in both directions, one direction is solved, one is still being researched.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-partial">⟳ Half Solved</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="solution-section solved">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge solved-badge">SOLVED</span>
+                      <h4>UTXO → Account</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Method:</strong> Burn coins on main chain</li>
+                      <li><strong>Proof:</strong> Cryptographic burn proof</li>
+                      <li><strong>Result:</strong> Credit on contract layer</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">IN RESEARCH</span>
+                      <h4>Account → UTXO</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Challenge:</strong> Valid RingCT generation</li>
+                      <li><strong>Research:</strong> Proof of withdrawal</li>
+                      <li><strong>Status:</strong> Active investigation ongoing</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 6 -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">06</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Network Validator Security</h3>
+                    <p class="challenge-desc">Attackers can predict which validators will sign the next block, VRF randomisation will make that impossible.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-future">◎ Planned</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Predictable Selection</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Current:</strong> 11+1 deterministic validators</li>
+                      <li><strong>Risk:</strong> Attackers can predict targets</li>
+                      <li><strong>Issue:</strong> Targeted attack vulnerability</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">FUTURE</span>
+                      <h4>VRF Randomization</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Selection:</strong> Verifiable random functions</li>
+                      <li><strong>Participation:</strong> ~33% of all nodes</li>
+                      <li><strong>Security:</strong> Must attack 1/3 of network</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              </div>
+          </div>
+        </div>
+
+        <!-- OFFICIAL LINKS TAB -->
+        <div id="links" class="tab-content" role="tabpanel" aria-labelledby="tab-links" tabindex="0" hidden>
+          <div class="diagram">
+
+            <h2 class="links-title">🔗 Official Beldex Links & Resources</h2>
+            <p class="links-subtitle">Every verified official link in one place</p>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 1: OFFICIAL WEBSITES            -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header links-websites">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <h3>Official Websites & Key Pages</h3>
+            </div>
+            <div class="official-links-grid">
+              <a href="https://beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">🌐</span>
+                <div class="ol-info"><h4>Beldex.io</h4><p>Main official website</p></div>
+              </a>
+              <a href="https://docs.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">📚</span>
+                <div class="ol-info"><h4>Documentation</h4><p>Technical docs & guides</p></div>
+              </a>
+              <a href="https://beldex.io/blog/" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">✍️</span>
+                <div class="ol-info"><h4>Blog</h4><p>News & announcements</p></div>
+              </a>
+              <a href="https://www.beldex.io/roadmap" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">🗺️</span>
+                <div class="ol-info"><h4>Roadmap</h4><p>Development milestones</p></div>
+              </a>
+              <a href="https://www.beldex.io/research-labs" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">🔬</span>
+                <div class="ol-info"><h4>Research Labs</h4><p>R&D initiatives</p></div>
+              </a>
+              <a href="https://www.beldex.io/research-updates" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">📊</span>
+                <div class="ol-info"><h4>Research Updates</h4><p>Latest findings</p></div>
+              </a>
+              <a href="https://www.beldex.io/about-us" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">👥</span>
+                <div class="ol-info"><h4>About Us</h4><p>Team & mission</p></div>
+              </a>
+              <a href="https://beldex.io/masternode" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">🖥️</span>
+                <div class="ol-info"><h4>Masternodes</h4><p>Node setup & staking</p></div>
+              </a>
+              <a href="https://www.beldex.io/contributors" target="_blank" rel="noopener noreferrer" class="official-link-card">
+                <span class="ol-icon">🤝</span>
+                <div class="ol-info"><h4>Contributors</h4><p>Community builders</p></div>
+              </a>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 2: OFFICIAL APPS / PRODUCTS      -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header links-apps section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              <h3>Official Apps & Products</h3>
+            </div>
+            <div class="official-links-grid">
+              <a href="https://explorer.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🔍</span>
+                <div class="ol-info"><h4>Explorer</h4><p>Blockchain explorer</p></div>
+              </a>
+              <a href="https://wallet.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">💰</span>
+                <div class="ol-info"><h4>Web Wallet</h4><p>Browser-based wallet</p></div>
+              </a>
+              <a href="https://bridge.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🌉</span>
+                <div class="ol-info"><h4>Bridge</h4><p>Cross-chain bridge</p></div>
+              </a>
+              <a href="https://bns.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🏷️</span>
+                <div class="ol-info"><h4>BNS</h4><p>Beldex Name Service</p></div>
+              </a>
+              <a href="https://bchat.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">💬</span>
+                <div class="ol-info"><h4>BChat</h4><p>Private messenger</p></div>
+              </a>
+              <a href="https://belnet.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🛡️</span>
+                <div class="ol-info"><h4>BelNet</h4><p>Decentralized VPN</p></div>
+              </a>
+              <a href="https://browser.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🌐</span>
+                <div class="ol-info"><h4>Beldex Browser</h4><p>Privacy web browser</p></div>
+              </a>
+              <a href="https://www.beldex.ai/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🤖</span>
+                <div class="ol-info"><h4>BeldexAI</h4><p>AI-powered tools</p></div>
+              </a>
+              <a href="https://social.beldex.io/r/beldex/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">🗣️</span>
+                <div class="ol-info"><h4>Beldex Social</h4><p>Community forum</p></div>
+              </a>
+              <a href="https://beldex.io/usebdx" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">💳</span>
+                <div class="ol-info"><h4>Use BDX</h4><p>Spend BDX guide</p></div>
+              </a>
+              <a href="https://protocol.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card product-card">
+                <span class="ol-icon">⚙️</span>
+                <div class="ol-info"><h4>Protocol</h4><p>Protocol dashboard</p></div>
+              </a>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 3: MOBILE APP STORE LINKS       -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header links-mobile section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              <h3>Mobile App Downloads</h3>
+            </div>
+            <div class="official-links-grid">
+              <a href="https://play.google.com/store/apps/details?id=io.beldex.wallet" target="_blank" rel="noopener noreferrer" class="official-link-card mobile-card android">
+                <span class="ol-icon">💰</span>
+                <div class="ol-info"><h4>Beldex Wallet</h4><p>Android · Google Play</p></div>
+                <span class="store-badge android-badge">▶ Play Store</span>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=io.beldex.bchat" target="_blank" rel="noopener noreferrer" class="official-link-card mobile-card android">
+                <span class="ol-icon">💬</span>
+                <div class="ol-info"><h4>BChat Messenger</h4><p>Android · Google Play</p></div>
+                <span class="store-badge android-badge">▶ Play Store</span>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=io.beldex.belnet" target="_blank" rel="noopener noreferrer" class="official-link-card mobile-card android">
+                <span class="ol-icon">🛡️</span>
+                <div class="ol-info"><h4>BelNet VPN</h4><p>Android · Google Play</p></div>
+                <span class="store-badge android-badge">▶ Play Store</span>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=io.beldex.beldex_browser" target="_blank" rel="noopener noreferrer" class="official-link-card mobile-card android">
+                <span class="ol-icon">🌐</span>
+                <div class="ol-info"><h4>Beldex Browser</h4><p>Android · Google Play</p></div>
+                <span class="store-badge android-badge">▶ Play Store</span>
+              </a>
+              <a href="https://apps.apple.com/app/beldex-official-wallet/id1603063369" target="_blank" rel="noopener noreferrer" class="official-link-card mobile-card ios">
+                <span class="ol-icon">💰</span>
+                <div class="ol-info"><h4>Beldex Wallet</h4><p>iOS · App Store</p></div>
+                <span class="store-badge ios-badge"> App Store</span>
+              </a>
+              <a href="https://apps.apple.com/app/bchat-messenger/id1626066143" target="_blank" rel="noopener noreferrer" class="official-link-card mobile-card ios">
+                <span class="ol-icon">💬</span>
+                <div class="ol-info"><h4>BChat Messenger</h4><p>iOS · App Store</p></div>
+                <span class="store-badge ios-badge"> App Store</span>
+              </a>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 4: COMMUNITY & SOCIAL LINKS     -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header links-social section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <h3>Community & Social Media</h3>
+            </div>
+            <div class="official-links-grid">
+              <a href="https://linktr.ee/BeldexCoin" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">🌳</span>
+                <div class="ol-info"><h4>Linktree (BeldexCoin)</h4><p>All links in one place</p></div>
+              </a>
+              <a href="https://linktr.ee/beldex.io" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">🌳</span>
+                <div class="ol-info"><h4>Linktree (beldex.io)</h4><p>Official link hub</p></div>
+              </a>
+              <a href="https://x.com/BeldexCoin" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">𝕏</span>
+                <div class="ol-info"><h4>X (Twitter) — @BeldexCoin</h4><p>Main announcements</p></div>
+              </a>
+              <a href="https://x.com/Bchat_official" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">𝕏</span>
+                <div class="ol-info"><h4>X (Twitter) — @Bchat_official</h4><p>BChat updates</p></div>
+              </a>
+              <a href="https://t.me/BeldexCommunity" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">✈️</span>
+                <div class="ol-info"><h4>Telegram Community</h4><p>Main community chat</p></div>
+              </a>
+              <a href="https://t.me/official_beldex" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">✈️</span>
+                <div class="ol-info"><h4>Telegram Official</h4><p>Official announcements</p></div>
+              </a>
+              <a href="https://t.me/beldexcoin" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">✈️</span>
+                <div class="ol-info"><h4>Telegram Channel</h4><p>News channel</p></div>
+              </a>
+              <a href="https://discord.com/invite/Hj4MAmA5gs" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">👾</span>
+                <div class="ol-info"><h4>Discord</h4><p>Dev & community hub</p></div>
+              </a>
+              <a href="https://beldexcoin.medium.com/" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">📝</span>
+                <div class="ol-info"><h4>Medium</h4><p>Articles & deep dives</p></div>
+              </a>
+              <a href="https://www.facebook.com/beldexofficial/" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">📘</span>
+                <div class="ol-info"><h4>Facebook</h4><p>Social updates</p></div>
+              </a>
+              <a href="https://www.instagram.com/beldexcoin/" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">📸</span>
+                <div class="ol-info"><h4>Instagram</h4><p>Visual updates</p></div>
+              </a>
+              <a href="https://sc.linkedin.com/company/beldex-coin" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">💼</span>
+                <div class="ol-info"><h4>LinkedIn</h4><p>Professional network</p></div>
+              </a>
+              <a href="https://www.youtube.com/c/BELDEX" target="_blank" rel="noopener noreferrer" class="official-link-card social-card">
+                <span class="ol-icon">🎬</span>
+                <div class="ol-info"><h4>YouTube</h4><p>Videos & tutorials</p></div>
+              </a>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 5: GITHUB REPOS                 -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header links-code section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <h3>Source Code & GitHub</h3>
+            </div>
+            <div class="official-links-grid">
+              <a href="https://github.com/beldex-coin/beldex" target="_blank" rel="noopener noreferrer" class="official-link-card code-card">
+                <span class="ol-icon">🏗️</span>
+                <div class="ol-info"><h4>Beldex Core</h4><p>Main blockchain repo</p></div>
+              </a>
+              <a href="https://github.com/Beldex-Coin/bchat-android" target="_blank" rel="noopener noreferrer" class="official-link-card code-card">
+                <span class="ol-icon">💬</span>
+                <div class="ol-info"><h4>BChat Android</h4><p>Messenger app source</p></div>
+              </a>
+              <a href="https://github.com/Beldex-Coin/belnet-app" target="_blank" rel="noopener noreferrer" class="official-link-card code-card">
+                <span class="ol-icon">🛡️</span>
+                <div class="ol-info"><h4>BelNet App</h4><p>VPN app source</p></div>
+              </a>
+              <a href="https://github.com/Beldex-Coin/beldex-browser" target="_blank" rel="noopener noreferrer" class="official-link-card code-card">
+                <span class="ol-icon">🌐</span>
+                <div class="ol-info"><h4>Beldex Browser</h4><p>Browser app source</p></div>
+              </a>
+              <a href="https://github.com/Beldex-Coin/beldex-binance-bridge" target="_blank" rel="noopener noreferrer" class="official-link-card code-card">
+                <span class="ol-icon">🌉</span>
+                <div class="ol-info"><h4>Binance Bridge</h4><p>Bridge contract source</p></div>
+              </a>
+              <a href="https://github.com/Beldex-Coin/beldex-blockchain-explorer" target="_blank" rel="noopener noreferrer" class="official-link-card code-card">
+                <span class="ol-icon">🔍</span>
+                <div class="ol-info"><h4>Blockchain Explorer</h4><p>Explorer source code</p></div>
+              </a>
+            </div>
+
+            <!-- ═══════════════════════════════════════ -->
+            <!-- SECTION 6: DOCS, LEGAL & DOWNLOADS      -->
+            <!-- ═══════════════════════════════════════ -->
+            <div class="section-header links-docs section-spaced">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <h3>Documentation, Legal & Downloads</h3>
+            </div>
+            <div class="official-links-grid">
+              <a href="https://beldex.io/whitepaper.pdf" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">📄</span>
+                <div class="ol-info"><h4>Whitepaper</h4><p>Technical whitepaper PDF</p></div>
+              </a>
+              <a href="https://beldex.io/privacy-policy" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">🔒</span>
+                <div class="ol-info"><h4>Privacy Policy</h4><p>Data & privacy terms</p></div>
+              </a>
+              <a href="https://bchat.beldex.io/terms-and-conditions.html" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">📋</span>
+                <div class="ol-info"><h4>BChat Terms</h4><p>Terms & conditions</p></div>
+              </a>
+              <a href="https://deb.beldex.dev/" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">📦</span>
+                <div class="ol-info"><h4>Debian Packages (Dev)</h4><p>Linux dev builds</p></div>
+              </a>
+              <a href="https://deb.beldex.io/" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">📦</span>
+                <div class="ol-info"><h4>Debian Packages (Stable)</h4><p>Linux stable builds</p></div>
+              </a>
+              <a href="https://github.com/Beldex-Coin/beldex/releases" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">🚀</span>
+                <div class="ol-info"><h4>GitHub Releases</h4><p>All binary releases</p></div>
+              </a>
+              <a href="https://beldex.io/robots.txt" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">🤖</span>
+                <div class="ol-info"><h4>robots.txt</h4><p>Crawler directives</p></div>
+              </a>
+              <a href="https://www.beldex.io/sitemap.xml" target="_blank" rel="noopener noreferrer" class="official-link-card doc-card">
+                <span class="ol-icon">🗂️</span>
+                <div class="ol-info"><h4>Sitemap</h4><p>Full site index (XML)</p></div>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ECOSYSTEM TREE TAB -->
+        <div id="ecosystem" class="tab-content" role="tabpanel" aria-labelledby="tab-ecosystem" tabindex="0" hidden>
+          <div class="diagram">
+            <h2>Beldex Ecosystem Tree</h2>
+          </div>
+
+          <iframe
+            id="eco-tree-frame"
+            src=""
+            style="width:100%;min-height:1200px;border:none;background:transparent;display:block;"
+            title="Beldex Ecosystem Tree"
+            scrolling="auto"
+          ></iframe>
+          <script>
+            // Cache-busting for iframe - forces reload of latest beldex-tree.html
+            (function() {
+              var iframe = document.getElementById('eco-tree-frame');
+              var cacheBuster = new Date().getTime();
+              iframe.src = 'beldex-tree.html?embed=1&v=' + cacheBuster;
+            })();
+          </script>
+          <!-- Old inline tree replaced with iframe. Content is now served from beldex-tree.html -->
+          <div style="display:none;"><!-- removed eco-tree -->
+
+              <!-- ═══ LEVEL 0: ROOT ═══ -->
+              <div class="eco-root">
+                <div class="eco-title">BELDEX ECOSYSTEM</div>
+                <div class="eco-desc">Confidential Transactions &amp; Communications · Monero Fork · Conceptualized 2018</div>
+              </div>
+
+              <!-- Root trunk → horizontal bar → 3 drops (Row 1) -->
+              <div class="eco-trunk"></div>
+              <div class="eco-hbar"></div>
+              <div class="eco-drops-3">
+                <div class="eco-drop"><div class="eco-drop-line"></div></div>
+                <div class="eco-drop"><div class="eco-drop-line"></div></div>
+                <div class="eco-drop"><div class="eco-drop-line"></div></div>
+              </div>
+
+              <!-- ═══ LEVEL 1 — ROW 1: 3 PILLARS ═══ -->
+              <div class="eco-level-tag">Level 1 — Core Pillars</div>
+
+              <div class="eco-pillars-row">
+
+                <!-- ──── PILLAR 1: Blockchain Core ──── -->
+                <div class="eco-pillar-group">
+                  <div class="eco-pillar">
+                    <div class="eco-emoji">⛓️</div>
+                    <div class="eco-title">Blockchain Core</div>
+                    <div class="eco-desc">PoS Consensus · Masternodes</div>
+                  </div>
+                  <div class="eco-inner-split">
+                    <div class="eco-inner-trunk"></div>
+                    <div class="eco-inner-bar"></div>
+                    <div class="eco-inner-drops">
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                    </div>
+                  </div>
+                  <div class="eco-children-row">
+                    <div class="eco-comp"><div class="eco-title">PoS Consensus</div><div class="eco-desc">Block validation</div></div>
+                    <div class="eco-comp"><div class="eco-title">Masternodes</div><div class="eco-desc">10K BDX stake</div></div>
+                    <div class="eco-comp"><div class="eco-title">Major Upgrades</div><div class="eco-desc">Bucephalus → Bern → Obscura</div></div>
+                  </div>
+                  <div class="eco-leaf-connectors">
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                  </div>
+                  <div class="eco-leaves-row">
+                    <div class="eco-leaf"><div class="eco-title">Block Proposer</div><div class="eco-desc">Energy efficient</div></div>
+                    <div class="eco-leaf"><div class="eco-title">2,000+ Masternodes</div><div class="eco-desc">Live count varies</div></div>
+                    <div class="eco-leaf"><div class="eco-title">EVM Integration</div><div class="eco-desc">⏳ ROADMAP · Mid-2026</div></div>
+                  </div>
+                </div>
+
+                <!-- ──── PILLAR 2: Privacy Protocol ──── -->
+                <div class="eco-pillar-group">
+                  <div class="eco-pillar">
+                    <div class="eco-emoji">🛡️</div>
+                    <div class="eco-title">Privacy Protocol</div>
+                    <div class="eco-desc">Cryptography Layer</div>
+                  </div>
+                  <div class="eco-inner-split">
+                    <div class="eco-inner-trunk"></div>
+                    <div class="eco-inner-bar"></div>
+                    <div class="eco-inner-drops">
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                    </div>
+                  </div>
+                  <div class="eco-children-row">
+                    <div class="eco-comp"><div class="eco-title">Ring Signatures</div><div class="eco-desc">Sender privacy</div></div>
+                    <div class="eco-comp"><div class="eco-title">Stealth Addresses</div><div class="eco-desc">Receiver privacy</div></div>
+                    <div class="eco-comp"><div class="eco-title">RingCT</div><div class="eco-desc">Amount privacy</div></div>
+                  </div>
+                  <div class="eco-leaf-connectors">
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                  </div>
+                  <div class="eco-leaves-row">
+                    <div class="eco-leaf"><div class="eco-title">Ring Size = 11</div><div class="eco-desc">10 decoys per tx</div></div>
+                    <div class="eco-leaf"><div class="eco-title">One-Time Keys</div><div class="eco-desc">Unlinkable</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Bulletproofs++</div><div class="eco-desc">Compact range proofs</div></div>
+                  </div>
+                </div>
+
+                <!-- ──── PILLAR 3: Privacy Apps ──── -->
+                <div class="eco-pillar-group" data-cols="4">
+                  <div class="eco-pillar">
+                    <div class="eco-emoji">📱</div>
+                    <div class="eco-title">Privacy Apps</div>
+                    <div class="eco-desc">Products &amp; Services</div>
+                  </div>
+                  <div class="eco-inner-split">
+                    <div class="eco-inner-trunk"></div>
+                    <div class="eco-inner-bar"></div>
+                    <div class="eco-inner-drops">
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                    </div>
+                  </div>
+                  <div class="eco-children-row">
+                    <div class="eco-comp"><div class="eco-title">💬 BChat</div><div class="eco-desc">Messenger</div><div class="eco-status eco-status-live">LIVE</div></div>
+                    <div class="eco-comp"><div class="eco-title">🌐 BelNet</div><div class="eco-desc">dVPN</div><div class="eco-status eco-status-live">LIVE</div></div>
+                    <div class="eco-comp"><div class="eco-title">🧭 Browser</div><div class="eco-desc">Private Web</div></div>
+                    <div class="eco-comp"><div class="eco-title">👛 Wallet</div><div class="eco-desc">Multi-platform</div></div>
+                  </div>
+                  <div class="eco-leaf-connectors">
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                  </div>
+                  <div class="eco-leaves-row">
+                    <div class="eco-leaf"><div class="eco-title">E2E Encrypted</div><div class="eco-desc">Calls · Pay rolling out</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Onion Routing</div><div class="eco-desc">IP masking</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Ad &amp; Tracker Block</div><div class="eco-desc">AI summaries planned</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Chrome · Firefox</div><div class="eco-desc">Mobile · Desktop</div></div>
+                  </div>
+                </div>
+
+              </div><!-- /.eco-pillars-row (Row 1) -->
+
+              <!-- Row separator — both rows are Level 1 pillars; no parent→child arrow between them -->
+              <div class="eco-row-sep">More Core Pillars</div>
+
+              <!-- ═══ LEVEL 1 — ROW 2: 3 MORE PILLARS ═══ -->
+              <div class="eco-level-tag">Level 1 — Continued</div>
+
+              <div class="eco-pillars-row">
+
+                <!-- ──── PILLAR 4: Interoperability ──── -->
+                <div class="eco-pillar-group">
+                  <div class="eco-pillar">
+                    <div class="eco-emoji">🌉</div>
+                    <div class="eco-title">Interoperability</div>
+                    <div class="eco-desc">Cross-Chain · Naming</div>
+                  </div>
+                  <div class="eco-inner-split">
+                    <div class="eco-inner-trunk"></div>
+                    <div class="eco-inner-bar"></div>
+                    <div class="eco-inner-drops">
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                    </div>
+                  </div>
+                  <div class="eco-children-row">
+                    <div class="eco-comp"><div class="eco-title">Beldex Bridge</div><div class="eco-desc">Legacy wBDX path</div></div>
+                    <div class="eco-comp"><div class="eco-title">LayerZero OFT</div><div class="eco-desc">Multichain transport</div><div class="eco-status eco-status-live">LIVE</div></div>
+                    <div class="eco-comp"><div class="eco-title">BNS</div><div class="eco-desc">.bdx domains</div><div class="eco-status eco-status-live">LIVE</div></div>
+                  </div>
+                  <div class="eco-leaf-connectors">
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                  </div>
+                  <div class="eco-leaves-row">
+                    <div class="eco-leaf"><div class="eco-title">BSC wBDX</div><div class="eco-desc">Wrapped asset swap</div></div>
+                    <div class="eco-leaf"><div class="eco-title">ETH · SOL · ARB</div><div class="eco-desc">Via Stargate · 1:1</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Chat · VPN · Pay</div><div class="eco-desc">Human-readable</div></div>
+                  </div>
+                </div>
+
+                <!-- ──── PILLAR 5: BDX Token ──── -->
+                <div class="eco-pillar-group">
+                  <div class="eco-pillar">
+                    <div class="eco-emoji">🪙</div>
+                    <div class="eco-title">BDX Token</div>
+                    <div class="eco-desc">Tokenomics · Economics</div>
+                  </div>
+                  <div class="eco-inner-split">
+                    <div class="eco-inner-trunk"></div>
+                    <div class="eco-inner-bar"></div>
+                    <div class="eco-inner-drops">
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                    </div>
+                  </div>
+                  <div class="eco-children-row">
+                    <div class="eco-comp"><div class="eco-title">Staking</div><div class="eco-desc">10K BDX lock</div></div>
+                    <div class="eco-comp"><div class="eco-title">Burn Mechanism</div><div class="eco-desc">Deflationary</div></div>
+                    <div class="eco-comp"><div class="eco-title">Exchanges</div><div class="eco-desc">CEX listings</div></div>
+                  </div>
+                  <div class="eco-leaf-connectors">
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                  </div>
+                  <div class="eco-leaves-row">
+                    <div class="eco-leaf"><div class="eco-title">Block Rewards</div><div class="eco-desc">Masternode queue</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Flash + BNS</div><div class="eco-desc">Fee burns</div></div>
+                    <div class="eco-leaf"><div class="eco-title">KuCoin · MEXC</div><div class="eco-desc">Gate · Bitget</div></div>
+                  </div>
+                </div>
+
+                <!-- ──── PILLAR 6: BeldexAI ──── -->
+                <div class="eco-pillar-group">
+                  <div class="eco-pillar">
+                    <div class="eco-emoji">🤖</div>
+                    <div class="eco-title">BeldexAI</div>
+                    <div class="eco-desc">Intelligence · In Progress</div>
+                  </div>
+                  <div class="eco-inner-split">
+                    <div class="eco-inner-trunk"></div>
+                    <div class="eco-inner-bar"></div>
+                    <div class="eco-inner-drops">
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                      <div class="eco-inner-drop"><div class="eco-inner-drop-line"></div></div>
+                    </div>
+                  </div>
+                  <div class="eco-children-row">
+                    <div class="eco-comp"><div class="eco-title">Federated Learning</div><div class="eco-desc">On-device AI</div></div>
+                    <div class="eco-comp"><div class="eco-title">Spam Detection</div><div class="eco-desc">Fraud filtering</div></div>
+                    <div class="eco-comp"><div class="eco-title">Optimization</div><div class="eco-desc">Traffic routing</div></div>
+                  </div>
+                  <div class="eco-leaf-connectors">
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                    <div class="eco-leaf-connector"><div class="eco-leaf-stem"></div><div class="eco-leaf-arrow"></div></div>
+                  </div>
+                  <div class="eco-leaves-row">
+                    <div class="eco-leaf"><div class="eco-title">No Data Shared</div><div class="eco-desc">Privacy-first</div></div>
+                    <div class="eco-leaf"><div class="eco-title">BChat + BelNet</div><div class="eco-desc">Scam prevention</div></div>
+                    <div class="eco-leaf"><div class="eco-title">Smart Routing</div><div class="eco-desc">Network speed</div></div>
+                  </div>
+                </div>
+
+              </div><!-- /.eco-pillars-row (Row 2) -->
+
+              <!-- Legend -->
+              <div class="eco-legend">
+                <div class="eco-legend-item"><div class="eco-legend-swatch eco-legend-swatch-root"></div>Root</div>
+                <div class="eco-legend-item"><div class="eco-legend-swatch eco-legend-swatch-pillar"></div>Pillar</div>
+                <div class="eco-legend-item"><div class="eco-legend-swatch eco-legend-swatch-comp"></div>Component</div>
+                <div class="eco-legend-item"><div class="eco-legend-swatch eco-legend-swatch-leaf"></div>Detail</div>
+                <div class="eco-legend-item"><div class="eco-legend-swatch eco-legend-swatch-conn"></div>Connection</div>
+                <div class="eco-legend-item"><div class="eco-legend-swatch eco-legend-swatch-arrow"></div>Flow ↓</div>
+                <div class="eco-legend-item"><div class="eco-legend-badge eco-status-live">LIVE</div>Confirmed live</div>
+                <div class="eco-legend-item"><div class="eco-legend-badge eco-status-progress">IN PROGRESS</div>Rolling out</div>
+                <div class="eco-legend-item"><div class="eco-legend-badge eco-status-roadmap">ROADMAP</div>Planned</div>
+              </div>
+
+            </div><!-- /hidden old tree -->
+
+        </div>
+
+        <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="scroll-top-btn" title="Go to top" aria-label="Return to top of page">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>

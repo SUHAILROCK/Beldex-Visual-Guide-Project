@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>zk-SNARKs - Beldex Technology</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* ===== Proof of Stake Page — Premium Redesign ===== */
+      :root {
+        --zk-accent: #ef4444;
+        --zk-accent-dim: rgba(239,68,68,0.12);
+        --zk-green: #29e0a9;
+        --zk-blue: #3b82f6;
+        --zk-purple: #a78bfa;
+        --zk-dark: #080a10;
+        --zk-card-bg: linear-gradient(135deg, rgba(14,16,22,0.95), rgba(10,12,18,0.92));
+        --zk-border: rgba(255,255,255,0.06);
+        --zk-text: #cbd5e1;
+        --zk-text-dim: rgba(203,213,225,0.5);
+      }
+
+      .zk-page { min-height: 100vh; background: var(--zk-dark); color: var(--zk-text); font-family: 'Inter', sans-serif; }
+
+      .zk-hero {
+        position: relative; padding: 60px 32px 48px;
+        background: radial-gradient(ellipse at 20% 0%, rgba(239,68,68,0.08), transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(59,130,246,0.06), transparent 50%), linear-gradient(180deg, #0c0e14 0%, #080a10 100%);
+        border-bottom: 1px solid var(--zk-border); overflow: hidden;
+      }
+      .zk-hero::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.5; pointer-events: none; }
+      .zk-hero-inner { max-width: 880px; margin: 0 auto; position: relative; z-index: 1; }
+      .zk-back { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: rgba(255,255,255,0.35); text-decoration: none; margin-bottom: 28px; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); transition: all 0.25s ease; }
+      .zk-back:hover { color: var(--zk-accent); border-color: rgba(239,68,68,0.2); background: rgba(239,68,68,0.04); }
+      .zk-hero-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; padding: 5px 14px; border-radius: 100px; background: var(--zk-accent-dim); color: var(--zk-accent); border: 1px solid rgba(239,68,68,0.2); margin-bottom: 16px; }
+      .zk-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 700; color: #f8fafc; margin: 0 0 12px 0; line-height: 1.15; letter-spacing: -0.02em; }
+      .zk-hero-sub { font-size: 1.08rem; color: rgba(203,213,225,0.6); margin: 0 0 32px 0; max-width: 520px; line-height: 1.65; }
+      .zk-hero-sub strong { color: var(--zk-accent); font-weight: 600; }
+      .zk-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+      .zk-stat { display: flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--zk-border); backdrop-filter: blur(6px); }
+      .zk-stat-emoji { font-size: 1.15rem; }
+      .zk-stat-label { font-size: 0.68rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+      .zk-stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; font-weight: 600; color: #f1f5f9; }
+      .zk-live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--zk-green); box-shadow: 0 0 8px rgba(41,224,169,0.5); margin-right: 5px; animation: zkPulse 2s ease-in-out infinite; }
+      @keyframes zkPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+      .zk-body { max-width: 880px; margin: 0 auto; padding: 40px 32px 60px; }
+      .zk-card { background: var(--zk-card-bg); border: 1px solid var(--zk-border); border-radius: 18px; padding: 36px 32px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03); }
+      .zk-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.04), transparent 40%); pointer-events: none; }
+      .zk-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #f1f5f9; margin: 0 0 20px 0; line-height: 1.3; padding-left: 16px; border-left: 3px solid var(--zk-accent); }
+      .zk-card:nth-child(3n+1) h2 { border-left-color: var(--zk-green); }
+      .zk-card:nth-child(3n+2) h2 { border-left-color: var(--zk-blue); }
+      .zk-card:nth-child(3n) h2 { border-left-color: var(--zk-purple); }
+      .zk-card p { font-size: 0.92rem; color: var(--zk-text); line-height: 1.75; margin: 0 0 14px 0; }
+      .zk-card p:last-child { margin-bottom: 0; }
+      .zk-card p strong { color: #e2e8f0; }
+      .zk-card ul { list-style: none; padding: 0; margin: 10px 0 0; }
+      .zk-card ul li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; color: var(--zk-text); line-height: 1.6; display: flex; align-items: flex-start; gap: 10px; }
+      .zk-card ul li:last-child { border-bottom: none; }
+      .zk-card ul li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--zk-accent); flex-shrink: 0; margin-top: 8px; }
+      .zk-card ul li strong { color: #e2e8f0; }
+
+      .zk-highlight { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.12); border-left: 3px solid var(--zk-accent); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+      .zk-highlight p { color: rgba(203,213,225,0.8); font-size: 0.88rem; margin: 0 !important; }
+
+      .zk-feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 18px 0; }
+      .zk-feature-item { background: rgba(255,255,255,0.02); border: 1px solid var(--zk-border); border-radius: 14px; padding: 22px 20px; transition: border-color 0.3s, transform 0.3s; }
+      .zk-feature-item:hover { border-color: rgba(239,68,68,0.2); transform: translateY(-2px); }
+      .zk-feature-icon { font-size: 1.3rem; display: block; margin-bottom: 10px; }
+      .zk-feature-item h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: #e2e8f0; margin: 0 0 6px 0; }
+      .zk-feature-item p { font-size: 0.84rem; color: var(--zk-text); line-height: 1.6; margin: 0; }
+
+      .zk-flow { display: flex; align-items: center; gap: 0; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
+      .zk-flow-step { background: rgba(255,255,255,0.03); border: 1px solid var(--zk-border); border-radius: 12px; padding: 16px 18px; text-align: center; min-width: 140px; flex: 1; }
+      .zk-step-num { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--zk-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+      .zk-step-label { font-size: 0.82rem; color: var(--zk-text); line-height: 1.4; }
+      .zk-flow-arrow { color: rgba(255,255,255,0.15); font-size: 1.2rem; padding: 0 8px; }
+
+      .zk-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.86rem; }
+      .zk-table thead th { background: rgba(255,255,255,0.04); padding: 12px 16px; text-align: left; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.78rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--zk-border); }
+      .zk-table tbody td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--zk-text); }
+      .zk-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+      .zk-footer { text-align: center; padding: 28px 32px; border-top: 1px solid var(--zk-border); font-size: 0.82rem; color: rgba(255,255,255,0.25); }
+      .zk-footer a { color: var(--zk-accent); text-decoration: none; }
+      .zk-footer a:hover { opacity: 0.7; }
+
+      @media (max-width: 768px) {
+        .zk-hero { padding: 40px 20px 36px; }
+        .zk-hero h1 { font-size: 1.8rem; }
+        .zk-body { padding: 28px 16px 40px; }
+        .zk-card { padding: 24px 20px; border-radius: 14px; }
+        .zk-feature-grid { grid-template-columns: 1fr; }
+        .zk-stats { flex-direction: column; gap: 8px; }
+        .zk-flow { flex-direction: column; }
+        .zk-flow-arrow { transform: rotate(90deg); }
+      }
+    
+/* ── Comprehensive Light Theme ── */
+      [data-theme="light"] .tech-page,
+      [data-theme="light"] .cn-page,
+      [data-theme="light"] .rs-page,
+      [data-theme="light"] .rc-page,
+      [data-theme="light"] .sa-page,
+      [data-theme="light"] .bp-page,
+      [data-theme="light"] .mn-page,
+      [data-theme="light"] .bn-page,
+      [data-theme="light"] .lz-page,
+      [data-theme="light"] .ev-page,
+      [data-theme="light"] .zk-page,
+      [data-theme="light"] .vr-page,
+      [data-theme="light"] .ps-page,
+      [data-theme="light"] .ut-page,
+      [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
+
+      /* Cards */
+      [data-theme="light"] [class*="-card"] {
+        background: #ffffff !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-card"]::before { background: radial-gradient(ellipse at 0% 0%, rgba(0,0,0,0.02), transparent 40%) !important; }
+      [data-theme="light"] [class*="-card"] h2 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-card"] h3 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] h4 { color: rgba(26,26,46,0.85) !important; }
+      [data-theme="light"] [class*="-card"] p { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-card"] li { color: rgba(26,26,46,0.58) !important; }
+      [data-theme="light"] [class*="-card"] p strong { color: rgba(26,26,46,0.85) !important; }
+
+      /* Hero sections */
+      [data-theme="light"] [class*="-hero"] {
+        background: linear-gradient(180deg, rgba(13,147,115,0.03) 0%, rgba(37,99,235,0.02) 50%, transparent 100%) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-hero"] h1 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-hero-sub"],
+      [data-theme="light"] [class*="-subtitle"] { color: rgba(26,26,46,0.55) !important; }
+
+      /* Stats */
+      [data-theme="light"] [class*="-stat"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-stat-label"] { color: rgba(26,26,46,0.4) !important; }
+      [data-theme="light"] [class*="-stat-value"] { color: #1a1a2e !important; }
+
+      /* Back links */
+      [data-theme="light"] [class*="-back"] {
+        color: rgba(26,26,46,0.4) !important;
+        border-color: rgba(0,0,0,0.06) !important;
+        background: rgba(0,0,0,0.02) !important;
+      }
+
+      /* Highlight boxes */
+      [data-theme="light"] [class*="-highlight"] {
+        background: rgba(13,147,115,0.04) !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-highlight"] p { color: rgba(26,26,46,0.7) !important; }
+
+      /* Tables */
+      [data-theme="light"] [class*="-table"] th {
+        color: rgba(26,26,46,0.4) !important;
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+      }
+      [data-theme="light"] [class*="-table"] td {
+        color: rgba(26,26,46,0.55) !important;
+        border-bottom-color: rgba(0,0,0,0.04) !important;
+      }
+      [data-theme="light"] [class*="-table"] td:first-child { color: #1a1a2e !important; }
+
+      /* Feature/mechanism grids */
+      [data-theme="light"] [class*="-mech"],
+      [data-theme="light"] [class*="-feature"],
+      [data-theme="light"] [class*="-compare-box"] {
+        background: rgba(0,0,0,0.01) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+      }
+      [data-theme="light"] [class*="-mech"] h4,
+      [data-theme="light"] [class*="-feature"] h4 { color: #1a1a2e !important; }
+      [data-theme="light"] [class*="-mech"] p,
+      [data-theme="light"] [class*="-feature"] p { color: rgba(26,26,46,0.5) !important; }
+      [data-theme="light"] [class*="-mech-detail"] {
+        background: rgba(0,0,0,0.02) !important;
+        border-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.55) !important;
+      }
+
+      /* Footers */
+      [data-theme="light"] [class*="-footer"] {
+        border-top-color: rgba(0,0,0,0.04) !important;
+        color: rgba(26,26,46,0.25) !important;
+      }
+
+      /* Image captions */
+      [data-theme="light"] [class*="-image-caption"] {
+        background: rgba(0,0,0,0.03) !important;
+        color: rgba(26,26,46,0.4) !important;
+      }
+
+      /* Closing sections */
+      [data-theme="light"] [class*="-closing"] { border-top-color: rgba(0,0,0,0.04) !important; }
+      [data-theme="light"] [class*="-closing"] p { color: rgba(26,26,46,0.55) !important; }
+
+      /* History timeline items */
+      [data-theme="light"] [class*="-history"]::before { opacity: 0.5 !important; }
+      [data-theme="light"] [class*="-history-text"] { color: rgba(26,26,46,0.6) !important; }
+      [data-theme="light"] [class*="-history-item"]::before { border-color: #f5f7fa !important; }
+
+      /* Flow steps */
+      [data-theme="light"] [class*="-flow-step"] {
+        background: #ffffff !important;
+        border-color: rgba(13,147,115,0.1) !important;
+      }
+      [data-theme="light"] [class*="-flow-step"] .step-label { color: rgba(26,26,46,0.8) !important; }
+
+      /* Timeline text */
+      [data-theme="light"] [class*="-timeline-text"] span { color: rgba(0,0,0,0.15) !important; }
+
+      /* Badges */
+      [data-theme="light"] [class*="-badge"] { border-color: rgba(0,0,0,0.06) !important; }
+    </style>
+      <script>
+      (function() {
+        var t = localStorage.getItem('beldex-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
+    <div class="zk-page">
+
+      <div class="zk-hero">
+        <div class="zk-hero-inner">
+          <a href="../../Index.html" class="zk-back">&larr; Back to Visual Guide</a>
+          <div class="zk-hero-badge">Research</div>
+          <h1>zk-SNARKs</h1>
+          <p class="zk-hero-sub">Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge — a cryptographic breakthrough for <strong>privacy-enhanced smart contracts</strong> on Beldex.</p>
+          <div class="zk-stats">
+            <div class="zk-stat"><span class="zk-stat-emoji"></span><div><div class="zk-stat-label">Category</div><div class="zk-stat-value">Zero-Knowledge Proofs</div></div></div>
+            <div class="zk-stat"><span class="zk-stat-emoji"></span><div><div class="zk-stat-label">Target Use</div><div class="zk-stat-value">Private Smart Contracts</div></div></div>
+            <div class="zk-stat"><span class="zk-stat-emoji"></span><div><div class="zk-stat-label">Status</div><div class="zk-stat-value">Research</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="zk-body">
+        <div class="zk-card"><h2>What Are zk-SNARKs?</h2><p>zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge) allow one party to prove to another that a statement is true, without revealing any information beyond the truth of the statement itself.</p><p>While Beldex already uses ring signatures and RingCT for Layer 1 privacy, zk-SNARKs are being researched for integration with the <strong>EVM layer</strong> — enabling privacy-preserving smart contracts.</p><div class="zk-highlight"><p><strong>Future Vision:</strong> zk-SNARKs will potentially enable Beldex smart contracts to execute with full computational privacy — users can interact with DeFi without exposing positions, balances, or strategies.</p></div></div>
+        <div class="zk-card"><h2>How zk-SNARKs Work</h2><p>The core properties that make zk-SNARKs revolutionary:</p><div class="zk-feature-grid"><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Zero-Knowledge</h4><p>The verifier learns absolutely nothing beyond "this statement is true." No data about inputs or computation leaks.</p></div><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Succinct</h4><p>Proofs are extremely compact (a few hundred bytes) regardless of computation complexity. Verification is nearly instant.</p></div><div class="zk-feature-item"><span class="zk-feature-icon">🤝</span><h4>Non-Interactive</h4><p>The prover sends a single message — no back-and-forth communication needed. Ideal for blockchains.</p></div><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Arithmetic Circuits</h4><p>Computations are converted into arithmetic circuits — any program can be "compiled" into a provable circuit.</p></div></div></div>
+        <div class="zk-card"><h2>How zk-SNARKs Would Work on Beldex</h2><p>The envisioned integration with Beldex's EVM layer:</p><div class="zk-flow"><div class="zk-flow-step"><span class="zk-step-num">Step 1</span><span class="zk-step-label">Contract logic compiled to zk circuit</span></div><span class="zk-flow-arrow">&rarr;</span><div class="zk-flow-step"><span class="zk-step-num">Step 2</span><span class="zk-step-label">User executes privately off-chain</span></div><span class="zk-flow-arrow">&rarr;</span><div class="zk-flow-step"><span class="zk-step-num">Step 3</span><span class="zk-step-label">zk-SNARK proof generated</span></div><span class="zk-flow-arrow">&rarr;</span><div class="zk-flow-step"><span class="zk-step-num">Step 4</span><span class="zk-step-label">Only the proof submitted on-chain</span></div></div></div>
+        <div class="zk-card"><h2>zk-SNARKs vs Ring Signatures</h2><table class="zk-table"><thead><tr><th>Feature</th><th>Ring Signatures (current)</th><th>zk-SNARKs (planned)</th></tr></thead><tbody><tr><td>Privacy Model</td><td>Hides sender among decoys</td><td>Proves validity without revealing anything</td></tr><tr><td>Proof Size</td><td>Grows with ring size</td><td>Constant (very small)</td></tr><tr><td>Trusted Setup</td><td>Not required</td><td>Required (or use zk-STARKs)</td></tr><tr><td>Smart Contract Privacy</td><td>Not applicable</td><td>Full computation privacy</td></tr><tr><td>Maturity on Beldex</td><td>Production (live)</td><td>Research phase</td></tr></tbody></table></div>
+        <div class="zk-card"><h2>Why Beldex is Researching zk-SNARKs</h2><ul><li><strong>Private smart contracts:</strong> Ring signatures protect L1 transactions, but EVM interactions are transparent. zk-SNARKs extend privacy to the smart contract layer.</li><li><strong>Scalability benefits:</strong> zk-SNARKs compress complex computations into tiny proofs, potentially enabling rollup-style architectures.</li><li><strong>Complementary to existing tech:</strong> zk-SNARKs add a new privacy layer specifically for EVM interactions and programmable privacy.</li><li><strong>Long-term vision:</strong> Full-stack privacy — from L1 (RingCT + ring sigs) to L2 smart contracts (zk-SNARKs).</li></ul></div>
+      </div>
+
+      
+      <div class="zk-footer"><p>Beldex Visual Guide &mdash; <a href="../../Index.html">Return to Main Guide</a></p></div>
+    </div>
+      <script>
+      (function() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        btn.textContent = isLight ? '\u{1F319}' : '\u{2600}\u{FE0F}';
+        btn.addEventListener('click', function() {
+          var nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+          document.documentElement.classList.add('theme-transitioning');
+          if (nowLight) {
+            document.documentElement.removeAttribute('data-theme');
+            btn.textContent = '\u{2600}\u{FE0F}';
+            localStorage.setItem('beldex-theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = '\u{1F319}';
+            localStorage.setItem('beldex-theme', 'light');
+          }
+          setTimeout(function() { document.documentElement.classList.remove('theme-transitioning'); }, 500);
+        });
+      })();
+    </script>
+  </body>
+</html>
