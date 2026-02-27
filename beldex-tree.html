@@ -19,7 +19,7 @@
     color: #e2e8f0;
     font-family: 'Sora', sans-serif;
     min-height: 100vh;
-    padding: 40px 20px 80px;
+    padding: 48px 24px 100px;
   }
 
   body::before {
@@ -27,33 +27,33 @@
     position: fixed;
     inset: 0;
     background-image:
-      radial-gradient(rgba(56,189,126,0.04) 1px, transparent 1px),
-      radial-gradient(rgba(99,102,241,0.03) 1px, transparent 1px);
+      radial-gradient(rgba(56,189,126,0.07) 1px, transparent 1px),
+      radial-gradient(rgba(99,102,241,0.05) 1px, transparent 1px);
     background-size: 30px 30px, 50px 50px;
     background-position: 0 0, 25px 25px;
     pointer-events: none;
     z-index: 0;
   }
 
-  .page { position: relative; z-index: 1; max-width: 1020px; margin: 0 auto; }
+  .page { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; }
 
-  /* Header */
-  .header { text-align: center; margin-bottom: 48px; }
+  /* ─── HEADER ─── */
+  .header { text-align: center; margin-bottom: 52px; }
   .header .pill {
     display: inline-block;
     background: linear-gradient(135deg, #38bd7e, #22d3ee);
     color: #080d18;
     font-weight: 700;
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     letter-spacing: 2px;
     text-transform: uppercase;
     padding: 5px 18px;
     border-radius: 50px;
     margin-bottom: 14px;
-    box-shadow: 0 0 20px rgba(56,189,126,0.15);
+    box-shadow: 0 0 24px rgba(56,189,126,0.25);
   }
   .header h1 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-weight: 800;
     letter-spacing: -0.04em;
     background: linear-gradient(135deg, #fff 30%, #38bd7e 60%, #22d3ee);
@@ -62,7 +62,7 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
-  .header .sub { color: #64748b; font-size: 0.88rem; margin-top: 6px; }
+  .header .sub { color: #64748b; font-size: 0.95rem; margin-top: 6px; }
   .header .back-link {
     display: inline-flex; align-items: center; gap: 6px;
     color: #64748b; text-decoration: none; font-size: 0.78rem;
@@ -76,87 +76,188 @@
   /* ─── TREE ─── */
   .tree-level { display: flex; flex-direction: column; align-items: center; }
 
-  /* ─── NODES ─── */
+  /* ─── NODE BASE ─── */
   .node-box {
     border-radius: 16px; padding: 16px 24px; text-align: center;
     position: relative; overflow: visible;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(.4,0,.2,1);
+    will-change: transform, box-shadow;
+  }
+
+  /* ─── ROOT NODE ─── */
+  .node-root {
+    background: linear-gradient(135deg, #0d2418, #122c20, #0f2a1e);
+    border: 2px solid #38bd7e;
+    box-shadow:
+      0 0 60px rgba(56,189,126,0.12),
+      0 0 120px rgba(56,189,126,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    padding: 26px 56px;
+  }
+  .node-root:hover {
+    transform: translateY(-5px);
+    box-shadow:
+      0 0 80px rgba(56,189,126,0.22),
+      0 0 160px rgba(56,189,126,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .node-root .n-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #38bd7e;
+    letter-spacing: 3px;
+    text-shadow: 0 0 30px rgba(56,189,126,0.4);
+  }
+  .node-root .n-desc { font-size: 0.9rem; color: #94a3b8; margin-top: 6px; }
+
+  /* ─── PILLAR NODE ─── */
+  .node-pillar {
+    background: linear-gradient(160deg, rgba(20,28,44,0.97), rgba(12,18,30,0.99));
+    border: 1.5px solid rgba(255,255,255,0.09);
+    border-top-width: 3px;
+    padding: 20px 18px 16px;
+    min-width: 160px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 24px -6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+    position: relative;
+    overflow: hidden;
     transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
   }
-  .node-box:hover { transform: translateY(-3px); }
-
-  /* Root */
-  .node-root {
-    background: linear-gradient(135deg, #0f2a1e, #153a2a);
-    border: 2px solid #38bd7e;
-    box-shadow: 0 0 50px rgba(56,189,126,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
-    padding: 22px 44px;
+  .node-pillar::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 60px; opacity: 0.10; pointer-events: none; z-index: 0;
+    transition: opacity 0.3s ease;
   }
-  .node-root:hover { box-shadow: 0 0 60px rgba(56,189,126,0.2); }
-  .node-root .n-title {
-    font-family: 'IBM Plex Mono', monospace; font-size: 1.2rem;
-    font-weight: 700; color: #38bd7e; letter-spacing: 2px;
-  }
-  .node-root .n-desc { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
-
-  /* Pillar */
-  .node-pillar {
-    background: linear-gradient(145deg, rgba(18,24,38,0.95), rgba(12,18,30,0.98));
-    border: 1.5px solid rgba(255,255,255,0.08);
-    padding: 16px 20px; min-width: 140px;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 4px 20px -6px rgba(0,0,0,0.4);
-  }
-  .node-pillar .n-emoji { font-size: 1.3rem; margin-bottom: 6px; }
+  .node-pillar:hover { transform: translateY(-6px) scale(1.015); }
+  .node-pillar .n-emoji { font-size: 1.5rem; margin-bottom: 8px; position: relative; z-index: 1; }
   .node-pillar .n-title {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
-    font-weight: 700; color: #f1f5f9;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    position: relative; z-index: 1;
   }
-  .node-pillar .n-desc { font-size: 0.65rem; color: #64748b; margin-top: 3px; }
+  .node-pillar .n-desc { font-size: 0.78rem; color: #64748b; margin-top: 4px; position: relative; z-index: 1; }
 
-  /* Per-pillar accent colors */
-  .pillar-group:nth-child(1) .node-pillar { border-color: rgba(56,189,126,0.2); }
-  .pillar-group:nth-child(1) .node-pillar:hover { border-color: rgba(56,189,126,0.5); box-shadow: 0 8px 30px -8px rgba(56,189,126,0.15); }
-  .pillar-group:nth-child(2) .node-pillar { border-color: rgba(139,92,246,0.2); }
-  .pillar-group:nth-child(2) .node-pillar:hover { border-color: rgba(139,92,246,0.5); box-shadow: 0 8px 30px -8px rgba(139,92,246,0.15); }
-  .pillar-group:nth-child(3) .node-pillar { border-color: rgba(59,130,246,0.2); }
-  .pillar-group:nth-child(3) .node-pillar:hover { border-color: rgba(59,130,246,0.5); box-shadow: 0 8px 30px -8px rgba(59,130,246,0.15); }
+  /* ── Pillar 1: Blockchain Core — green ── */
+  .pillar-group.pillar-1 .node-pillar { border-top-color: #38bd7e; }
+  .pillar-group.pillar-1 .node-pillar::before { background: radial-gradient(ellipse at 50% 0%, #38bd7e, transparent 70%); }
+  .pillar-group.pillar-1 .node-pillar .n-title { color: #6ee9b7; }
+  .pillar-group.pillar-1 .node-pillar:hover { border-color: rgba(56,189,126,0.55); border-top-color: #38bd7e; box-shadow: 0 12px 40px -8px rgba(56,189,126,0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .pillar-group.pillar-1 .node-pillar:hover::before { opacity: 0.2; }
 
-  /* Row 2 pillar accents: cyan, amber, rose */
-  .pillars-row:nth-of-type(2) .pillar-group:nth-child(1) .node-pillar { border-color: rgba(34,211,238,0.2); }
-  .pillars-row:nth-of-type(2) .pillar-group:nth-child(1) .node-pillar:hover { border-color: rgba(34,211,238,0.5); box-shadow: 0 8px 30px -8px rgba(34,211,238,0.15); }
-  .pillars-row:nth-of-type(2) .pillar-group:nth-child(2) .node-pillar { border-color: rgba(251,191,36,0.2); }
-  .pillars-row:nth-of-type(2) .pillar-group:nth-child(2) .node-pillar:hover { border-color: rgba(251,191,36,0.5); box-shadow: 0 8px 30px -8px rgba(251,191,36,0.15); }
-  .pillars-row:nth-of-type(2) .pillar-group:nth-child(3) .node-pillar { border-color: rgba(251,146,60,0.2); }
-  .pillars-row:nth-of-type(2) .pillar-group:nth-child(3) .node-pillar:hover { border-color: rgba(251,146,60,0.5); box-shadow: 0 8px 30px -8px rgba(251,146,60,0.15); }
+  /* ── Pillar 2: Privacy Protocol — purple ── */
+  .pillar-group.pillar-2 .node-pillar { border-top-color: #8b5cf6; }
+  .pillar-group.pillar-2 .node-pillar::before { background: radial-gradient(ellipse at 50% 0%, #8b5cf6, transparent 70%); }
+  .pillar-group.pillar-2 .node-pillar .n-title { color: #c4b5fd; }
+  .pillar-group.pillar-2 .node-pillar:hover { border-color: rgba(139,92,246,0.55); border-top-color: #8b5cf6; box-shadow: 0 12px 40px -8px rgba(139,92,246,0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .pillar-group.pillar-2 .node-pillar:hover::before { opacity: 0.18; }
 
-  /* Component */
+  /* ── Pillar 3: Privacy Apps — blue ── */
+  .pillar-group.pillar-3 .node-pillar { border-top-color: #3b82f6; }
+  .pillar-group.pillar-3 .node-pillar::before { background: radial-gradient(ellipse at 50% 0%, #3b82f6, transparent 70%); }
+  .pillar-group.pillar-3 .node-pillar .n-title { color: #93c5fd; }
+  .pillar-group.pillar-3 .node-pillar:hover { border-color: rgba(59,130,246,0.55); border-top-color: #3b82f6; box-shadow: 0 12px 40px -8px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .pillar-group.pillar-3 .node-pillar:hover::before { opacity: 0.18; }
+
+  /* ── Pillar 4: Interoperability — cyan ── */
+  .pillar-group.pillar-4 .node-pillar { border-top-color: #22d3ee; }
+  .pillar-group.pillar-4 .node-pillar::before { background: radial-gradient(ellipse at 50% 0%, #22d3ee, transparent 70%); }
+  .pillar-group.pillar-4 .node-pillar .n-title { color: #67e8f9; }
+  .pillar-group.pillar-4 .node-pillar:hover { border-color: rgba(34,211,238,0.55); border-top-color: #22d3ee; box-shadow: 0 12px 40px -8px rgba(34,211,238,0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .pillar-group.pillar-4 .node-pillar:hover::before { opacity: 0.18; }
+
+  /* ── Pillar 5: BDX Token — amber ── */
+  .pillar-group.pillar-5 .node-pillar { border-top-color: #fbbf24; }
+  .pillar-group.pillar-5 .node-pillar::before { background: radial-gradient(ellipse at 50% 0%, #fbbf24, transparent 70%); }
+  .pillar-group.pillar-5 .node-pillar .n-title { color: #fde68a; }
+  .pillar-group.pillar-5 .node-pillar:hover { border-color: rgba(251,191,36,0.55); border-top-color: #fbbf24; box-shadow: 0 12px 40px -8px rgba(251,191,36,0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .pillar-group.pillar-5 .node-pillar:hover::before { opacity: 0.18; }
+
+  /* ── Pillar 6: BeldexAI — orange ── */
+  .pillar-group.pillar-6 .node-pillar { border-top-color: #fb923c; }
+  .pillar-group.pillar-6 .node-pillar::before { background: radial-gradient(ellipse at 50% 0%, #fb923c, transparent 70%); }
+  .pillar-group.pillar-6 .node-pillar .n-title { color: #fed7aa; }
+  .pillar-group.pillar-6 .node-pillar:hover { border-color: rgba(251,146,60,0.55); border-top-color: #fb923c; box-shadow: 0 12px 40px -8px rgba(251,146,60,0.3), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .pillar-group.pillar-6 .node-pillar:hover::before { opacity: 0.18; }
+
+  /* ─── COMPONENT NODE ─── */
   .node-comp {
-    background: linear-gradient(145deg, rgba(14,20,32,0.96), rgba(10,16,26,0.98));
-    border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px;
-    border-radius: 12px; min-width: 105px;
-    box-shadow: 0 2px 12px -4px rgba(0,0,0,0.3);
+    background: linear-gradient(145deg, rgba(16,22,36,0.97), rgba(11,17,28,0.99));
+    border: 1px solid rgba(255,255,255,0.09);
+    padding: 12px 14px;
+    border-radius: 12px;
+    min-width: 110px;
+    box-shadow: 0 2px 14px -4px rgba(0,0,0,0.35);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
-  .node-comp .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 600; color: #cbd5e1; }
-  .node-comp .n-desc { font-size: 0.58rem; color: #475569; margin-top: 2px; }
-  .node-comp:hover { border-color: rgba(56,189,126,0.3); box-shadow: 0 6px 24px -6px rgba(56,189,126,0.1); }
+  .node-comp .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; font-weight: 600; color: #e2e8f0; }
+  .node-comp .n-desc { font-size: 0.7rem; color: #64748b; margin-top: 3px; }
+  .node-comp:hover { transform: translateY(-4px) scale(1.02); border-color: rgba(56,189,126,0.35); box-shadow: 0 10px 30px -6px rgba(56,189,126,0.18); }
 
-  /* Leaf */
+  /* Per-pillar comp hover tints */
+  .pillar-group.pillar-2 .node-comp:hover { border-color: rgba(139,92,246,0.38); box-shadow: 0 10px 30px -6px rgba(139,92,246,0.18); }
+  .pillar-group.pillar-3 .node-comp:hover { border-color: rgba(59,130,246,0.38); box-shadow: 0 10px 30px -6px rgba(59,130,246,0.18); }
+  .pillar-group.pillar-4 .node-comp:hover { border-color: rgba(34,211,238,0.38); box-shadow: 0 10px 30px -6px rgba(34,211,238,0.18); }
+  .pillar-group.pillar-5 .node-comp:hover { border-color: rgba(251,191,36,0.38); box-shadow: 0 10px 30px -6px rgba(251,191,36,0.18); }
+  .pillar-group.pillar-6 .node-comp:hover { border-color: rgba(251,146,60,0.38); box-shadow: 0 10px 30px -6px rgba(251,146,60,0.18); }
+
+  /* ─── LEAF NODE ─── */
   .node-leaf {
-    background: rgba(56,189,126,0.04); border: 1px dashed rgba(56,189,126,0.15);
-    padding: 8px 12px; border-radius: 10px; min-width: 88px;
+    background: rgba(56,189,126,0.06);
+    border: 1px dashed rgba(56,189,126,0.28);
+    padding: 10px 13px;
+    border-radius: 10px;
+    min-width: 95px;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
-  .node-leaf .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; font-weight: 600; color: #38bd7e; }
-  .node-leaf .n-desc { font-size: 0.5rem; color: #4a7a64; margin-top: 2px; }
-  .node-leaf:hover { border-color: rgba(56,189,126,0.35); background: rgba(56,189,126,0.08); }
+  .node-leaf .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 600; color: #38bd7e; }
+  .node-leaf .n-desc { font-size: 0.65rem; color: #4a7a64; margin-top: 3px; }
+  .node-leaf:hover { transform: translateY(-3px); border-color: rgba(56,189,126,0.55); background: rgba(56,189,126,0.12); box-shadow: 0 6px 20px -4px rgba(56,189,126,0.2); }
 
-  /* Status */
+  /* Per-pillar leaf tints */
+  .pillar-group.pillar-2 .node-leaf { background: rgba(139,92,246,0.05); border-color: rgba(139,92,246,0.22); }
+  .pillar-group.pillar-2 .node-leaf .n-title { color: #a78bfa; }
+  .pillar-group.pillar-2 .node-leaf .n-desc { color: #5b4890; }
+  .pillar-group.pillar-2 .node-leaf:hover { border-color: rgba(139,92,246,0.5); background: rgba(139,92,246,0.1); box-shadow: 0 6px 20px -4px rgba(139,92,246,0.18); }
+
+  .pillar-group.pillar-3 .node-leaf { background: rgba(59,130,246,0.05); border-color: rgba(59,130,246,0.22); }
+  .pillar-group.pillar-3 .node-leaf .n-title { color: #60a5fa; }
+  .pillar-group.pillar-3 .node-leaf .n-desc { color: #2d5a9e; }
+  .pillar-group.pillar-3 .node-leaf:hover { border-color: rgba(59,130,246,0.5); background: rgba(59,130,246,0.1); box-shadow: 0 6px 20px -4px rgba(59,130,246,0.18); }
+
+  .pillar-group.pillar-4 .node-leaf { background: rgba(34,211,238,0.05); border-color: rgba(34,211,238,0.22); }
+  .pillar-group.pillar-4 .node-leaf .n-title { color: #22d3ee; }
+  .pillar-group.pillar-4 .node-leaf .n-desc { color: #1a7a8a; }
+  .pillar-group.pillar-4 .node-leaf:hover { border-color: rgba(34,211,238,0.5); background: rgba(34,211,238,0.1); box-shadow: 0 6px 20px -4px rgba(34,211,238,0.18); }
+
+  .pillar-group.pillar-5 .node-leaf { background: rgba(251,191,36,0.05); border-color: rgba(251,191,36,0.22); }
+  .pillar-group.pillar-5 .node-leaf .n-title { color: #fbbf24; }
+  .pillar-group.pillar-5 .node-leaf .n-desc { color: #7a6010; }
+  .pillar-group.pillar-5 .node-leaf:hover { border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.1); box-shadow: 0 6px 20px -4px rgba(251,191,36,0.18); }
+
+  .pillar-group.pillar-6 .node-leaf { background: rgba(251,146,60,0.05); border-color: rgba(251,146,60,0.22); }
+  .pillar-group.pillar-6 .node-leaf .n-title { color: #fb923c; }
+  .pillar-group.pillar-6 .node-leaf .n-desc { color: #7a4518; }
+  .pillar-group.pillar-6 .node-leaf:hover { border-color: rgba(251,146,60,0.5); background: rgba(251,146,60,0.1); box-shadow: 0 6px 20px -4px rgba(251,146,60,0.18); }
+
+  /* ─── STATUS BADGES ─── */
   .status {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.42rem; font-weight: 700;
-    letter-spacing: 1px; padding: 2px 7px; border-radius: 4px; display: inline-block; margin-top: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 6px;
   }
-  .status.live { background: rgba(56,189,126,0.15); color: #38bd7e; }
-  .status.progress { background: rgba(250,204,21,0.12); color: #facc15; }
-  .status.roadmap { background: rgba(99,102,241,0.12); color: #818cf8; }
+  .status.live { background: rgba(56,189,126,0.18); color: #38bd7e; }
+  .status.progress { background: rgba(250,204,21,0.15); color: #facc15; }
+  .status.roadmap { background: rgba(99,102,241,0.15); color: #818cf8; }
 
   /* ─── HOVER TOOLTIP ─── */
   .tt {
@@ -178,102 +279,262 @@
     border-right: 1px solid rgba(255,255,255,0.1);
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
-  .node-box:hover > .tt {
-    opacity: 1; pointer-events: auto;
-    transform: translateX(-50%) translateY(0) scale(1);
-  }
+  .node-box:hover > .tt { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0) scale(1); }
   .tt-head {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
     font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
     color: #38bd7e; margin-bottom: 8px; padding-bottom: 6px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   .tt-row { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; }
   .tt-row + .tt-row { border-top: 1px solid rgba(255,255,255,0.03); }
-  .tt-l { font-size: 0.58rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
-  .tt-v { font-size: 0.64rem; color: #e2e8f0; text-align: right; line-height: 1.35; }
+  .tt-l { font-size: 0.68rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
+  .tt-v { font-size: 0.76rem; color: #e2e8f0; text-align: right; line-height: 1.35; }
 
   /* ─── LAYOUT ─── */
-  .pillars-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 100%; }
-  .pillar-group { display: flex; flex-direction: column; align-items: center; }
-  .children-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-  .leaves-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
-
-  /* Connectors */
-  .root-split { display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .root-split .trunk { width: 2px; height: 22px; background: linear-gradient(to bottom, #38bd7e, #1e3a2f); }
-  .root-split .branches-bar { width: 85%; height: 2px; background: linear-gradient(90deg, rgba(56,189,126,0.1), #1e3a2f, rgba(56,189,126,0.1)); position: relative; }
-  .root-split .branch-drops { display: flex; justify-content: space-between; width: 85%; }
-  .branch-drop { display: flex; flex-direction: column; align-items: center; }
-  .branch-drop .bd-line { width: 2px; height: 18px; background: #1e3a2f; position: relative; }
-  .branch-drop .bd-line::after {
-    content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #38bd7e;
+  .pillars-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    width: 100%;
+    align-items: start;
   }
+  .pillar-group { display: flex; flex-direction: column; align-items: center; }
+  .children-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+  .leaves-row { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
+
+  /* ─── CONNECTORS ─── */
+  .root-split { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+  .root-split .trunk {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, #38bd7e, rgba(56,189,126,0.4));
+  }
+
+  /* branches-bar: horizontal bar, contains branch-drops as grid matching pillars-row */
+  .root-split .branches-bar {
+    width: 88%;
+    height: 2px;
+    background: linear-gradient(90deg,
+      rgba(56,189,126,0.12),
+      rgba(56,189,126,0.55) 20%,
+      rgba(56,189,126,0.55) 80%,
+      rgba(56,189,126,0.12)
+    );
+    position: relative;
+  }
+  .root-split .branch-drops {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+  .branch-drop { display: flex; flex-direction: column; align-items: center; }
+  .branch-drop .bd-line {
+    width: 2px;
+    height: 22px;
+    background: linear-gradient(to bottom, rgba(56,189,126,0.65), rgba(56,189,126,0.2));
+    position: relative;
+  }
+  .branch-drop .bd-line::after {
+    content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(56,189,126,0.75);
+  }
+
+  /* Inner connectors (pillar → comps) */
   .inner-split { display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .inner-split .is-trunk { width: 2px; height: 14px; background: #1e3a2f; }
-  .inner-split .is-bar { height: 2px; background: #1e3a2f; }
+  .inner-split .is-trunk {
+    width: 2px; height: 16px;
+    background: linear-gradient(to bottom, rgba(56,189,126,0.55), rgba(56,189,126,0.2));
+  }
+  .inner-split .is-bar {
+    height: 2px;
+    background: linear-gradient(90deg, rgba(56,189,126,0.1), rgba(56,189,126,0.5), rgba(56,189,126,0.1));
+  }
   .inner-split .is-drops { display: flex; justify-content: space-between; }
   .is-drop { display: flex; flex-direction: column; align-items: center; }
-  .is-drop .isd-line { width: 2px; height: 14px; background: #1e3a2f; position: relative; }
+  .is-drop .isd-line {
+    width: 2px; height: 16px;
+    background: linear-gradient(to bottom, rgba(56,189,126,0.5), rgba(56,189,126,0.15));
+    position: relative;
+  }
   .is-drop .isd-line::after {
     content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #38bd7e;
+    width: 0; height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid rgba(56,189,126,0.7);
   }
-  .leaf-trunk { width: 1.5px; height: 12px; background: repeating-linear-gradient(to bottom, #2a5a42 0px, #2a5a42 3px, transparent 3px, transparent 6px); }
-  .leaf-trunk-arr { width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #38bd7e; margin-bottom: 2px; }
 
+  /* Per-pillar inner connector colors */
+  .pillar-group.pillar-2 .inner-split .is-trunk { background: linear-gradient(to bottom, rgba(139,92,246,0.55), rgba(139,92,246,0.2)); }
+  .pillar-group.pillar-2 .inner-split .is-bar { background: linear-gradient(90deg, rgba(139,92,246,0.1), rgba(139,92,246,0.5), rgba(139,92,246,0.1)); }
+  .pillar-group.pillar-2 .is-drop .isd-line { background: linear-gradient(to bottom, rgba(139,92,246,0.5), rgba(139,92,246,0.15)); }
+  .pillar-group.pillar-2 .is-drop .isd-line::after { border-top-color: rgba(139,92,246,0.7); }
+
+  .pillar-group.pillar-3 .inner-split .is-trunk { background: linear-gradient(to bottom, rgba(59,130,246,0.55), rgba(59,130,246,0.2)); }
+  .pillar-group.pillar-3 .inner-split .is-bar { background: linear-gradient(90deg, rgba(59,130,246,0.1), rgba(59,130,246,0.5), rgba(59,130,246,0.1)); }
+  .pillar-group.pillar-3 .is-drop .isd-line { background: linear-gradient(to bottom, rgba(59,130,246,0.5), rgba(59,130,246,0.15)); }
+  .pillar-group.pillar-3 .is-drop .isd-line::after { border-top-color: rgba(59,130,246,0.7); }
+
+  .pillar-group.pillar-4 .inner-split .is-trunk { background: linear-gradient(to bottom, rgba(34,211,238,0.55), rgba(34,211,238,0.2)); }
+  .pillar-group.pillar-4 .inner-split .is-bar { background: linear-gradient(90deg, rgba(34,211,238,0.1), rgba(34,211,238,0.5), rgba(34,211,238,0.1)); }
+  .pillar-group.pillar-4 .is-drop .isd-line { background: linear-gradient(to bottom, rgba(34,211,238,0.5), rgba(34,211,238,0.15)); }
+  .pillar-group.pillar-4 .is-drop .isd-line::after { border-top-color: rgba(34,211,238,0.7); }
+
+  .pillar-group.pillar-5 .inner-split .is-trunk { background: linear-gradient(to bottom, rgba(251,191,36,0.55), rgba(251,191,36,0.2)); }
+  .pillar-group.pillar-5 .inner-split .is-bar { background: linear-gradient(90deg, rgba(251,191,36,0.1), rgba(251,191,36,0.5), rgba(251,191,36,0.1)); }
+  .pillar-group.pillar-5 .is-drop .isd-line { background: linear-gradient(to bottom, rgba(251,191,36,0.5), rgba(251,191,36,0.15)); }
+  .pillar-group.pillar-5 .is-drop .isd-line::after { border-top-color: rgba(251,191,36,0.7); }
+
+  .pillar-group.pillar-6 .inner-split .is-trunk { background: linear-gradient(to bottom, rgba(251,146,60,0.55), rgba(251,146,60,0.2)); }
+  .pillar-group.pillar-6 .inner-split .is-bar { background: linear-gradient(90deg, rgba(251,146,60,0.1), rgba(251,146,60,0.5), rgba(251,146,60,0.1)); }
+  .pillar-group.pillar-6 .is-drop .isd-line { background: linear-gradient(to bottom, rgba(251,146,60,0.5), rgba(251,146,60,0.15)); }
+  .pillar-group.pillar-6 .is-drop .isd-line::after { border-top-color: rgba(251,146,60,0.7); }
+
+  /* Leaf connectors (comp → leaf) */
+  .leaf-trunk {
+    width: 1.5px; height: 12px;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(56,189,126,0.55) 0px, rgba(56,189,126,0.55) 3px,
+      transparent 3px, transparent 6px
+    );
+  }
+  .leaf-trunk-arr {
+    width: 0; height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid rgba(56,189,126,0.65);
+    margin-bottom: 2px;
+  }
+
+  /* Per-pillar leaf connectors */
+  .pillar-group.pillar-2 .leaf-trunk { background: repeating-linear-gradient(to bottom, rgba(139,92,246,0.55) 0px, rgba(139,92,246,0.55) 3px, transparent 3px, transparent 6px); }
+  .pillar-group.pillar-2 .leaf-trunk-arr { border-top-color: rgba(139,92,246,0.65); }
+  .pillar-group.pillar-3 .leaf-trunk { background: repeating-linear-gradient(to bottom, rgba(59,130,246,0.55) 0px, rgba(59,130,246,0.55) 3px, transparent 3px, transparent 6px); }
+  .pillar-group.pillar-3 .leaf-trunk-arr { border-top-color: rgba(59,130,246,0.65); }
+  .pillar-group.pillar-4 .leaf-trunk { background: repeating-linear-gradient(to bottom, rgba(34,211,238,0.55) 0px, rgba(34,211,238,0.55) 3px, transparent 3px, transparent 6px); }
+  .pillar-group.pillar-4 .leaf-trunk-arr { border-top-color: rgba(34,211,238,0.65); }
+  .pillar-group.pillar-5 .leaf-trunk { background: repeating-linear-gradient(to bottom, rgba(251,191,36,0.55) 0px, rgba(251,191,36,0.55) 3px, transparent 3px, transparent 6px); }
+  .pillar-group.pillar-5 .leaf-trunk-arr { border-top-color: rgba(251,191,36,0.65); }
+  .pillar-group.pillar-6 .leaf-trunk { background: repeating-linear-gradient(to bottom, rgba(251,146,60,0.55) 0px, rgba(251,146,60,0.55) 3px, transparent 3px, transparent 6px); }
+  .pillar-group.pillar-6 .leaf-trunk-arr { border-top-color: rgba(251,146,60,0.65); }
+
+  /* Level tag */
   .level-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
     letter-spacing: 1.5px; text-transform: uppercase; color: #38bd7e;
-    background: rgba(56,189,126,0.06); border: 1px solid rgba(56,189,126,0.12);
-    padding: 4px 14px; border-radius: 50px; margin: 28px 0 12px;
+    background: rgba(56,189,126,0.07); border: 1px solid rgba(56,189,126,0.18);
+    padding: 5px 18px; border-radius: 50px; margin: 32px 0 18px;
+  }
+  .level-tag .lt-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #38bd7e; display: inline-block; flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(56,189,126,0.7);
   }
 
-  .row-sep {
-    margin: 28px 0 8px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
-    letter-spacing: 1.5px; text-transform: uppercase; color: #64748b;
-  }
-
-  /* Legend */
+  /* ─── LEGEND ─── */
   .legend {
     display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
-    margin-top: 52px; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: #64748b;
-    padding: 16px 24px; border-radius: 14px;
-    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+    margin-top: 56px; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #64748b;
+    padding: 18px 28px; border-radius: 14px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
   }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-swatch { width: 12px; height: 12px; border-radius: 4px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-swatch { width: 13px; height: 13px; border-radius: 4px; flex-shrink: 0; }
   .legend-swatch-root { background: #38bd7e; }
-  .legend-swatch-pillar { background: rgba(18,24,38,0.95); border: 1.5px solid rgba(255,255,255,0.15); }
-  .legend-swatch-comp { background: rgba(14,20,32,0.96); border: 1px solid rgba(255,255,255,0.1); }
-  .legend-swatch-leaf { background: rgba(56,189,126,0.04); border: 1px dashed rgba(56,189,126,0.3); }
-  .legend-swatch-conn { width: 16px; height: 2px; border-radius: 0; background: #1e3a2f; }
+  .legend-swatch-pillar { background: rgba(20,28,44,0.97); border: 1.5px solid rgba(255,255,255,0.18); }
+  .legend-swatch-comp { background: rgba(16,22,36,0.97); border: 1px solid rgba(255,255,255,0.12); }
+  .legend-swatch-leaf { background: rgba(56,189,126,0.06); border: 1px dashed rgba(56,189,126,0.4); }
+  .legend-swatch-conn { width: 18px; height: 2px; border-radius: 0; background: rgba(56,189,126,0.6); }
   .legend-badge {
-    font-size: 0.42rem; font-weight: 700; letter-spacing: 1px;
-    padding: 2px 7px; border-radius: 4px; display: inline-block;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 1px;
+    padding: 3px 9px; border-radius: 6px; display: inline-block;
   }
-  .legend-badge.live { background: rgba(56,189,126,0.15); color: #38bd7e; }
-  .legend-badge.progress { background: rgba(250,204,21,0.12); color: #facc15; }
-  .legend-badge.roadmap { background: rgba(99,102,241,0.12); color: #818cf8; }
+  .legend-badge.live { background: rgba(56,189,126,0.18); color: #38bd7e; }
+  .legend-badge.progress { background: rgba(250,204,21,0.15); color: #facc15; }
+  .legend-badge.roadmap { background: rgba(99,102,241,0.15); color: #818cf8; }
 
+  /* ─── ENTRY ANIMATIONS ─── */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  body:not(.anim-ready) .header,
+  body:not(.anim-ready) .node-root,
+  body:not(.anim-ready) .root-split,
+  body:not(.anim-ready) .level-tag,
+  body:not(.anim-ready) .node-pillar,
+  body:not(.anim-ready) .node-comp,
+  body:not(.anim-ready) .node-leaf,
+  body:not(.anim-ready) .inner-split,
+  body:not(.anim-ready) .leaf-trunk,
+  body:not(.anim-ready) .leaf-trunk-arr,
+  body:not(.anim-ready) .legend { opacity: 0; }
+
+  .anim-header { animation: fadeSlideDown 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+  .anim-root   { animation: scaleIn 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+  .anim-conn   { animation: fadeIn 0.4s ease both; }
+  .anim-level  { animation: fadeIn 0.45s ease both; }
+  .anim-pillar { animation: fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+  .anim-comp   { animation: fadeSlideUp 0.45s cubic-bezier(0.16,1,0.3,1) both; }
+  .anim-leaf   { animation: fadeSlideUp 0.4s ease both; }
+  .anim-legend { animation: fadeIn 0.5s ease both; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1200px) {
+    .pillars-row { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .page { max-width: 960px; }
+    .root-split .branches-bar { display: none; }
+    .root-split .trunk { height: 40px; }
+  }
   @media (max-width: 768px) {
     .pillars-row { grid-template-columns: 1fr; gap: 28px; }
-    .root-split .branches-bar, .root-split .branch-drops { width: 60%; }
     .header h1 { font-size: 1.5rem; }
     body { padding: 24px 12px 60px; }
     .tt { min-width: 190px; max-width: 230px; }
+    .node-pillar { min-width: auto; width: 100%; }
   }
-  @media (prefers-reduced-motion: reduce) { .node-box { transition: none; } .node-box:hover { transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .node-box { transition: none; }
+    .node-box:hover, .node-pillar:hover, .node-comp:hover, .node-leaf:hover { transform: none; }
+    .anim-header, .anim-root, .anim-conn, .anim-level,
+    .anim-pillar, .anim-comp, .anim-leaf, .anim-legend { animation: none !important; opacity: 1 !important; }
+    body:not(.anim-ready) .header, body:not(.anim-ready) .node-root,
+    body:not(.anim-ready) .root-split, body:not(.anim-ready) .level-tag,
+    body:not(.anim-ready) .node-pillar, body:not(.anim-ready) .node-comp,
+    body:not(.anim-ready) .node-leaf, body:not(.anim-ready) .inner-split,
+    body:not(.anim-ready) .leaf-trunk, body:not(.anim-ready) .leaf-trunk-arr,
+    body:not(.anim-ready) .legend { opacity: 1 !important; }
+  }
 
-  /* ── Light Theme ── */
+  /* ── LIGHT THEME ── */
   [data-theme="light"] body { background: #f5f7fa; color: #1e293b; }
   [data-theme="light"] body::before {
     background-image:
-      radial-gradient(rgba(13,147,115,0.03) 1px, transparent 1px),
-      radial-gradient(rgba(37,99,235,0.02) 1px, transparent 1px);
+      radial-gradient(rgba(13,147,115,0.04) 1px, transparent 1px),
+      radial-gradient(rgba(37,99,235,0.03) 1px, transparent 1px);
   }
   [data-theme="light"] .header h1 {
     background: linear-gradient(135deg, #1a1a2e 30%, #0d9373 60%, #2563eb);
@@ -281,59 +542,73 @@
     -webkit-text-fill-color: transparent;
   }
   [data-theme="light"] .header .sub { color: #64748b; }
-  [data-theme="light"] .header .back-link {
-    color: #64748b; border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02);
-  }
+  [data-theme="light"] .header .back-link { color: #64748b; border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
   [data-theme="light"] .header .back-link:hover { color: #0d9373; border-color: rgba(13,147,115,0.25); background: rgba(13,147,115,0.05); }
   [data-theme="light"] .node-root {
     background: linear-gradient(135deg, #effff8, #e0fff2);
     border-color: #0d9373;
-    box-shadow: 0 4px 24px rgba(13,147,115,0.1);
+    box-shadow: 0 4px 28px rgba(13,147,115,0.14), 0 0 80px rgba(13,147,115,0.06);
   }
-  [data-theme="light"] .node-root .n-title { color: #0d9373; }
+  [data-theme="light"] .node-root .n-title { color: #0d9373; text-shadow: 0 0 20px rgba(13,147,115,0.2); }
   [data-theme="light"] .node-root .n-desc { color: #64748b; }
-  [data-theme="light"] .node-pillar {
-    background: #ffffff; border-color: rgba(0,0,0,0.08);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  [data-theme="light"] .node-pillar .n-title { color: #1a1a2e; }
+  [data-theme="light"] .node-pillar { background: #ffffff; border-color: rgba(0,0,0,0.08); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  [data-theme="light"] .node-pillar::before { opacity: 0.06; }
   [data-theme="light"] .node-pillar .n-desc { color: #64748b; }
-  [data-theme="light"] .node-comp {
-    background: #ffffff; border-color: rgba(0,0,0,0.06);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  }
+  [data-theme="light"] .pillar-group.pillar-1 .node-pillar .n-title { color: #0d9373; }
+  [data-theme="light"] .pillar-group.pillar-2 .node-pillar .n-title { color: #7c3aed; }
+  [data-theme="light"] .pillar-group.pillar-3 .node-pillar .n-title { color: #1d4ed8; }
+  [data-theme="light"] .pillar-group.pillar-4 .node-pillar .n-title { color: #0891b2; }
+  [data-theme="light"] .pillar-group.pillar-5 .node-pillar .n-title { color: #b45309; }
+  [data-theme="light"] .pillar-group.pillar-6 .node-pillar .n-title { color: #c2410c; }
+  [data-theme="light"] .pillar-group.pillar-1 .node-pillar:hover { box-shadow: 0 10px 32px rgba(13,147,115,0.2); }
+  [data-theme="light"] .pillar-group.pillar-2 .node-pillar:hover { box-shadow: 0 10px 32px rgba(124,58,237,0.18); }
+  [data-theme="light"] .pillar-group.pillar-3 .node-pillar:hover { box-shadow: 0 10px 32px rgba(29,78,216,0.18); }
+  [data-theme="light"] .pillar-group.pillar-4 .node-pillar:hover { box-shadow: 0 10px 32px rgba(8,145,178,0.18); }
+  [data-theme="light"] .pillar-group.pillar-5 .node-pillar:hover { box-shadow: 0 10px 32px rgba(180,83,9,0.18); }
+  [data-theme="light"] .pillar-group.pillar-6 .node-pillar:hover { box-shadow: 0 10px 32px rgba(194,65,12,0.18); }
+  [data-theme="light"] .node-comp { background: #ffffff; border-color: rgba(0,0,0,0.07); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
   [data-theme="light"] .node-comp .n-title { color: #1e293b; }
   [data-theme="light"] .node-comp .n-desc { color: #64748b; }
-  [data-theme="light"] .node-leaf {
-    background: rgba(13,147,115,0.04); border-color: rgba(13,147,115,0.15);
-  }
+  [data-theme="light"] .node-leaf { background: rgba(13,147,115,0.05); border-color: rgba(13,147,115,0.25); }
   [data-theme="light"] .node-leaf .n-title { color: #0d9373; }
   [data-theme="light"] .node-leaf .n-desc { color: #4a7a64; }
-  [data-theme="light"] .tt {
-    background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
-    border-color: rgba(0,0,0,0.1);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
-  }
-  [data-theme="light"] .tt::after {
-    background: rgba(248,250,252,0.96);
-    border-right-color: rgba(0,0,0,0.1); border-bottom-color: rgba(0,0,0,0.1);
-  }
-  [data-theme="light"] .tt-head { border-bottom-color: rgba(0,0,0,0.06); }
+  [data-theme="light"] .pillar-group.pillar-2 .node-leaf { background: rgba(124,58,237,0.05); border-color: rgba(124,58,237,0.22); }
+  [data-theme="light"] .pillar-group.pillar-2 .node-leaf .n-title { color: #7c3aed; }
+  [data-theme="light"] .pillar-group.pillar-2 .node-leaf .n-desc { color: #5b21b6; }
+  [data-theme="light"] .pillar-group.pillar-3 .node-leaf { background: rgba(29,78,216,0.05); border-color: rgba(29,78,216,0.22); }
+  [data-theme="light"] .pillar-group.pillar-3 .node-leaf .n-title { color: #1d4ed8; }
+  [data-theme="light"] .pillar-group.pillar-3 .node-leaf .n-desc { color: #1e3a8a; }
+  [data-theme="light"] .pillar-group.pillar-4 .node-leaf { background: rgba(8,145,178,0.05); border-color: rgba(8,145,178,0.22); }
+  [data-theme="light"] .pillar-group.pillar-4 .node-leaf .n-title { color: #0891b2; }
+  [data-theme="light"] .pillar-group.pillar-4 .node-leaf .n-desc { color: #155e75; }
+  [data-theme="light"] .pillar-group.pillar-5 .node-leaf { background: rgba(180,83,9,0.05); border-color: rgba(180,83,9,0.22); }
+  [data-theme="light"] .pillar-group.pillar-5 .node-leaf .n-title { color: #b45309; }
+  [data-theme="light"] .pillar-group.pillar-5 .node-leaf .n-desc { color: #78350f; }
+  [data-theme="light"] .pillar-group.pillar-6 .node-leaf { background: rgba(194,65,12,0.05); border-color: rgba(194,65,12,0.22); }
+  [data-theme="light"] .pillar-group.pillar-6 .node-leaf .n-title { color: #c2410c; }
+  [data-theme="light"] .pillar-group.pillar-6 .node-leaf .n-desc { color: #7c2d12; }
+  [data-theme="light"] .tt { background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96)); border-color: rgba(0,0,0,0.1); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+  [data-theme="light"] .tt::after { background: rgba(248,250,252,0.96); border-right-color: rgba(0,0,0,0.1); border-bottom-color: rgba(0,0,0,0.1); }
+  [data-theme="light"] .tt-head { color: #0d9373; border-bottom-color: rgba(0,0,0,0.06); }
   [data-theme="light"] .tt-row + .tt-row { border-top-color: rgba(0,0,0,0.04); }
+  [data-theme="light"] .tt-l { color: #94a3b8; }
   [data-theme="light"] .tt-v { color: #1e293b; }
-  [data-theme="light"] .root-split .trunk { background: linear-gradient(to bottom, #0d9373, rgba(13,147,115,0.2)); }
-  [data-theme="light"] .root-split .branches-bar { background: linear-gradient(90deg, rgba(13,147,115,0.1), rgba(13,147,115,0.2), rgba(13,147,115,0.1)); }
-  [data-theme="light"] .branch-drop .bd-line,
-  [data-theme="light"] .inner-split .is-trunk,
-  [data-theme="light"] .inner-split .is-bar,
-  [data-theme="light"] .is-drop .isd-line { background: rgba(13,147,115,0.2); }
-  [data-theme="light"] .legend {
-    background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); color: #64748b;
-  }
-  [data-theme="light"] .legend-swatch-pillar { background: #ffffff; border-color: rgba(0,0,0,0.12); }
-  [data-theme="light"] .legend-swatch-comp { background: #ffffff; border-color: rgba(0,0,0,0.08); }
-  [data-theme="light"] .legend-swatch-conn { background: rgba(13,147,115,0.2); }
-  [data-theme="light"] .row-sep { color: #64748b; }
+  [data-theme="light"] .root-split .trunk { background: linear-gradient(to bottom, #0d9373, rgba(13,147,115,0.35)); }
+  [data-theme="light"] .root-split .branches-bar { background: linear-gradient(90deg, rgba(13,147,115,0.12), rgba(13,147,115,0.5) 25%, rgba(13,147,115,0.5) 75%, rgba(13,147,115,0.12)); }
+  [data-theme="light"] .branch-drop .bd-line { background: linear-gradient(to bottom, rgba(13,147,115,0.55), rgba(13,147,115,0.2)); }
+  [data-theme="light"] .branch-drop .bd-line::after { border-top-color: rgba(13,147,115,0.7); }
+  [data-theme="light"] .inner-split .is-trunk { background: linear-gradient(to bottom, rgba(13,147,115,0.5), rgba(13,147,115,0.18)); }
+  [data-theme="light"] .inner-split .is-bar { background: linear-gradient(90deg, rgba(13,147,115,0.1), rgba(13,147,115,0.45), rgba(13,147,115,0.1)); }
+  [data-theme="light"] .is-drop .isd-line { background: linear-gradient(to bottom, rgba(13,147,115,0.45), rgba(13,147,115,0.15)); }
+  [data-theme="light"] .is-drop .isd-line::after { border-top-color: rgba(13,147,115,0.65); }
+  [data-theme="light"] .leaf-trunk { background: repeating-linear-gradient(to bottom, rgba(13,147,115,0.5) 0px, rgba(13,147,115,0.5) 3px, transparent 3px, transparent 6px); }
+  [data-theme="light"] .leaf-trunk-arr { border-top-color: rgba(13,147,115,0.65); }
+  [data-theme="light"] .legend { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.05); color: #64748b; }
+  [data-theme="light"] .legend-swatch-pillar { background: #ffffff; border-color: rgba(0,0,0,0.14); }
+  [data-theme="light"] .legend-swatch-comp { background: #ffffff; border-color: rgba(0,0,0,0.1); }
+  [data-theme="light"] .legend-swatch-conn { background: rgba(13,147,115,0.55); }
+  [data-theme="light"] .level-tag { color: #0d9373; background: rgba(13,147,115,0.07); border-color: rgba(13,147,115,0.2); }
+  [data-theme="light"] .level-tag .lt-dot { background: #0d9373; box-shadow: 0 0 8px rgba(13,147,115,0.5); }
 </style>
 </head>
 <body>
@@ -357,32 +632,31 @@
       <div class="n-desc">Confidential Transactions &amp; Communications &middot; Monero Fork &middot; Conceptualized 2018</div>
     </div>
 
-    <!-- Root split into 6 -->
+    <!-- Root → 6 pillars connector (trunk + horizontal bar with 6 aligned drops) -->
     <div class="root-split">
       <div class="trunk"></div>
-      <div class="branches-bar"></div>
-    </div>
-    <div class="root-split" style="margin-top:-2px;">
-      <div class="branch-drops">
-        <div class="branch-drop"><div class="bd-line"></div></div>
-        <div class="branch-drop"><div class="bd-line"></div></div>
-        <div class="branch-drop"><div class="bd-line"></div></div>
-        <div class="branch-drop"><div class="bd-line"></div></div>
-        <div class="branch-drop"><div class="bd-line"></div></div>
-        <div class="branch-drop"><div class="bd-line"></div></div>
+      <div class="branches-bar">
+        <div class="branch-drops">
+          <div class="branch-drop"><div class="bd-line"></div></div>
+          <div class="branch-drop"><div class="bd-line"></div></div>
+          <div class="branch-drop"><div class="bd-line"></div></div>
+          <div class="branch-drop"><div class="bd-line"></div></div>
+          <div class="branch-drop"><div class="bd-line"></div></div>
+          <div class="branch-drop"><div class="bd-line"></div></div>
+        </div>
       </div>
     </div>
 
-    <!-- ════════════════════════════════════════ -->
-    <!-- LEVEL 1: 6 PILLARS (in 2 rows of 3) -->
-    <!-- ════════════════════════════════════════ -->
-    <div class="level-tag">Level 1 — Core Pillars</div>
+    <!-- Level tag -->
+    <div class="level-tag"><span class="lt-dot" aria-hidden="true"></span>Level 1 — Six Core Pillars</div>
 
-    <!-- Row 1: first 3 pillars -->
+    <!-- ════════════════════════════════════════ -->
+    <!-- LEVEL 1: ALL 6 PILLARS IN ONE GRID -->
+    <!-- ════════════════════════════════════════ -->
     <div class="pillars-row">
 
       <!-- ──── PILLAR 1: Blockchain Core ──── -->
-      <div class="pillar-group">
+      <div class="pillar-group pillar-1">
         <div class="node-box node-pillar">
           <div class="n-emoji">⛓️</div>
           <div class="n-title">Blockchain Core</div>
@@ -400,17 +674,19 @@
         <div class="children-row">
           <div class="node-box node-comp"><div class="n-title">PoS Consensus</div><div class="n-desc">Block validation</div></div>
           <div class="node-box node-comp"><div class="n-title">Masternodes</div><div class="n-desc">10K BDX stake</div></div>
-          <div class="node-box node-comp"><div class="n-title">Major Upgrades</div><div class="n-desc">Bucephalus &rarr; Bern &rarr; Obscura</div></div>
+          <div class="node-box node-comp"><div class="n-title">Major Upgrades</div><div class="n-desc">Bucephalus&rarr;Obscura</div></div>
         </div>
-        <div class="leaves-row" style="margin-top:8px;">
+        <div class="leaf-trunk"></div>
+        <div class="leaf-trunk-arr"></div>
+        <div class="leaves-row">
           <div class="node-box node-leaf"><div class="n-title">Block Proposer</div><div class="n-desc">Energy efficient</div></div>
-          <div class="node-box node-leaf"><div class="n-title">2,000+ Masternodes</div><div class="n-desc">Live count varies</div></div>
-          <div class="node-box node-leaf"><div class="n-title">EVM Integration</div><div class="n-desc"><span class="status roadmap">ROADMAP</span> Mid-2026</div></div>
+          <div class="node-box node-leaf"><div class="n-title">2,000+ Nodes</div><div class="n-desc">Live count varies</div></div>
+          <div class="node-box node-leaf"><div class="n-title">EVM Integration</div><div class="n-desc"><span class="status roadmap">ROADMAP</span></div></div>
         </div>
       </div>
 
       <!-- ──── PILLAR 2: Privacy Protocol ──── -->
-      <div class="pillar-group">
+      <div class="pillar-group pillar-2">
         <div class="node-box node-pillar">
           <div class="n-emoji">🛡️</div>
           <div class="n-title">Privacy Protocol</div>
@@ -430,15 +706,17 @@
           <div class="node-box node-comp"><div class="n-title">Stealth Addresses</div><div class="n-desc">Receiver privacy</div></div>
           <div class="node-box node-comp"><div class="n-title">RingCT</div><div class="n-desc">Amount privacy</div></div>
         </div>
-        <div class="leaves-row" style="margin-top:8px;">
+        <div class="leaf-trunk"></div>
+        <div class="leaf-trunk-arr"></div>
+        <div class="leaves-row">
           <div class="node-box node-leaf"><div class="n-title">Ring Size = 11</div><div class="n-desc">10 decoys per tx</div></div>
           <div class="node-box node-leaf"><div class="n-title">One-Time Keys</div><div class="n-desc">Unlinkable</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Bulletproofs++</div><div class="n-desc">Compact range proofs</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Bulletproofs++</div><div class="n-desc">Compact proofs</div></div>
         </div>
       </div>
 
       <!-- ──── PILLAR 3: Privacy Apps ──── -->
-      <div class="pillar-group">
+      <div class="pillar-group pillar-3">
         <div class="node-box node-pillar">
           <div class="n-emoji">📱</div>
           <div class="n-title">Privacy Apps</div>
@@ -460,26 +738,18 @@
           <div class="node-box node-comp"><div class="n-title">🧭 Browser</div><div class="n-desc">Private Web</div></div>
           <div class="node-box node-comp"><div class="n-title">👛 Wallet</div><div class="n-desc">Multi-platform</div></div>
         </div>
-        <div class="leaves-row" style="margin-top:8px;">
-          <div class="node-box node-leaf"><div class="n-title">E2E Encrypted</div><div class="n-desc">Calls &middot; Pay rolling out</div></div>
+        <div class="leaf-trunk"></div>
+        <div class="leaf-trunk-arr"></div>
+        <div class="leaves-row">
+          <div class="node-box node-leaf"><div class="n-title">E2E Encrypted</div><div class="n-desc">Calls &middot; Pay</div></div>
           <div class="node-box node-leaf"><div class="n-title">Onion Routing</div><div class="n-desc">IP masking</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Ad &amp; Tracker Block</div><div class="n-desc">AI summaries planned</div></div>
+          <div class="node-box node-leaf"><div class="n-title">Ad &amp; Tracker Block</div><div class="n-desc">AI summaries</div></div>
           <div class="node-box node-leaf"><div class="n-title">Chrome &middot; Firefox</div><div class="n-desc">Mobile &middot; Desktop</div></div>
         </div>
       </div>
 
-    </div><!-- /.pillars-row (Row 1) -->
-
-    <!-- Row separator -->
-    <div class="row-sep">More Core Pillars</div>
-
-    <!-- ═══ LEVEL 1 — ROW 2: 3 MORE PILLARS ═══ -->
-    <div class="level-tag">Level 1 — Continued</div>
-
-    <div class="pillars-row">
-
       <!-- ──── PILLAR 4: Interoperability ──── -->
-      <div class="pillar-group">
+      <div class="pillar-group pillar-4">
         <div class="node-box node-pillar">
           <div class="n-emoji">🌉</div>
           <div class="n-title">Interoperability</div>
@@ -495,19 +765,21 @@
           </div>
         </div>
         <div class="children-row">
-          <div class="node-box node-comp"><div class="n-title">Beldex Bridge</div><div class="n-desc">Legacy wBDX path</div></div>
-          <div class="node-box node-comp"><div class="n-title">LayerZero OFT</div><div class="n-desc">Multichain transport</div><div class="status live">LIVE</div></div>
+          <div class="node-box node-comp"><div class="n-title">Beldex Bridge</div><div class="n-desc">Legacy wBDX</div></div>
+          <div class="node-box node-comp"><div class="n-title">LayerZero OFT</div><div class="n-desc">Multichain</div><div class="status live">LIVE</div></div>
           <div class="node-box node-comp"><div class="n-title">BNS</div><div class="n-desc">.bdx domains</div><div class="status live">LIVE</div></div>
         </div>
-        <div class="leaves-row" style="margin-top:8px;">
-          <div class="node-box node-leaf"><div class="n-title">BSC wBDX</div><div class="n-desc">Wrapped asset swap</div></div>
-          <div class="node-box node-leaf"><div class="n-title">ETH &middot; SOL &middot; ARB</div><div class="n-desc">Via Stargate &middot; 1:1</div></div>
+        <div class="leaf-trunk"></div>
+        <div class="leaf-trunk-arr"></div>
+        <div class="leaves-row">
+          <div class="node-box node-leaf"><div class="n-title">BSC wBDX</div><div class="n-desc">Wrapped swap</div></div>
+          <div class="node-box node-leaf"><div class="n-title">ETH &middot; SOL &middot; ARB</div><div class="n-desc">Via Stargate 1:1</div></div>
           <div class="node-box node-leaf"><div class="n-title">Chat &middot; VPN &middot; Pay</div><div class="n-desc">Human-readable</div></div>
         </div>
       </div>
 
       <!-- ──── PILLAR 5: BDX Token ──── -->
-      <div class="pillar-group">
+      <div class="pillar-group pillar-5">
         <div class="node-box node-pillar">
           <div class="n-emoji">🪙</div>
           <div class="n-title">BDX Token</div>
@@ -527,7 +799,9 @@
           <div class="node-box node-comp"><div class="n-title">Burn Mechanism</div><div class="n-desc">Deflationary</div></div>
           <div class="node-box node-comp"><div class="n-title">Exchanges</div><div class="n-desc">CEX listings</div></div>
         </div>
-        <div class="leaves-row" style="margin-top:8px;">
+        <div class="leaf-trunk"></div>
+        <div class="leaf-trunk-arr"></div>
+        <div class="leaves-row">
           <div class="node-box node-leaf"><div class="n-title">Block Rewards</div><div class="n-desc">Masternode queue</div></div>
           <div class="node-box node-leaf"><div class="n-title">Flash + BNS</div><div class="n-desc">Fee burns</div></div>
           <div class="node-box node-leaf"><div class="n-title">KuCoin &middot; MEXC</div><div class="n-desc">Gate &middot; Bitget</div></div>
@@ -535,7 +809,7 @@
       </div>
 
       <!-- ──── PILLAR 6: BeldexAI ──── -->
-      <div class="pillar-group">
+      <div class="pillar-group pillar-6">
         <div class="node-box node-pillar">
           <div class="n-emoji">🤖</div>
           <div class="n-title">BeldexAI</div>
@@ -555,14 +829,16 @@
           <div class="node-box node-comp"><div class="n-title">Spam Detection</div><div class="n-desc">Fraud filtering</div></div>
           <div class="node-box node-comp"><div class="n-title">Optimization</div><div class="n-desc">Traffic routing</div></div>
         </div>
-        <div class="leaves-row" style="margin-top:8px;">
+        <div class="leaf-trunk"></div>
+        <div class="leaf-trunk-arr"></div>
+        <div class="leaves-row">
           <div class="node-box node-leaf"><div class="n-title">No Data Shared</div><div class="n-desc">Privacy-first</div></div>
           <div class="node-box node-leaf"><div class="n-title">BChat + BelNet</div><div class="n-desc">Scam prevention</div></div>
           <div class="node-box node-leaf"><div class="n-title">Smart Routing</div><div class="n-desc">Network speed</div></div>
         </div>
       </div>
 
-    </div><!-- /.pillars-row (Row 2) -->
+    </div><!-- /.pillars-row -->
 
     <!-- Legend -->
     <div class="legend">
@@ -581,12 +857,14 @@
 </div><!-- /.page -->
 
 <!-- Theme Toggle -->
-<button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme"
+<button id="themeToggle" title="Toggle theme" aria-label="Toggle theme"
   style="position:fixed;top:24px;right:24px;z-index:9999;width:48px;height:48px;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.35rem;background:rgba(15,16,20,0.7);color:#fbbf24;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:all 0.35s ease;">☀️</button>
+
 <script>
-  (function() {
-    var btn = document.getElementById('themeToggle');
-    if (!btn) return;
+(function() {
+  // ── THEME TOGGLE ──
+  var btn = document.getElementById('themeToggle');
+  if (btn) {
     var isLight = document.documentElement.getAttribute('data-theme') === 'light';
     btn.textContent = isLight ? '🌙' : '☀️';
     btn.addEventListener('click', function() {
@@ -601,7 +879,51 @@
         localStorage.setItem('beldex-theme', 'light');
       }
     });
-  })();
+  }
+
+  // ── ANIMATION ORCHESTRATOR ──
+  function applyAnim(el, cls, delayMs) {
+    if (!el) return;
+    el.classList.add(cls);
+    el.style.animationDelay = delayMs + 'ms';
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        document.body.classList.add('anim-ready');
+
+        // Header
+        applyAnim(document.querySelector('.header'), 'anim-header', 0);
+
+        // Root
+        applyAnim(document.querySelector('.node-root'), 'anim-root', 300);
+
+        // Connectors
+        var conns = document.querySelectorAll('.root-split, .inner-split, .leaf-trunk, .leaf-trunk-arr');
+        conns.forEach(function(el, i) { applyAnim(el, 'anim-conn', 600 + i * 20); });
+
+        // Level tag
+        applyAnim(document.querySelector('.level-tag'), 'anim-level', 760);
+
+        // Pillars
+        var pillars = document.querySelectorAll('.node-pillar');
+        pillars.forEach(function(el, i) { applyAnim(el, 'anim-pillar', 900 + i * 90); });
+
+        // Components
+        var comps = document.querySelectorAll('.node-comp');
+        comps.forEach(function(el, i) { applyAnim(el, 'anim-comp', 1320 + i * 50); });
+
+        // Leaves
+        var leaves = document.querySelectorAll('.node-leaf');
+        leaves.forEach(function(el, i) { applyAnim(el, 'anim-leaf', 1680 + i * 40); });
+
+        // Legend
+        applyAnim(document.querySelector('.legend'), 'anim-legend', 2200);
+      });
+    });
+  });
+})();
 </script>
 </body>
 </html>
