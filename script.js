@@ -389,3 +389,129 @@ window.copyAddress = function copyAddress(btn, address) {
     onFailure();
   }
 };
+
+/* ═══════════════════════════════════════════════
+   TIMELINE TAB — Filter functionality
+   ═══════════════════════════════════════════════ */
+(function () {
+  function initTimelineFilters() {
+    const filterRow = document.getElementById('tl-filters');
+    if (!filterRow) return;
+
+    const grid         = document.getElementById('tl-grid');
+    const futureHeader = document.getElementById('tl-future-header');
+    const events       = Array.from(grid.querySelectorAll('.timeline-event[data-status]'));
+    const yearGroups   = Array.from(grid.querySelectorAll('.tl-year-group'));
+
+    filterRow.addEventListener('click', function (e) {
+      const btn = e.target.closest('.tl-filter-btn');
+      if (!btn) return;
+
+      // Toggle active button
+      filterRow.querySelectorAll('.tl-filter-btn').forEach(function (b) {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+
+      const filter = btn.dataset.tlFilter;
+
+      // Show / hide events
+      events.forEach(function (ev) {
+        const match = filter === 'all' || ev.dataset.status === filter;
+        ev.style.display = match ? '' : 'none';
+      });
+
+      // Show / hide year-group dividers: visible if any following event (before the next group) is visible
+      yearGroups.forEach(function (yg) {
+        if (filter === 'all') { yg.style.display = ''; return; }
+        let sibling = yg.nextElementSibling;
+        let hasVisible = false;
+        while (sibling && !sibling.classList.contains('tl-year-group') && !sibling.classList.contains('tl-future-header')) {
+          if (sibling.classList.contains('timeline-event') && sibling.style.display !== 'none') {
+            hasVisible = true;
+            break;
+          }
+          sibling = sibling.nextElementSibling;
+        }
+        yg.style.display = hasVisible ? '' : 'none';
+      });
+
+      // Show / hide future roadmap header
+      if (futureHeader) {
+        futureHeader.style.display =
+          (filter === 'all' || filter === 'research' || filter === 'future') ? '' : 'none';
+      }
+    });
+  }
+
+  // Run after DOM is ready (script.js already wraps in DOMContentLoaded, but guard for safety)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTimelineFilters);
+  } else {
+    initTimelineFilters();
+  }
+})();
+
+/* ═══════════════════════════════════════════════
+   TIMELINE TAB — Scroll Reveal (IntersectionObserver)
+   ═══════════════════════════════════════════════ */
+(function () {
+  var tlObserver = null;
+
+  function revealEvents() {
+    var grid = document.getElementById('tl-grid');
+    if (!grid) return;
+
+    var events = Array.from(grid.querySelectorAll('.timeline-event'));
+    if (!events.length) return;
+
+    // Disconnect any previous observer
+    if (tlObserver) { tlObserver.disconnect(); tlObserver = null; }
+
+    tlObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          // Small delay so CSS transition fires after element becomes visible
+          requestAnimationFrame(function () {
+            el.classList.add('tl-visible');
+          });
+          tlObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+    events.forEach(function (el, i) {
+      // Stagger delay capped at 250ms so page doesn't feel slow
+      el.style.transitionDelay = Math.min(i * 40, 250) + 'ms';
+      tlObserver.observe(el);
+    });
+  }
+
+  // Re-run reveal each time the Timeline tab is activated
+  function watchTabActivation() {
+    var tabBtn = document.getElementById('tab-timeline');
+    if (!tabBtn) return;
+    tabBtn.addEventListener('click', function () {
+      // Wait one frame for the tab content to be shown (hidden attr removed)
+      requestAnimationFrame(function () {
+        requestAnimationFrame(revealEvents);
+      });
+    });
+  }
+
+  function init() {
+    watchTabActivation();
+    // Also reveal on initial load if timeline tab happens to be active
+    var timelinePanel = document.getElementById('timeline');
+    if (timelinePanel && !timelinePanel.hidden) {
+      revealEvents();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

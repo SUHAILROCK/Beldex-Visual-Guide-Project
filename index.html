@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1067,145 +1067,508 @@
         <!-- TIMELINE TAB -->
         <div id="timeline" class="tab-content" role="tabpanel" aria-labelledby="tab-timeline" tabindex="0" hidden>
           <div class="diagram">
-            <h2>Complete Timeline: 2018 - 2026</h2>
 
-            <div class="timeline-grid">
-              <div class="timeline-event past">
+            <!-- Hero intro -->
+            <div class="tl-hero">
+              <span class="tl-hero-tag">Privacy Blockchain Since 2018</span>
+              <h2 class="tl-hero-title">Beldex Evolution Timeline</h2>
+              <p class="tl-hero-sub">From CryptoNote origins to a full privacy Web3 ecosystem — every milestone, upgrade, and what's coming next.</p>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="tl-stats-bar">
+              <div class="tl-stat"><div class="tl-stat-val">2018</div><div class="tl-stat-label">Founded</div></div>
+              <div class="tl-stat"><div class="tl-stat-val">$34.5M</div><div class="tl-stat-label">Raised</div></div>
+              <div class="tl-stat"><div class="tl-stat-val">5</div><div class="tl-stat-label">Hardforks</div></div>
+              <div class="tl-stat"><div class="tl-stat-val">100M+</div><div class="tl-stat-label">BChat Users</div></div>
+            </div>
+
+            <!-- Filter row -->
+            <div class="tl-filter-row" id="tl-filters">
+              <button class="tl-filter-btn active" data-tl-filter="all">All</button>
+              <button class="tl-filter-btn" data-tl-filter="completed">Completed</button>
+              <button class="tl-filter-btn" data-tl-filter="milestone">Milestones</button>
+              <button class="tl-filter-btn" data-tl-filter="live">Live</button>
+              <button class="tl-filter-btn" data-tl-filter="progress">In Progress</button>
+              <button class="tl-filter-btn" data-tl-filter="research">Research</button>
+              <button class="tl-filter-btn" data-tl-filter="future">Future</button>
+            </div>
+
+            <!-- Scroll hint -->
+            <div class="tl-scroll-hint">↓ Scroll to explore the journey ↓</div>
+
+            <div class="timeline-grid" id="tl-grid">
+
+              <!-- ── 2018 ── -->
+              <div class="tl-year-group" data-tl-year="2018"><span class="tl-yr-label">2018</span></div>
+
+              <div class="timeline-event past" data-status="completed">
                 <div class="timeline-year">2018</div>
                 <div class="timeline-event-content">
-                  <h4>Project Launch</h4>
-                  <p>
-                    Beldex origins as a privacy-focused
-                    CryptoNote/Monero-derived project.
-                  </p>
-                  <span class="status-badge status-historical">HISTORICAL</span>
+                  <h4>🚀 Project Launch</h4>
+                  <p>Beldex launched as a privacy-focused CryptoNote/Monero-derived project with a mission to build untraceable, confidential digital transactions.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">CryptoNote Protocol</span>
+                    <span class="tl-detail-tag">Monero Fork</span>
+                    <span class="tl-detail-tag">PoW Consensus</span>
+                    <span class="tl-detail-tag">Ring Signatures</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past">
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">2018</div>
+                <div class="timeline-event-content">
+                  <h4>💼 Initial Ecosystem Products</h4>
+                  <p>Development begins on BChat (private messenger), BelNet (decentralized VPN), and the Beldex Browser — the core privacy product suite.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">BChat</span>
+                    <span class="tl-detail-tag">BelNet</span>
+                    <span class="tl-detail-tag">Beldex Browser</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── 2019–2020 ── -->
+              <div class="tl-year-group" data-tl-year="2019"><span class="tl-yr-label">2019–2020</span></div>
+
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">2019–2020</div>
+                <div class="timeline-event-content">
+                  <h4>🔗 Masternode Network &amp; Growth</h4>
+                  <p>Masternode network established and expanded. Ecosystem products like BChat and BelNet enter alpha/beta testing. First exchange listings secured (KuCoin, Gate.io).</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Masternodes</span>
+                    <span class="tl-detail-tag">Exchange Listings</span>
+                    <span class="tl-detail-tag">Alpha Testing</span>
+                    <span class="tl-detail-tag">Community Growth</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── 2021 ── -->
+              <div class="tl-year-group" data-tl-year="2021"><span class="tl-yr-label">2021</span></div>
+
+              <div class="timeline-event past milestone" data-status="milestone">
                 <div class="timeline-year">Dec 2021</div>
                 <div class="timeline-event-content">
-                  <h4>Bucephalus Hardfork (PoS)</h4>
-                  <p>
-                    Major shift: Proof of Work → Proof of Stake for energy
-                    efficiency.
-                  </p>
-                  <span class="status-badge status-complete">Completed</span>
+                  <h4>⚡ Bucephalus Hardfork — PoW → PoS</h4>
+                  <p>Massive shift from Proof of Work to Proof of Stake consensus. Dramatically reduced energy consumption, improved scalability, and introduced the 11+1 validator model powered by masternodes.</p>
+                  <span class="status-badge status-milestone">🏆 Milestone</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Proof of Stake</span>
+                    <span class="tl-detail-tag">11+1 Validators</span>
+                    <span class="tl-detail-tag">Energy Efficient</span>
+                    <span class="tl-detail-tag">Masternode Staking</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past">
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">2021</div>
+                <div class="timeline-event-content">
+                  <h4>📱 Ecosystem Products Go Live</h4>
+                  <p>BChat Messenger, BelNet VPN, and Beldex Browser officially launch on Android and iOS. No phone number required for BChat — true anonymous messaging.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">BChat Live</span>
+                    <span class="tl-detail-tag">BelNet Live</span>
+                    <span class="tl-detail-tag">Android + iOS</span>
+                    <span class="tl-detail-tag">E2E Encrypted</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── 2022 ── -->
+              <div class="tl-year-group" data-tl-year="2022"><span class="tl-yr-label">2022</span></div>
+
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">January 2022</div>
+                <div class="timeline-event-content">
+                  <h4>🔬 Beldex Research Labs Established</h4>
+                  <p>Internal R&amp;D division founded to drive next-gen privacy tech: EVM integration, zk-SNARKs, BeldexAI, and scalability research.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">EVM Research</span>
+                    <span class="tl-detail-tag">zk-SNARKs</span>
+                    <span class="tl-detail-tag">BeldexAI</span>
+                    <span class="tl-detail-tag">Scalability</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">September 2022</div>
+                <div class="timeline-event-content">
+                  <h4>🤝 Geometry Labs Partnership</h4>
+                  <p>Strategic partnership with Geometry Labs for collaborative research on scalability improvements and advanced privacy cryptography.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Geometry Labs</span>
+                    <span class="tl-detail-tag">DeFi Research</span>
+                    <span class="tl-detail-tag">Cryptography</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event past" data-status="completed">
                 <div class="timeline-year">2022</div>
                 <div class="timeline-event-content">
-                  <h4>Research Effort Begins</h4>
-                  <p>
-                    Beldex Research Labs workstream supporting smart-contract
-                    R&D.
-                  </p>
-                  <span class="status-badge status-research">RESEARCH</span>
+                  <h4>💰 $25M DWF Labs Investment</h4>
+                  <p>DWF Labs leads a $25M investment round — total funding reaches $34.5M with Bitgert Ventures ($3.5M), Block Alpha ($3M), and Alpha Token Capital ($3M).</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">$34.5M Total</span>
+                    <span class="tl-detail-tag">DWF Labs Lead</span>
+                    <span class="tl-detail-tag">Strategic VCs</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past">
+              <!-- ── 2023 ── -->
+              <div class="tl-year-group" data-tl-year="2023"><span class="tl-yr-label">2023</span></div>
+
+              <div class="timeline-event past milestone" data-status="milestone">
+                <div class="timeline-year">May – July 2023</div>
+                <div class="timeline-event-content">
+                  <h4>🧪 EVM Proof of Concept — First on CryptoNote</h4>
+                  <p>Groundbreaking achievement: first-ever EVM implementation on a CryptoNote blockchain. Research paper published May 5, 2023 by Allard Dijk (BitBender) &amp; Dr. Dominique Schröder. Tested on 16 synchronized PoS nodes.</p>
+                  <span class="status-badge status-milestone">🏆 Milestone</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">World First</span>
+                    <span class="tl-detail-tag">Py-EVM</span>
+                    <span class="tl-detail-tag">16 PoS Nodes</span>
+                    <span class="tl-detail-tag">Smart Contracts</span>
+                    <span class="tl-detail-tag">Peer Reviewed</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event past" data-status="completed">
                 <div class="timeline-year">2023</div>
                 <div class="timeline-event-content">
-                  <h4>EVM Proof of Concept</h4>
-                  <p>
-                    Minimized Py-EVM PoC on PoS CryptoNote chain; feasibility
-                    demonstrated.
-                  </p>
+                  <h4>🛡️ BelNet v2.1.0 — Split Tunneling</h4>
+                  <p>BelNet VPN updated with split tunneling capability, allowing users to route specific apps through the decentralized onion-routing network while others use direct connection.</p>
                   <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Split Tunneling</span>
+                    <span class="tl-detail-tag">App Routing</span>
+                    <span class="tl-detail-tag">No Logs</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past">
-                <div class="timeline-year">Jun 2025</div>
+              <!-- ── 2024 ── -->
+              <div class="tl-year-group" data-tl-year="2024"><span class="tl-yr-label">2024</span></div>
+
+              <div class="timeline-event past milestone" data-status="milestone">
+                <div class="timeline-year">February 2024</div>
                 <div class="timeline-event-content">
-                  <h4>Bridge Closure (wBDX → BDX)</h4>
-                  <p>Final call deadline to convert wBDX to native BDX.</p>
+                  <h4>🏷️ Bern Hardfork — BNS Mainnet Launch</h4>
+                  <p>Beldex Name Service (BNS) goes live on mainnet. Human-readable wallet addresses replace long cryptographic strings. Fee-burning mechanics introduced.</p>
+                  <span class="status-badge status-milestone">🏆 Milestone</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">BNS Domains</span>
+                    <span class="tl-detail-tag">Fee Burning</span>
+                    <span class="tl-detail-tag">Hardfork #3</span>
+                    <span class="tl-detail-tag">User-Friendly</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">2024</div>
+                <div class="timeline-event-content">
+                  <h4>📈 Exchange Expansion Wave</h4>
+                  <p>BDX listed on MEXC, BingX, CoinEx, BloFin, and multiple Indian exchanges (CoinDCX, Bitcoiva, KoinPark, KoinBX). Perpetual futures contracts launch on KuCoin, MEXC, BingX, and CoinEx.</p>
                   <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">15+ CEX Spot</span>
+                    <span class="tl-detail-tag">7 Futures</span>
+                    <span class="tl-detail-tag">4 Indian Exchanges</span>
+                    <span class="tl-detail-tag">INR Pairs</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past">
-                <div class="timeline-year">Aug 2025</div>
+              <!-- ── 2025 ── -->
+              <div class="tl-year-group" data-tl-year="2025"><span class="tl-yr-label">2025</span></div>
+
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">May 2025</div>
                 <div class="timeline-event-content">
-                  <h4>VRF on Testnet</h4>
-                  <p>
-                    VRF-based testing milestone mentioned in official updates.
-                  </p>
-                  <span class="status-badge status-testnet">TESTNET</span>
+                  <h4>🔧 Bern Hardfork Phase 2</h4>
+                  <p>Additional BNS improvements and fee-burning enhancements. Network stability upgrades deployed to mainnet.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">BNS Upgrades</span>
+                    <span class="tl-detail-tag">Fee Burning</span>
+                    <span class="tl-detail-tag">Network Stability</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past milestone">
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">June 2025</div>
+                <div class="timeline-event-content">
+                  <h4>🔒 wBDX → BDX Bridge Closure</h4>
+                  <p>Final deadline for converting wrapped BDX (wBDX) back to native BDX. Old bridge infrastructure deprecated in preparation for LayerZero integration.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Bridge Migration</span>
+                    <span class="tl-detail-tag">wBDX Sunset</span>
+                    <span class="tl-detail-tag">Native BDX</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event past milestone" data-status="milestone">
+                <div class="timeline-year">August 2025</div>
+                <div class="timeline-event-content">
+                  <h4>⚙️ Hermes Hardfork — BNS Ethereum Compatibility</h4>
+                  <p>BNS domains gain Ethereum address compatibility. VRF-based consensus testing begins on testnet. Major step toward cross-chain identity.</p>
+                  <span class="status-badge status-milestone">🏆 Milestone</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">ETH Compatibility</span>
+                    <span class="tl-detail-tag">VRF Testnet</span>
+                    <span class="tl-detail-tag">Hardfork #4</span>
+                    <span class="tl-detail-tag">Cross-Chain Identity</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event past milestone" data-status="milestone">
                 <div class="timeline-year">Dec 7, 2025</div>
                 <div class="timeline-event-content">
-                  <h4>🎉 Obscura Hardfork</h4>
-                  <p>
-                    Bulletproof++ shipped on mainnet for 38% block size
-                    reduction.
-                  </p>
-                  <span class="status-badge status-complete">Completed</span>
+                  <h4>🎉 Obscura Hardfork — Bulletproof++ on Mainnet</h4>
+                  <p>Bulletproof++ zero-knowledge proofs deployed to mainnet. ~38% block size reduction (416 bytes per proof). Faster sync times and reduced storage. Beldex among the first chains to ship BP++.</p>
+                  <span class="status-badge status-milestone">🏆 Milestone</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Bulletproof++</span>
+                    <span class="tl-detail-tag">38% Smaller Blocks</span>
+                    <span class="tl-detail-tag">416 Byte Proofs</span>
+                    <span class="tl-detail-tag">ZK Compression</span>
+                    <span class="tl-detail-tag">Faster Sync</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event past milestone">
-                <div class="timeline-year">Dec 2025</div>
+              <div class="timeline-event past milestone" data-status="milestone">
+                <div class="timeline-year">December 2025</div>
                 <div class="timeline-event-content">
-                  <h4>LayerZero Integration Live</h4>
-                  <p>Cross-chain bridge via LayerZero/Stargate goes live.</p>
-                  <span class="status-badge status-complete">Completed</span>
+                  <h4>🌉 LayerZero Cross-Chain Bridge Goes Live</h4>
+                  <p>BDX goes multi-chain via LayerZero OFT standard and Stargate bridge. 1:1 token transfers across Ethereum, Solana, BNB Chain, Base, and Arbitrum with zero slippage.</p>
+                  <span class="status-badge status-milestone">🏆 Milestone</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">LayerZero OFT</span>
+                    <span class="tl-detail-tag">Stargate</span>
+                    <span class="tl-detail-tag">ETH · SOL · BSC</span>
+                    <span class="tl-detail-tag">Base · Arbitrum</span>
+                    <span class="tl-detail-tag">Zero Slippage</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event current">
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">December 2025</div>
+                <div class="timeline-event-content">
+                  <h4>📊 Grayscale Q4 Spotlight &amp; KuCoin Futures</h4>
+                  <p>Grayscale Research names BDX a top privacy performer alongside Zcash and Monero. KuCoin launches BDX perpetual futures with 20× leverage. DEX listings on Jupiter, Raydium, and Aerodrome.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Grayscale Spotlight</span>
+                    <span class="tl-detail-tag">KuCoin Futures</span>
+                    <span class="tl-detail-tag">Jupiter DEX</span>
+                    <span class="tl-detail-tag">Institutional Interest</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── 2026 ── -->
+              <div class="tl-year-group" data-tl-year="2026"><span class="tl-yr-label">2026</span></div>
+
+              <div class="timeline-event past" data-status="completed">
+                <div class="timeline-year">January 22, 2026</div>
+                <div class="timeline-event-content">
+                  <h4>🐙 Kraken Exchange Listing</h4>
+                  <p>BDX officially listed on Kraken with BDX/USD trading pair, expanding U.S. and institutional market access. Signals mainstream validation for privacy coins.</p>
+                  <span class="status-badge status-complete">Completed</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Kraken</span>
+                    <span class="tl-detail-tag">BDX/USD</span>
+                    <span class="tl-detail-tag">U.S. Access</span>
+                    <span class="tl-detail-tag">Institutional</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event current" data-status="progress">
+                <div class="timeline-year">Q1 2026</div>
+                <div class="timeline-event-content">
+                  <h4>🎲 VRF Consensus Research Paper</h4>
+                  <p>VRF-based consensus research paper being prepared for peer review. Covers design, security assumptions, and implementation approach for Verifiable Random Function validator selection.</p>
+                  <span class="status-badge status-progress">In Progress</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">VRF Paper</span>
+                    <span class="tl-detail-tag">Peer Review</span>
+                    <span class="tl-detail-tag">Security Design</span>
+                    <span class="tl-detail-tag">~33% Node Selection</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event current" data-status="progress">
+                <div class="timeline-year">Q1–Q2 2026</div>
+                <div class="timeline-event-content">
+                  <h4>🤖 BeldexAI — Privacy-Native AI Layer</h4>
+                  <p>AI-powered spam detection for BChat using federated learning (data never leaves device). BelNet routing optimization with threat detection. AI content summarization for Beldex Browser.</p>
+                  <span class="status-badge status-progress">In Progress</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Federated Learning</span>
+                    <span class="tl-detail-tag">BChat Spam Filter</span>
+                    <span class="tl-detail-tag">BelNet Optimization</span>
+                    <span class="tl-detail-tag">On-Chain AI</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event current" data-status="progress">
+                <div class="timeline-year">Mid 2026</div>
+                <div class="timeline-event-content">
+                  <h4>⚙️ Cross-Chain EVM Integration</h4>
+                  <p>Privacy-preserving smart contract layer hardening continues. Moving from PoC to production-grade EVM implementation. Security audits planned. UTXO↔Account bridge refinement.</p>
+                  <span class="status-badge status-progress">In Progress</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">EVM Production</span>
+                    <span class="tl-detail-tag">Security Audits</span>
+                    <span class="tl-detail-tag">Solidity Support</span>
+                    <span class="tl-detail-tag">Bridge Refinement</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event current" data-status="progress">
+                <div class="timeline-year">Q2–Q4 2026</div>
+                <div class="timeline-event-content">
+                  <h4>🎯 VRF Consensus Mainnet Deployment</h4>
+                  <p>Verifiable Random Functions replace deterministic validator selection. ~33% of masternode network randomly selected per block. Makes targeted attacks computationally infeasible.</p>
+                  <span class="status-badge status-progress">In Progress</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">VRF Mainnet</span>
+                    <span class="tl-detail-tag">Random Selection</span>
+                    <span class="tl-detail-tag">Enhanced Security</span>
+                    <span class="tl-detail-tag">Decentralization</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event current" data-status="live">
                 <div class="timeline-year">2026</div>
                 <div class="timeline-event-content">
-                  <h4>EVM Production Track</h4>
-                  <p>
-                    Hardening + contract privacy research continue; audits
-                    planned.
-                  </p>
-                  <span class="status-badge status-progress">IN PROGRESS</span>
+                  <h4>💳 POS Dashboard &amp; Merchant Adoption</h4>
+                  <p>Point-of-sale dashboard for businesses to accept BDX payments. Real-world utility expansion with privacy-first payment processing.</p>
+                  <span class="status-badge status-live">Live / Expanding</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">POS System</span>
+                    <span class="tl-detail-tag">Merchant Tools</span>
+                    <span class="tl-detail-tag">BDX Payments</span>
+                    <span class="tl-detail-tag">Real-World Use</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event current">
-                <div class="timeline-year">Q1-Q2 2026</div>
+              <!-- ── Future Roadmap Header ── -->
+              <div class="tl-future-header" id="tl-future-header">
+                <h3>🔮 Future Roadmap</h3>
+                <p>Research &amp; development tracks shaping the next era of Beldex</p>
+              </div>
+
+              <!-- ── 2026–2027 Research ── -->
+              <div class="tl-year-group" data-tl-year="future"><span class="tl-yr-label">2026–2027</span></div>
+
+              <div class="timeline-event future" data-status="research">
+                <div class="timeline-year">2026–2027</div>
                 <div class="timeline-event-content">
-                  <h4>AI Integration</h4>
-                  <p>
-                    AI-powered BChat spam detection & BelNet routing
-                    optimization.
-                  </p>
-                  <span class="status-badge status-progress">IN PROGRESS</span>
+                  <h4>🔐 Privacy-Preserving Smart Contracts (zk-SNARKs)</h4>
+                  <p>Adding zero-knowledge proofs to smart contract execution. Contract inputs and outputs become private while code remains publicly verifiable. The holy grail of privacy + DeFi.</p>
+                  <span class="status-badge status-research">Research</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">zk-SNARKs</span>
+                    <span class="tl-detail-tag">Private DeFi</span>
+                    <span class="tl-detail-tag">Confidential Contracts</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event current">
-                <div class="timeline-year">Q2-Q4 2026</div>
+              <div class="timeline-event future" data-status="research">
+                <div class="timeline-year">2026–2027</div>
                 <div class="timeline-event-content">
-                  <h4>VRF Consensus</h4>
-                  <p>
-                    Verifiable Random Functions for enhanced security &
-                    decentralization.
-                  </p>
-                  <span class="status-badge status-progress">IN PROGRESS</span>
+                  <h4>⚛️ Post-Quantum Cryptography</h4>
+                  <p>Lattice-based cryptography and Fully Homomorphic Encryption (FHE) research to defend against "harvest now, decrypt later" quantum threats. Computations on encrypted data without exposure.</p>
+                  <span class="status-badge status-research">Research</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Lattice Crypto</span>
+                    <span class="tl-detail-tag">FHE</span>
+                    <span class="tl-detail-tag">Quantum Resistant</span>
+                    <span class="tl-detail-tag">Future-Proof</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="timeline-event future">
-                <div class="timeline-year">2026-2027</div>
+              <!-- ── 2027+ ── -->
+              <div class="tl-year-group" data-tl-year="future2"><span class="tl-yr-label">2027+</span></div>
+
+              <div class="timeline-event future" data-status="future">
+                <div class="timeline-year">2027+</div>
                 <div class="timeline-event-content">
-                  <h4>Quantum Resistance</h4>
-                  <p>Post-quantum cryptography research and implementation.</p>
-                  <span class="status-badge status-research">RESEARCH</span>
+                  <h4>🌐 Extended Multi-Chain Expansion</h4>
+                  <p>Expanding LayerZero bridge to Polygon, Avalanche, and additional L2s. Privacy-as-a-service infrastructure for other chains. Cross-chain privacy messaging and identity.</p>
+                  <span class="status-badge status-future">Planned</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Polygon</span>
+                    <span class="tl-detail-tag">Avalanche</span>
+                    <span class="tl-detail-tag">Privacy-as-a-Service</span>
+                    <span class="tl-detail-tag">Cross-Chain Identity</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+
+              <div class="timeline-event future" data-status="future">
+                <div class="timeline-year">2027+</div>
+                <div class="timeline-event-content">
+                  <h4>🏗️ Full dApp Ecosystem on Privacy EVM</h4>
+                  <p>Production EVM enables private DEXs, lending protocols, NFT marketplaces, and DAOs — all with privacy by default. Ethereum developer tools (Hardhat, Remix, Truffle) fully compatible.</p>
+                  <span class="status-badge status-future">Planned</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Private DEX</span>
+                    <span class="tl-detail-tag">Private Lending</span>
+                    <span class="tl-detail-tag">Privacy NFTs</span>
+                    <span class="tl-detail-tag">Private DAOs</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event future" data-status="future">
+                <div class="timeline-year">Long Term</div>
+                <div class="timeline-event-content">
+                  <h4>🌍 Complete Privacy Web3 Stack</h4>
+                  <p>The Beldex vision fully realized: private money (BDX), private communication (BChat), private internet (BelNet), private browsing (Browser), private smart contracts (EVM), and private AI — all interconnected and quantum-resistant.</p>
+                  <span class="status-badge status-future">Vision</span>
+                  <div class="tl-detail-tags">
+                    <span class="tl-detail-tag">Privacy by Default</span>
+                    <span class="tl-detail-tag">Complete Stack</span>
+                    <span class="tl-detail-tag">Quantum Safe</span>
+                    <span class="tl-detail-tag">Web3 Freedom</span>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /.timeline-grid -->
+          </div><!-- /.diagram -->
+        </div><!-- /#timeline -->
 
         <!-- RESEARCH AREAS TAB -->
         <div id="research" class="tab-content" role="tabpanel" aria-labelledby="tab-research" tabindex="0" hidden>
