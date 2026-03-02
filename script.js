@@ -579,6 +579,15 @@ window.copyAddress = function copyAddress(btn, address) {
 
   function updateUI(data, cur) {
     if (!data) return;
+
+    // Remove skeleton placeholders on first data load (safe to call every time)
+    document.querySelectorAll('#market .mkt-skeleton').forEach(function (s) { s.parentNode.removeChild(s); });
+    var mChgEl = document.getElementById('mkt-change');
+    if (mChgEl) mChgEl.classList.remove('mkt-hero-change--loading');
+    // Remove widget loading pulse
+    var wgt = document.getElementById('bdx-widget');
+    if (wgt) wgt.classList.remove('wgt-loading');
+
     cur = cur || currentCurrency;
     var sym    = symbols[cur] || '$';
     var price  = data.current_price;

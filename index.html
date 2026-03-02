@@ -3308,38 +3308,38 @@
               <div class="mkt-hero-label" id="mkt-hero-label">BDX / USD &middot; Live Price</div>
               <!-- USD / INR toggle -->
               <div class="mkt-currency-toggle">
-                <button class="mkt-currency-btn active" data-currency="usd">$ USD</button>
-                <button class="mkt-currency-btn" data-currency="inr">&#8377; INR</button>
+                <button class="mkt-currency-btn active" data-currency="usd" aria-label="Show price in US Dollars">$ USD</button>
+                <button class="mkt-currency-btn" data-currency="inr" aria-label="Show price in Indian Rupees">&#8377; INR</button>
               </div>
-              <div class="mkt-hero-price" id="mkt-price">&mdash;</div>
-              <div class="mkt-hero-change" id="mkt-change">&mdash;</div>
+              <div class="mkt-hero-price" id="mkt-price"><span class="mkt-skeleton mkt-skeleton--price" aria-hidden="true"></span></div>
+              <div class="mkt-hero-change mkt-hero-change--loading" id="mkt-change"><span class="mkt-skeleton mkt-skeleton--change" aria-hidden="true"></span></div>
               <div class="mkt-last-updated" id="mkt-updated">Fetching live data&hellip;</div>
             </div>
 
             <!-- Stats grid -->
             <div class="mkt-stats-grid">
               <div class="mkt-stat-card" data-tooltip="Price movement over the last 24 hours">
-                <div class="mkt-stat-val" id="mkt-change-card">&mdash;</div>
+                <div class="mkt-stat-val" id="mkt-change-card"><span class="mkt-skeleton mkt-skeleton--stat" aria-hidden="true"></span></div>
                 <div class="mkt-stat-label">24h Change</div>
               </div>
               <div class="mkt-stat-card" data-tooltip="Total market value of all circulating BDX coins">
-                <div class="mkt-stat-val" id="mkt-mcap">&mdash;</div>
+                <div class="mkt-stat-val" id="mkt-mcap"><span class="mkt-skeleton mkt-skeleton--stat" aria-hidden="true"></span></div>
                 <div class="mkt-stat-label">Market Cap</div>
               </div>
               <div class="mkt-stat-card" data-tooltip="Total BDX trading volume in the last 24 hours">
-                <div class="mkt-stat-val" id="mkt-vol">&mdash;</div>
+                <div class="mkt-stat-val" id="mkt-vol"><span class="mkt-skeleton mkt-skeleton--stat" aria-hidden="true"></span></div>
                 <div class="mkt-stat-label">24h Volume</div>
               </div>
               <div class="mkt-stat-card" data-tooltip="BDX coins actively circulating in the market">
-                <div class="mkt-stat-val" id="mkt-supply">&mdash;</div>
+                <div class="mkt-stat-val" id="mkt-supply"><span class="mkt-skeleton mkt-skeleton--stat" aria-hidden="true"></span></div>
                 <div class="mkt-stat-label">Circulating Supply</div>
               </div>
               <div class="mkt-stat-card" data-tooltip="All BDX coins created, including staked &amp; locked ones">
-                <div class="mkt-stat-val" id="mkt-total-supply">&mdash;</div>
+                <div class="mkt-stat-val" id="mkt-total-supply"><span class="mkt-skeleton mkt-skeleton--stat" aria-hidden="true"></span></div>
                 <div class="mkt-stat-label">Total Supply</div>
               </div>
               <div class="mkt-stat-card" data-tooltip="Maximum number of BDX coins that will ever exist">
-                <div class="mkt-stat-val" id="mkt-max-supply">&mdash;</div>
+                <div class="mkt-stat-val" id="mkt-max-supply"><span class="mkt-skeleton mkt-skeleton--stat" aria-hidden="true"></span></div>
                 <div class="mkt-stat-label">Max Supply</div>
               </div>
             </div>
@@ -3348,9 +3348,9 @@
             <div class="mkt-exchange-row">
               <div class="mkt-exchange-label">Trade on</div>
               <div class="mkt-exchange-links">
-                <a href="https://www.kucoin.com/trade/BDX-USDT" target="_blank" rel="noopener" class="mkt-exchange-btn">KuCoin</a>
-                <a href="https://www.kraken.com/prices/bdx-beldex-price-chart/usd-us-dollar" target="_blank" rel="noopener" class="mkt-exchange-btn">Kraken</a>
-                <a href="https://www.gate.com/trade/BDX_USD" target="_blank" rel="noopener" class="mkt-exchange-btn">Gate.io</a>
+                <a href="https://www.kucoin.com/trade/BDX-USDT" target="_blank" rel="noopener noreferrer" class="mkt-exchange-btn">KuCoin</a>
+                <a href="https://www.kraken.com/prices/bdx-beldex-price-chart/usd-us-dollar" target="_blank" rel="noopener noreferrer" class="mkt-exchange-btn">Kraken</a>
+                <a href="https://www.gate.com/trade/BDX_USD" target="_blank" rel="noopener noreferrer" class="mkt-exchange-btn">Gate.io</a>
               </div>
             </div>
 
@@ -3375,7 +3375,7 @@
     </button>
 
     <!-- BDX Live Price Widget -->
-    <div id="bdx-widget" aria-label="BDX live price widget" role="complementary">
+    <div id="bdx-widget" class="wgt-loading" aria-label="BDX live price widget" role="complementary">
       <div class="bdx-wgt-inner">
         <div class="bdx-wgt-top">
           <span class="bdx-wgt-name">BDX</span>

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -38,6 +38,7 @@
   /* Typography */
   --font-head: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
 }
 
 * {
@@ -105,6 +106,7 @@ body {
   justify-content: flex-start;
   flex-wrap: nowrap;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   gap: 4px;
   margin-bottom: 40px;
@@ -11199,6 +11201,18 @@ html.theme-transitioning *::after {
 }
 .mkt-hero-change.price-up   { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
 .mkt-hero-change.price-down { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.25); }
+/* Neutral default: shown before data loads or when change is unavailable */
+.mkt-hero-change--loading,
+.mkt-hero-change:not(.price-up):not(.price-down) {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.35);
+  border: 1px solid rgba(255,255,255,.1);
+}
+[data-theme="light"] .mkt-hero-change:not(.price-up):not(.price-down) {
+  background: rgba(0,0,0,.05);
+  color: rgba(0,0,0,.35);
+  border: 1px solid rgba(0,0,0,.1);
+}
 .mkt-last-updated {
   font-family: var(--font-mono);
   font-size: .62rem;
@@ -11316,6 +11330,17 @@ html.theme-transitioning *::after {
   box-shadow: 0 12px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(41,224,169,.2), 0 0 20px rgba(41,224,169,.1);
   transform: translateY(-2px);
 }
+/* Widget pulse: shown while waiting for first data load */
+@keyframes bdxWgtPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .35; }
+}
+#bdx-widget.wgt-loading .bdx-wgt-price,
+#bdx-widget.wgt-loading .bdx-wgt-change {
+  animation: bdxWgtPulse 1.4s ease-in-out infinite;
+}
+#bdx-widget.wgt-loading .bdx-wgt-price { color: rgba(255,255,255,.3); }
+[data-theme="light"] #bdx-widget.wgt-loading .bdx-wgt-price { color: rgba(0,0,0,.2); }
 .bdx-wgt-inner { display: flex; flex-direction: column; gap: 4px; }
 .bdx-wgt-top { display: flex; align-items: baseline; gap: 10px; }
 .bdx-wgt-name {
@@ -11355,7 +11380,7 @@ html.theme-transitioning *::after {
 [data-theme="light"] .mkt-stat-label   { color: rgba(0,0,0,.4); }
 [data-theme="light"] .mkt-last-updated,
 [data-theme="light"] .mkt-powered      { color: rgba(0,0,0,.25); }
-[data-theme="light"] .mkt-exchange-label { color: rgba(0,0,0,.3); }
+[data-theme="light"] .mkt-exchange-label { color: rgba(0,0,0,.45); }
 [data-theme="light"] .mkt-exchange-btn--ghost { color: rgba(0,0,0,.4); border-color: rgba(0,0,0,.15); }
 
 /* Light theme overrides — floating widget */
@@ -11567,3 +11592,45 @@ html.theme-transitioning *::after {
 }
 [data-theme="light"] #market .mkt-exchange-row { border-top-color: rgba(0,0,0,.07); }
 [data-theme="light"] #market .mkt-powered { border-top-color: rgba(0,0,0,.05); }
+
+/* ═══════════════════════════════════════════════════════
+   MARKET TAB — Skeleton Loaders
+═══════════════════════════════════════════════════════ */
+@keyframes mktSkeletonShimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.mkt-skeleton {
+  display: inline-block;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.05) 75%);
+  background-size: 800px 100%;
+  animation: mktSkeletonShimmer 1.6s ease-in-out infinite;
+  color: transparent !important;
+  user-select: none;
+  pointer-events: none;
+}
+.mkt-skeleton--price  { width: 180px; height: 64px; border-radius: 8px;    display: block; margin: 0 auto 12px; }
+.mkt-skeleton--change { width: 100px; height: 36px; border-radius: 100px;  display: block; margin: 0 auto 18px; }
+.mkt-skeleton--stat   { width: 80px;  height: 24px; border-radius: 4px;    display: block; margin: 0 auto 6px; }
+[data-theme="light"] .mkt-skeleton {
+  background: linear-gradient(90deg, rgba(0,0,0,.06) 25%, rgba(0,0,0,.12) 50%, rgba(0,0,0,.06) 75%);
+  background-size: 800px 100%;
+  animation: mktSkeletonShimmer 1.6s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FLOATING WIDGET — Mobile Scaling
+═══════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  #bdx-widget {
+    bottom: 80px;
+    right: 14px;
+    padding: 8px 13px;
+    min-width: 110px;
+    border-radius: 11px;
+  }
+  .bdx-wgt-price  { font-size: .88rem; }
+  .bdx-wgt-name   { font-size: .55rem; }
+  .bdx-wgt-change { font-size: .6rem; }
+}
