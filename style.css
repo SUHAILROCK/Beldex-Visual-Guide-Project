@@ -6190,23 +6190,6 @@ body {
   .flow-container--steps .flow-box { padding-left: 60px; }
 }
 
-.challenge-card {
-  background: linear-gradient(145deg, rgba(22, 30, 42, 0.9), rgba(14, 20, 30, 0.95));
-  border-radius: 20px;
-  padding: 28px;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.4);
-}
-
-.challenge-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
-}
-
 .challenge-header {
   display: flex;
   align-items: center;
@@ -6238,12 +6221,6 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.problem-solution-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
 .problem-section,
 .solution-section {
   padding: 20px;
@@ -6264,13 +6241,6 @@ body {
 .solution-section.solved {
   background: rgba(34, 197, 94, 0.06);
   border-color: rgba(34, 197, 94, 0.2);
-}
-
-.ps-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
 }
 
 .ps-badge {
