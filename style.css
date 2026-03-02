@@ -11129,6 +11129,13 @@ html.theme-transitioning *::after {
 [data-theme="light"] #tl-grid .timeline-event[data-status="research"]   { background: linear-gradient(160deg, rgba(139,92,246,.05) 0%, rgba(248,250,252,.98) 40%) !important; }
 [data-theme="light"] #tl-grid .timeline-event[data-status="future"]     { background: linear-gradient(160deg, rgba(100,116,139,.03) 0%, rgba(248,250,252,.98) 40%) !important; }
 [data-theme="light"] #tl-grid .timeline-event::before { border-color: #e2e8f0 !important; }
+[data-theme="light"] #tl-grid .timeline-event[data-status="milestone"] .timeline-event-content h4 {
+  color: #1a1a2e !important;
+  background: none !important;
+  -webkit-text-fill-color: #1a1a2e !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+}
 [data-theme="light"] #tl-grid .timeline-event-content p { color: rgba(0,0,0,.58) !important; }
 [data-theme="light"] #tl-grid .tl-year-group .tl-yr-label { background: #f0faf6 !important; }
 
