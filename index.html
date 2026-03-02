@@ -137,6 +137,18 @@
         <button
           class="nav-tab"
           type="button"
+          id="tab-market"
+          role="tab"
+          data-tab="market"
+          aria-controls="market"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Market
+        </button>
+        <button
+          class="nav-tab"
+          type="button"
           id="tab-ecosystem"
           role="tab"
           data-tab="ecosystem"
@@ -1072,21 +1084,46 @@
             <div class="tl-hero">
               <span class="tl-hero-tag">Privacy Blockchain Since 2018</span>
               <h2 class="tl-hero-title">Beldex Evolution Timeline</h2>
-              <p class="tl-hero-sub">From CryptoNote origins to a full privacy Web3 ecosystem — every milestone, upgrade, and what's coming next.</p>
+              <p class="tl-hero-sub">From CryptoNote origins to a full privacy Web3 ecosystem, every milestone, upgrade, and what's coming next.</p>
             </div>
 
             <!-- Stats bar -->
-            <div class="tl-stats-bar">
-              <div class="tl-stat"><div class="tl-stat-val">2018</div><div class="tl-stat-label">Founded</div></div>
-              <div class="tl-stat"><div class="tl-stat-val">$34.5M</div><div class="tl-stat-label">Raised</div></div>
-              <div class="tl-stat"><div class="tl-stat-val">5</div><div class="tl-stat-label">Hardforks</div></div>
-              <div class="tl-stat"><div class="tl-stat-val">100M+</div><div class="tl-stat-label">BChat Users</div></div>
+            <div class="tl-stats-bar" aria-label="Project key metrics" role="region">
+              <div class="tl-stats-label">Key Metrics</div>
+              <div class="tl-stats-items">
+                <div class="tl-stat">
+                  <div class="tl-stat-val">2018</div>
+                  <div class="tl-stat-label">Founded</div>
+                </div>
+                <div class="tl-stat-sep"></div>
+                <div class="tl-stat">
+                  <div class="tl-stat-val">$34.5M</div>
+                  <div class="tl-stat-label">Raised</div>
+                </div>
+                <div class="tl-stat-sep"></div>
+                <div class="tl-stat">
+                  <div class="tl-stat-val">5</div>
+                  <div class="tl-stat-label">Hardforks</div>
+                </div>
+                <div class="tl-stat-sep"></div>
+                <!-- <div class="tl-stat">
+                  <div class="tl-stat-val">7.4B</div>
+                  <div class="tl-stat-label">BDX Supply</div>
+                </div> -->
+                <div class="tl-stat-sep"></div>
+                <div class="tl-stat">
+                  <div class="tl-stat-val">100M+</div>
+                  <div class="tl-stat-label">BChat Users</div>
+                </div>
+              </div>
             </div>
 
             <!-- Filter row -->
+            <div class="tl-filter-label">Filter by:</div>
             <div class="tl-filter-row" id="tl-filters">
               <button class="tl-filter-btn active" data-tl-filter="all">All</button>
               <button class="tl-filter-btn" data-tl-filter="completed">Completed</button>
+              <button class="tl-filter-btn tl-filter-hardfork" data-tl-filter="hardfork">Hardfork</button>
               <button class="tl-filter-btn" data-tl-filter="milestone">Milestones</button>
               <button class="tl-filter-btn" data-tl-filter="live">Live</button>
               <button class="tl-filter-btn" data-tl-filter="progress">In Progress</button>
@@ -1152,7 +1189,7 @@
               <!-- ── 2021 ── -->
               <div class="tl-year-group" data-tl-year="2021"><span class="tl-yr-label">2021</span></div>
 
-              <div class="timeline-event past milestone" data-status="milestone">
+              <div class="timeline-event past milestone" data-status="milestone" data-hardfork="true">
                 <div class="timeline-year">Dec 2021</div>
                 <div class="timeline-event-content">
                   <h4>⚡ Bucephalus Hardfork — PoW → PoS</h4>
@@ -1264,7 +1301,7 @@
               <!-- ── 2024 ── -->
               <div class="tl-year-group" data-tl-year="2024"><span class="tl-yr-label">2024</span></div>
 
-              <div class="timeline-event past milestone" data-status="milestone">
+              <div class="timeline-event past milestone" data-status="milestone" data-hardfork="true">
                 <div class="timeline-year">February 2024</div>
                 <div class="timeline-event-content">
                   <h4>🏷️ Bern Hardfork — BNS Mainnet Launch</h4>
@@ -1297,7 +1334,7 @@
               <!-- ── 2025 ── -->
               <div class="tl-year-group" data-tl-year="2025"><span class="tl-yr-label">2025</span></div>
 
-              <div class="timeline-event past" data-status="completed">
+              <div class="timeline-event past" data-status="completed" data-hardfork="true">
                 <div class="timeline-year">May 2025</div>
                 <div class="timeline-event-content">
                   <h4>🔧 Bern Hardfork Phase 2</h4>
@@ -1325,7 +1362,7 @@
                 </div>
               </div>
 
-              <div class="timeline-event past milestone" data-status="milestone">
+              <div class="timeline-event past milestone" data-status="milestone" data-hardfork="true">
                 <div class="timeline-year">August 2025</div>
                 <div class="timeline-event-content">
                   <h4>⚙️ Hermes Hardfork — BNS Ethereum Compatibility</h4>
@@ -1340,7 +1377,7 @@
                 </div>
               </div>
 
-              <div class="timeline-event past milestone" data-status="milestone">
+              <div class="timeline-event past milestone" data-status="milestone" data-hardfork="true">
                 <div class="timeline-year">Dec 7, 2025</div>
                 <div class="timeline-event-content">
                   <h4>🎉 Obscura Hardfork — Bulletproof++ on Mainnet</h4>
@@ -3262,6 +3299,67 @@
           ></iframe>
         </div>
 
+        <!-- MARKET TAB -->
+        <div id="market" class="tab-content" role="tabpanel" aria-labelledby="tab-market" tabindex="0" hidden>
+          <div class="diagram">
+
+            <!-- Hero price display -->
+            <div class="mkt-hero">
+              <div class="mkt-hero-label" id="mkt-hero-label">BDX / USD &middot; Live Price</div>
+              <!-- USD / INR toggle -->
+              <div class="mkt-currency-toggle">
+                <button class="mkt-currency-btn active" data-currency="usd">$ USD</button>
+                <button class="mkt-currency-btn" data-currency="inr">&#8377; INR</button>
+              </div>
+              <div class="mkt-hero-price" id="mkt-price">&mdash;</div>
+              <div class="mkt-hero-change" id="mkt-change">&mdash;</div>
+              <div class="mkt-last-updated" id="mkt-updated">Fetching live data&hellip;</div>
+            </div>
+
+            <!-- Stats grid -->
+            <div class="mkt-stats-grid">
+              <div class="mkt-stat-card" data-tooltip="Price movement over the last 24 hours">
+                <div class="mkt-stat-val" id="mkt-change-card">&mdash;</div>
+                <div class="mkt-stat-label">24h Change</div>
+              </div>
+              <div class="mkt-stat-card" data-tooltip="Total market value of all circulating BDX coins">
+                <div class="mkt-stat-val" id="mkt-mcap">&mdash;</div>
+                <div class="mkt-stat-label">Market Cap</div>
+              </div>
+              <div class="mkt-stat-card" data-tooltip="Total BDX trading volume in the last 24 hours">
+                <div class="mkt-stat-val" id="mkt-vol">&mdash;</div>
+                <div class="mkt-stat-label">24h Volume</div>
+              </div>
+              <div class="mkt-stat-card" data-tooltip="BDX coins actively circulating in the market">
+                <div class="mkt-stat-val" id="mkt-supply">&mdash;</div>
+                <div class="mkt-stat-label">Circulating Supply</div>
+              </div>
+              <div class="mkt-stat-card" data-tooltip="All BDX coins created, including staked &amp; locked ones">
+                <div class="mkt-stat-val" id="mkt-total-supply">&mdash;</div>
+                <div class="mkt-stat-label">Total Supply</div>
+              </div>
+              <div class="mkt-stat-card" data-tooltip="Maximum number of BDX coins that will ever exist">
+                <div class="mkt-stat-val" id="mkt-max-supply">&mdash;</div>
+                <div class="mkt-stat-label">Max Supply</div>
+              </div>
+            </div>
+
+            <!-- Exchange links -->
+            <div class="mkt-exchange-row">
+              <div class="mkt-exchange-label">Trade on</div>
+              <div class="mkt-exchange-links">
+                <a href="https://www.kucoin.com/trade/BDX-USDT" target="_blank" rel="noopener" class="mkt-exchange-btn">KuCoin</a>
+                <a href="https://www.kraken.com/prices/bdx-beldex-price-chart/usd-us-dollar" target="_blank" rel="noopener" class="mkt-exchange-btn">Kraken</a>
+                <a href="https://www.coingecko.com/en/coins/beldex" target="_blank" rel="noopener" class="mkt-exchange-btn mkt-exchange-btn--ghost">CoinGecko</a>
+              </div>
+            </div>
+
+            <!-- Powered by note -->
+            <p class="mkt-powered">Prices powered by CoinGecko &middot; refreshes every 60&thinsp;s</p>
+
+          </div>
+        </div>
+
         <!-- Scroll to Top Button -->
     <button id="scrollTopBtn" class="scroll-top-btn" title="Go to top" aria-label="Return to top of page">
       <svg
@@ -3275,6 +3373,17 @@
         <polyline points="18 15 12 9 6 15"></polyline>
       </svg>
     </button>
+
+    <!-- BDX Live Price Widget -->
+    <div id="bdx-widget" aria-label="BDX live price widget" role="complementary">
+      <div class="bdx-wgt-inner">
+        <div class="bdx-wgt-top">
+          <span class="bdx-wgt-name">BDX</span>
+          <span class="bdx-wgt-price" id="wgt-price">&mdash;</span>
+        </div>
+        <div class="bdx-wgt-change" id="wgt-change">Loading&hellip;</div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>

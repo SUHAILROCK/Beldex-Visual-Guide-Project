@@ -44,7 +44,8 @@
     'architecture',
     'challenges',
     'timeline',
-    'ecosystem'
+    'ecosystem',
+    'market'
   ];
 
   const tabButtons = Array.from(document.querySelectorAll('.nav-tab[data-tab]'));
@@ -417,7 +418,15 @@ window.copyAddress = function copyAddress(btn, address) {
 
       // Show / hide events
       events.forEach(function (ev) {
-        const match = filter === 'all' || ev.dataset.status === filter;
+        var match;
+        if (filter === 'all') {
+          match = true;
+        } else if (filter === 'hardfork') {
+          // Hardfork filter: show events tagged with data-hardfork="true"
+          match = ev.dataset.hardfork === 'true';
+        } else {
+          match = ev.dataset.status === filter;
+        }
         ev.style.display = match ? '' : 'none';
       });
 
@@ -514,4 +523,141 @@ window.copyAddress = function copyAddress(btn, address) {
   } else {
     init();
   }
+
+/* ──────────────────────────────────────────────
+   BDX Live Price Module  (USD + INR toggle)
+────────────────────────────────────────────── */
+(function () {
+  var API_BASE = 'https://api.coingecko.com/api/v3/coins/markets?ids=beldex&vs_currency=';
+  var REFRESH_MS = 60000;
+  var cache = { usd: null, inr: null };
+  var currentCurrency = 'usd';
+  var symbols = { usd: '$', inr: '\u20b9' };   // $ and ₹
+
+  function fmtPrice(n, cur) {
+    if (n == null || isNaN(n)) return '\u2014';
+    var s = symbols[cur] || '$';
+    // INR prices are larger numbers — format accordingly
+    if (n >= 1) return s + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    return s + n.toFixed(6);
+  }
+
+  function fmtBig(n, sym) {
+    if (n == null || isNaN(n)) return '\u2014';
+    sym = sym || '$';
+    if (n >= 1e12) return sym + (n / 1e12).toFixed(2) + 'T';
+    if (n >= 1e9)  return sym + (n / 1e9).toFixed(2) + 'B';
+    if (n >= 1e6)  return sym + (n / 1e6).toFixed(2) + 'M';
+    if (n >= 1e3)  return sym + (n / 1e3).toFixed(1) + 'K';
+    return sym + n.toFixed(2);
+  }
+
+  function fmtSupply(n) {
+    if (n == null || isNaN(n)) return '\u2014';
+    if (n >= 1e9) return (n / 1e9).toFixed(3) + 'B BDX';
+    if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M BDX';
+    return n.toLocaleString() + ' BDX';
+  }
+
+  function fmtChange(c) {
+    if (c == null || isNaN(c)) return '\u2014';
+    return (c >= 0 ? '\u25b2 +' : '\u25bc ') + c.toFixed(2) + '%';
+  }
+
+  function setChange(el, change) {
+    el.textContent = fmtChange(change);
+    el.classList.remove('price-up', 'price-down');
+    if (change > 0) el.classList.add('price-up');
+    else if (change < 0) el.classList.add('price-down');
+  }
+
+  function flashEl(el) {
+    el.classList.remove('bdx-price-flash');
+    void el.offsetWidth;
+    el.classList.add('bdx-price-flash');
+  }
+
+  function updateUI(data, cur) {
+    if (!data) return;
+    cur = cur || currentCurrency;
+    var sym    = symbols[cur] || '$';
+    var price  = data.current_price;
+    var change = data.price_change_percentage_24h;
+    var mcap   = data.market_cap;
+    var vol    = data.total_volume;
+    var now    = new Date().toLocaleTimeString();
+
+    // Supply fields — same regardless of currency (in BDX)
+    var circSup  = (cache.usd || data).circulating_supply;
+    var totalSup = (cache.usd || data).total_supply;
+    var maxSup   = (cache.usd || data).max_supply;
+
+    // ── Floating widget ──
+    var wPrice  = document.getElementById('wgt-price');
+    var wChange = document.getElementById('wgt-change');
+    if (wPrice)  { wPrice.textContent = fmtPrice(price, cur); flashEl(wPrice); }
+    if (wChange) setChange(wChange, change);
+
+    // ── Market tab ──
+    var heroLabel = document.getElementById('mkt-hero-label');
+    var mPrice    = document.getElementById('mkt-price');
+    var mChange   = document.getElementById('mkt-change');
+    var mCCard    = document.getElementById('mkt-change-card');
+    var mMcap     = document.getElementById('mkt-mcap');
+    var mVol      = document.getElementById('mkt-vol');
+    var mSupply   = document.getElementById('mkt-supply');
+    var mTotalSup = document.getElementById('mkt-total-supply');
+    var mMaxSup   = document.getElementById('mkt-max-supply');
+    var mUpd      = document.getElementById('mkt-updated');
+
+    if (heroLabel) heroLabel.textContent = 'BDX\u00a0/\u00a0' + cur.toUpperCase() + '\u00a0\u00b7\u00a0Live Price';
+    if (mPrice)    { mPrice.textContent = fmtPrice(price, cur); flashEl(mPrice); }
+    if (mChange)   setChange(mChange, change);
+    if (mCCard)    { mCCard.textContent = fmtChange(change); mCCard.className = 'mkt-stat-val ' + (change >= 0 ? 'price-up' : 'price-down'); }
+    if (mMcap)     mMcap.textContent     = fmtBig(mcap, sym);
+    if (mVol)      mVol.textContent      = fmtBig(vol, sym);
+    if (mSupply)   mSupply.textContent   = fmtSupply(circSup);
+    if (mTotalSup) mTotalSup.textContent = fmtSupply(totalSup);
+    if (mMaxSup)   mMaxSup.textContent   = maxSup ? fmtSupply(maxSup) : '\u221e  No Cap';
+    if (mUpd)      mUpd.textContent      = 'Last updated: ' + now + '\u2002\u00b7\u2002' + cur.toUpperCase();
+  }
+
+  function fetchPrice() {
+    Promise.all([
+      fetch(API_BASE + 'usd').then(function (r) { return r.json(); }),
+      fetch(API_BASE + 'inr').then(function (r) { return r.json(); })
+    ])
+    .then(function (results) {
+      var usd = results[0] && results[0][0];
+      var inr = results[1] && results[1][0];
+      if (usd) cache.usd = usd;
+      if (inr) cache.inr = inr;
+      updateUI(cache[currentCurrency], currentCurrency);
+    })
+    .catch(function () {
+      var upd = document.getElementById('mkt-updated');
+      var d = cache.usd || cache.inr;
+      if (upd && d) upd.textContent += ' (retrying\u2026)';
+    });
+  }
+
+  function initToggle() {
+    var btns = document.querySelectorAll('.mkt-currency-btn');
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentCurrency = btn.dataset.currency;
+        btns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var d = cache[currentCurrency];
+        if (d) updateUI(d, currentCurrency);
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    initToggle();
+    fetchPrice();
+    setInterval(fetchPrice, REFRESH_MS);
+  });
+}());
 })();
