@@ -1,0 +1,636 @@
+/* === Overview Tab — Ultra Premium + Funding Pie Chart Center Label === */
+/* ============================================
+   OVERVIEW TAB STYLES - ULTRA PREMIUM EDITION
+   ============================================ */
+
+/* ===== HERO INTRO SECTION ===== */
+.beldex-intro-card {
+  position: relative;
+  padding: 50px 50px;
+  margin: 30px 0 50px;
+  background: 
+    radial-gradient(ellipse at 10% 10%, rgba(41, 224, 169, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse at 90% 90%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(15, 22, 35, 0.98) 0%, rgba(8, 12, 22, 0.99) 100%);
+  border: 1px solid rgba(41, 224, 169, 0.25);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 
+    0 30px 80px -20px rgba(0, 0, 0, 0.7),
+    0 0 60px rgba(41, 224, 169, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Animated Grid Background */
+.beldex-intro-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(41, 224, 169, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(41, 224, 169, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  animation: gridFloat 25s linear infinite;
+  pointer-events: none;
+}
+
+/* Rainbow Top Bar */
+.beldex-intro-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    #22c55e, var(--primary), #3b82f6, #8b5cf6, #ec4899, var(--primary), #22c55e);
+  background-size: 400% 100%;
+  animation: rainbowFlow 8s ease-in-out infinite;
+}
+
+@keyframes rainbowFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.beldex-intro {
+  position: relative;
+  z-index: 1;
+  font-size: 1.35rem;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  text-align: center;
+  font-weight: 400;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== PREMIUM STATS SECTION ===== */
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin: 50px 0;
+  flex-wrap: wrap;
+  perspective: 1000px;
+}
+
+/* 3D Floating Stat Cards */
+.stat-box {
+  position: relative;
+  padding: 35px 45px;
+  min-width: 200px;
+  background: 
+    linear-gradient(145deg, rgba(25, 32, 45, 0.95), rgba(15, 20, 30, 0.98));
+  border: none;
+  border-radius: 24px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  overflow: visible;
+  box-shadow: 
+    0 25px 50px -15px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Animated Gradient Border */
+.stat-box::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, 
+    rgba(41, 224, 169, 0.5), 
+    rgba(59, 130, 246, 0.4), 
+    rgba(139, 92, 246, 0.4),
+    rgba(41, 224, 169, 0.5));
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: borderRotate 6s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Inner Card Background */
+.stat-box::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(22, 30, 42, 0.98), rgba(12, 18, 28, 0.99));
+  z-index: -1;
+}
+
+/* Floating Glow Effect */
+.stat-box:hover {
+  transform: translateY(-12px) rotateX(5deg);
+  box-shadow: 
+    0 35px 70px -20px rgba(0, 0, 0, 0.6),
+    0 0 50px rgba(41, 224, 169, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.stat-box:hover::before {
+  opacity: 1;
+  animation: borderRotate 3s linear infinite;
+}
+
+/* Stat Number - Large Bold Gradient */
+.stat-box h3 {
+  position: relative;
+  font-family: var(--font-head);
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, #3b82f6 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: numberShine 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(41, 224, 169, 0.3));
+}
+
+@keyframes numberShine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.stat-box p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+/* ===== VISION FLOW SECTION ===== */
+.flow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  margin: 40px 0 50px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* Premium Flow Cards */
+.flow-box {
+  position: relative;
+  padding: 35px 40px;
+  min-width: 220px;
+  max-width: 280px;
+  background: linear-gradient(145deg, rgba(22, 30, 42, 0.95), rgba(12, 18, 28, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.4);
+}
+
+/* Inner light effect */
+.flow-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+/* Icon Container */
+.flow-box-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.flow-box:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 
+    0 30px 60px -20px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(41, 224, 169, 0.15);
+}
+
+/* ===== MONERO BOX - Orange/Amber Theme ===== */
+.flow-box-monero {
+  border-color: rgba(255, 152, 0, 0.3);
+  background: 
+    linear-gradient(145deg, rgba(45, 35, 25, 0.95), rgba(30, 22, 15, 0.98));
+}
+
+.flow-box-monero::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 23px;
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.4), rgba(255, 87, 34, 0.3));
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.flow-box-monero:hover {
+  border-color: rgba(255, 152, 0, 0.5);
+  box-shadow: 
+    0 30px 60px -20px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(255, 152, 0, 0.2);
+}
+
+.flow-box-monero h3 {
+  color: #ff9800 !important;
+  text-shadow: 0 0 25px rgba(255, 152, 0, 0.6);
+}
+
+/* ===== ETHEREUM BOX - Blue/Purple Theme ===== */
+.flow-box-ethereum {
+  border-color: rgba(98, 126, 234, 0.3);
+  background: 
+    linear-gradient(145deg, rgba(30, 35, 55, 0.95), rgba(20, 25, 45, 0.98));
+}
+
+.flow-box-ethereum::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 23px;
+  background: linear-gradient(135deg, rgba(98, 126, 234, 0.4), rgba(139, 92, 246, 0.3));
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.flow-box-ethereum:hover {
+  border-color: rgba(98, 126, 234, 0.5);
+  box-shadow: 
+    0 30px 60px -20px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(98, 126, 234, 0.2);
+}
+
+.flow-box-ethereum h3 {
+  color: #627eea !important;
+  text-shadow: 0 0 25px rgba(98, 126, 234, 0.6);
+}
+
+/* ===== BELDEX BOX - Teal/Green Premium Theme ===== */
+.flow-box-beldex {
+  border: 2px solid rgba(41, 224, 169, 0.4);
+  background: 
+    linear-gradient(145deg, rgba(20, 45, 40, 0.95), rgba(15, 35, 32, 0.98));
+  position: relative;
+}
+
+.flow-box-beldex::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, 
+    rgba(41, 224, 169, 0.6), 
+    rgba(34, 197, 94, 0.5),
+    rgba(16, 185, 129, 0.4));
+  background-size: 200% 200%;
+  z-index: -1;
+  animation: beldexGlow 4s ease-in-out infinite;
+}
+
+@keyframes beldexGlow {
+  0%, 100% { background-position: 0% 50%; opacity: 0.6; }
+  50% { background-position: 100% 50%; opacity: 0.8; }
+}
+
+.flow-box-beldex:hover {
+  border-color: rgba(41, 224, 169, 0.6);
+  box-shadow: 
+    0 30px 60px -20px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(41, 224, 169, 0.3),
+    0 0 80px rgba(41, 224, 169, 0.15);
+}
+
+.flow-box-beldex h1 {
+  font-size: 2.2rem !important;
+  background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, #22c55e 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: beldexTitle 4s ease-in-out infinite;
+  text-shadow: none;
+}
+
+@keyframes beldexTitle {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Flow Box Text Styles */
+.flow-box h3, .flow-box h1 {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-head);
+  font-weight: 800;
+  margin: 0 0 10px;
+}
+
+.flow-main-text {
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.flow-sub-text {
+  position: relative;
+  z-index: 1;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 6px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Vision Title */
+.vision-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Animated Glowing Arrow */
+.flow-arrow {
+  position: relative;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  text-shadow: 
+    0 0 20px rgba(41, 224, 169, 0.8),
+    0 0 40px rgba(41, 224, 169, 0.5),
+    0 0 60px rgba(41, 224, 169, 0.3);
+  animation: arrowGlow 2s ease-in-out infinite;
+}
+
+@keyframes arrowGlow {
+  0%, 100% { 
+    transform: scale(1); 
+    text-shadow: 0 0 20px rgba(41, 224, 169, 0.8), 0 0 40px rgba(41, 224, 169, 0.5);
+  }
+  50% { 
+    transform: scale(1.2); 
+    text-shadow: 0 0 30px rgba(41, 224, 169, 1), 0 0 60px rgba(41, 224, 169, 0.8), 0 0 80px rgba(41, 224, 169, 0.5);
+  }
+}
+
+/* ===== PREMIUM TECH STACK ===== */
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 40px 0;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(15, 20, 30, 0.6), rgba(10, 14, 22, 0.7));
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Interactive Tech Tags */
+.tech-item {
+  position: relative;
+  padding: 16px 26px;
+  background: linear-gradient(135deg, rgba(25, 32, 45, 0.9), rgba(18, 24, 35, 0.95));
+  border: 1px solid rgba(41, 224, 169, 0.25);
+  border-radius: 14px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* No shimmer effect - removed to fix visual lines issue */
+
+.tech-item:hover {
+  transform: translateY(-5px) scale(1.03);
+  border-color: rgba(41, 224, 169, 0.5);
+  color: #fff;
+  box-shadow: 
+    0 15px 40px -10px rgba(0, 0, 0, 0.4),
+    0 0 25px rgba(41, 224, 169, 0.2);
+}
+
+/* Premium Tooltip */
+.tech-item[data-tooltip]:hover .tooltip-content,
+.tech-item[data-tooltip]:hover::marker {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tech-item[data-tooltip]::marker {
+  content: "";
+}
+
+.tech-item[data-tooltip]:hover::selection {
+  background: var(--primary);
+}
+
+/* CSS Tooltip */
+.tech-item[data-tooltip] {
+  --tooltip-bg: linear-gradient(135deg, rgba(12, 18, 28, 0.98), rgba(8, 12, 20, 0.99));
+}
+
+.tech-item[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 15px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px 20px;
+  min-width: 250px;
+  max-width: 320px;
+  background: linear-gradient(135deg, rgba(12, 18, 28, 0.98), rgba(8, 12, 20, 0.99));
+  border: 1px solid rgba(41, 224, 169, 0.35);
+  border-radius: 14px;
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: normal;
+  text-align: left;
+  z-index: 200;
+  opacity: 1;
+  box-shadow: 
+    0 20px 50px -15px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(41, 224, 169, 0.1);
+  animation: tooltipPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tooltipPop {
+  from { 
+    opacity: 0; 
+    transform: translateX(-50%) translateY(8px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(-50%) translateY(0) scale(1); 
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 900px) {
+  .beldex-intro-card {
+    padding: 35px 25px;
+    margin: 25px 0 40px;
+  }
+  
+  .beldex-intro {
+    font-size: 1.15rem;
+    line-height: 1.75;
+  }
+  
+  .stats-container {
+    gap: 20px;
+  }
+  
+  .stat-box {
+    padding: 28px 35px;
+    min-width: 170px;
+  }
+  
+  .stat-box h3 {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .beldex-intro-card {
+    padding: 28px 20px;
+  }
+  
+  .beldex-intro {
+    font-size: 1.05rem;
+  }
+  
+  .stat-box {
+    padding: 24px 30px;
+    min-width: 140px;
+  }
+  
+  .stat-box h3 {
+    font-size: 2rem;
+  }
+  
+  .stat-box p {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+  
+  .flow-container {
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  .flow-box {
+    min-width: auto;
+    max-width: 100%;
+    width: 100%;
+    padding: 28px 24px;
+  }
+  
+  .flow-arrow {
+    transform: rotate(90deg);
+    font-size: 2rem;
+  }
+  
+  .tech-stack {
+    gap: 12px;
+    padding: 20px;
+  }
+  
+  .tech-item {
+    padding: 12px 18px;
+    font-size: 0.85rem;
+  }
+  
+  .tech-item[data-tooltip]:hover::after {
+    min-width: 200px;
+    max-width: 280px;
+    font-size: 0.78rem;
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-container {
+    gap: 14px;
+  }
+  
+  .stat-box {
+    padding: 20px 24px;
+    min-width: calc(50% - 14px);
+    flex: 1;
+  }
+  
+  .stat-box h3 {
+    font-size: 1.7rem;
+  }
+}
+
+/* ============================================
+   FUNDING PIE CHART CENTER LABEL
+   ============================================ */
+
+.pie-center-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.pie-total {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-shadow: 0 0 20px rgba(41, 224, 169, 0.5);
+  line-height: 1.2;
+}
+
+.pie-subtitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .pie-total {
+    font-size: 1.5rem;
+  }
+  
+  .pie-subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+}
+

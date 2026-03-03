@@ -1,0 +1,494 @@
+/* === Ecosystem Tree — Visualization Styles === */
+/* =====================================================================
+   ECOSYSTEM TREE (embedded in #ecosystem tab)
+   ===================================================================== */
+
+/* ═══════════════════════════════════════════════
+   ECOSYSTEM TAB — ECO TREE
+   Redesigned: proper connector alignment via CSS grid + calc()
+   Key fix: connector width = 100% with gap: 18px to match
+   eco-pillars-row, hbar drawn only between column centres.
+═══════════════════════════════════════════════ */
+
+.eco-tree {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 8px;
+  position: relative;
+}
+
+/* Subtle dot grid background */
+.eco-tree::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(56,189,126,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+.eco-tree-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ─── ROOT NODE ─── */
+.eco-root {
+  background: linear-gradient(135deg, #143a28, #1a4a34);
+  border: 2px solid #38bd7e;
+  box-shadow: 0 0 40px rgba(56,189,126,0.12);
+  border-radius: 16px;
+  padding: 24px 48px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.eco-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(56,189,126,0.2);
+}
+.eco-root .eco-emoji { font-size: 1.6rem; margin-bottom: 6px; }
+.eco-root .eco-title {
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #38bd7e;
+  letter-spacing: 0.05em;
+}
+.eco-root .eco-desc {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* ─── CONNECTOR: vertical trunk ─── */
+.eco-trunk {
+  width: 2px;
+  height: 28px;
+  background: linear-gradient(to bottom, #38bd7e, #1e3a2f);
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+/* ─── CONNECTOR: horizontal bar
+   Now 100% wide (matching eco-pillars-row) but the visible
+   line is drawn only between the centres of the outer columns.
+   3 cols · gap 18px → col-width = (100% - 36px)/3
+   → centre-of-col-1 = (100% - 36px)/6
+   ─── */
+.eco-hbar {
+  width: 100%;          /* was 80% — now matches eco-pillars-row */
+  height: 2px;
+  background: transparent;
+  position: relative;
+  margin: 0;
+  flex-shrink: 0;
+}
+.eco-hbar::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left:  calc((100% - 36px) / 6);
+  right: calc((100% - 36px) / 6);
+  background: #1e3a2f;
+}
+
+/* ─── CONNECTOR: branch drops
+   Same 3-col grid + gap as eco-pillars-row so each drop sits
+   centred directly above its pillar card.
+   ─── */
+.eco-drops-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;            /* was missing — now matches eco-pillars-row */
+  width: 100%;          /* was 80% — now matches eco-pillars-row */
+  margin: 0;
+}
+
+/* Individual drop: centred within its grid cell */
+.eco-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.eco-drop-line {
+  width: 2px;
+  height: 22px;
+  background: #1e3a2f;
+  position: relative;
+}
+.eco-drop-line::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #38bd7e;
+}
+
+/* ─── LEVEL TAG ─── */
+.eco-level-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #38bd7e;
+  background: rgba(56,189,126,0.08);
+  border: 1px solid rgba(56,189,126,0.15);
+  padding: 4px 14px;
+  border-radius: 50px;
+  margin: 20px 0 14px;
+}
+
+/* ─── ROW SEPARATOR (between the two pillar rows)
+   Replaces the old trunk/hbar/drops block that wrongly implied
+   Row 1 was the parent of Row 2. Both rows are Level 1 pillars.
+   ─── */
+.eco-row-sep {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  margin: 32px 0 0;
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #2a4a3e;
+}
+.eco-row-sep::before,
+.eco-row-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #1e3a2f);
+}
+.eco-row-sep::after {
+  background: linear-gradient(to left, transparent, #1e3a2f);
+}
+
+/* ─── PILLAR GRID (3 columns) ─── */
+.eco-pillars-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  width: 100%;
+}
+
+/* Each pillar group (card + inner tree + children + leaves) */
+.eco-pillar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Pillar card — fills its grid column fully (no max-width cap) */
+.eco-pillar {
+  background: #151f30;
+  border: 1.5px solid #253349;
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: center;
+  width: 100%;          /* was capped at max-width: 220px */
+  transition: all 0.2s ease;
+}
+.eco-pillar:hover {
+  border-color: #38bd7e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(56,189,126,0.12);
+}
+.eco-pillar .eco-emoji { font-size: 1.2rem; margin-bottom: 4px; }
+.eco-pillar .eco-title {
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.eco-pillar .eco-desc {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* ─── INNER SPLIT (pillar → component cards) ─── */
+.eco-inner-split {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.eco-inner-trunk {
+  width: 2px;
+  height: 16px;
+  background: #1e3a2f;
+  flex-shrink: 0;
+}
+
+/* Inner bar — same calc approach as outer hbar.
+   Default: 3 cols · gap 6px → centre = (100% - 12px)/6 */
+.eco-inner-bar {
+  height: 2px;
+  background: transparent;
+  width: 100%;          /* was 90% */
+  position: relative;
+  flex-shrink: 0;
+}
+.eco-inner-bar::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left:  calc((100% - 12px) / 6);   /* 3 cols, gap 6px */
+  right: calc((100% - 12px) / 6);
+  background: #1e3a2f;
+}
+
+/* Inner drops — grid aligned with children-row.
+   Default: 3 cols */
+.eco-inner-drops {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: 100%;          /* was 90%, justify-content: space-between */
+}
+.eco-inner-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.eco-inner-drop-line {
+  width: 2px;
+  height: 14px;
+  background: #1e3a2f;
+  position: relative;
+}
+.eco-inner-drop-line::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #38bd7e;
+}
+
+/* ─── 4-COLUMN OVERRIDES (Privacy Apps pillar has 4 children)
+   Applied via data-cols="4" on .eco-pillar-group
+   4 cols · gap 6px → centre = (100% - 18px)/8
+   ─── */
+.eco-pillar-group[data-cols="4"] .eco-inner-bar::before {
+  left:  calc((100% - 18px) / 8);
+  right: calc((100% - 18px) / 8);
+}
+.eco-pillar-group[data-cols="4"] .eco-inner-drops    { grid-template-columns: repeat(4, 1fr); }
+.eco-pillar-group[data-cols="4"] .eco-children-row   { grid-template-columns: repeat(4, 1fr); }
+.eco-pillar-group[data-cols="4"] .eco-leaf-connectors{ grid-template-columns: repeat(4, 1fr); }
+.eco-pillar-group[data-cols="4"] .eco-leaves-row     { grid-template-columns: repeat(4, 1fr); }
+
+/* ─── COMPONENT NODE (Level 2) ─── */
+
+/* Children row: CSS grid so columns stay locked regardless of content height */
+.eco-children-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* default: 3 cols */
+  gap: 6px;
+  width: 100%;
+  /* removed flex-wrap: wrap */
+}
+.eco-comp {
+  background: #111b29;
+  border: 1px solid #1e2d42;
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  min-width: 0;
+  transition: all 0.2s ease;
+}
+.eco-comp:hover {
+  border-color: #38bd7e;
+  transform: translateY(-1px);
+}
+.eco-comp .eco-title {
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+.eco-comp .eco-desc {
+  font-size: 0.6rem;
+  color: #475569;
+  margin-top: 2px;
+}
+
+/* ─── LEAF CONNECTORS (dashed stems + arrows) ─── */
+.eco-leaf-connectors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* default: 3 cols */
+  gap: 6px;
+  width: 100%;
+  margin-top: 0;
+  /* removed flex; now grid matches children-row exactly */
+}
+.eco-leaf-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.eco-leaf-stem {
+  width: 1.5px;
+  height: 12px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #2a5a42 0px, #2a5a42 3px,
+    transparent 3px, transparent 6px
+  );
+}
+.eco-leaf-arrow {
+  width: 0; height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #38bd7e;
+  margin-bottom: 2px;
+}
+
+/* ─── LEAF NODE (Level 3) ─── */
+.eco-leaves-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* default: 3 cols */
+  gap: 6px;
+  width: 100%;
+  /* removed flex-wrap: wrap */
+}
+.eco-leaf {
+  background: rgba(56,189,126,0.06);
+  border: 1px dashed #2a5a42;
+  border-radius: 8px;
+  padding: 8px 6px;
+  text-align: center;
+  min-width: 0;
+  transition: all 0.2s ease;
+}
+.eco-leaf:hover {
+  border-color: #38bd7e;
+  background: rgba(56,189,126,0.1);
+}
+.eco-leaf .eco-title {
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #38bd7e;
+}
+.eco-leaf .eco-desc {
+  font-size: 0.52rem;
+  color: #4a7a64;
+  margin-top: 1px;
+}
+
+/* ─── STATUS BADGES ─── */
+.eco-status {
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-top: 4px;
+}
+.eco-status-live     { background: rgba(56,189,126,0.18);  color: #38bd7e; }
+.eco-status-progress { background: rgba(250,204,21,0.15);  color: #facc15; }
+.eco-status-roadmap  { background: rgba(99,102,241,0.15);  color: #818cf8; }
+
+/* ─── LEGEND ─── */
+.eco-legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 40px;
+  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-size: 0.62rem;
+  color: #64748b;
+}
+.eco-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.eco-legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.eco-legend-swatch-root   { background: linear-gradient(135deg,#143a28,#1a4a34); border: 1.5px solid #38bd7e; }
+.eco-legend-swatch-pillar { background: #151f30; border: 1.5px solid #253349; }
+.eco-legend-swatch-comp   { background: #111b29; border: 1px solid #1e2d42; }
+.eco-legend-swatch-leaf   { background: rgba(56,189,126,0.06); border: 1px dashed #2a5a42; }
+.eco-legend-swatch-conn   { width: 14px; height: 2px; background: #1e3a2f; border-radius: 0; }
+.eco-legend-swatch-arrow  { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #38bd7e; }
+.eco-legend-badge {
+  font-weight: 700;
+  font-size: 0.52rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .eco-pillars-row {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .eco-drops-3 {
+    display: none;        /* hide branch arrows on mobile — single column needs no fork */
+  }
+  .eco-hbar { display: none; }
+  .eco-root { padding: 20px 28px; }
+  .eco-root .eco-title { font-size: 1rem; }
+  .eco-row-sep { margin: 16px 0; }
+  /* On mobile each pillar is full width → inner grid can relax to 1 col */
+  .eco-children-row,
+  .eco-leaf-connectors,
+  .eco-leaves-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .eco-pillar-group[data-cols="4"] .eco-children-row,
+  .eco-pillar-group[data-cols="4"] .eco-leaf-connectors,
+  .eco-pillar-group[data-cols="4"] .eco-leaves-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .eco-children-row,
+  .eco-leaf-connectors,
+  .eco-leaves-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .eco-pillar-group[data-cols="4"] .eco-children-row,
+  .eco-pillar-group[data-cols="4"] .eco-leaf-connectors,
+  .eco-pillar-group[data-cols="4"] .eco-leaves-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .eco-tree   { padding: 0 4px; }
+  .eco-pillar { padding: 12px 14px; }
+  .eco-children-row, .eco-leaves-row { gap: 4px; }
+  .eco-comp   { padding: 8px 6px; }
+  .eco-leaf   { padding: 6px 6px; }
+}
+

@@ -1,0 +1,430 @@
+/* === Design Overrides — Enhanced Visual System === */
+/* ============================================================
+   DESIGN OVERRIDES — Enhanced Visual System
+   ============================================================ */
+
+/* ── Body: richer ambient mesh ── */
+body {
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(41, 224, 169, 0.06) 0%, transparent 35%),
+    radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 35%),
+    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(41,224,169,0.015) 0%, transparent 100%);
+}
+
+/* Subtle dot-grid texture overlay on the container */
+.container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+.container > * { position: relative; z-index: 1; }
+
+/* ── Header: stronger gradient title + glowing accent line ── */
+.header {
+  padding: 100px 20px 70px;
+}
+.header h1 {
+  font-size: 3.8rem;
+  background: linear-gradient(135deg, #ffffff 0%, #29e0a9 55%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  text-shadow: none;
+}
+.header p {
+  color: var(--primary);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  opacity: 0.7;
+  margin-top: 12px;
+}
+/* Glowing underline beneath the header */
+.header::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 2px;
+  margin: 28px auto 0;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+  box-shadow: 0 0 18px rgba(41, 224, 169, 0.6);
+}
+
+/* ── Nav tabs: gradient active state + teal hover border ── */
+.nav-tabs {
+  background: rgba(10, 11, 15, 0.85);
+  border: 1px solid rgba(41, 224, 169, 0.12);
+  padding: 6px;
+}
+.nav-tab {
+  font-size: 0.78rem;
+  padding: 8px 14px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.nav-tab:hover {
+  color: var(--primary);
+  background: rgba(41, 224, 169, 0.13);
+  border-color: rgba(41, 224, 169, 0.28);
+  transform: scale(1.06);
+  box-shadow: 0 0 18px rgba(41, 224, 169, 0.18);
+}
+.nav-tab.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: #060b0a;
+  font-weight: 700;
+  border-color: transparent;
+  box-shadow: 0 0 24px rgba(41, 224, 169, 0.35), 0 2px 8px rgba(0,0,0,0.4);
+  transform: none;
+}
+
+/* ── Diagram section titles: glow on the accent bar ── */
+.diagram > h2 {
+  font-size: 1.75rem;
+  color: var(--text-main);
+  letter-spacing: -0.4px;
+}
+.diagram > h2::before {
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+  box-shadow: 0 0 14px var(--primary), 0 0 28px rgba(41,224,169,0.4);
+  width: 4px;
+  height: 28px;
+  border-radius: 3px;
+}
+
+/* ── Cards: glassmorphism + gradient top-border on hover ── */
+.card,
+.ecosystem-item {
+  background: linear-gradient(145deg, rgba(16,19,26,0.97), rgba(10,13,18,0.99));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.card:hover,
+.ecosystem-item:hover {
+  border-color: rgba(41, 224, 169, 0.25);
+  box-shadow:
+    0 16px 50px -15px rgba(0,0,0,0.7),
+    0 0 0 1px rgba(41,224,169,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  transform: translateY(-6px);
+}
+/* Gradient top-border on card hover via pseudo */
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 16px 16px 0 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.card:hover::after { opacity: 1; }
+
+.card h3 {
+  font-size: 1.1rem;
+  letter-spacing: -0.2px;
+}
+
+/* ── Stat boxes: glowing numbers + gradient border ring ── */
+.stat-box {
+  text-align: center;
+  background: linear-gradient(145deg, rgba(16,22,28,0.98), rgba(8,12,16,0.99));
+  border: 1px solid rgba(41,224,169,0.15);
+  position: relative;
+}
+.stat-box::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: calc(var(--radius-md) + 1px);
+  background: linear-gradient(135deg, rgba(41,224,169,0.18), rgba(59,130,246,0.12), transparent);
+  z-index: -1;
+}
+.stat-box h3 {
+  font-size: 2.8rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px rgba(41,224,169,0.4));
+}
+.stat-box p {
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  color: rgba(156,163,175,0.8);
+}
+
+/* ── Vertical step flow boxes: numbered steps with accent bar ── */
+.flow-container--steps {
+  gap: 0;
+  position: relative;
+}
+/* Vertical connecting line */
+.flow-container--steps::before {
+  content: "";
+  position: absolute;
+  left: 26px;
+  top: 54px;
+  bottom: 54px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary), var(--accent));
+  opacity: 0.3;
+  border-radius: 2px;
+}
+.flow-container--steps .flow-box {
+  margin-bottom: 12px;
+  padding: 24px 28px 24px 72px;
+  position: relative;
+  border-top: none;
+  border-left: 2px solid rgba(41,224,169,0.18);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.flow-container--steps .flow-box:last-child { margin-bottom: 0; }
+.flow-container--steps .flow-box:hover {
+  border-left-color: var(--primary);
+  box-shadow: 0 8px 30px -10px rgba(0,0,0,0.6), -4px 0 20px rgba(41,224,169,0.1);
+}
+/* Step number circles */
+.flow-container--steps .flow-box::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 16px;
+  top: 22px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #060b0a;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 0.85rem;
+  line-height: 36px;
+  text-align: center;
+  box-shadow: 0 0 16px rgba(41,224,169,0.4);
+  z-index: 1;
+}
+.flow-container--steps .flow-box h2 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+.flow-container--steps .flow-box p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Scroll-to-top: gradient + pulse glow ── */
+.scroll-top-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #060b0a;
+  border: none;
+  box-shadow: 0 4px 20px rgba(41,224,169,0.3);
+  transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.scroll-top-btn:hover {
+  background: linear-gradient(135deg, #3fffc7, #60a5fa);
+  box-shadow: 0 0 30px rgba(41,224,169,0.55), 0 0 60px rgba(41,224,169,0.2);
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* ── Status badges: more vivid ── */
+.status-badge {
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+.status-complete { box-shadow: 0 0 10px rgba(16,185,129,0.2); }
+.status-progress { box-shadow: 0 0 10px rgba(241,196,15,0.2); }
+.status-research { box-shadow: 0 0 10px rgba(139,92,246,0.2); }
+
+/* ── Comparison table: striped + glowing header ── */
+.comparison-table th {
+  background: linear-gradient(135deg, rgba(41,224,169,0.15), rgba(59,130,246,0.1));
+  color: var(--primary);
+  font-size: 0.82rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(41,224,169,0.2);
+}
+.comparison-table tr:nth-child(even) td {
+  background: rgba(255,255,255,0.015);
+}
+.comparison-table tr:hover td {
+  background: rgba(41,224,169,0.04);
+}
+
+/* ── Card list items: teal bullets ── */
+.card ul li::before {
+  content: "▹";
+  color: var(--primary);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ── Responsive tweaks ── */
+@media (max-width: 768px) {
+  .header h1 { font-size: 2.4rem; }
+  .header::after { width: 50px; }
+  .diagram > h2 { font-size: 1.4rem; }
+  .stat-box h3 { font-size: 2.2rem; }
+  .flow-container--steps::before { display: none; }
+  .flow-container--steps .flow-box { padding-left: 60px; }
+}
+
+.challenge-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.challenge-number {
+  font-family: var(--font-head);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--primary);
+  min-width: 40px;
+  text-align: center;
+  opacity: 0.4;
+}
+
+.challenge-header h3 {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  background: linear-gradient(90deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.problem-section,
+.solution-section {
+  padding: 20px;
+  border-radius: 14px;
+  position: relative;
+}
+
+.problem-section {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+}
+
+.solution-section {
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+}
+
+.solution-section.solved {
+  background: rgba(34, 197, 94, 0.06);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.ps-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.problem-header .ps-badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.solution-header .ps-badge {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.ps-badge.solved-badge {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.ps-header h4 {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.problem-header h4 {
+  color: #fca5a5;
+}
+
+.solution-header h4 {
+  color: #86efac;
+}
+
+.ps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ps-list li {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 6px 0 6px 16px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.ps-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.problem-section .ps-list li::before {
+  background: rgba(239, 68, 68, 0.5);
+}
+
+.solution-section .ps-list li::before {
+  background: rgba(34, 197, 94, 0.5);
+}
+
+.ps-list li strong {
+  font-weight: 700;
+}
+
+.problem-section .ps-list li strong {
+  color: #f87171;
+}
+
+.solution-section .ps-list li strong {
+  color: #4ade80;
+}
+
