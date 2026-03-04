@@ -57,12 +57,12 @@
       dotClass: 'ts-dot-privacy',
       accentClass: 'tsc-privacy',
       items: [
-        { href: 'TEST/tech/privacy/tech-cryptonote.html', emojiHtml: '&#x1F510;', title: 'CryptoNote Protocol', desc: 'Privacy-by-default blockchain foundation', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/privacy/tech-ring-signatures.html', emojiHtml: '&#x1F48D;', title: 'Ring Signatures', desc: 'Untraceable sender identity', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/privacy/tech-stealth-addresses.html', emojiHtml: '&#x1F464;', title: 'Stealth Addresses', desc: 'One-time receiver addresses', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/privacy/tech-ringct.html', emojiHtml: '&#x1F48E;', title: 'RingCT', desc: 'Hidden transaction amounts', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/privacy/tech-privacy-map.html', emojiHtml: '&#x1F5FA;&#xFE0F;', title: 'Privacy Technology Map', desc: 'Combined privacy evolution flowchart', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/privacy/tech-cryptonote-flowchart.html', emojiHtml: '&#x1F517;', title: 'CryptoNote Protocol Flowchart', desc: 'Visual lineage from CryptoNote to Beldex', statusLabel: 'Live', statusClass: 'tsc-live' }
+        { href: 'tech/privacy/tech-cryptonote.html', emojiHtml: '&#x1F510;', title: 'CryptoNote Protocol', desc: 'Privacy-by-default blockchain foundation', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/privacy/tech-ring-signatures.html', emojiHtml: '&#x1F48D;', title: 'Ring Signatures', desc: 'Untraceable sender identity', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/privacy/tech-stealth-addresses.html', emojiHtml: '&#x1F464;', title: 'Stealth Addresses', desc: 'One-time receiver addresses', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/privacy/tech-ringct.html', emojiHtml: '&#x1F48E;', title: 'RingCT', desc: 'Hidden transaction amounts', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/privacy/tech-privacy-map.html', emojiHtml: '&#x1F5FA;&#xFE0F;', title: 'Privacy Technology Map', desc: 'Combined privacy evolution flowchart', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/privacy/tech-cryptonote-flowchart.html', emojiHtml: '&#x1F517;', title: 'CryptoNote Protocol Flowchart', desc: 'Visual lineage from CryptoNote to Beldex', statusLabel: 'Live', statusClass: 'tsc-live' }
       ]
     },
     {
@@ -70,9 +70,9 @@
       dotClass: 'ts-dot-consensus',
       accentClass: 'tsc-consensus',
       items: [
-        { href: 'TEST/tech/consensus/tech-utxo.html', emojiHtml: '&#x1F9E9;', title: 'UTXO Model', desc: 'Coin-based transaction architecture', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/consensus/tech-proof-of-stake.html', emojiHtml: '&#x26A1;', title: 'Proof of Stake', desc: 'Energy-efficient consensus since 2021', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/privacy/tech-bulletproof.html', emojiHtml: '&#x1F6E1;&#xFE0F;', title: 'Bulletproof++', desc: 'Compact zero-knowledge range proofs', statusLabel: 'Live', statusClass: 'tsc-live' }
+        { href: 'tech/consensus/tech-utxo.html', emojiHtml: '&#x1F9E9;', title: 'UTXO Model', desc: 'Coin-based transaction architecture', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/consensus/tech-proof-of-stake.html', emojiHtml: '&#x26A1;', title: 'Proof of Stake', desc: 'Energy-efficient consensus since 2021', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/privacy/tech-bulletproof.html', emojiHtml: '&#x1F6E1;&#xFE0F;', title: 'Bulletproof++', desc: 'Compact zero-knowledge range proofs', statusLabel: 'Live', statusClass: 'tsc-live' }
       ]
     },
     {
@@ -80,9 +80,9 @@
       dotClass: 'ts-dot-network',
       accentClass: 'tsc-network',
       items: [
-        { href: 'TEST/tech/network/tech-masternode.html', emojiHtml: '&#x1F5A5;&#xFE0F;', title: 'Masternode Network', desc: 'Decentralized infrastructure backbone', statusLabel: 'Live', statusClass: 'tsc-live' },
-        { href: 'TEST/tech/network/tech-belnet.html', emojiHtml: '&#x1F9C5;', title: 'BelNet', desc: 'Onion-routed VPN via masternodes', statusLabel: 'In Dev', statusClass: 'tsc-dev' },
-        { href: 'TEST/tech/network/tech-layerzero.html', emojiHtml: '&#x1F309;', title: 'LayerZero Bridge', desc: 'Cross-chain via Stargate', statusLabel: 'Live', statusClass: 'tsc-live' }
+        { href: 'tech/network/tech-masternode.html', emojiHtml: '&#x1F5A5;&#xFE0F;', title: 'Masternode Network', desc: 'Decentralized infrastructure backbone', statusLabel: 'Live', statusClass: 'tsc-live' },
+        { href: 'tech/network/tech-belnet.html', emojiHtml: '&#x1F9C5;', title: 'BelNet', desc: 'Onion-routed VPN via masternodes', statusLabel: 'In Dev', statusClass: 'tsc-dev' },
+        { href: 'tech/network/tech-layerzero.html', emojiHtml: '&#x1F309;', title: 'LayerZero Bridge', desc: 'Cross-chain via Stargate', statusLabel: 'Live', statusClass: 'tsc-live' }
       ]
     },
     {
@@ -90,9 +90,9 @@
       dotClass: 'ts-dot-research',
       accentClass: 'tsc-research',
       items: [
-        { href: 'TEST/tech/research/tech-evm.html', emojiHtml: '&#x2699;&#xFE0F;', title: 'EVM Integration', desc: 'Smart contracts on CryptoNote', statusLabel: 'In Dev', statusClass: 'tsc-dev' },
-        { href: 'TEST/tech/research/tech-zk-snarks.html', emojiHtml: '&#x1F9EA;', title: 'zk-SNARKs', desc: 'Private smart contract proofs', statusLabel: 'Planned', statusClass: 'tsc-planned' },
-        { href: 'TEST/tech/research/tech-vrf.html', emojiHtml: '&#x1F3B2;', title: 'VRF Consensus', desc: 'Random fair validator selection', statusLabel: 'Planned', statusClass: 'tsc-planned' }
+        { href: 'tech/research/tech-evm.html', emojiHtml: '&#x2699;&#xFE0F;', title: 'EVM Integration', desc: 'Smart contracts on CryptoNote', statusLabel: 'In Dev', statusClass: 'tsc-dev' },
+        { href: 'tech/research/tech-zk-snarks.html', emojiHtml: '&#x1F9EA;', title: 'zk-SNARKs', desc: 'Private smart contract proofs', statusLabel: 'Planned', statusClass: 'tsc-planned' },
+        { href: 'tech/research/tech-vrf.html', emojiHtml: '&#x1F3B2;', title: 'VRF Consensus', desc: 'Random fair validator selection', statusLabel: 'Planned', statusClass: 'tsc-planned' }
       ]
     }
   ];
@@ -670,3 +670,4 @@ window.copyAddress = function copyAddress(btn, address) {
   });
 }());
 })();
+
