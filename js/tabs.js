@@ -1,8 +1,14 @@
 ﻿/* Tab navigation module */
 var VALID_TABS = [
   'overview', 'team', 'links', 'exchanges', 'research',
-  'evm', 'architecture', 'challenges', 'timeline', 'ecosystem', 'market'
+  'evm-deep-dive', 'timeline', 'ecosystem', 'market'
 ];
+
+var LEGACY_TAB_REDIRECTS = {
+  'evm': 'evm-deep-dive',
+  'architecture': 'evm-deep-dive',
+  'challenges': 'evm-deep-dive'
+};
 
 var CORE_TECH_STACK_GROUPS = [
   {
@@ -75,6 +81,49 @@ function renderCoreTechStack() {
   }).join('');
 }
 
+var sectionObserver = null;
+var sectionNavInitialized = false;
+
+function initSectionNav() {
+  var navLinks = document.querySelectorAll('.section-nav-link');
+  var panel = document.getElementById('evm-deep-dive');
+  if (!navLinks.length || !panel) return;
+
+  // Only bind click handlers once
+  if (!sectionNavInitialized) {
+    navLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        var targetId = link.getAttribute('data-section');
+        var target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+    sectionNavInitialized = true;
+  }
+
+  // Scroll-spy: highlight active section (re-init observer each time)
+  if (sectionObserver) {
+    sectionObserver.disconnect();
+  }
+
+  var sections = panel.querySelectorAll('.diagram[id^="section-"]');
+  sectionObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        navLinks.forEach(function (l) { l.classList.remove('active'); });
+        var activeLink = document.querySelector(
+          '.section-nav-link[data-section="' + entry.target.id + '"]'
+        );
+        if (activeLink) activeLink.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  sections.forEach(function (section) { sectionObserver.observe(section); });
+}
+
 export function initTabs() {
   document.body.classList.add('js-loaded');
 
@@ -88,6 +137,12 @@ export function initTabs() {
     options = options || {};
     var updateHash = options.updateHash !== false;
     var focusTab = options.focusTab || false;
+
+    // Redirect legacy tab names to the combined tab
+    if (LEGACY_TAB_REDIRECTS[tabName]) {
+      tabName = LEGACY_TAB_REDIRECTS[tabName];
+    }
+
     var safeTab = VALID_TABS.indexOf(tabName) !== -1 ? tabName : 'overview';
     var isOverview = safeTab === 'overview';
 
@@ -116,6 +171,11 @@ export function initTabs() {
       if (iframe && !iframe.getAttribute('src')) {
         iframe.setAttribute('src', 'beldex-tree.html?embed=1');
       }
+    }
+
+    // Initialize scroll-spy for EVM Deep Dive sub-nav
+    if (safeTab === 'evm-deep-dive') {
+      initSectionNav();
     }
 
     if (updateHash && location.hash !== '#' + safeTab) {
@@ -162,12 +222,17 @@ export function initTabs() {
     });
   });
 
+  function resolveTab(name) {
+    if (LEGACY_TAB_REDIRECTS[name]) return LEGACY_TAB_REDIRECTS[name];
+    return VALID_TABS.indexOf(name) !== -1 ? name : 'overview';
+  }
+
   var hashTab = getCurrentTab();
-  activateTab(VALID_TABS.indexOf(hashTab) !== -1 ? hashTab : 'overview', { updateHash: false, focusTab: false });
+  activateTab(resolveTab(hashTab), { updateHash: false, focusTab: false });
 
   window.addEventListener('hashchange', function () {
     var tab = getCurrentTab();
-    activateTab(VALID_TABS.indexOf(tab) !== -1 ? tab : 'overview', { updateHash: false, focusTab: false });
+    activateTab(resolveTab(tab), { updateHash: false, focusTab: false });
   });
 
   window.showTab = function showTab(tabName) {

@@ -137,38 +137,14 @@
         <button
           class="nav-tab"
           type="button"
-          id="tab-evm"
+          id="tab-evm-deep-dive"
           role="tab"
-          data-tab="evm"
-          aria-controls="evm"
+          data-tab="evm-deep-dive"
+          aria-controls="evm-deep-dive"
           aria-selected="false"
           tabindex="-1"
         >
-          EVM Integration
-        </button>
-        <button
-          class="nav-tab"
-          type="button"
-          id="tab-architecture"
-          role="tab"
-          data-tab="architecture"
-          aria-controls="architecture"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Architecture
-        </button>
-        <button
-          class="nav-tab"
-          type="button"
-          id="tab-challenges"
-          role="tab"
-          data-tab="challenges"
-          aria-controls="challenges"
-          aria-selected="false"
-          tabindex="-1"
-        >
-          Challenges
+          EVM Deep Dive
         </button>
       </div>
       <div class="content">
@@ -694,9 +670,23 @@
         </div>
 
         <!-- EVM INTEGRATION TAB -->
-        <div id="evm" class="tab-content" role="tabpanel" aria-labelledby="tab-evm" tabindex="0" hidden>
-          <div class="diagram">
-            <h2>  EVM Integration Journey</h2>
+        <!-- EVM DEEP DIVE TAB (Combined: EVM Integration + Architecture + Challenges) -->
+        <div id="evm-deep-dive" class="tab-content" role="tabpanel" aria-labelledby="tab-evm-deep-dive" tabindex="0" hidden>
+
+          <!-- Sticky Sub-Navigation -->
+          <nav class="section-nav" aria-label="EVM Deep Dive sections">
+            <button class="section-nav-link active" data-section="section-vision" type="button">Vision</button>
+            <button class="section-nav-link" data-section="section-poc" type="button">Proof of Concept</button>
+            <button class="section-nav-link" data-section="section-architecture" type="button">Architecture</button>
+            <button class="section-nav-link" data-section="section-comparison" type="button">Comparison</button>
+            <button class="section-nav-link" data-section="section-how-it-works" type="button">How It Works</button>
+            <button class="section-nav-link" data-section="section-privacy" type="button">Privacy</button>
+            <button class="section-nav-link" data-section="section-challenges" type="button">Challenges</button>
+          </nav>
+
+          <!-- Section A: The Vision -->
+          <div class="diagram" id="section-vision">
+            <h2>The Vision: EVM on a Privacy Blockchain</h2>
 
             <h3>The Fundamental Question (2022-2023)</h3>
             <div class="flow-container">
@@ -715,11 +705,19 @@
                 <p>YES Feasible at Proof-of-Concept level</p>
               </div>
             </div>
+          </div>
+
+          <!-- Bridge: Vision → PoC -->
+          <p class="narrative-bridge">The answer was yes. In May 2023, the team published the first proof of concept for EVM on CryptoNote.</p>
+
+          <!-- Section B: Proof of Concept -->
+          <div class="diagram" id="section-poc">
+            <h2>The Proof</h2>
 
             <h3>Proof of Concept Achievement (May-July 2023)</h3>
             <div class="grid poc-grid">
               <div class="card">
-                <h3>📄 Research Paper</h3>
+                <h3>Research Paper</h3>
                 <ul>
                   <li>
                     <strong>Published:</strong>
@@ -744,7 +742,7 @@
                 </ul>
               </div>
               <div class="card">
-                <h3>🧪 Testing</h3>
+                <h3>Testing</h3>
                 <ul>
                   <li>
                     <strong>Network:</strong>
@@ -792,166 +790,12 @@
             </div>
           </div>
 
-          <div class="diagram">
-            <h2>How Smart Contracts Work on Beldex (Proven in PoC)</h2>
-            <div
-              class="flow-container flow-container--steps flow-steps-column"
-            >
-              <div class="flow-box" data-step="1">
-                <h2>Step 1: Contract Creation</h2>
-                <p>
-                  Developer writes Solidity smart contract (exactly like
-                  Ethereum)
-                </p>
-                <p class="step-note">
-                  Tools: Remix, Hardhat, Truffle - all compatible
-                </p>
-              </div>
+          <!-- Bridge: PoC → Architecture -->
+          <p class="narrative-bridge">With feasibility proven, the next question became: what does this system actually look like?</p>
 
-              <div class="flow-box" data-step="2">
-                <h2>Step 2: Transaction Submission</h2>
-                <p>
-                  User creates Beldex transaction with contract bytecode
-                  embedded
-                </p>
-                <p class="step-note">
-                  Private transaction amounts via RingCT on Layer 1
-                </p>
-              </div>
-
-              <div class="flow-box" data-step="3">
-                <h2>Step 3: Block Inclusion</h2>
-                <p>Contract transaction added to block by PoS validator</p>
-                <p class="step-note">
-                  Validated through masternode network consensus
-                </p>
-              </div>
-
-              <div class="flow-box" data-step="4">
-                <h2>Step 4: EVM Execution</h2>
-                <p>
-                  Python-based Py-EVM processes contract on all synchronized
-                  nodes
-                </p>
-                <p class="step-note">
-                  Contract code is public, execution verified by all
-                </p>
-              </div>
-
-              <div class="flow-box" data-step="5">
-                <h2>Step 5: State Update</h2>
-                <p>
-                  Contract state updated globally, subsequent transactions can
-                  trigger functions
-                </p>
-                <p class="step-note">
-                  Persistent state across the network
-                </p>
-              </div>
-
-              <div class="flow-box" data-step="6">
-                <h2>Step 6: Privacy Preservation</h2>
-                <p>Contract code is PUBLIC (anyone can verify)</p>
-                <p>Transaction amounts & identities remain PRIVATE (RingCT)</p>
-                <p class="step-note">
-                  <strong>Future:</strong> ZK-SNARKs for contract-level privacy
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="diagram">
-            <h2>Privacy Strategy Explained</h2>
-
-            <!-- Strategy Comparison -->
-            <div class="strategy-grid">
-              <div class="strategy-card rejected">
-                <div class="strategy-badge rejected-badge">❌ REJECTED</div>
-                <h3>Encrypted Smart Contracts</h3>
-                <div class="strategy-content">
-                  <div class="strategy-point">
-                    <span class="point-label">Idea:</span>
-                    <p>Encrypt the smart contract code itself</p>
-                  </div>
-                  <div class="strategy-point critical">
-                    <span class="point-label">Critical Problem:</span>
-                    <p>Validators cannot execute or verify encrypted code</p>
-                  </div>
-                  <div class="strategy-point">
-                    <span class="point-label">Why It Fails:</span>
-                    <p>
-                      Decentralized networks require public verification for
-                      consensus
-                    </p>
-                  </div>
-                  <div class="strategy-outcome outcome-rejected">
-                    Fundamentally impossible ✗
-                  </div>
-                </div>
-              </div>
-
-              <div class="strategy-card accepted">
-                <div class="strategy-badge accepted-badge">CHOSEN</div>
-                <h3>Layer-Based Privacy</h3>
-                <div class="strategy-content">
-                  <div class="strategy-point">
-                    <span class="point-label">Layer 1 (Main Chain):</span>
-                    <p>RingCT hides amounts, senders, and receivers</p>
-                  </div>
-                  <div class="strategy-point">
-                    <span class="point-label">Smart Contract Layer:</span>
-                    <p>Code is public, but transaction data remains private</p>
-                  </div>
-                  <div class="strategy-point">
-                    <span class="point-label">Future Enhancement:</span>
-                    <p>ZK-SNARKs add privacy to contract inputs/outputs</p>
-                  </div>
-                  <div class="strategy-outcome outcome-accepted">
-                    Transparent + Private ✓
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Privacy Layers Breakdown -->
-            <h3 class="privacy-model-title">
-              Three-Tier Privacy Model
-            </h3>
-            <div class="privacy-layers">
-              <div class="privacy-layer public-layer">
-                <div class="layer-icon">👁️</div>
-                <h4>Tier 1: Public</h4>
-                <p class="layer-title">Contract Code</p>
-                <p class="layer-desc">
-                  Like open-source software - everyone can verify the logic and
-                  execution
-                </p>
-              </div>
-              <div class="privacy-layer private-layer">
-                <div class="layer-icon">🔒</div>
-                <h4>Tier 2: Private</h4>
-                <p class="layer-title">Transaction Data</p>
-                <p class="layer-desc">
-                  Amounts, balances, and user identities - all encrypted and
-                  hidden
-                </p>
-              </div>
-              <div class="privacy-layer protected-layer">
-                <div class="layer-icon">🔐</div>
-                <h4>Tier 3: Protected</h4>
-                <p class="layer-title">Financial Privacy</p>
-                <p class="layer-desc">
-                  ZK-SNARKs prove validity without revealing underlying data
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ARCHITECTURE TAB -->
-        <div id="architecture" class="tab-content" role="tabpanel" aria-labelledby="tab-architecture" tabindex="0" hidden>
-          <div class="diagram">
-            <h2 class="architecture-title">Beldex Hybrid Architecture</h2>
+          <!-- Section C: The Hybrid Architecture -->
+          <div class="diagram" id="section-architecture">
+            <h2 class="architecture-title">The Hybrid Architecture</h2>
 
             <div class="architecture-grid">
               <!-- Layer 1 -->
@@ -1042,7 +886,11 @@
             </div>
           </div>
 
-          <div class="diagram">
+          <!-- Bridge: Architecture → Comparison -->
+          <p class="narrative-bridge">This hybrid approach combines the strengths of two fundamentally different models.</p>
+
+          <!-- Section D: UTXO vs Account Comparison -->
+          <div class="diagram" id="section-comparison">
             <h2>UTXO vs Account Model Comparison</h2>
             <table class="comparison-table">
               <tr>
@@ -1086,6 +934,417 @@
               </tr>
             </table>
           </div>
+
+          <!-- Bridge: Comparison → How It Works -->
+          <p class="narrative-bridge">Here is how a smart contract moves through this architecture, step by step.</p>
+
+          <!-- Section E: How Smart Contracts Work -->
+          <div class="diagram" id="section-how-it-works">
+            <h2>How Smart Contracts Work on Beldex (Proven in PoC)</h2>
+            <div
+              class="flow-container flow-container--steps flow-steps-column"
+            >
+              <div class="flow-box" data-step="1">
+                <h2>Step 1: Contract Creation</h2>
+                <p>
+                  Developer writes Solidity smart contract (exactly like
+                  Ethereum)
+                </p>
+                <p class="step-note">
+                  Tools: Remix, Hardhat, Truffle - all compatible
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="2">
+                <h2>Step 2: Transaction Submission</h2>
+                <p>
+                  User creates Beldex transaction with contract bytecode
+                  embedded
+                </p>
+                <p class="step-note">
+                  Private transaction amounts via RingCT on Layer 1
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="3">
+                <h2>Step 3: Block Inclusion</h2>
+                <p>Contract transaction added to block by PoS validator</p>
+                <p class="step-note">
+                  Validated through masternode network consensus
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="4">
+                <h2>Step 4: EVM Execution</h2>
+                <p>
+                  Python-based Py-EVM processes contract on all synchronized
+                  nodes
+                </p>
+                <p class="step-note">
+                  Contract code is public, execution verified by all
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="5">
+                <h2>Step 5: State Update</h2>
+                <p>
+                  Contract state updated globally, subsequent transactions can
+                  trigger functions
+                </p>
+                <p class="step-note">
+                  Persistent state across the network
+                </p>
+              </div>
+
+              <div class="flow-box" data-step="6">
+                <h2>Step 6: Privacy Preservation</h2>
+                <p>Contract code is PUBLIC (anyone can verify)</p>
+                <p>Transaction amounts & identities remain PRIVATE (RingCT)</p>
+                <p class="step-note">
+                  <strong>Future:</strong> ZK-SNARKs for contract-level privacy
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bridge: How It Works → Privacy -->
+          <p class="narrative-bridge">Step 6 raises a critical question: how is privacy maintained when contract code must be public?</p>
+
+          <!-- Section F: Privacy Strategy -->
+          <div class="diagram" id="section-privacy">
+            <h2>Privacy Strategy Explained</h2>
+
+            <!-- Strategy Comparison -->
+            <div class="strategy-grid">
+              <div class="strategy-card rejected">
+                <div class="strategy-badge rejected-badge">❌ REJECTED</div>
+                <h3>Encrypted Smart Contracts</h3>
+                <div class="strategy-content">
+                  <div class="strategy-point">
+                    <span class="point-label">Idea:</span>
+                    <p>Encrypt the smart contract code itself</p>
+                  </div>
+                  <div class="strategy-point critical">
+                    <span class="point-label">Critical Problem:</span>
+                    <p>Validators cannot execute or verify encrypted code</p>
+                  </div>
+                  <div class="strategy-point">
+                    <span class="point-label">Why It Fails:</span>
+                    <p>
+                      Decentralized networks require public verification for
+                      consensus
+                    </p>
+                  </div>
+                  <div class="strategy-outcome outcome-rejected">
+                    Fundamentally impossible ✗
+                  </div>
+                </div>
+              </div>
+
+              <div class="strategy-card accepted">
+                <div class="strategy-badge accepted-badge">CHOSEN</div>
+                <h3>Layer-Based Privacy</h3>
+                <div class="strategy-content">
+                  <div class="strategy-point">
+                    <span class="point-label">Layer 1 (Main Chain):</span>
+                    <p>RingCT hides amounts, senders, and receivers</p>
+                  </div>
+                  <div class="strategy-point">
+                    <span class="point-label">Smart Contract Layer:</span>
+                    <p>Code is public, but transaction data remains private</p>
+                  </div>
+                  <div class="strategy-point">
+                    <span class="point-label">Future Enhancement:</span>
+                    <p>ZK-SNARKs add privacy to contract inputs/outputs</p>
+                  </div>
+                  <div class="strategy-outcome outcome-accepted">
+                    Transparent + Private ✓
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Privacy Layers Breakdown -->
+            <h3 class="privacy-model-title">
+              Three-Tier Privacy Model
+            </h3>
+            <div class="privacy-layers">
+              <div class="privacy-layer public-layer">
+                <div class="layer-icon">👁️</div>
+                <h4>Tier 1: Public</h4>
+                <p class="layer-title">Contract Code</p>
+                <p class="layer-desc">
+                  Like open-source software - everyone can verify the logic and
+                  execution
+                </p>
+              </div>
+              <div class="privacy-layer private-layer">
+                <div class="layer-icon">🔒</div>
+                <h4>Tier 2: Private</h4>
+                <p class="layer-title">Transaction Data</p>
+                <p class="layer-desc">
+                  Amounts, balances, and user identities - all encrypted and
+                  hidden
+                </p>
+              </div>
+              <div class="privacy-layer protected-layer">
+                <div class="layer-icon">🔐</div>
+                <h4>Tier 3: Protected</h4>
+                <p class="layer-title">Financial Privacy</p>
+                <p class="layer-desc">
+                  ZK-SNARKs prove validity without revealing underlying data
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bridge: Privacy → Challenges -->
+          <p class="narrative-bridge">Building this system means solving problems on blockchain has faced before. Here is where each challenge stands.</p>
+
+          <!-- Section G: Challenges & Solutions -->
+          <div class="diagram" id="section-challenges">
+            <h2>Technical Challenges & Solutions</h2>
+            <p class="challenges-subtitle">Core engineering problems Beldex is solving to enable privacy-preserving smart contracts</p>
+
+            <div class="challenges-container">
+
+              <!-- Challenge 1: UTXO vs Account -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">01</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>UTXO vs Account Incompatibility</h3>
+                    <p class="challenge-desc">These two systems work in very different ways, so they don't fit together easily.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-poc">✓ PoC Proven</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Fundamental Conflict</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Beldex:</strong> Uses UTXO → best for privacy</li>
+                      <li><strong>Ethereum:</strong> Uses accounts → needed for smart contracts</li>
+                      <li><strong>Issue:</strong> These two systems work in very different ways, so they don't fit together easily.</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">SOLVED</span>
+                      <h4>Hybrid System</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Approach:</strong> Use a hybrid system (combine both styles).</li>
+                      <li><strong>How it works:</strong> Use UTXO-style transactions for privacy, and accounts-style transactions for smart contracts.</li>
+                      <li><strong>Benefit:</strong> Privacy and smart contracts can coexist.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 2: Double Spending Prevention -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">02</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Double Spending Prevention</h3>
+                    <p class="challenge-desc">Smart contracts don't use keys, so value locked by a contract could be used twice without a fix.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-poc">✓ PoC Proven</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Value Reuse Risk</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Challenge:</strong> Smart contracts don't use keys</li>
+                      <li><strong>Risk:</strong> Value locked by contract used twice</li>
+                      <li><strong>Core Issue:</strong> One-time usage without breaking privacy</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">SOLUTION (PoC)</span>
+                      <h4>Cryptographic Linking</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Approach:</strong> Protocol-level consensus rules</li>
+                      <li><strong>How it works:</strong> Unique state transitions linked</li>
+                      <li><strong>Benefit:</strong> Reuse prevented + privacy maintained</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 3: Two-Way Bridge Architecture -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">03</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Two-Way Bridge Architecture</h3>
+                    <p class="challenge-desc">Moving value between the privacy chain and EVM layer needs to work in both directions, one direction is solved, one is still being researched.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-partial">⟳ Half Solved</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="solution-section solved">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge solved-badge">SOLVED</span>
+                      <h4>UTXO → Account</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Method:</strong> Burn coins on main chain</li>
+                      <li><strong>Proof:</strong> Cryptographic burn proof</li>
+                      <li><strong>Result:</strong> Credit on contract layer</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">IN RESEARCH</span>
+                      <h4>Account → UTXO</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Challenge:</strong> Valid RingCT generation</li>
+                      <li><strong>Research:</strong> Proof of withdrawal</li>
+                      <li><strong>Status:</strong> Active investigation ongoing</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 4: Smart Contract Secrecy -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">04</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Smart Contract Secrecy</h3>
+                    <p class="challenge-desc">Contracts need to see data to execute, but privacy requires all data to be hidden, a fundamental paradox.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-research">⟳ In Research</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>The Core Paradox</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Contracts:</strong> Need to see data to execute</li>
+                      <li><strong>Privacy:</strong> All data must be hidden</li>
+                      <li><strong>Paradox:</strong> How to execute without seeing?</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">SOLUTION</span>
+                      <h4>Layered Privacy</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Code:</strong> Public (verifiable by all nodes)</li>
+                      <li><strong>Data:</strong> Private via RingCT on Layer 1</li>
+                      <li><strong>Future:</strong> ZK-SNARKs for contract privacy</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 5: Blockchain Size & Scalability -->
+              <div class="challenge-card challenge-solved-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap solved-num">
+                    <span class="challenge-number">05</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Blockchain Size &amp; Scalability</h3>
+                    <p class="challenge-desc">Large privacy proofs caused slow sync times and inflated storage, now solved with Bulletproof++ compression.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-solved"> Solved</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Transaction Bloat</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Before:</strong> 1.2–4 MB per 100 tx</li>
+                      <li><strong>Impact:</strong> Slow sync, large storage</li>
+                      <li><strong>Limitation:</strong> Scalability bottleneck</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section solved">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge solved-badge">SOLVED</span>
+                      <h4>Bulletproof++ Compression</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Technology:</strong> Bulletproof++ ZK-proofs</li>
+                      <li><strong>After:</strong> ~120–400 kB per 100 tx</li>
+                      <li><strong>Status:</strong> Deployed Dec 7, 2025</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Challenge 6: Network Validator Security -->
+              <div class="challenge-card">
+                <div class="challenge-header">
+                  <div class="challenge-num-wrap">
+                    <span class="challenge-number">06</span>
+                  </div>
+                  <div class="challenge-title-block">
+                    <h3>Network Validator Security</h3>
+                    <p class="challenge-desc">Attackers can predict which validators will sign the next block, VRF randomisation will make that impossible.</p>
+                  </div>
+                  <span class="challenge-status-chip chip-future">◎ Planned</span>
+                </div>
+                <div class="problem-solution-pair">
+                  <div class="problem-section">
+                    <div class="ps-header problem-header">
+                      <span class="ps-badge">PROBLEM</span>
+                      <h4>Predictable Selection</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Current:</strong> 11+1 deterministic validators</li>
+                      <li><strong>Risk:</strong> Attackers can predict targets</li>
+                      <li><strong>Issue:</strong> Targeted attack vulnerability</li>
+                    </ul>
+                  </div>
+                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+                  <div class="solution-section">
+                    <div class="ps-header solution-header">
+                      <span class="ps-badge">FUTURE</span>
+                      <h4>VRF Randomization</h4>
+                    </div>
+                    <ul class="ps-list">
+                      <li><strong>Selection:</strong> Verifiable random functions</li>
+                      <li><strong>Participation:</strong> ~33% of all nodes</li>
+                      <li><strong>Security:</strong> Must attack 1/3 of network</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
         <!-- TIMELINE TAB -->
@@ -2706,250 +2965,7 @@
         </div>
 
         <!-- CHALLENGES TAB -->
-        <div id="challenges" class="tab-content" role="tabpanel" aria-labelledby="tab-challenges" tabindex="0" hidden>
-          <div class="diagram">
-            <h2>Technical Challenges & Solutions</h2>
-            <p class="challenges-subtitle">Core engineering problems Beldex is solving to enable privacy-preserving smart contracts</p>
-
-            <div class="challenges-container">
-
-              <!-- Challenge 1 -->
-              <div class="challenge-card">
-                <div class="challenge-header">
-                  <div class="challenge-num-wrap">
-                    <span class="challenge-number">01</span>
-                  </div>
-                  <div class="challenge-title-block">
-                    <h3>UTXO vs Account Incompatibility</h3>
-                    <p class="challenge-desc">These two systems work in very different ways, so they don't fit together easily.</p>
-                  </div>
-                  <span class="challenge-status-chip chip-poc">✓ PoC Proven</span>
-                </div>
-                <div class="problem-solution-pair">
-                  <div class="problem-section">
-                    <div class="ps-header problem-header">
-                      <span class="ps-badge">PROBLEM</span>
-                      <h4>Fundamental Conflict</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Beldex:</strong> Uses UTXO → best for privacy</li>
-                      <li><strong>Ethereum:</strong> Uses accounts → needed for smart contracts</li>
-                      <li><strong>Issue:</strong> These two systems work in very different ways, so they don't fit together easily.</li>
-                    </ul>
-                  </div>
-                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
-                  <div class="solution-section">
-                    <div class="ps-header solution-header">
-                      <span class="ps-badge">SOLVED</span>
-                      <h4>Hybrid System</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Approach:</strong> Use a hybrid system (combine both styles).</li>
-                      <li><strong>How it works:</strong> Use UTXO-style transactions for privacy, and accounts-style transactions for smart contracts.</li>
-                      <li><strong>Benefit:</strong> Privacy and smart contracts can coexist.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Challenge 2 -->
-              <div class="challenge-card">
-                <div class="challenge-header">
-                  <div class="challenge-num-wrap">
-                    <span class="challenge-number">02</span>
-                  </div>
-                  <div class="challenge-title-block">
-                    <h3>Smart Contract Secrecy</h3>
-                    <p class="challenge-desc">Contracts need to see data to execute, but privacy requires all data to be hidden, a fundamental paradox.</p>
-                  </div>
-                  <span class="challenge-status-chip chip-research">⟳ In Research</span>
-                </div>
-                <div class="problem-solution-pair">
-                  <div class="problem-section">
-                    <div class="ps-header problem-header">
-                      <span class="ps-badge">PROBLEM</span>
-                      <h4>The Core Paradox</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Contracts:</strong> Need to see data to execute</li>
-                      <li><strong>Privacy:</strong> All data must be hidden</li>
-                      <li><strong>Paradox:</strong> How to execute without seeing?</li>
-                    </ul>
-                  </div>
-                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
-                  <div class="solution-section">
-                    <div class="ps-header solution-header">
-                      <span class="ps-badge">SOLUTION</span>
-                      <h4>Layered Privacy</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Code:</strong> Public (verifiable by all nodes)</li>
-                      <li><strong>Data:</strong> Private via RingCT on Layer 1</li>
-                      <li><strong>Future:</strong> ZK-SNARKs for contract privacy</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Challenge 3 -->
-              <div class="challenge-card">
-                <div class="challenge-header">
-                  <div class="challenge-num-wrap">
-                    <span class="challenge-number">03</span>
-                  </div>
-                  <div class="challenge-title-block">
-                    <h3>Double Spending Prevention</h3>
-                    <p class="challenge-desc">Smart contracts don't use keys, so value locked by a contract could be used twice without a fix.</p>
-                  </div>
-                  <span class="challenge-status-chip chip-poc">✓ PoC Proven</span>
-                </div>
-                <div class="problem-solution-pair">
-                  <div class="problem-section">
-                    <div class="ps-header problem-header">
-                      <span class="ps-badge">PROBLEM</span>
-                      <h4>Value Reuse Risk</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Challenge:</strong> Smart contracts don't use keys</li>
-                      <li><strong>Risk:</strong> Value locked by contract used twice</li>
-                      <li><strong>Core Issue:</strong> One-time usage without breaking privacy</li>
-                    </ul>
-                  </div>
-                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
-                  <div class="solution-section">
-                    <div class="ps-header solution-header">
-                      <span class="ps-badge">SOLUTION (PoC)</span>
-                      <h4>Cryptographic Linking</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Approach:</strong> Protocol-level consensus rules</li>
-                      <li><strong>How it works:</strong> Unique state transitions linked</li>
-                      <li><strong>Benefit:</strong> Reuse prevented + privacy maintained</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Challenge 4 -->
-              <div class="challenge-card challenge-solved-card">
-                <div class="challenge-header">
-                  <div class="challenge-num-wrap solved-num">
-                    <span class="challenge-number">04</span>
-                  </div>
-                  <div class="challenge-title-block">
-                    <h3>Blockchain Size &amp; Scalability</h3>
-                    <p class="challenge-desc">Large privacy proofs caused slow sync times and inflated storage, now solved with Bulletproof++ compression.</p>
-                  </div>
-                  <span class="challenge-status-chip chip-solved"> Solved</span>
-                </div>
-                <div class="problem-solution-pair">
-                  <div class="problem-section">
-                    <div class="ps-header problem-header">
-                      <span class="ps-badge">PROBLEM</span>
-                      <h4>Transaction Bloat</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Before:</strong> 1.2–4 MB per 100 tx</li>
-                      <li><strong>Impact:</strong> Slow sync, large storage</li>
-                      <li><strong>Limitation:</strong> Scalability bottleneck</li>
-                    </ul>
-                  </div>
-                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
-                  <div class="solution-section solved">
-                    <div class="ps-header solution-header">
-                      <span class="ps-badge solved-badge">SOLVED</span>
-                      <h4>Bulletproof++ Compression</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Technology:</strong> Bulletproof++ ZK-proofs</li>
-                      <li><strong>After:</strong> ~120–400 kB per 100 tx</li>
-                      <li><strong>Status:</strong> Deployed Dec 7, 2025</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Challenge 5 -->
-              <div class="challenge-card">
-                <div class="challenge-header">
-                  <div class="challenge-num-wrap">
-                    <span class="challenge-number">05</span>
-                  </div>
-                  <div class="challenge-title-block">
-                    <h3>Two-Way Bridge Architecture</h3>
-                    <p class="challenge-desc">Moving value between the privacy chain and EVM layer needs to work in both directions, one direction is solved, one is still being researched.</p>
-                  </div>
-                  <span class="challenge-status-chip chip-partial">⟳ Half Solved</span>
-                </div>
-                <div class="problem-solution-pair">
-                  <div class="solution-section solved">
-                    <div class="ps-header solution-header">
-                      <span class="ps-badge solved-badge">SOLVED</span>
-                      <h4>UTXO → Account</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Method:</strong> Burn coins on main chain</li>
-                      <li><strong>Proof:</strong> Cryptographic burn proof</li>
-                      <li><strong>Result:</strong> Credit on contract layer</li>
-                    </ul>
-                  </div>
-                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
-                  <div class="problem-section">
-                    <div class="ps-header problem-header">
-                      <span class="ps-badge">IN RESEARCH</span>
-                      <h4>Account → UTXO</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Challenge:</strong> Valid RingCT generation</li>
-                      <li><strong>Research:</strong> Proof of withdrawal</li>
-                      <li><strong>Status:</strong> Active investigation ongoing</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Challenge 6 -->
-              <div class="challenge-card">
-                <div class="challenge-header">
-                  <div class="challenge-num-wrap">
-                    <span class="challenge-number">06</span>
-                  </div>
-                  <div class="challenge-title-block">
-                    <h3>Network Validator Security</h3>
-                    <p class="challenge-desc">Attackers can predict which validators will sign the next block, VRF randomisation will make that impossible.</p>
-                  </div>
-                  <span class="challenge-status-chip chip-future">◎ Planned</span>
-                </div>
-                <div class="problem-solution-pair">
-                  <div class="problem-section">
-                    <div class="ps-header problem-header">
-                      <span class="ps-badge">PROBLEM</span>
-                      <h4>Predictable Selection</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Current:</strong> 11+1 deterministic validators</li>
-                      <li><strong>Risk:</strong> Attackers can predict targets</li>
-                      <li><strong>Issue:</strong> Targeted attack vulnerability</li>
-                    </ul>
-                  </div>
-                  <div class="ps-connector"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
-                  <div class="solution-section">
-                    <div class="ps-header solution-header">
-                      <span class="ps-badge">FUTURE</span>
-                      <h4>VRF Randomization</h4>
-                    </div>
-                    <ul class="ps-list">
-                      <li><strong>Selection:</strong> Verifiable random functions</li>
-                      <li><strong>Participation:</strong> ~33% of all nodes</li>
-                      <li><strong>Security:</strong> Must attack 1/3 of network</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              </div>
-          </div>
-        </div>
+        <!-- Old challenges tab removed — content moved to EVM Deep Dive tab -->
 
         <!-- OFFICIAL LINKS TAB -->
         <div id="links" class="tab-content" role="tabpanel" aria-labelledby="tab-links" tabindex="0" hidden>

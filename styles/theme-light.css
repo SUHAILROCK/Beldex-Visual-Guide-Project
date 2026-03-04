@@ -737,6 +737,36 @@ html.theme-transitioning *::after {
   color: var(--primary);
 }
 
+/* ── EVM Deep Dive — Section Nav ── */
+[data-theme="light"] .section-nav {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+[data-theme="light"] .section-nav-link {
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+[data-theme="light"] .section-nav-link:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+[data-theme="light"] .section-nav-link.active {
+  background: linear-gradient(135deg, rgba(13, 147, 115, 0.12), rgba(13, 147, 115, 0.06));
+  color: #0d9373;
+  border-color: rgba(13, 147, 115, 0.25);
+  box-shadow: 0 0 12px rgba(13, 147, 115, 0.08);
+}
+
+/* ── EVM Deep Dive — Narrative Bridge ── */
+[data-theme="light"] .narrative-bridge {
+  color: rgba(26, 26, 46, 0.7);
+  border-left-color: rgba(13, 147, 115, 0.3);
+  background: rgba(13, 147, 115, 0.03);
+}
+
 /* ── Tech Page Styles ── */
 [data-theme="light"] .tech-page {
   background: var(--bg-body);
