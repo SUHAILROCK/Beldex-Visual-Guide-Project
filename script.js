@@ -131,6 +131,12 @@
     const safeTab = VALID_TABS.includes(tabName) ? tabName : 'overview';
     const isOverview = safeTab === 'overview';
 
+    // Open ecosystem tree as a full page instead of nesting it in a tab iframe.
+    if (safeTab === 'ecosystem') {
+      window.location.href = 'beldex-tree.html';
+      return;
+    }
+
     if (pageHeader) {
       pageHeader.classList.toggle('header-hidden', !isOverview);
       pageHeader.setAttribute('aria-hidden', isOverview ? 'false' : 'true');
@@ -152,15 +158,6 @@
         button.focus();
       }
     });
-
-    // Do not force reload ecosystem iframe on tab switches.
-    // Only set src if missing as a safe fallback.
-    if (safeTab === 'ecosystem') {
-      const iframe = document.getElementById('eco-tree-frame');
-      if (iframe && !iframe.getAttribute('src')) {
-        iframe.setAttribute('src', 'beldex-tree.html?embed=1');
-      }
-    }
 
     if (updateHash && location.hash !== `#${safeTab}`) {
       history.pushState(null, '', `#${safeTab}`);

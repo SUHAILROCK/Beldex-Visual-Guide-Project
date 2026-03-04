@@ -146,6 +146,12 @@ export function initTabs() {
     var safeTab = VALID_TABS.indexOf(tabName) !== -1 ? tabName : 'overview';
     var isOverview = safeTab === 'overview';
 
+    // Open ecosystem tree as a full page instead of nesting it in a tab iframe.
+    if (safeTab === 'ecosystem') {
+      window.location.href = 'beldex-tree.html';
+      return;
+    }
+
     if (pageHeader) {
       pageHeader.classList.toggle('header-hidden', !isOverview);
       pageHeader.setAttribute('aria-hidden', isOverview ? 'false' : 'true');
@@ -165,13 +171,6 @@ export function initTabs() {
       button.setAttribute('tabindex', isActive ? '0' : '-1');
       if (isActive && focusTab) button.focus();
     });
-
-    if (safeTab === 'ecosystem') {
-      var iframe = document.getElementById('eco-tree-frame');
-      if (iframe && !iframe.getAttribute('src')) {
-        iframe.setAttribute('src', 'beldex-tree.html?embed=1');
-      }
-    }
 
     // Initialize scroll-spy for EVM Deep Dive sub-nav
     if (safeTab === 'evm-deep-dive') {
