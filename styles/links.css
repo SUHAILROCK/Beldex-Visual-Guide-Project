@@ -269,7 +269,7 @@
   border-radius: 20px;
   text-decoration: none;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .bento-card::before {
@@ -386,7 +386,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   margin-bottom: 20px;
-  transition: all 0.4s ease;
+  transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .bento-card:hover .bento-icon {
@@ -428,7 +428,7 @@
   color: var(--text-muted);
   opacity: 0;
   transform: translate(-10px, 10px);
-  transition: all 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, color 0.4s ease;
 }
 
 .bento-card:hover .bento-arrow {
@@ -617,7 +617,7 @@
   border-radius: 16px;
   text-decoration: none;
   color: var(--text-main);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
@@ -673,13 +673,13 @@
   background: linear-gradient(135deg, rgba(41, 224, 169, 0.15), rgba(41, 224, 169, 0.05));
   border: 1px solid rgba(41, 224, 169, 0.25);
   border-radius: 14px;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
 }
 
 .link-icon svg {
   color: var(--primary);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, filter 0.3s ease;
 }
 
 .link-card:hover .link-icon {
@@ -736,7 +736,7 @@
   color: var(--text-muted);
   opacity: 0;
   transform: translateX(-15px);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .link-card:hover .link-arrow {
@@ -922,7 +922,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   overflow: hidden;
 }
@@ -958,7 +958,7 @@
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.4s ease;
+  transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
 }
 
 .link-card:hover .link-icon {
@@ -1042,7 +1042,7 @@
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 12px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -1054,7 +1054,7 @@
   transform: translateY(-50%);
   color: rgba(255,255,255,0.15);
   font-size: 0.9rem;
-  transition: all 0.3s;
+  transition: color 0.3s, right 0.3s;
 }
 .official-link-card:hover {
   background: rgba(255,255,255,0.05);
@@ -1154,4 +1154,3 @@
 .doc-card:hover {
   border-color: rgba(255,167,38,0.4);
 }
-
