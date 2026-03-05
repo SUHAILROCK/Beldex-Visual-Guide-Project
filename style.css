@@ -22,6 +22,10 @@ body {
   color: #e2e8f0;
 }
 
+:root {
+  --focus-ring: #29e0a9;
+}
+
 .theme-toggle {
   position: fixed;
   top: 24px;
@@ -50,9 +54,28 @@ body {
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.42);
 }
 
+:where(
+  a[href],
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [role="tab"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
 [data-theme="light"] body {
   background: #f5f7fa;
   color: #1e293b;
+}
+
+[data-theme="light"] {
+  --focus-ring: #0d9373;
 }
 
 [data-theme="light"] .theme-toggle {

@@ -109,11 +109,12 @@
 
 /* === Accessibility + Utility Cleanup === */
 .nav-tab:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.45);
-  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
 }
 .nav-tab.active:focus-visible {
-  outline: none;
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
 }
 .tab-content[hidden] {
   display: none !important;

@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" /></noscript>
     <!-- Stylesheets -->
-    <!-- Direct linking of CSS files for performance (avoids @import waterfall) -->
     <link rel="stylesheet" href="styles/variables.css" />
     <link rel="stylesheet" href="styles/base.css" />
     <link rel="stylesheet" href="styles/ecosystem.css" />
@@ -164,7 +163,7 @@
       </div>
       <div class="content">
         <!-- OVERVIEW TAB -->
-        <div id="overview" class="tab-content active" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+        <div id="overview" class="tab-content active" role="tabpanel" aria-labelledby="tab-overview" tabindex="0" aria-hidden="false">
           <div class="diagram">
             <h2>What is Beldex?</h2>
             <div class="beldex-intro-card">
@@ -686,7 +685,7 @@
 
         <!-- EVM INTEGRATION TAB -->
         <!-- EVM DEEP DIVE TAB (Combined: EVM Integration + Architecture + Challenges) -->
-        <div id="evm-deep-dive" class="tab-content" role="tabpanel" aria-labelledby="tab-evm-deep-dive" tabindex="0" hidden>
+        <div id="evm-deep-dive" class="tab-content" role="tabpanel" aria-labelledby="tab-evm-deep-dive" tabindex="0" hidden aria-hidden="true" inert>
 
           <!-- Sticky Sub-Navigation -->
           <nav class="section-nav" aria-label="EVM Deep Dive sections">
@@ -1363,7 +1362,7 @@
         </div>
 
         <!-- TIMELINE TAB -->
-        <div id="timeline" class="tab-content" role="tabpanel" aria-labelledby="tab-timeline" tabindex="0" hidden>
+        <div id="timeline" class="tab-content" role="tabpanel" aria-labelledby="tab-timeline" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
 
             <!-- Hero intro -->
@@ -1840,7 +1839,7 @@
         </div><!-- /#timeline -->
 
         <!-- RESEARCH AREAS TAB -->
-        <div id="research" class="tab-content" role="tabpanel" aria-labelledby="tab-research" tabindex="0" hidden>
+        <div id="research" class="tab-content" role="tabpanel" aria-labelledby="tab-research" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
             <h2>Active Research Areas (2025-2026)</h2>
 
@@ -2143,7 +2142,7 @@
         </div>
 
         <!-- EXCHANGES TAB -->
-        <div id="exchanges" class="tab-content" role="tabpanel" aria-labelledby="tab-exchanges" tabindex="0" hidden>
+        <div id="exchanges" class="tab-content" role="tabpanel" aria-labelledby="tab-exchanges" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
 
             <!-- Hero Banner -->
@@ -2816,7 +2815,7 @@
         </div>
 
         <!-- TEAM TAB -->
-        <div id="team" class="tab-content" role="tabpanel" aria-labelledby="tab-team" tabindex="0" hidden>
+        <div id="team" class="tab-content" role="tabpanel" aria-labelledby="tab-team" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
             <h2>Beldex Team</h2>
             <p class="team-intro-text">Strategic visionaries driving Beldex forward</p>
@@ -2989,7 +2988,7 @@
         <!-- Old challenges tab removed — content moved to EVM Deep Dive tab -->
 
         <!-- OFFICIAL LINKS TAB -->
-        <div id="links" class="tab-content" role="tabpanel" aria-labelledby="tab-links" tabindex="0" hidden>
+        <div id="links" class="tab-content" role="tabpanel" aria-labelledby="tab-links" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
 
             <h2 class="links-title">🔗 Official Beldex Links & Resources</h2>
@@ -3277,7 +3276,7 @@
         </div>
 
         <!-- ECOSYSTEM TREE TAB -->
-        <div id="ecosystem" class="tab-content" role="tabpanel" aria-labelledby="tab-ecosystem" tabindex="0" hidden>
+        <div id="ecosystem" class="tab-content" role="tabpanel" aria-labelledby="tab-ecosystem" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
             <h2>Beldex Ecosystem Tree</h2>
           </div>
@@ -3289,7 +3288,7 @@
         </div>
 
         <!-- MARKET TAB -->
-        <div id="market" class="tab-content" role="tabpanel" aria-labelledby="tab-market" tabindex="0" hidden>
+        <div id="market" class="tab-content" role="tabpanel" aria-labelledby="tab-market" tabindex="0" hidden aria-hidden="true" inert>
           <div class="diagram">
 
             <!-- Hero price display -->

@@ -161,6 +161,9 @@ export function initTabs() {
       var isActive = panel.id === safeTab;
       panel.classList.toggle('active', isActive);
       panel.hidden = !isActive;
+      panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+      if (isActive) panel.removeAttribute('inert');
+      else panel.setAttribute('inert', '');
       panel.style.opacity = isActive ? '1' : '0';
     });
 

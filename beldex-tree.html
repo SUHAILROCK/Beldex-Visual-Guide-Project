@@ -515,12 +515,28 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
     });
   });
 
-  // Redraw on resize
+  // Redraw when layout changes (element-first, window fallback)
   var resizeTimer;
-  window.addEventListener('resize', function() {
+  function scheduleConnectorRedraw() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(drawConnectors, 150);
-  });
+  }
+
+  function initConnectorResizeObserver() {
+    var page = document.getElementById('treePage');
+    if (typeof ResizeObserver === 'function' && page) {
+      var pageResizeObserver = new ResizeObserver(function() {
+        scheduleConnectorRedraw();
+      });
+      pageResizeObserver.observe(page);
+      return;
+    }
+
+    // Fallback for older browsers
+    window.addEventListener('resize', scheduleConnectorRedraw);
+  }
+
+  initConnectorResizeObserver();
 })();
 </script>
 </body>
