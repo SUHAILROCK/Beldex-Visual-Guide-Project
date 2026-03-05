@@ -1,7 +1,7 @@
 ﻿/* Tab navigation module */
 var VALID_TABS = [
   'overview', 'team', 'links', 'exchanges', 'research',
-  'evm-deep-dive', 'timeline', 'ecosystem', 'market'
+  'evm-deep-dive', 'timeline', 'ecosystem', 'market', 'tokenomics'
 ];
 
 var LEGACY_TAB_REDIRECTS = {
@@ -149,6 +149,11 @@ export function initTabs() {
     // Open ecosystem tree as a full page instead of nesting it in a tab iframe.
     if (safeTab === 'ecosystem') {
       window.location.href = 'beldex-tree.html';
+      return;
+    }
+
+    if (safeTab === 'tokenomics') {
+      window.location.href = 'beldex-tokenomics.html';
       return;
     }
 
