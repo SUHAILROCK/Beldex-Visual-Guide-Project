@@ -71,7 +71,7 @@ body {
   position: relative;
   overflow: hidden;
   border: 1px solid transparent;
-  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .nav-tab:hover {
   color: var(--primary);
@@ -234,7 +234,7 @@ body {
   color: #060b0a;
   border: none;
   box-shadow: 0 4px 20px rgba(41,224,169,0.3);
-  transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  transition: background 0.3s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.3s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
 }
 .scroll-top-btn:hover {
   background: linear-gradient(135deg, #3fffc7, #60a5fa);
@@ -427,4 +427,3 @@ body {
 .solution-section .ps-list li strong {
   color: #4ade80;
 }
-

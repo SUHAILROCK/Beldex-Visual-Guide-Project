@@ -290,7 +290,7 @@
   font-size: 1.6rem;
   flex-shrink: 0;
   border: 1px solid transparent;
-  transition: all 0.35s ease;
+  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .eco-card-title {
@@ -578,7 +578,7 @@
     rgba(12, 22, 20, 0.6)
   );
   border: 1px solid rgba(41, 224, 169, 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -669,7 +669,7 @@
   background: rgba(41, 224, 169, 0.1);
   color: rgba(41, 224, 169, 0.7);
   border: 1px solid rgba(41, 224, 169, 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
@@ -790,4 +790,3 @@
     font-size: 0.8rem;
   }
 }
-

@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: center;
   font-size: 1.35rem;
-  transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   background: rgba(15, 16, 20, 0.7);
   color: #fbbf24;
   backdrop-filter: blur(12px);
@@ -937,4 +937,3 @@ html.theme-transitioning *::after {
 [data-theme="light"] .challenge-number.mobile {
   color: rgba(0, 0, 0, 0.08);
 }
-
