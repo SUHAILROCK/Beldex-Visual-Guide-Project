@@ -1,17 +1,6 @@
 /* Beldex Visual Guide — Modular CSS */
-/* Import order matters for cascade */
-@import url("styles/variables.css");
-@import url("styles/base.css");
-@import url("styles/ecosystem.css");
-@import url("styles/links.css");
-@import url("styles/exchanges.css");
-@import url("styles/timeline.css");
-@import url("styles/overview.css");
-@import url("styles/research.css");
-@import url("styles/challenges.css");
-@import url("styles/overrides.css");
-@import url("styles/funding.css");
-@import url("styles/contracts.css");
-@import url("styles/ecosystem-tree.css");
-@import url("styles/theme-light.css");
-@import url("styles/market.css");
+/* 
+   Note: The separate CSS files (variables.css, base.css, etc.) 
+   are now linked directly in index.html for better loading performance.
+   This file is kept empty or for future global overrides. 
+*/
