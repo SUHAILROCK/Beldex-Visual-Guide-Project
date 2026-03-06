@@ -3,6 +3,7 @@ import { initTabs } from './tabs.js';
 import { initAnimations } from './animations.js';
 import { initUIEffects } from './ui-effects.js';
 import { initTimeline } from './timeline.js';
+import { initSearch } from './search.js';
 
 var priceWidgetModulePromise = null;
 var priceWidgetInitialized = false;
@@ -55,6 +56,7 @@ function initApp() {
   initAnimations();
   initUIEffects();
   initTimeline();
+  initSearch();
   setupPriceWidgetLazyLoad();
 }
 
