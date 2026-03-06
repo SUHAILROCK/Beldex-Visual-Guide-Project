@@ -61,9 +61,7 @@ This project was built to make blockchain privacy concepts understandable withou
 - HTML5  
 - CSS3  
 - JavaScript (Vanilla JS)  
-- Git & GitHub  
-- GitHub Pages  
-- Vercel  
+ 
 
 ---
 
