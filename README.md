@@ -107,4 +107,4 @@ https://github.com/SUHAILROCK
 
 ## Final Note
 
-This project is part of a larger vision to create structured blockchain educational resources and ecosystem mapping tools.
+Be curious and keep learning!
