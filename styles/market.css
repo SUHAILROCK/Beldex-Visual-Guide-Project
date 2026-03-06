@@ -56,6 +56,26 @@
   color: rgba(255,255,255,.25);
   letter-spacing: .06em;
 }
+.mkt-last-updated.mkt-error {
+  color: #f87171;
+}
+[data-theme="light"] .mkt-last-updated.mkt-error {
+  color: #dc2626;
+}
+.mkt-retry-btn {
+  margin-left: 10px;
+  padding: 4px 12px;
+  font-size: .6rem;
+  border-radius: 8px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--font-mono);
+}
+.mkt-retry-btn:hover {
+  opacity: 0.9;
+}
 
 .mkt-stats-grid {
   display: grid;

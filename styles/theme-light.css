@@ -66,7 +66,8 @@ html.theme-transitioning *::after {
   --accent: #7c3aed;
 
   --text-main: #1a1a2e;
-  --text-muted: #64748b;
+  /* Text muted: #475569 ensures ≥4.5:1 contrast on #f5f7fa (WCAG AA) */
+  --text-muted: #475569;
   --text-dark: #ffffff;
 
   --gradient-main: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);

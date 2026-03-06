@@ -56,6 +56,11 @@ function flashEl(el) {
 function updateUI(data, cur) {
   if (!data) return;
 
+  var updated = document.getElementById('mkt-updated');
+  if (updated) updated.classList.remove('mkt-error');
+  var retryBtn = document.getElementById('mkt-retry-btn');
+  if (retryBtn && retryBtn.parentNode) retryBtn.parentNode.removeChild(retryBtn);
+
   document.querySelectorAll('#market .mkt-skeleton').forEach(function (skeleton) {
     skeleton.remove();
   });
@@ -129,8 +134,30 @@ function fetchPrice() {
     })
     .catch(function () {
       var updated = document.getElementById('mkt-updated');
+      var priceEl = document.getElementById('mkt-price');
       var data = cache.usd || cache.inr;
-      if (updated && data) updated.textContent += ' (retrying\u2026)';
+      if (updated) {
+        updated.textContent = 'Unable to load price. Check connection.';
+        updated.classList.add('mkt-error');
+        var existingRetry = document.getElementById('mkt-retry-btn');
+        if (!existingRetry) {
+          var retryBtn = document.createElement('button');
+          retryBtn.type = 'button';
+          retryBtn.id = 'mkt-retry-btn';
+          retryBtn.className = 'mkt-retry-btn';
+          retryBtn.textContent = 'Retry';
+          retryBtn.addEventListener('click', function () {
+            updated.classList.remove('mkt-error');
+            updated.textContent = 'Fetching live data\u2026';
+            if (retryBtn.parentNode) retryBtn.parentNode.removeChild(retryBtn);
+            fetchPrice();
+          });
+          if (updated.parentNode) updated.parentNode.appendChild(retryBtn);
+        }
+      }
+      if (priceEl && !data) {
+        priceEl.textContent = '\u2014';
+      }
     });
 }
 
