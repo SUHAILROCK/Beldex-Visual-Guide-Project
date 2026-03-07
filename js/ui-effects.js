@@ -1,23 +1,4 @@
 /* UI effects module */
-function legacyCopyFallback(address) {
-  var textArea = document.createElement('textarea');
-  textArea.value = address;
-  textArea.setAttribute('readonly', '');
-  textArea.style.position = 'absolute';
-  textArea.style.left = '-9999px';
-  document.body.appendChild(textArea);
-  textArea.select();
-
-  var copied = false;
-  try {
-    copied = document.execCommand('copy');
-  } catch (error) {
-    copied = false;
-  }
-
-  document.body.removeChild(textArea);
-  if (!copied) throw new Error('Clipboard copy command not supported');
-}
 
 function copyAddress(button, address) {
   function onSuccess() {
@@ -36,26 +17,14 @@ function copyAddress(button, address) {
     return;
   }
 
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(address)
-      .then(onSuccess)
-      .catch(function () {
-        try {
-          legacyCopyFallback(address);
-          onSuccess();
-        } catch (error) {
-          onFailure();
-        }
-      });
+  if (!(navigator.clipboard && window.isSecureContext && typeof navigator.clipboard.writeText === 'function')) {
+    onFailure();
     return;
   }
 
-  try {
-    legacyCopyFallback(address);
-    onSuccess();
-  } catch (error) {
-    onFailure();
-  }
+  navigator.clipboard.writeText(address)
+    .then(onSuccess)
+    .catch(onFailure);
 }
 
 export function initUIEffects() {

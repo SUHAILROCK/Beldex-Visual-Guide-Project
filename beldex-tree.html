@@ -61,16 +61,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .pillar-group.pillar-5 .node-comp:hover{border-color:rgba(251,191,36,0.38);box-shadow:0 10px 30px -6px rgba(251,191,36,0.18);}
 .pillar-group.pillar-6 .node-comp:hover{border-color:rgba(251,146,60,0.38);box-shadow:0 10px 30px -6px rgba(251,146,60,0.18);}
 
-/* LEAF */
-.node-leaf{background:rgba(56,189,126,0.06);border:1px dashed rgba(56,189,126,0.28);padding:10px 13px;border-radius:10px;min-width:95px;transition:transform .25s ease,background .25s ease,border-color .25s ease,box-shadow .25s ease;}
-.node-leaf .n-title{font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:600;color:#38bd7e;}
-.node-leaf .n-desc{font-size:.65rem;color:#4a7a64;margin-top:3px;}
-.node-leaf:hover{transform:translateY(-3px);border-color:rgba(56,189,126,0.55);background:rgba(56,189,126,0.12);box-shadow:0 6px 20px -4px rgba(56,189,126,0.2);}
-.pillar-group.pillar-2 .node-leaf{background:rgba(139,92,246,0.05);border-color:rgba(139,92,246,0.22);} .pillar-group.pillar-2 .node-leaf .n-title{color:#a78bfa;} .pillar-group.pillar-2 .node-leaf .n-desc{color:#5b4890;} .pillar-group.pillar-2 .node-leaf:hover{border-color:rgba(139,92,246,0.5);background:rgba(139,92,246,0.1);box-shadow:0 6px 20px -4px rgba(139,92,246,0.18);}
-.pillar-group.pillar-3 .node-leaf{background:rgba(59,130,246,0.05);border-color:rgba(59,130,246,0.22);} .pillar-group.pillar-3 .node-leaf .n-title{color:#60a5fa;} .pillar-group.pillar-3 .node-leaf .n-desc{color:#2d5a9e;} .pillar-group.pillar-3 .node-leaf:hover{border-color:rgba(59,130,246,0.5);background:rgba(59,130,246,0.1);box-shadow:0 6px 20px -4px rgba(59,130,246,0.18);}
-.pillar-group.pillar-4 .node-leaf{background:rgba(34,211,238,0.05);border-color:rgba(34,211,238,0.22);} .pillar-group.pillar-4 .node-leaf .n-title{color:#22d3ee;} .pillar-group.pillar-4 .node-leaf .n-desc{color:#1a7a8a;} .pillar-group.pillar-4 .node-leaf:hover{border-color:rgba(34,211,238,0.5);background:rgba(34,211,238,0.1);box-shadow:0 6px 20px -4px rgba(34,211,238,0.18);}
-.pillar-group.pillar-5 .node-leaf{background:rgba(251,191,36,0.05);border-color:rgba(251,191,36,0.22);} .pillar-group.pillar-5 .node-leaf .n-title{color:#fbbf24;} .pillar-group.pillar-5 .node-leaf .n-desc{color:#7a6010;} .pillar-group.pillar-5 .node-leaf:hover{border-color:rgba(251,191,36,0.5);background:rgba(251,191,36,0.1);box-shadow:0 6px 20px -4px rgba(251,191,36,0.18);}
-.pillar-group.pillar-6 .node-leaf{background:rgba(251,146,60,0.05);border-color:rgba(251,146,60,0.22);} .pillar-group.pillar-6 .node-leaf .n-title{color:#fb923c;} .pillar-group.pillar-6 .node-leaf .n-desc{color:#7a4518;} .pillar-group.pillar-6 .node-leaf:hover{border-color:rgba(251,146,60,0.5);background:rgba(251,146,60,0.1);box-shadow:0 6px 20px -4px rgba(251,146,60,0.18);}
 
 /* STATUS */
 .status{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:1.2px;padding:3px 9px;border-radius:6px;display:inline-block;margin-top:6px;}
@@ -85,8 +75,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .pillar-group .node-pillar{margin-bottom:40px;width:100%;}
 .children-row{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:44px;width:100%;}
 .children-row .node-comp{width:100%;}
-.leaves-row{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;}
-.leaves-row .node-leaf{width:100%;}
 
 /* LEVEL TAG */
 .level-tag{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:#38bd7e;background:rgba(56,189,126,0.07);border:1px solid rgba(56,189,126,0.18);padding:5px 18px;border-radius:50px;margin:0 0 24px;}
@@ -99,7 +87,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .legend-swatch-root{background:#38bd7e;}
 .legend-swatch-pillar{background:rgba(20,28,44,0.97);border:1.5px solid rgba(255,255,255,0.18);}
 .legend-swatch-comp{background:rgba(16,22,36,0.97);border:1px solid rgba(255,255,255,0.12);}
-.legend-swatch-leaf{background:rgba(56,189,126,0.06);border:1px dashed rgba(56,189,126,0.4);}
 .legend-swatch-conn{width:18px;height:2px;border-radius:0;background:rgba(56,189,126,0.6);}
 .legend-badge{font-size:.62rem;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:6px;display:inline-block;}
 .legend-badge.live{background:rgba(56,189,126,0.18);color:#38bd7e;}
@@ -111,19 +98,18 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 @keyframes scaleIn{from{opacity:0;transform:scale(0.88);}to{opacity:1;transform:scale(1);}}
-body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-ready) .level-tag,body:not(.anim-ready) .node-pillar,body:not(.anim-ready) .node-comp,body:not(.anim-ready) .node-leaf,body:not(.anim-ready) .legend{opacity:0;}
+body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-ready) .level-tag,body:not(.anim-ready) .node-pillar,body:not(.anim-ready) .node-comp,body:not(.anim-ready) .legend{opacity:0;}
 .anim-header{animation:fadeSlideDown .6s cubic-bezier(.16,1,.3,1) both;}
 .anim-root{animation:scaleIn .55s cubic-bezier(.16,1,.3,1) both;}
 .anim-level{animation:fadeIn .45s ease both;}
 .anim-pillar{animation:fadeSlideUp .5s cubic-bezier(.16,1,.3,1) both;}
 .anim-comp{animation:fadeSlideUp .45s cubic-bezier(.16,1,.3,1) both;}
-.anim-leaf{animation:fadeSlideUp .4s ease both;}
 .anim-legend{animation:fadeIn .5s ease both;}
 
 /* RESPONSIVE */
 @media(max-width:1200px){.pillars-row{grid-template-columns:repeat(3,1fr);gap:24px;}.page{max-width:960px;}}
 @media(max-width:768px){.pillars-row{grid-template-columns:1fr;gap:28px;}.header h1{font-size:1.5rem;}body{padding:24px 12px 60px;}.node-pillar{min-width:auto;width:100%;}}
-@media(prefers-reduced-motion:reduce){.node-box{transition:none;}.node-box:hover,.node-pillar:hover,.node-comp:hover,.node-leaf:hover{transform:none;}.anim-header,.anim-root,.anim-level,.anim-pillar,.anim-comp,.anim-leaf,.anim-legend{animation:none!important;opacity:1!important;}body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-ready) .level-tag,body:not(.anim-ready) .node-pillar,body:not(.anim-ready) .node-comp,body:not(.anim-ready) .node-leaf,body:not(.anim-ready) .legend{opacity:1!important;}}
+@media(prefers-reduced-motion:reduce){.node-box{transition:none;}.node-box:hover,.node-pillar:hover,.node-comp:hover{transform:none;}.anim-header,.anim-root,.anim-level,.anim-pillar,.anim-comp,.anim-legend{animation:none!important;opacity:1!important;}body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-ready) .level-tag,body:not(.anim-ready) .node-pillar,body:not(.anim-ready) .node-comp,body:not(.anim-ready) .legend{opacity:1!important;}}
 
 /* LIGHT THEME */
 [data-theme="light"] body{background:#f5f7fa;color:#1e293b;}
@@ -153,14 +139,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 [data-theme="light"] .node-comp{background:#ffffff;border-color:rgba(0,0,0,0.07);box-shadow:0 2px 10px rgba(0,0,0,0.05);}
 [data-theme="light"] .node-comp .n-title{color:#1e293b;}
 [data-theme="light"] .node-comp .n-desc{color:#64748b;}
-[data-theme="light"] .node-leaf{background:rgba(13,147,115,0.05);border-color:rgba(13,147,115,0.25);}
-[data-theme="light"] .node-leaf .n-title{color:#0d9373;}
-[data-theme="light"] .node-leaf .n-desc{color:#4a7a64;}
-[data-theme="light"] .pillar-group.pillar-2 .node-leaf{background:rgba(124,58,237,0.05);border-color:rgba(124,58,237,0.22);} [data-theme="light"] .pillar-group.pillar-2 .node-leaf .n-title{color:#7c3aed;}
-[data-theme="light"] .pillar-group.pillar-3 .node-leaf{background:rgba(29,78,216,0.05);border-color:rgba(29,78,216,0.22);} [data-theme="light"] .pillar-group.pillar-3 .node-leaf .n-title{color:#1d4ed8;}
-[data-theme="light"] .pillar-group.pillar-4 .node-leaf{background:rgba(8,145,178,0.05);border-color:rgba(8,145,178,0.22);} [data-theme="light"] .pillar-group.pillar-4 .node-leaf .n-title{color:#0891b2;}
-[data-theme="light"] .pillar-group.pillar-5 .node-leaf{background:rgba(180,83,9,0.05);border-color:rgba(180,83,9,0.22);} [data-theme="light"] .pillar-group.pillar-5 .node-leaf .n-title{color:#b45309;}
-[data-theme="light"] .pillar-group.pillar-6 .node-leaf{background:rgba(194,65,12,0.05);border-color:rgba(194,65,12,0.22);} [data-theme="light"] .pillar-group.pillar-6 .node-leaf .n-title{color:#c2410c;}
 [data-theme="light"] .legend{background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.05);color:#64748b;}
 [data-theme="light"] .legend-swatch-pillar{background:#ffffff;border-color:rgba(0,0,0,0.14);}
 [data-theme="light"] .legend-swatch-comp{background:#ffffff;border-color:rgba(0,0,0,0.1);}
@@ -200,11 +178,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="node-box node-comp"><div class="n-title">Masternodes</div><div class="n-desc">10K BDX stake</div></div>
           <div class="node-box node-comp"><div class="n-title">Major Upgrades</div><div class="n-desc">Bucephalus&rarr;Obscura</div></div>
         </div>
-        <div class="leaves-row">
-          <div class="node-box node-leaf"><div class="n-title">Block Proposer</div><div class="n-desc">Energy efficient</div></div>
-          <div class="node-box node-leaf"><div class="n-title">2,000+ Nodes</div><div class="n-desc">Live count varies</div></div>
-          <div class="node-box node-leaf"><div class="n-title">EVM Integration</div><div class="n-desc"><span class="status roadmap">ROADMAP</span></div></div>
-        </div>
       </div>
 
       <!-- PILLAR 2: Privacy Protocol -->
@@ -214,11 +187,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="node-box node-comp"><div class="n-title">Ring Signatures</div><div class="n-desc">Sender privacy</div></div>
           <div class="node-box node-comp"><div class="n-title">Stealth Addresses</div><div class="n-desc">Receiver privacy</div></div>
           <div class="node-box node-comp"><div class="n-title">RingCT</div><div class="n-desc">Amount privacy</div></div>
-        </div>
-        <div class="leaves-row">
-          <div class="node-box node-leaf"><div class="n-title">Ring Size = 11</div><div class="n-desc">10 decoys per tx</div></div>
-          <div class="node-box node-leaf"><div class="n-title">One-Time Keys</div><div class="n-desc">Unlinkable</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Bulletproofs++</div><div class="n-desc">Compact proofs</div></div>
         </div>
       </div>
 
@@ -231,12 +199,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="node-box node-comp"><div class="n-title">🧭 Browser</div><div class="n-desc">Private Web</div><div class="status live">LIVE</div></div>
           <div class="node-box node-comp"><div class="n-title">👛 Wallet</div><div class="n-desc">Own Wallet</div><div class="status live">LIVE</div></div>
         </div>
-        <div class="leaves-row">
-          <div class="node-box node-leaf"><div class="n-title">E2E Encrypted</div><div class="n-desc">Calls &middot; Pay</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Onion Routing</div><div class="n-desc">IP masking</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Ad &amp; Tracker Block</div><div class="n-desc">AI summaries</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Chrome &middot; Firefox</div><div class="n-desc">Mobile &middot; Desktop</div></div>
-        </div>
       </div>
 
       <!-- PILLAR 4: Interoperability -->
@@ -246,11 +208,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="node-box node-comp"><div class="n-title">Beldex Bridge</div><div class="n-desc">Legacy wBDX</div></div>
           <div class="node-box node-comp"><div class="n-title">LayerZero OFT</div><div class="n-desc">Multichain</div><div class="status live">LIVE</div></div>
           <div class="node-box node-comp"><div class="n-title">BNS</div><div class="n-desc">.bdx domains</div><div class="status live">LIVE</div></div>
-        </div>
-        <div class="leaves-row">
-          <div class="node-box node-leaf"><div class="n-title">BSC wBDX</div><div class="n-desc">Wrapped swap</div></div>
-          <div class="node-box node-leaf"><div class="n-title">ETH &middot; SOL &middot; ARB</div><div class="n-desc">Via Stargate 1:1</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Chat &middot; VPN &middot; Pay</div><div class="n-desc">Human-readable</div></div>
         </div>
       </div>
 
@@ -262,11 +219,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="node-box node-comp"><div class="n-title">Burn Mechanism</div><div class="n-desc">Deflationary</div></div>
           <div class="node-box node-comp"><div class="n-title">Exchanges</div><div class="n-desc">CEX listings</div></div>
         </div>
-        <div class="leaves-row">
-          <div class="node-box node-leaf"><div class="n-title">Block Rewards</div><div class="n-desc">Masternode queue</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Flash + BNS</div><div class="n-desc">Fee burns</div></div>
-          <div class="node-box node-leaf"><div class="n-title">KuCoin &middot; MEXC</div><div class="n-desc">Gate &middot; Bitget</div></div>
-        </div>
       </div>
 
       <!-- PILLAR 6: BeldexAI -->
@@ -277,11 +229,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="node-box node-comp"><div class="n-title">Spam Detection</div><div class="n-desc">Fraud filtering</div></div>
           <div class="node-box node-comp"><div class="n-title">Optimization</div><div class="n-desc">Traffic routing</div></div>
         </div>
-        <div class="leaves-row">
-          <div class="node-box node-leaf"><div class="n-title">No Data Shared</div><div class="n-desc">Privacy-first</div></div>
-          <div class="node-box node-leaf"><div class="n-title">BChat + BelNet</div><div class="n-desc">Scam prevention</div></div>
-          <div class="node-box node-leaf"><div class="n-title">Smart Routing</div><div class="n-desc">Network speed</div></div>
-        </div>
       </div>
 
     </div><!-- /.pillars-row -->
@@ -290,7 +237,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       <div class="legend-item"><div class="legend-swatch legend-swatch-root"></div>Root</div>
       <div class="legend-item"><div class="legend-swatch legend-swatch-pillar"></div>Pillar</div>
       <div class="legend-item"><div class="legend-swatch legend-swatch-comp"></div>Component</div>
-      <div class="legend-item"><div class="legend-swatch legend-swatch-leaf"></div>Detail</div>
       <div class="legend-item"><div class="legend-swatch legend-swatch-conn"></div>Connection</div>
       <div class="legend-item"><span class="legend-badge live">LIVE</span> Confirmed live</div>
       <div class="legend-item"><span class="legend-badge progress">IN PROGRESS</span> Rolling out</div>
@@ -446,33 +392,6 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       });
     });
 
-    // ── Component → Leaf (right-side rail, 1:1 by index) ──
-    groups.forEach(function(group, i) {
-      var comps = group.querySelectorAll('.node-comp');
-      var leaves = group.querySelectorAll('.node-leaf');
-      if (comps.length === 0 || leaves.length === 0) return;
-      var color = colors[i] || rootColor;
-      var count = Math.min(comps.length, leaves.length);
-      var penetrate = 5;
-
-      // Get the right edge of the group
-      var firstComp = pos(comps[0], page);
-      var railX = firstComp.right + railOffset;
-
-      for (var j = 0; j < count; j++) {
-        var cp = pos(comps[j], page);
-        var lp = pos(leaves[j], page);
-
-        // Tick from inside comp box → rail → down → into leaf box
-        var d = 'M ' + (cp.right - penetrate) + ' ' + cp.cy
-          + ' L ' + railX + ' ' + cp.cy
-          + ' L ' + railX + ' ' + lp.cy
-          + ' L ' + (lp.right - penetrate) + ' ' + lp.cy;
-        var glowC = makePath(svg, d, color, 6, 0.08, 'glow');
-        glowC.style.filter = 'blur(4px)';
-        makePath(svg, d, color, 1.5, 0.55, 'conn');
-      }
-    });
 
     // Animate paths drawing in
     var paths = svg.querySelectorAll('.conn');
@@ -505,9 +424,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
         pillars.forEach(function(el, i) { applyAnim(el, 'anim-pillar', 750 + i * 90); });
         var comps = document.querySelectorAll('.node-comp');
         comps.forEach(function(el, i) { applyAnim(el, 'anim-comp', 1200 + i * 50); });
-        var leaves = document.querySelectorAll('.node-leaf');
-        leaves.forEach(function(el, i) { applyAnim(el, 'anim-leaf', 1600 + i * 40); });
-        applyAnim(document.querySelector('.legend'), 'anim-legend', 2200);
+    applyAnim(document.querySelector('.legend'), 'anim-legend', 1600);
 
         // Draw connectors after animations settle
         setTimeout(drawConnectors, 800);
