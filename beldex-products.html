@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex - How It Works</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080d12;
+  --surface: #0d1520;
+  --surface2: #111d2b;
+  --border: #1a2d40;
+  --teal: #00e5c0;
+  --amber: #f5a623;
+  --violet: #a78bfa;
+  --rose: #fb7185;
+  --blue: #38bdf8;
+  --green: #4ade80;
+  --orange: #ff9f43;
+  --text: #dde8f0;
+  --muted: #5a7a94;
+  --dim: #2a4055;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,192,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,192,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
+
+/* TABS */
+.tab-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(8,13,18,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; padding: 0 1.5rem;
+  overflow-x: auto; gap: 0.25rem;
+}
+.tab-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--muted);
+  background: transparent; border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+.tab-btn span { font-size: 1.1rem; }
+
+/* SECTION */
+.diagram-section { display: none; position: relative; z-index: 1; padding: 2.5rem 1.5rem 5rem; max-width: 980px; margin: 0 auto; }
+.diagram-section.active { display: block; }
+
+.sec-header { text-align: center; margin-bottom: 2.5rem; }
+.sec-badge {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.3rem 0.9rem; border-radius: 20px;
+  border: 1px solid; margin-bottom: 1rem;
+}
+.badge-teal   { color: var(--teal);   border-color: rgba(0,229,192,0.3);   background: rgba(0,229,192,0.07); }
+.badge-amber  { color: var(--amber);  border-color: rgba(245,166,35,0.3);  background: rgba(245,166,35,0.07); }
+.badge-violet { color: var(--violet); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.07); }
+.badge-rose   { color: var(--rose);   border-color: rgba(251,113,133,0.3); background: rgba(251,113,133,0.07); }
+.badge-orange { color: var(--orange); border-color: rgba(255,159,67,0.3);  background: rgba(255,159,67,0.07); }
+
+.sec-header h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.sec-header p  { color: var(--muted); font-size: 0.9rem; max-width: 500px; margin: 0 auto; }
+
+.hint {
+  text-align: center; font-size: 1rem;
+  color: var(--rose); letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 1.25rem; font-family: 'JetBrains Mono', monospace;
+}
+
+/* PIPELINE */
+.pipeline {
+  display: flex; align-items: stretch;
+  overflow-x: auto; padding-bottom: 0.5rem; gap: 0;
+}
+.pipe-node {
+  flex: 1; min-width: 130px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 0.85rem;
+  text-align: center; cursor: pointer;
+  transition: all 0.22s; position: relative; overflow: hidden;
+}
+.pipe-node::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--nc, var(--teal)); opacity: 0; transition: opacity 0.22s;
+}
+.pipe-node:hover, .pipe-node.on {
+  border-color: var(--nc, var(--teal)); background: var(--surface2);
+  transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+.pipe-node:hover::after, .pipe-node.on::after { opacity: 1; }
+.pipe-node .pn-icon  { font-size: 1.5rem; margin-bottom: 0.4rem; }
+.pipe-node .pn-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--nc, var(--teal)); font-family: 'JetBrains Mono', monospace; margin-bottom: 0.3rem; }
+.pipe-node .pn-name  { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 0.2rem; }
+.pipe-node .pn-hint  { font-size: 0.7rem; color: var(--muted); }
+
+.pipe-arrow { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 30px; }
+.pipe-arrow svg { width: 20px; height: 12px; }
+
+/* DETAIL PANEL */
+.detail-panel {
+  display: none; margin-top: 1.5rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem 1.75rem;
+  animation: fadeUp 0.2s ease;
+}
+.detail-panel.show { display: block; }
+
+@keyframes fadeUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+@keyframes pulse  { 0%,100% { opacity:.5; } 50% { opacity:1; } }
+
+.dp-step  { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.35rem; }
+.dp-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.65rem; }
+.dp-body  { font-size: 0.88rem; color: #b8ccd8; line-height: 1.7; }
+.dp-body b { color: var(--text); }
+.dp-note  { margin-top: 1rem; background: rgba(0,229,192,0.07); border: 1px solid rgba(0,229,192,0.2); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.82rem; color: rgba(0,229,192,0.85); }
+
+/* TAGS */
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; justify-content: center; }
+.tag { font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; padding: 0.22rem 0.65rem; border-radius: 6px; border: 1px solid; }
+.t-teal   { color: var(--teal);   border-color: rgba(0,229,192,0.3);   background: rgba(0,229,192,0.07); }
+.t-amber  { color: var(--amber);  border-color: rgba(245,166,35,0.3);  background: rgba(245,166,35,0.07); }
+.t-violet { color: var(--violet); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.07); }
+.t-rose   { color: var(--rose);   border-color: rgba(251,113,133,0.3); background: rgba(251,113,133,0.07); }
+.t-green  { color: var(--green);  border-color: rgba(74,222,128,0.3);  background: rgba(74,222,128,0.07); }
+.t-blue   { color: var(--blue);   border-color: rgba(56,189,248,0.3);  background: rgba(56,189,248,0.07); }
+.t-orange { color: var(--orange); border-color: rgba(255,159,67,0.3);  background: rgba(255,159,67,0.07); }
+
+/* BELNET */
+.belnet-wrap  { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+.belnet-list  { flex: 0 0 300px; display: flex; flex-direction: column; gap: 0; }
+.bn-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--amber); border-radius: 0 10px 10px 0;
+  padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;
+}
+.bn-item:hover, .bn-item.on { background: var(--surface2); box-shadow: -3px 0 12px rgba(245,166,35,0.12); }
+.bn-item .bi-num   { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; color: var(--amber); min-width: 20px; }
+.bn-item .bi-icon  { font-size: 1.2rem; }
+.bn-item .bi-title { font-size: 0.85rem; font-weight: 600; }
+.bn-item .bi-sub   { font-size: 0.72rem; color: var(--muted); }
+.bn-connector { width: 3px; height: 14px; background: linear-gradient(to bottom, rgba(245,166,35,0.35), transparent); margin-left: 1.7rem; }
+
+.belnet-panel {
+  flex: 1; min-width: 260px; min-height: 260px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.bp-placeholder { text-align: center; color: var(--dim); font-size: 0.85rem; line-height: 1.6; }
+.bp-content { display: none; width: 100%; animation: fadeUp 0.2s ease; }
+.bp-content.show { display: block; }
+.ip-box { margin-top: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+.ip-box .ib-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.2rem; }
+.ip-visible { color: var(--text); }
+.ip-hidden  { color: var(--amber); }
+.ip-safe    { color: var(--green); }
+
+/* FEDERATED */
+.fed-wrap  { display: flex; gap: 1.75rem; flex-wrap: wrap; align-items: flex-start; }
+.fed-steps { flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 0.6rem; }
+.fs-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1.1rem;
+  display: flex; align-items: flex-start; gap: 0.85rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.fs-item:hover, .fs-item.on { background: var(--surface2); border-color: var(--violet); }
+.fs-item .fi-num   { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; color: var(--violet); min-width: 18px; padding-top: 2px; }
+.fs-item .fi-icon  { font-size: 1.2rem; min-width: 22px; }
+.fs-item .fi-title { font-size: 0.86rem; font-weight: 600; margin-bottom: 0.15rem; }
+.fs-item .fi-desc  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+.fed-visual {
+  flex: 0 0 210px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 0.45rem; align-items: center; text-align: center;
+}
+.fv-title  { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--violet); margin-bottom: 0.3rem; }
+.fv-phone  { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.75rem; width: 100%; }
+.fv-arrow  { color: var(--dim); font-size: 1rem; }
+.fv-center { background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.3); border-radius: 8px; padding: 0.6rem 0.75rem; font-size: 0.75rem; width: 100%; color: var(--violet); font-weight: 600; }
+.fv-note   { font-size: 0.68rem; color: var(--muted); margin-top: 0.25rem; }
+
+/* BNS FLOW */
+.bns-wrap  { display: flex; gap: 1.75rem; flex-wrap: wrap; align-items: flex-start; }
+.bns-steps { flex: 1; min-width: 260px; }
+.bns-item { display: flex; align-items: stretch; }
+.bns-left { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
+.bns-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 2px solid var(--rose);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; color: var(--rose);
+  background: var(--bg); flex-shrink: 0; cursor: pointer; transition: all 0.2s;
+}
+.bns-dot:hover, .bns-dot.on { background: var(--rose); color: var(--bg); }
+.bns-line { width: 2px; flex: 1; min-height: 14px; background: rgba(251,113,133,0.2); margin: 3px 0; }
+.bns-body { flex: 1; padding: 0 0 1.2rem 1rem; cursor: pointer; }
+.bns-body .bb-title { font-size: 0.88rem; font-weight: 600; padding-top: 3px; margin-bottom: 0.15rem; transition: color 0.2s; }
+.bns-body:hover .bb-title, .bns-item.on .bb-title { color: var(--rose); }
+.bns-body .bb-sub { font-size: 0.74rem; color: var(--muted); }
+
+.fork-box {
+  display: flex; gap: 0.6rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.75rem; margin: 0 0 1.2rem 2.25rem;
+}
+.fork-branch { flex: 1; border-radius: 7px; padding: 0.55rem 0.75rem; font-size: 0.78rem; }
+.fork-yes { background: rgba(251,113,133,0.08); border: 1px solid rgba(251,113,133,0.25); }
+.fork-no  { background: rgba(74,222,128,0.08);  border: 1px solid rgba(74,222,128,0.25); }
+.fork-branch .fb-l { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.2rem; }
+.fork-yes .fb-l { color: var(--rose); }
+.fork-no  .fb-l { color: var(--green); }
+
+.bns-right { flex: 0 0 255px; }
+.bns-info  { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; display: none; animation: fadeUp 0.2s ease; }
+.bns-info.show { display: block; }
+.bi-step  { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; color: var(--rose); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.35rem; }
+.bi-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem; }
+.bi-body  { font-size: 0.84rem; color: #b8ccd8; line-height: 1.65; }
+.bi-body b { color: var(--text); }
+
+.registry-card {
+  background: #050a0f; border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 1.25rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; line-height: 1.9;
+}
+.rc-head { color: var(--rose); font-size: 0.63rem; letter-spacing: 0.06em; margin-bottom: 0.6rem; }
+.rk { color: var(--muted); } .rv { color: var(--teal); } .ra { color: var(--amber); } .rm { color: var(--violet); }
+
+/* ── SHARED DIVIDER / SUBHEADING ── */
+.section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 2.5rem 0; }
+.sub-heading {
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.sub-heading::before, .sub-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* BNS HUB LAYOUT */
+@keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes hubPulse  { 0%,100%{box-shadow:0 0 18px rgba(0,229,192,0.15),inset 0 0 14px rgba(0,229,192,0.06);} 50%{box-shadow:0 0 36px rgba(0,229,192,0.28),inset 0 0 20px rgba(0,229,192,0.12);} }
+
+.hub-layout {
+  display: grid;
+  grid-template-columns: 1fr 160px 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem 0;
+  align-items: center;
+  min-height: 320px;
+}
+/* Center hub occupies both rows */
+.hub-center-wrap {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  display: flex; align-items: center; justify-content: center;
+}
+.hub-center {
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,192,0.13) 0%, rgba(0,229,192,0.04) 60%, transparent 100%);
+  border: 2px solid rgba(0,229,192,0.45);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative;
+  animation: hubPulse 3s ease-in-out infinite;
+}
+.hub-center::before {
+  content: '';
+  position: absolute; inset: -10px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: rgba(0,229,192,0.5);
+  border-right-color: rgba(0,229,192,0.15);
+  animation: orbitSpin 8s linear infinite;
+}
+.hub-center::after {
+  content: '';
+  position: absolute; inset: -18px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-bottom-color: rgba(0,229,192,0.2);
+  animation: orbitSpin 14s linear infinite reverse;
+}
+.hc-name { font-family: 'Oxanium', monospace; font-size: 1rem; font-weight: 800; color: var(--teal); letter-spacing: 0.04em; line-height: 1.2; }
+.hc-sub  { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 0.2rem; }
+.hc-dot  { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px var(--teal); margin-top: 0.4rem; animation: pulse 2s ease-in-out infinite; }
+
+/* Connector lines */
+.hub-connector {
+  display: flex; align-items: center;
+  height: 2px;
+}
+.hub-connector.left  { grid-column: 1; justify-content: flex-end; }
+.hub-connector.right { grid-column: 3; justify-content: flex-start; }
+.hub-connector-line {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,192,0.3));
+}
+.hub-connector.right .hub-connector-line {
+  background: linear-gradient(90deg, rgba(0,229,192,0.3), transparent);
+}
+
+/* Node cards */
+.uc-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 1.15rem;
+  cursor: pointer; transition: all 0.22s;
+  position: relative; overflow: hidden;
+  width: 100%;
+}
+.uc-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--uc-color, var(--teal)); opacity: 0; transition: opacity 0.22s;
+}
+.uc-card:hover, .uc-card.on {
+  border-color: var(--uc-color, var(--teal)); background: var(--surface2);
+  transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 16px rgba(0,0,0,0.2);
+}
+.uc-card:hover::before, .uc-card.on::before { opacity: 1; }
+.uc-top   { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.55rem; }
+.uc-icon  { font-size: 1.3rem; }
+.uc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--uc-color, var(--teal)); }
+.uc-name  { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.28rem; }
+.uc-desc  { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.uc-example { margin-top: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 5px; padding: 0.28rem 0.6rem; display: inline-block; }
+
+.uc-detail {
+  display: none; margin-top: 1rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-top: 2px solid var(--uc-detail-color, var(--teal));
+  border-radius: 12px; padding: 1.4rem 1.5rem;
+  animation: fadeUp 0.2s ease;
+}
+.uc-detail.show { display: block; }
+.ucd-row   { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.ucd-left  { flex: 1; min-width: 220px; }
+.ucd-right { flex: 0 0 200px; display: flex; flex-direction: column; gap: 0.5rem; }
+.ucd-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+.ucd-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem; }
+.ucd-body  { font-size: 0.85rem; color: #b8ccd8; line-height: 1.7; }
+.ucd-body b { color: var(--text); }
+.fact-pill { background: var(--surface); border: 1px solid var(--border); border-left: 2px solid var(--uc-detail-color, var(--teal)); border-radius: 0 6px 6px 0; padding: 0.5rem 0.75rem; }
+.fact-pill .fp-lbl { font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.15rem; }
+.fact-pill .fp-val { color: var(--text); font-size: 0.82rem; }
+.own-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+.own-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; }
+.own-box .ob-label { font-size: 0.62rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+.ob-label.rose { color: var(--rose); } .ob-label.green { color: var(--green); }
+.own-box .ob-title { font-size: 0.86rem; font-weight: 700; margin-bottom: 0.3rem; }
+.own-box .ob-body  { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+
+/* BNS COST */
+.price-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+.price-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 0.85rem;
+  text-align: center; cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
+}
+.price-card.best-val::after {
+  content: 'BEST VALUE'; position: absolute; top: 8px; right: -20px;
+  background: var(--green); color: var(--bg);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; font-weight: 700;
+  padding: 0.18rem 0.55rem; transform: rotate(45deg); letter-spacing: 0.05em;
+}
+.price-card:hover, .price-card.selected { border-color: var(--rose); background: var(--surface2); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(251,113,133,0.2); }
+.pc-years { font-family: 'Oxanium', monospace; font-size: 1.4rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 0.15rem; }
+.pc-ylab  { font-size: 0.68rem; color: var(--muted); margin-bottom: 0.75rem; }
+.pc-bdx   { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; color: var(--rose); margin-bottom: 0.2rem; }
+.pc-pyr   { font-size: 0.7rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+.pc-usd   { font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+.pc-usd span { color: var(--amber); }
+
+.calc-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.calc-title { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rose); margin-bottom: 1.1rem; }
+.calc-row  { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+.calc-field { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 130px; }
+.calc-field label { font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.calc-field input, .calc-field select { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 0.55rem 0.85rem; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
+.calc-field input:focus, .calc-field select:focus { border-color: var(--rose); }
+.calc-field select option { background: var(--bg); }
+
+.calc-result { margin-top: 1.25rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.cr-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; text-align: center; }
+.cr-card .cr-lbl { font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.35rem; }
+.cr-card .cr-val { font-family: 'Oxanium', monospace; font-size: 1.2rem; font-weight: 800; }
+.cr-card .cr-sub { font-size: 0.65rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; margin-top: 0.15rem; }
+.cr-card.hi .cr-val { color: var(--rose); }
+.cr-card.hi { border-color: rgba(251,113,133,0.4); background: rgba(251,113,133,0.05); }
+
+.burn-note { margin-top: 1rem; background: rgba(251,113,133,0.06); border: 1px solid rgba(251,113,133,0.2); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.8rem; color: rgba(251,113,133,0.8); line-height: 1.6; }
+.burn-note b { color: var(--rose); }
+.transfer-note { margin-top: 0.75rem; background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.2); border-radius: 8px; padding: 0.65rem 1rem; font-size: 0.78rem; color: rgba(56,189,248,0.8); }
+.transfer-note b { color: var(--blue); }
+
+/* BROWSER TAB */
+.br-chrome { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; box-shadow: 0 0 50px rgba(255,159,67,0.05), 0 16px 50px rgba(0,0,0,0.5); }
+.br-chrome-bar { display: flex; align-items: center; gap: 0.75rem; background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.65rem 1rem; }
+.br-dots { display: flex; gap: 5px; }
+.br-dot  { width: 10px; height: 10px; border-radius: 50%; }
+.brd-r { background: #ff5f57; } .brd-y { background: #febc2e; } .brd-g { background: #28c840; }
+.br-url-bar { flex: 1; display: flex; align-items: center; gap: 0.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 0.3rem 0.85rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
+.url-txt { color: var(--text); }
+.br-status { margin-left: auto; font-size: 0.62rem; color: var(--green); font-family: 'JetBrains Mono', monospace; }
+.br-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; padding: 1.25rem; }
+.bf-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1rem; cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden; }
+.bf-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--orange); opacity: 0; transition: opacity 0.22s; }
+.bf-card:hover, .bf-card.on { border-color: var(--orange); background: var(--bg); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 12px rgba(255,159,67,0.08); }
+.bf-card:hover::after, .bf-card.on::after { opacity: 1; }
+.bf-icon  { font-size: 1.4rem; margin-bottom: 0.45rem; }
+.bf-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--orange); margin-bottom: 0.3rem; }
+.bf-name  { font-size: 0.84rem; font-weight: 700; margin-bottom: 0.2rem; }
+.bf-desc  { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.bf-tag   { display: inline-block; margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; padding: 0.14rem 0.5rem; border-radius: 4px; background: rgba(255,159,67,0.1); color: var(--orange); border: 1px solid rgba(255,159,67,0.2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.br-detail { display: none; margin-bottom: 1.5rem; background: var(--surface2); border: 1px solid var(--border); border-top: 2px solid var(--orange); border-radius: 12px; padding: 1.4rem 1.5rem; animation: fadeUp 0.2s ease; }
+.br-detail.show { display: block; }
+.brd-row  { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.brd-left { flex: 1; min-width: 220px; }
+.brd-lbl  { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); margin-bottom: 0.35rem; }
+.brd-ttl  { font-size: 1rem; font-weight: 700; margin-bottom: 0.6rem; }
+.brd-body { font-size: 0.86rem; color: #b8ccd8; line-height: 1.7; }
+.brd-body b { color: var(--text); }
+.brd-right { flex: 0 0 200px; display: flex; flex-direction: column; gap: 0.5rem; }
+.hud-stat { background: var(--bg); border: 1px solid var(--border); border-left: 2px solid var(--orange); border-radius: 0 6px 6px 0; padding: 0.55rem 0.85rem; }
+.hs-lbl { font-size: 0.58rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.15rem; }
+.hs-val { font-size: 0.82rem; font-weight: 700; color: var(--amber); }
+
+.how-flow { display: flex; gap: 0; overflow-x: auto; padding-bottom: 0.5rem; margin: 0 0 1.5rem; }
+.hf-step { flex: 1; min-width: 100px; text-align: center; position: relative; }
+.hf-step:not(:last-child)::after { content: '→'; position: absolute; right: -9px; top: 17px; color: var(--dim); font-size: 0.9rem; z-index: 2; }
+.hf-num { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; font-family: 'Oxanium', monospace; font-size: 0.8rem; font-weight: 800; color: var(--orange); margin: 0 auto 0.5rem; }
+.hf-label { font-size: 0.72rem; font-weight: 600; margin-bottom: 0.15rem; }
+.hf-sub   { font-size: 0.63rem; color: var(--muted); line-height: 1.4; }
+
+.br-statusbar { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.9rem 1.1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+.bsb-item { display: flex; align-items: center; gap: 0.45rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+.bsb-dot { width: 6px; height: 6px; border-radius: 50%; }
+.bsb-g { background: var(--green); } .bsb-a { background: var(--amber); } .bsb-b { background: var(--blue); }
+
+@media (max-width: 680px) {
+  .pipeline { min-width: 640px; }
+  .belnet-wrap, .fed-wrap, .bns-wrap { flex-direction: column; }
+  .bns-right { flex: 1; min-width: unset; }
+  .fed-visual { display: none; }
+  .hub-layout { grid-template-columns: 1fr; grid-template-rows: auto; gap: 0.75rem; }
+  .hub-layout > div[style*="grid-column:1"],
+  .hub-layout > div[style*="grid-column:3"] { padding-left: 0 !important; padding-right: 0 !important; }
+  .hub-center-wrap { grid-column: 1 !important; grid-row: auto !important; }
+  .hub-layout > div[style] { grid-column: 1 !important; grid-row: auto !important; }
+  .price-row { grid-template-columns: repeat(2, 1fr); }
+  .calc-result { grid-template-columns: 1fr 1fr; }
+  .br-features { grid-template-columns: repeat(2, 1fr); }
+  .own-pair { grid-template-columns: 1fr; }
+  .ucd-right { flex: 1; min-width: unset; }
+}
+@media (max-width: 440px) {
+  .br-features { grid-template-columns: 1fr; }
+  .calc-result { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('bchat',this)"><span>💬</span> BChat</button>
+  <button class="tab-btn" onclick="switchTab('belnet',this)"><span>🌐</span> Belnet</button>
+  <button class="tab-btn" onclick="switchTab('fed',this)"><span>🤖</span> Federated Learning</button>
+  <button class="tab-btn" onclick="switchTab('bns',this)"><span>🏷️</span> BNS</button>
+  <button class="tab-btn" onclick="switchTab('browser',this)"><span>🛡️</span> Beldex Browser</button>
+</nav>
+
+
+<!-- ══ BCHAT ══ -->
+<div class="diagram-section active" id="tab-bchat">
+  <div class="sec-header">
+    <div class="sec-badge badge-teal">💬 BChat</div>
+    <h2>How Your Message Travels</h2>
+    <p>Your message passes through several stops. Each one hides a little more, until no one can trace it back to you.</p>
+  </div>
+  <p class="hint">↓ Tap any step to learn more</p>
+  <div class="pipeline">
+    <div class="pipe-node" style="--nc:var(--teal)" onclick="bchatClick(this,0)"><div class="pn-icon">👤</div><div class="pn-label">Step 1</div><div class="pn-name">You Send</div><div class="pn-hint">Message gets locked</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--blue)" onclick="bchatClick(this,1)"><div class="pn-icon">🧅</div><div class="pn-label">Step 2</div><div class="pn-name">Entry Node</div><div class="pn-hint">Your name is hidden</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--violet)" onclick="bchatClick(this,2)"><div class="pn-icon">🔀</div><div class="pn-label">Step 3</div><div class="pn-name">Middle Nodes</div><div class="pn-hint">The path is hidden</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--amber)" onclick="bchatClick(this,3)"><div class="pn-icon">📦</div><div class="pn-label">Step 4</div><div class="pn-name">Swarm</div><div class="pn-hint">Stored if offline</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--green)" onclick="bchatClick(this,4)"><div class="pn-icon">🔓</div><div class="pn-label">Step 5</div><div class="pn-name">Receiver</div><div class="pn-hint">Only they can open it</div></div>
+  </div>
+  <div class="detail-panel" id="bchat-panel">
+    <div class="dp-step" id="bc-step"></div><div class="dp-title" id="bc-title"></div>
+    <div class="dp-body" id="bc-body"></div><div class="dp-note" id="bc-note" style="display:none"></div>
+  </div>
+  <div class="tags">
+    <span class="tag t-teal">End-to-end encrypted</span><span class="tag t-blue">Sender always hidden</span>
+    <span class="tag t-violet">3+ hops minimum</span><span class="tag t-amber">Works offline (14 days)</span>
+    <span class="tag t-green">Only receiver can read it</span>
+  </div>
+</div>
+
+
+<!-- ══ BELNET ══ -->
+<div class="diagram-section" id="tab-belnet">
+  <div class="sec-header">
+    <div class="sec-badge badge-amber">🌐 Belnet</div>
+    <h2>How Belnet Hides Your IP</h2>
+    <p>Your IP address is like your home address online. Belnet makes sure websites never see the real one.</p>
+  </div>
+  <div class="belnet-wrap">
+    <div class="belnet-list">
+      <div class="bn-item" onclick="belnetClick(this,0)"><div class="bi-num">01</div><div class="bi-icon">💻</div><div><div class="bi-title">You</div><div class="bi-sub">Request wrapped in layers</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,1)"><div class="bi-num">02</div><div class="bi-icon">🔵</div><div><div class="bi-title">Edge Node</div><div class="bi-sub">Sees your IP, not the destination</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,2)"><div class="bi-num">03</div><div class="bi-icon">🔀</div><div><div class="bi-title">Transit Nodes</div><div class="bi-sub">Nobody knows the full path</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,3)"><div class="bi-num">04</div><div class="bi-icon">🚪</div><div><div class="bi-title">Exit Node</div><div class="bi-sub">Visits the site on your behalf</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,4)"><div class="bi-num">05</div><div class="bi-icon">🌐</div><div><div class="bi-title">Website</div><div class="bi-sub">Sees exit IP, never yours</div></div></div>
+    </div>
+    <div class="belnet-panel" id="belnet-panel">
+      <div class="bp-placeholder">← Click a step<br>to see what happens</div>
+      <div class="bp-content" id="belnet-content"></div>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag t-amber">IP always masked</span><span class="tag t-blue">No logs kept</span>
+    <span class="tag t-teal">Onion routing</span><span class="tag t-green">Masternode-powered</span>
+    <span class="tag t-violet">No one sees the full picture</span>
+  </div>
+</div>
+
+
+<!-- ══ FEDERATED LEARNING ══ -->
+<div class="diagram-section" id="tab-fed">
+  <div class="sec-header">
+    <div class="sec-badge badge-violet">🤖 Federated Learning</div>
+    <h2>AI That Gets Smarter — Without Reading Your Messages</h2>
+    <p>The AI improves over time using lessons from many phones. But your actual messages never leave your device.</p>
+  </div>
+  <div class="fed-wrap">
+    <div class="fed-steps">
+      <div class="fs-item" onclick="fedClick(this)"><div class="fi-num">01</div><div class="fi-icon">📲</div><div><div class="fi-title">AI comes pre-installed on your phone</div><div class="fi-desc">When you install BChat, a small AI is already there. It can spot harmful or abusive messages — even without an internet connection.</div></div></div>
+      <div class="fs-item" onclick="fedClick(this)"><div class="fi-num">02</div><div class="fi-icon">🔍</div><div><div class="fi-title">It reads messages on your device only</div><div class="fi-desc">Every message is checked right there on your phone. Nothing is sent out. If something looks harmful, the AI can warn you, blur, or block it.</div></div></div>
+      <div class="fs-item" onclick="fedClick(this)"><div class="fi-num">03</div><div class="fi-icon">📊</div><div><div class="fi-title">Only "what it learned" is shared — not the message</div><div class="fi-desc">If the AI made a mistake, your phone learns from it. It then sends only tiny math signals to help improve the model — never the actual message content.</div></div></div>
+      <div class="fs-item" onclick="fedClick(this)"><div class="fi-num">04</div><div class="fi-icon">🔄</div><div><div class="fi-title">Updates from many phones are combined</div><div class="fi-desc">These signals from thousands of phones are merged into one improved AI. No personal data is ever collected or stored anywhere.</div></div></div>
+      <div class="fs-item" onclick="fedClick(this)"><div class="fi-num">05</div><div class="fi-icon">⬇️</div><div><div class="fi-title">The smarter AI comes back to your phone</div><div class="fi-desc">The improved model is sent to all devices. Only the AI itself moves — not your messages, contacts, or any personal data.</div></div></div>
+    </div>
+    <div class="fed-visual">
+      <div class="fv-title">What travels where?</div>
+      <div class="fv-phone">📱 Your phone<br><small style="color:var(--muted)">Messages stay here</small></div>
+      <div class="fv-arrow">↕</div>
+      <div class="fv-center">🌐 Global AI<br><small style="opacity:0.7">Only math signals</small></div>
+      <div class="fv-arrow">↕</div>
+      <div class="fv-phone">📱 📱 📱<br><small style="color:var(--muted)">All other devices</small></div>
+      <div class="fv-note">Your messages never cross this line</div>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag t-violet">On-device AI</span><span class="tag t-green">Messages never leave phone</span>
+    <span class="tag t-blue">Only math signals shared</span><span class="tag t-teal">Gets smarter over time</span>
+    <span class="tag t-amber">No central data collection</span>
+  </div>
+</div>
+
+
+<!-- ══ BNS ══ -->
+<div class="diagram-section" id="tab-bns">
+  <div class="sec-header">
+    <div class="sec-badge badge-rose">🏷️ BNS</div>
+    <h2>Turn a Long Address Into a Simple Name</h2>
+    <p>Instead of sharing <code style="font-family:'JetBrains Mono',monospace;color:var(--rose);font-size:0.82em">bdx1qxyz…</code>, you register a name like <code style="font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:0.82em">ssw.bdx</code></p>
+  </div>
+
+  <!-- Registration flow -->
+  <div class="bns-wrap">
+    <div class="bns-steps">
+      <div class="bns-item" id="bns0"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(0)">1</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(0)"><div class="bb-title">You type a name</div><div class="bb-sub">e.g. "ssw.bdx" in your Beldex wallet</div></div></div>
+      <div class="bns-item" id="bns1"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(1)">2</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(1)"><div class="bb-title">Is the name already taken?</div><div class="bb-sub">The blockchain is checked instantly</div></div></div>
+      <div class="fork-box">
+        <div class="fork-branch fork-yes"><div class="fb-l">✗ If taken</div>Rejected — try a different name</div>
+        <div class="fork-branch fork-no"><div class="fb-l">✓ If free</div>Continue to registration</div>
+      </div>
+      <div class="bns-item" id="bns2"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(2)">3</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(2)"><div class="bb-title">Name is linked to your wallet</div><div class="bb-sub">ssw.bdx → your wallet address</div></div></div>
+      <div class="bns-item" id="bns3"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(3)">4</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(3)"><div class="bb-title">You approve it with your private key</div><div class="bb-sub">Proves you own this wallet</div></div></div>
+      <div class="bns-item" id="bns4"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(4)">5</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(4)"><div class="bb-title">Network confirms it</div><div class="bb-sub">Masternodes verify and agree</div></div></div>
+      <div class="bns-item" id="bns5"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(5)">6</div></div><div class="bns-body" onclick="bnsClick(5)"><div class="bb-title">Saved on the blockchain — forever</div><div class="bb-sub">Nobody can take it away from you</div></div></div>
+    </div>
+    <div class="bns-right">
+      <div class="bns-info" id="bns-info">
+        <div class="bi-step" id="bi-step"></div>
+        <div class="bi-title" id="bi-title"></div>
+        <div class="bi-body" id="bi-body"></div>
+      </div>
+      <div class="registry-card">
+        <div class="rc-head">[ What gets stored on-chain ]</div>
+        <span class="rk">├ Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="rv">ssw.bdx</span><br>
+        <span class="rk">├ Wallet &nbsp;&nbsp;&nbsp;</span><span class="rv">bdx1qxyz...</span><br>
+        <span class="rk">├ Mapping &nbsp;</span><span class="ra">ssw.bdx → bdx1qxyz</span><br>
+        <span class="rk">├ Block &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="rv">#2,345,678</span><br>
+        <span class="rk">├ Status &nbsp;&nbsp;</span><span class="rv">active</span><br>
+        <span class="rk">└ Optional </span><span class="rm">BChat ID / BelNet</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Use cases — hub constellation layout -->
+  <div class="section-divider"></div>
+  <div class="sub-heading">Where Your BNS Name Works</div>
+
+  <div class="hub-layout">
+    <!-- Row 1 Left — Wallet -->
+    <div style="grid-column:1;grid-row:1;padding-right:0.5rem;">
+      <div class="uc-card" style="--uc-color:var(--blue)" onclick="ucClick(this,0)">
+        <div class="uc-top"><div class="uc-icon">💰</div><div class="uc-label">Wallet</div></div>
+        <div class="uc-name">Send & Receive BDX</div>
+        <div class="uc-desc">Use your name instead of a long wallet address to get paid.</div>
+        <div class="uc-example">ssw.bdx → bdx1qxyz…</div>
+      </div>
+    </div>
+
+    <!-- Center hub -->
+    <div class="hub-center-wrap">
+      <div class="hub-center">
+        <div class="hc-name">ssw.bdx</div>
+        <div class="hc-sub">Your Identity</div>
+        <div class="hc-dot"></div>
+      </div>
+    </div>
+
+    <!-- Row 1 Right — BChat -->
+    <div style="grid-column:3;grid-row:1;padding-left:0.5rem;">
+      <div class="uc-card" style="--uc-color:var(--teal)" onclick="ucClick(this,1)">
+        <div class="uc-top"><div class="uc-icon">💬</div><div class="uc-label">BChat</div></div>
+        <div class="uc-name">Private Username</div>
+        <div class="uc-desc">Friends find you on BChat by name instead of a 64-character ID.</div>
+        <div class="uc-example">Search "ssw" on BChat ✓</div>
+      </div>
+    </div>
+
+    <!-- Row 2 Left — EVM -->
+    <div style="grid-column:1;grid-row:2;padding-right:0.5rem;">
+      <div class="uc-card" style="--uc-color:var(--violet)" onclick="ucClick(this,3)">
+        <div class="uc-top"><div class="uc-icon">⛓️</div><div class="uc-label">EVM Address</div></div>
+        <div class="uc-name">Ethereum-Compatible</div>
+        <div class="uc-desc">Link your EVM wallet to receive ETH and EVM-based tokens.</div>
+        <div class="uc-example">ssw.bdx → 0x4a7…</div>
+      </div>
+    </div>
+
+    <!-- Row 2 Right — BelNet -->
+    <div style="grid-column:3;grid-row:2;padding-left:0.5rem;">
+      <div class="uc-card" style="--uc-color:var(--green)" onclick="ucClick(this,2)">
+        <div class="uc-top"><div class="uc-icon">🌐</div><div class="uc-label">BelNet Domain</div></div>
+        <div class="uc-name">Host Private Websites</div>
+        <div class="uc-desc">Use a .bdx domain to host decentralised apps on BelNet.</div>
+        <div class="uc-example">https://ssw.bdx</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="uc-detail" id="uc-detail">
+    <div class="ucd-row">
+      <div class="ucd-left">
+        <div class="ucd-label" id="ucd-label"></div>
+        <div class="ucd-title" id="ucd-title"></div>
+        <div class="ucd-body" id="ucd-body"></div>
+      </div>
+      <div class="ucd-right" id="ucd-facts"></div>
+    </div>
+    <div id="ucd-extra"></div>
+  </div>
+
+  <!-- Cost & Calculator -->
+  <div class="section-divider"></div>
+  <div class="sub-heading">Registration Cost & Ownership Calculator</div>
+  <div class="price-row">
+    <div class="price-card" onclick="selectPlan(this,1,650)" data-years="1" data-bdx="650">
+      <div class="pc-years">1</div><div class="pc-ylab">Year</div>
+      <div class="pc-bdx">650 BDX</div><div class="pc-pyr">650 BDX / yr</div>
+      <div class="pc-usd">≈ <span id="usd-1">—</span></div>
+    </div>
+    <div class="price-card" onclick="selectPlan(this,2,1000)" data-years="2" data-bdx="1000">
+      <div class="pc-years">2</div><div class="pc-ylab">Years</div>
+      <div class="pc-bdx">1,000 BDX</div><div class="pc-pyr">500 BDX / yr</div>
+      <div class="pc-usd">≈ <span id="usd-2">—</span></div>
+    </div>
+    <div class="price-card best-val" onclick="selectPlan(this,5,2000)" data-years="5" data-bdx="2000">
+      <div class="pc-years">5</div><div class="pc-ylab">Years</div>
+      <div class="pc-bdx">2,000 BDX</div><div class="pc-pyr">400 BDX / yr</div>
+      <div class="pc-usd">≈ <span id="usd-5">—</span></div>
+    </div>
+    <div class="price-card" onclick="selectPlan(this,10,4000)" data-years="10" data-bdx="4000">
+      <div class="pc-years">10</div><div class="pc-ylab">Years</div>
+      <div class="pc-bdx">4,000 BDX</div><div class="pc-pyr">400 BDX / yr</div>
+      <div class="pc-usd">≈ <span id="usd-10">—</span></div>
+    </div>
+  </div>
+
+  <div class="calc-box">
+    <div class="calc-title">🧮 Cost Calculator — Enter BDX Price to See USD Value</div>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>BDX price (USD)</label>
+        <input type="number" id="bdx-price" placeholder="e.g. 0.05" step="0.001" min="0" oninput="calcUpdate()">
+      </div>
+      <div class="calc-field">
+        <label>Registration period</label>
+        <select id="plan-select" onchange="calcUpdate()">
+          <option value="1,650">1 Year — 650 BDX</option>
+          <option value="2,1000">2 Years — 1,000 BDX</option>
+          <option value="5,2000" selected>5 Years — 2,000 BDX (Best Value)</option>
+          <option value="10,4000">10 Years — 4,000 BDX</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-result">
+      <div class="cr-card hi"><div class="cr-lbl">Total BDX</div><div class="cr-val" id="cr-bdx">—</div><div class="cr-sub" id="cr-bdx-sub">select a plan</div></div>
+      <div class="cr-card"><div class="cr-lbl">Total USD</div><div class="cr-val" id="cr-usd" style="color:var(--amber)">—</div><div class="cr-sub" id="cr-usd-sub">enter BDX price</div></div>
+      <div class="cr-card"><div class="cr-lbl">Cost Per Year</div><div class="cr-val" id="cr-yr" style="color:var(--teal)">—</div><div class="cr-sub" id="cr-yr-sub">BDX / yr</div></div>
+    </div>
+    <div class="burn-note">🔥 <b>All BNS fees are burned.</b> Every BDX paid to register, renew, or transfer a BNS name is permanently removed from circulation — reducing total supply and contributing to long-term BDX scarcity.</div>
+    <div class="transfer-note">🔄 <b>Ownership transfer fee: 50 BDX</b> — Flat fee to move a name to another wallet. Also 100% burned. Wallet &amp; BChat names: <b>buy once, keep forever</b>. BelNet .bdx domains: <b>register &amp; renew</b> (1–10 yr periods).</div>
+  </div>
+
+  <div class="tags">
+    <span class="tag t-rose">On-chain forever</span><span class="tag t-green">Easy to share</span>
+    <span class="tag t-blue">Works for wallet + BChat + BelNet + EVM</span>
+    <span class="tag t-teal">No middleman</span><span class="tag t-amber">All fees burned 🔥</span>
+  </div>
+</div>
+
+
+<!-- ══ BELDEX BROWSER ══ -->
+<div class="diagram-section" id="tab-browser">
+  <div class="sec-header">
+    <div class="sec-badge badge-orange">🛡️ Beldex Browser</div>
+    <h2>Browse the Web. Leave No Trace.</h2>
+    <p>A privacy-first browser built on the Beldex network. Every feature works together to keep you invisible online.</p>
+  </div>
+
+  <div class="sub-heading">Click Any Feature to Learn More</div>
+
+  <div class="br-chrome">
+    <div class="br-chrome-bar">
+      <div class="br-dots"><div class="br-dot brd-r"></div><div class="br-dot brd-y"></div><div class="br-dot brd-g"></div></div>
+      <div class="br-url-bar"><span>🔒</span><span class="url-txt">https://anywebsite.com</span><span class="br-status">PROTECTED</span></div>
+    </div>
+    <div class="br-features">
+      <div class="bf-card" onclick="brClick(this,0)"><div class="bf-icon">🛡️</div><div class="bf-label">Ad Blocking</div><div class="bf-name">No More Ads</div><div class="bf-desc">Intrusive ads and tracking scripts blocked by default.</div><span class="bf-tag">Default ON</span></div>
+      <div class="bf-card" onclick="brClick(this,1)"><div class="bf-icon">🎭</div><div class="bf-label">Anti-Fingerprinting</div><div class="bf-name">No Device Profile</div><div class="bf-desc">Stops websites from building a unique signature of your device.</div><span class="bf-tag">Built-in</span></div>
+      <div class="bf-card" onclick="brClick(this,2)"><div class="bf-icon">🌐</div><div class="bf-label">BelNet dVPN</div><div class="bf-name">IP Always Hidden</div><div class="bf-desc">Decentralised VPN built right in — routes traffic via masternodes.</div><span class="bf-tag">Integrated</span></div>
+      <div class="bf-card" onclick="brClick(this,3)"><div class="bf-icon">🍪</div><div class="bf-label">Cookie / JS Blocking</div><div class="bf-name">Nothing Remembers You</div><div class="bf-desc">Cookies and JavaScript trackers blocked automatically.</div><span class="bf-tag">Default ON</span></div>
+      <div class="bf-card" onclick="brClick(this,4)"><div class="bf-icon">🗑️</div><div class="bf-label">History Destruction</div><div class="bf-name">Auto-Wipe on Close</div><div class="bf-desc">Browsing history erased completely when the browser closes.</div><span class="bf-tag">Auto Clear</span></div>
+      <div class="bf-card" onclick="brClick(this,5)"><div class="bf-icon">🤖</div><div class="bf-label">AI Page Summaries</div><div class="bf-name">Key Points, Instantly</div><div class="bf-desc">BeldexAI summarises articles privately — no data leaves your device.</div><span class="bf-tag">AI Powered</span></div>
+    </div>
+  </div>
+
+  <div class="br-detail" id="br-detail">
+    <div class="brd-row">
+      <div class="brd-left"><div class="brd-lbl" id="brd-lbl"></div><div class="brd-ttl" id="brd-ttl"></div><div class="brd-body" id="brd-body"></div></div>
+      <div class="brd-right" id="brd-stats"></div>
+    </div>
+  </div>
+
+  <div class="sub-heading">How It Protects You — Step by Step</div>
+  <div class="how-flow">
+    <div class="hf-step"><div class="hf-num">1</div><div class="hf-label">You open a site</div><div class="hf-sub">Request created on device</div></div>
+    <div class="hf-step"><div class="hf-num">2</div><div class="hf-label">Cookies blocked</div><div class="hf-sub">No trackers can load</div></div>
+    <div class="hf-step"><div class="hf-num">3</div><div class="hf-label">Traffic encrypted</div><div class="hf-sub">Wrapped via BelNet nodes</div></div>
+    <div class="hf-step"><div class="hf-num">4</div><div class="hf-label">Exit node connects</div><div class="hf-sub">Site sees exit IP only</div></div>
+    <div class="hf-step"><div class="hf-num">5</div><div class="hf-label">Page loads</div><div class="hf-sub">Ads stripped, fingerprint masked</div></div>
+    <div class="hf-step"><div class="hf-num">6</div><div class="hf-label">Session ends</div><div class="hf-sub">History wiped — no trace</div></div>
+  </div>
+
+  <div class="br-statusbar">
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> Open Source</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> No Data Collected</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> No History Stored</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-a"></div> BelNet dVPN Built-in</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-b"></div> Android · iOS · Desktop</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> Country Switching</div>
+  </div>
+
+  <div class="tags">
+    <span class="tag t-orange">Privacy by default</span><span class="tag t-green">Open source</span>
+    <span class="tag t-amber">BelNet dVPN integrated</span><span class="tag t-blue">Anti-fingerprinting</span>
+    <span class="tag t-teal">AI summaries — private</span><span class="tag t-rose">Zero history retained</span>
+  </div>
+</div>
+
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.diagram-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* BChat */
+const bcData = [
+  { step:'Step 1 — You Send', title:'Your message is locked before it goes anywhere', body:'The moment you tap send, BChat <b>locks your message</b> using the receiver\'s key. Only they can unlock it — no one else. It\'s then wrapped in multiple layers before travelling.', note:'💡 Like putting a letter in a locked box, then wrapping that box in 3 more boxes before mailing it.' },
+  { step:'Step 2 — Entry Node', title:'First stop hides who sent it', body:'Your wrapped message arrives at the first server. It peels one outer layer and passes it on — but it <b>has no idea who you are</b>. Your identity is hidden from the very first hop.', note:'💡 Like handing a sealed envelope to a postman — he knows where to deliver next, but not who wrote it.' },
+  { step:'Step 3 — Middle Nodes', title:'More hops, less trace', body:'The message bounces through extra servers. Each removes a layer and passes it forward. None of them see the full journey — <b>only the step before and after them</b>.', note:'💡 Like a relay race where each runner only knows who handed them the baton and who gets it next.' },
+  { step:'Step 4 — Swarm', title:'Held safely if the receiver is offline', body:'If the receiver is <b>online</b>, the message is delivered immediately. If <b>offline</b>, a group of servers (called a Swarm) holds the locked message for up to <b>14 days</b> — still encrypted, still safe.', note:'💡 Like a secure mailbox that holds your package until the recipient is ready to collect it.' },
+  { step:'Step 5 — Receiver', title:'Only the receiver can unlock and read it', body:'When the receiver opens BChat, it fetches the message. Their <b>private key</b> — stored only on their phone — unlocks it. The message is readable only on their device. No server ever reads it.', note:'💡 Like a unique key that exists only in one place — the receiver\'s pocket.' }
+];
+function bchatClick(el, idx) {
+  const nodes = document.querySelectorAll('#tab-bchat .pipe-node');
+  const panel = document.getElementById('bchat-panel');
+  const wasOn = el.classList.contains('on');
+  nodes.forEach(n => n.classList.remove('on'));
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  const d = bcData[idx];
+  document.getElementById('bc-step').textContent = d.step;
+  document.getElementById('bc-title').textContent = d.title;
+  document.getElementById('bc-body').innerHTML = d.body;
+  const n = document.getElementById('bc-note'); n.textContent = d.note; n.style.display = 'block';
+  panel.classList.add('show');
+}
+
+/* Belnet */
+const bnData = [
+  { step:'Step 1 — You', title:'Your request is wrapped in layers', body:'You want to open a website. Before anything leaves your device, Belnet wraps your request in <b>multiple layers of encryption</b> — like nesting envelopes inside each other.', ip:{ label:'Your real IP address', val:'145.299.85.58', cls:'ip-visible' } },
+  { step:'Step 2 — Edge Node', title:'First server sees your IP — but not the site', body:'This is the only server that ever sees your real IP (because you connected to it directly). It peels one layer and forwards the message — but has <b>no idea which website you want</b>.', ip:{ label:'Your IP seen here?', val:'Yes — but it goes no further ✓', cls:'ip-visible' } },
+  { step:'Step 3 — Transit Nodes', title:'The link between you and the site is broken', body:'These middle servers peel more layers. They don\'t know your IP and they don\'t know the final site. <b>No single server can connect you to your destination.</b>', ip:{ label:'Your IP visible?', val:'No — completely gone ✓', cls:'ip-safe' } },
+  { step:'Step 4 — Exit Node', title:'This server visits the site instead of you', body:'The last server removes the final layer. It knows the site and opens it <b>on your behalf</b>. The website only ever sees this server\'s IP address, not yours.', ip:{ label:'Website sees', val:'185.180.223.12 (not your real IP)', cls:'ip-hidden' } },
+  { step:'Step 5 — Website', title:'The website has no idea who you really are', body:'The website responds and sends content back through the same chain to you. From its perspective, the visitor was <b>185.180.223.12</b>. Your real IP was never exposed.', ip:{ label:'Your real IP exposed?', val:'Never ✓', cls:'ip-safe' } }
+];
+function belnetClick(el, idx) {
+  document.querySelectorAll('.bn-item').forEach(n => n.classList.remove('on'));
+  el.classList.add('on');
+  const d = bnData[idx];
+  document.querySelector('.bp-placeholder').style.display = 'none';
+  const c = document.getElementById('belnet-content');
+  c.innerHTML = `<div class="dp-step">${d.step}</div><div class="dp-title">${d.title}</div><div class="dp-body">${d.body}</div>${d.ip?`<div class="ip-box"><div class="ib-label">${d.ip.label}</div><div class="${d.ip.cls}">${d.ip.val}</div></div>`:''}`;
+  c.classList.add('show');
+}
+
+/* Federated */
+function fedClick(el) { document.querySelectorAll('.fs-item').forEach(s => s.classList.remove('on')); el.classList.add('on'); }
+
+/* BNS flow */
+const bnsData = [
+  { step:'Step 1', title:'You pick a name', body:'You open your Beldex wallet and type the name you want — like <b>ssw.bdx</b>. The system checks if the format is valid and if the name is already in use.' },
+  { step:'Step 2', title:'Is it already taken?', body:'The blockchain is checked instantly. If someone already registered that name, your request is rejected. If it\'s free, you move forward.' },
+  { step:'Step 3', title:'The name is connected to your wallet', body:'A link is created: <b>ssw.bdx → your wallet address</b>. Anyone who sends BDX to your name will automatically reach the right wallet.' },
+  { step:'Step 4', title:'You approve it', body:'You sign the registration using your <b>private key</b> — this proves you own the wallet. Your key never leaves your device. Only the digital signature is sent.' },
+  { step:'Step 5', title:'The network agrees', body:'Masternodes verify that the name is free and your signature is genuine. Once they all agree, the registration is confirmed. No single company is in charge.' },
+  { step:'Step 6', title:'Saved on the blockchain — permanently', body:'Your name and wallet mapping are stored on-chain. It\'s <b>tamper-proof and permanent</b>. No company can remove it. Works across your wallet, BChat, and BelNet.' }
+];
+function bnsClick(idx) {
+  document.querySelectorAll('.bns-dot').forEach((d,i) => d.classList.toggle('on', i===idx));
+  document.querySelectorAll('.bns-item').forEach((s,i) => s.classList.toggle('on', i===idx));
+  const d = bnsData[idx];
+  document.getElementById('bi-step').textContent = d.step;
+  document.getElementById('bi-title').textContent = d.title;
+  document.getElementById('bi-body').innerHTML = d.body;
+  document.getElementById('bns-info').classList.add('show');
+}
+
+/* BNS use cases */
+const ucData = [
+  { color:'var(--blue)', label:'BNS for Wallet', title:'Send & Receive BDX With a Simple Name',
+    body:'Your Beldex wallet address looks like <b>bdx1qxyz4g8f2k…</b> — impossible to share verbally. With BNS, you register a name like <b>ssw.bdx</b> and link it to your wallet. Anyone can now send you BDX just by typing your name.',
+    facts:[{l:'Replaces',v:'Long wallet address (bx1…)'},{l:'Works with',v:'Electron, Mobile & CLI wallets'},{l:'Ownership',v:'Buy once, keep forever'},{l:'Fee',v:'Registration fee 100% burned'}],
+    extra:'ownership' },
+  { color:'var(--teal)', label:'BNS for BChat', title:'Your BChat Username — Easy to Find',
+    body:'A BChat ID is a 64-character string. Nobody memorises that. Your BNS name becomes your <b>username on BChat</b> — friends search your name and your account appears. Messages are still fully encrypted and onion-routed.',
+    facts:[{l:'Replaces',v:'64-character BChat ID'},{l:'Privacy',v:'Messages still E2E encrypted'},{l:'Tip',v:'Use a pseudonym, not your real name'},{l:'Multiple names?',v:'Yes — 2+ names can point to same ID'}] },
+  { color:'var(--green)', label:'BNS Domain (BelNet)', title:'Host Private Websites With a .bdx Address',
+    body:'A BNS domain ending in <b>.bdx</b> lets you host decentralised apps and websites on BelNet (called MNApps). The host\'s real IP is hidden by BelNet\'s onion routing. Think of it as a private, uncensorable web.',
+    facts:[{l:'Example',v:'https://beldex.bdx'},{l:'Host IP',v:'Fully hidden by BelNet'},{l:'Ownership',v:'Register for 1–10 years, then renew'},{l:'Why renew?',v:'Prevents domain squatting'}],
+    extra:'belnet' },
+  { color:'var(--violet)', label:'BNS for EVM Wallets', title:'Cross-Chain Payments With Your Name',
+    body:'BNS now works with <b>Ethereum-compatible (EVM) wallet addresses</b> too. Link your EVM wallet to your BNS name and people can send ETH, BNB, or other EVM tokens just by typing your name — no 0x address required.',
+    facts:[{l:'Chains',v:'ETH, BSC & EVM-compatible'},{l:'How',v:'Name resolves to 0x… address'},{l:'vs ENS',v:'BNS keeps your history private'},{l:'Status',v:'Live via Hermes hardfork'}],
+    extra:'evm' }
+];
+function ucClick(el, idx) {
+  const wasOn = el.classList.contains('on');
+  document.querySelectorAll('.uc-card').forEach(c => c.classList.remove('on'));
+  const panel = document.getElementById('uc-detail');
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  const d = ucData[idx];
+  panel.style.setProperty('--uc-detail-color', d.color);
+  document.getElementById('ucd-label').textContent = d.label;
+  document.getElementById('ucd-label').style.color = d.color;
+  document.getElementById('ucd-title').textContent = d.title;
+  document.getElementById('ucd-body').innerHTML = d.body;
+  document.getElementById('ucd-facts').innerHTML = d.facts.map(f =>
+    `<div class="fact-pill"><div class="fp-lbl">${f.l}</div><div class="fp-val">${f.v}</div></div>`
+  ).join('');
+  const extra = document.getElementById('ucd-extra');
+  if (d.extra === 'ownership') {
+    extra.innerHTML = `<div class="own-pair"><div class="own-box"><div class="ob-label rose">💬 Wallet & BChat Name</div><div class="ob-title">Buy Once, Keep Forever</div><div class="ob-body">Wallet and BChat names are permanent. No renewal — changing a payment address would break everything.</div></div><div class="own-box"><div class="ob-label green">🌐 BelNet Domain (.bdx)</div><div class="ob-title">Register & Renew Periodically</div><div class="ob-body">Domains require renewal to prevent squatting. All fees are burned. Periods: 1, 2, 5, or 10 years.</div></div></div>`;
+  } else if (d.extra === 'belnet') {
+    extra.innerHTML = `<div style="margin-top:1rem;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:rgba(52,211,153,0.85)"><b style="color:#34d399">What is an MNApp?</b> A masternode app — a private website hosted on BelNet. Both host and visitors stay anonymous. The host IP is hidden by BelNet, linked to the .bdx domain.</div>`;
+  } else if (d.extra === 'evm') {
+    extra.innerHTML = `<div style="margin-top:1rem;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.3);border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:rgba(167,139,250,0.9)"><b style="color:#c4b5fd">BNS vs ENS:</b> ENS (Ethereum Name Service) is public — your wallet history is visible on-chain. BNS is built on Beldex's privacy blockchain, so your identity and transaction history stay protected even when linking to EVM wallets.</div>`;
+  } else { extra.innerHTML = ''; }
+  panel.classList.add('show');
+}
+
+/* Pricing calculator */
+const plans = {1:650, 2:1000, 5:2000, 10:4000};
+let selYears = 5, selBdx = 2000;
+
+function selectPlan(el, years, bdx) {
+  document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selYears = years; selBdx = bdx;
+  document.getElementById('plan-select').value = years + ',' + bdx;
+  calcUpdate();
+}
+
+function calcUpdate() {
+  const px = parseFloat(document.getElementById('bdx-price').value);
+  const pv = document.getElementById('plan-select').value.split(',');
+  selYears = parseInt(pv[0]); selBdx = parseInt(pv[1]);
+  document.querySelectorAll('.price-card').forEach(c => c.classList.toggle('selected', parseInt(c.dataset.years) === selYears));
+  document.getElementById('cr-bdx').textContent = selBdx.toLocaleString() + ' BDX';
+  document.getElementById('cr-bdx-sub').textContent = selYears + ' year' + (selYears > 1 ? 's' : '');
+  for (const [yr, bdx] of Object.entries(plans)) {
+    const el = document.getElementById('usd-' + yr);
+    if (el) el.textContent = px && !isNaN(px) ? '$' + (bdx * px).toFixed(2) : '—';
+  }
+  if (!isNaN(px) && px > 0) {
+    const tot = selBdx * px;
+    document.getElementById('cr-usd').textContent = '$' + tot.toFixed(2);
+    document.getElementById('cr-usd-sub').textContent = 'at $' + px + ' per BDX';
+    document.getElementById('cr-yr').textContent = '$' + (tot / selYears).toFixed(2);
+    document.getElementById('cr-yr-sub').textContent = (selBdx / selYears) + ' BDX / yr';
+  } else {
+    document.getElementById('cr-usd').textContent = '—';
+    document.getElementById('cr-usd-sub').textContent = 'enter BDX price above';
+    document.getElementById('cr-yr').textContent = '—';
+    document.getElementById('cr-yr-sub').textContent = (selBdx / selYears) + ' BDX / yr';
+  }
+}
+calcUpdate();
+
+/* Browser features */
+const brData = [
+  { lbl:'Feature — Ad Blocking', ttl:'Ads Blocked. Trackers Gone.',
+    body:'Most websites earn money by tracking every site you visit and showing targeted ads. Beldex Browser <b>blocks these ads and the tracking scripts behind them by default</b>. No extension needed.',
+    stats:[{l:'Status',v:'On by default'},{l:'What it blocks',v:'Ads, trackers, ad networks'},{l:'Effect',v:'Pages load faster, no targeted ads'}] },
+  { lbl:'Feature — Anti-Fingerprinting', ttl:'Your Device Has No Unique Signature.',
+    body:'Every browser leaks tiny details — screen size, fonts, time zone — that websites combine into a "fingerprint" of you. Even without cookies, this can track you. Beldex Browser <b>randomises and blocks these signals</b>.',
+    stats:[{l:'Protects against',v:'Canvas, WebGL, font fingerprinting'},{l:'Method',v:'Signal randomisation + blocking'},{l:'Works even if',v:'Cookies cleared or VPN off'}] },
+  { lbl:'Feature — BelNet dVPN', ttl:'Your Real IP Address Is Never Seen.',
+    body:'Beldex Browser has BelNet\'s decentralised VPN <b>built directly in</b>. Traffic passes through multiple masternodes. The website only ever sees the exit node\'s IP — not yours. Switch countries anytime.',
+    stats:[{l:'Routing',v:'Via Beldex masternodes'},{l:'IP shown to website',v:'Exit node IP only'},{l:'Country switching',v:'Yes — change exit node location'}] },
+  { lbl:'Feature — Cookie & JS Blocking', ttl:'Websites Can\'t Remember You.',
+    body:'Cookies track your activity across sessions. JavaScript trackers go further — collecting clicks and device details. Beldex Browser <b>blocks both by default</b>. No site can build a profile on you.',
+    stats:[{l:'Cookies',v:'Blocked by default'},{l:'JS trackers',v:'Blocked by default'},{l:'Data stored',v:'None — no history, no cookies'}] },
+  { lbl:'Feature — History Destruction', ttl:'Close the Browser. History Disappears.',
+    body:'Traditional browsers keep every site you\'ve ever visited. Beldex Browser never stores browsing history — and your <b>download history is wiped when you close the browser</b>. There is nothing to find or seize.',
+    stats:[{l:'Browsing history',v:'Never stored'},{l:'Download history',v:'Cleared on close'},{l:'Session data',v:'Wiped after each session'}] },
+  { lbl:'Feature — AI Page Summaries', ttl:'Get the Key Points. Skip the Noise.',
+    body:'Beldex AI is built into the browser. When you open a long article, the AI <b>instantly summarises the key points</b> for you. This happens privately — your content is never sent to a third-party server.',
+    stats:[{l:'Powered by',v:'BeldexAI (on-device)'},{l:'Data sent out?',v:'No — runs privately'},{l:'Works on',v:'Articles, news, research papers'}] }
+];
+function brClick(el, idx) {
+  const cards = document.querySelectorAll('.bf-card');
+  const panel = document.getElementById('br-detail');
+  const wasOn = el.classList.contains('on');
+  cards.forEach(c => c.classList.remove('on'));
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  const d = brData[idx];
+  document.getElementById('brd-lbl').textContent = d.lbl;
+  document.getElementById('brd-ttl').textContent = d.ttl;
+  document.getElementById('brd-body').innerHTML = d.body;
+  document.getElementById('brd-stats').innerHTML = d.stats.map(s =>
+    `<div class="hud-stat"><div class="hs-lbl">${s.l}</div><div class="hs-val">${s.v}</div></div>`
+  ).join('');
+  panel.classList.add('show');
+}
+</script>
+</body>
+</html>
