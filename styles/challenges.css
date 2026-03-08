@@ -353,3 +353,35 @@
   font-style: italic;
 }
 
+/* Desktop: pin EVM sub-nav to viewport corner, keep content full width */
+@media (min-width: 1100px) {
+  #evm-deep-dive > .section-nav {
+    position: fixed;
+    top: 108px;
+    left: max(12px, calc((100vw - 1200px) / 2 - 188px));
+    width: 172px;
+    max-height: calc(100vh - 128px);
+    margin: 0;
+    padding: 10px;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    z-index: 70;
+  }
+
+  #evm-deep-dive .section-nav-link {
+    flex: 0 0 auto;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 11px 12px;
+  }
+
+  #evm-deep-dive .section-nav-link.active {
+    box-shadow: 0 0 18px rgba(41, 224, 169, 0.14), inset 0 1px 0 rgba(41, 224, 169, 0.12);
+  }
+}
+
+#evm-deep-dive .diagram[id^="section-"] {
+  scroll-margin-top: 120px;
+}
+
