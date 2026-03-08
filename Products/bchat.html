@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex - BChat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+
+<a href="../beldex-products.html" class="back-link"><svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> All Products</a>
+
+<div class="diagram-section">
+  <div class="sec-header">
+    <div class="sec-badge badge-teal">💬 BChat</div>
+    <h2>How Your Message Travels</h2>
+    <p>Your message passes through several stops. Each one hides a little more, until no one can trace it back to you.</p>
+  </div>
+  <p class="hint">↓ Tap any step to learn more</p>
+  <div class="pipeline">
+    <div class="pipe-node" style="--nc:var(--teal)" onclick="bchatClick(this,0)"><div class="pn-icon">👤</div><div class="pn-label">Step 1</div><div class="pn-name">You Send</div><div class="pn-hint">Message gets locked</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--blue)" onclick="bchatClick(this,1)"><div class="pn-icon">🧅</div><div class="pn-label">Step 2</div><div class="pn-name">Entry Node</div><div class="pn-hint">Your name is hidden</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--violet)" onclick="bchatClick(this,2)"><div class="pn-icon">🔀</div><div class="pn-label">Step 3</div><div class="pn-name">Middle Nodes</div><div class="pn-hint">The path is hidden</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--amber)" onclick="bchatClick(this,3)"><div class="pn-icon">📦</div><div class="pn-label">Step 4</div><div class="pn-name">Swarm</div><div class="pn-hint">Stored if offline</div></div>
+    <div class="pipe-arrow"><svg viewBox="0 0 20 12"><path d="M0 6L14 6M8 1L14 6L8 11" stroke="#2a4055" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+    <div class="pipe-node" style="--nc:var(--green)" onclick="bchatClick(this,4)"><div class="pn-icon">🔓</div><div class="pn-label">Step 5</div><div class="pn-name">Receiver</div><div class="pn-hint">Only they can open it</div></div>
+  </div>
+  <div class="detail-panel" id="bchat-panel">
+    <div class="dp-step" id="bc-step"></div><div class="dp-title" id="bc-title"></div>
+    <div class="dp-body" id="bc-body"></div><div class="dp-note" id="bc-note" style="display:none"></div>
+  </div>
+  <div class="tags">
+    <span class="tag t-teal">End-to-end encrypted</span><span class="tag t-blue">Sender always hidden</span>
+    <span class="tag t-violet">3 hops</span><span class="tag t-amber">Works offline (14 days)</span>
+    <span class="tag t-green">Only receiver can read it</span>
+  </div>
+</div>
+
+<script>
+const bcData = [
+  { step:'Step 1 · You Send', title:'Your message is locked before it goes anywhere', body:'The moment you tap send, BChat <b>locks your message</b> using the receiver\'s key. Only they can unlock it, no one else. It\'s then wrapped in multiple layers before travelling.', note:'💡 Like putting a letter in a locked box, then wrapping that box in 3 more boxes before mailing it.' },
+  { step:'Step 2 · Entry Node', title:'First stop hides who sent it', body:'Your wrapped message arrives at the first server. It peels one outer layer and passes it on, but it <b>has no idea who you are</b>. Your identity is hidden from the very first hop.', note:'💡 Like handing a sealed envelope to a postman. He knows where to deliver next, but not who wrote it.' },
+  { step:'Step 3 · Middle Nodes', title:'More hops, less trace', body:'The message bounces through extra servers. Each removes a layer and passes it forward. None of them see the full journey, <b>only the step before and after them</b>.', note:'💡 Like a relay race where each runner only knows who handed them the baton and who gets it next.' },
+  { step:'Step 4 · Swarm', title:'Held safely if the receiver is offline', body:'If the receiver is <b>online</b>, the message is delivered immediately. If <b>offline</b>, a group of servers (called a Swarm) holds the locked message for up to <b>14 days</b>, still encrypted, still safe.', note:'💡 Like a secure mailbox that holds your package until the recipient is ready to collect it.' },
+  { step:'Step 5 · Receiver', title:'Only the receiver can unlock and read it', body:'When the receiver opens BChat, it fetches the message. Their <b>private key</b>, stored only on their phone, unlocks it. The message is readable only on their device. No server ever reads it.', note:'💡 Like a unique key that exists only in one place: the receiver\'s pocket.' }
+];
+function bchatClick(el, idx) {
+  const nodes = document.querySelectorAll('.pipe-node');
+  const panel = document.getElementById('bchat-panel');
+  const wasOn = el.classList.contains('on');
+  nodes.forEach(n => n.classList.remove('on'));
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  const d = bcData[idx];
+  document.getElementById('bc-step').textContent = d.step;
+  document.getElementById('bc-title').textContent = d.title;
+  document.getElementById('bc-body').innerHTML = d.body;
+  const n = document.getElementById('bc-note'); n.textContent = d.note; n.style.display = 'block';
+  panel.classList.add('show');
+}
+</script>
+</body>
+</html>

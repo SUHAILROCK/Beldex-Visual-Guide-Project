@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex - Belnet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+.belnet-wrap  { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+.belnet-list  { flex: 0 0 300px; display: flex; flex-direction: column; gap: 0; }
+.bn-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--amber); border-radius: 0 10px 10px 0;
+  padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s;
+}
+.bn-item:hover, .bn-item.on { background: var(--surface2); box-shadow: -3px 0 12px rgba(245,166,35,0.12); }
+.bn-item .bi-num   { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; color: var(--amber); min-width: 20px; }
+.bn-item .bi-icon  { font-size: 1.2rem; }
+.bn-item .bi-title { font-size: 0.85rem; font-weight: 600; }
+.bn-item .bi-sub   { font-size: 0.72rem; color: var(--muted); }
+.bn-connector { width: 3px; height: 14px; background: linear-gradient(to bottom, rgba(245,166,35,0.35), transparent); margin-left: 1.7rem; }
+.belnet-panel {
+  flex: 1; min-width: 260px; min-height: 260px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.bp-placeholder { text-align: center; color: var(--dim); font-size: 0.85rem; line-height: 1.6; }
+.bp-content { display: none; width: 100%; animation: fadeUp 0.2s ease; }
+.bp-content.show { display: block; }
+.ip-box { margin-top: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+.ip-box .ib-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.2rem; }
+.ip-visible { color: var(--text); }
+.ip-hidden  { color: var(--amber); }
+.ip-safe    { color: var(--green); }
+@media (max-width: 680px) { .belnet-wrap { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<a href="../beldex-products.html" class="back-link"><svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> All Products</a>
+
+<div class="diagram-section">
+  <div class="sec-header">
+    <div class="sec-badge badge-amber">🌐 Belnet</div>
+    <h2>How Belnet Hides Your IP</h2>
+    <p>Your IP address is like your home address online. Belnet makes sure websites never see the real one.</p>
+  </div>
+  <div class="belnet-wrap">
+    <div class="belnet-list">
+      <div class="bn-item" onclick="belnetClick(this,0)"><div class="bi-num">01</div><div class="bi-icon">💻</div><div><div class="bi-title">You</div><div class="bi-sub">Request wrapped in layers</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,1)"><div class="bi-num">02</div><div class="bi-icon">🔵</div><div><div class="bi-title">Edge Node</div><div class="bi-sub">Sees your IP, not the destination</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,2)"><div class="bi-num">03</div><div class="bi-icon">🔀</div><div><div class="bi-title">Transit Nodes</div><div class="bi-sub">Nobody knows the full path</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,3)"><div class="bi-num">04</div><div class="bi-icon">🚪</div><div><div class="bi-title">Exit Node</div><div class="bi-sub">Visits the site on your behalf</div></div></div><div class="bn-connector"></div>
+      <div class="bn-item" onclick="belnetClick(this,4)"><div class="bi-num">05</div><div class="bi-icon">🌐</div><div><div class="bi-title">Website</div><div class="bi-sub">Sees exit IP, never yours</div></div></div>
+    </div>
+    <div class="belnet-panel" id="belnet-panel">
+      <div class="bp-placeholder">← Click a step<br>to see what happens</div>
+      <div class="bp-content" id="belnet-content"></div>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag t-amber">IP always masked</span><span class="tag t-blue">No logs kept</span>
+    <span class="tag t-teal">Onion routing</span><span class="tag t-green">Masternode-powered</span>
+    <span class="tag t-violet">No one sees the full picture</span>
+  </div>
+</div>
+
+<script>
+const bnData = [
+  { step:'Step 1 · You', title:'Your request is wrapped in layers', body:'You want to open a website. Before anything leaves your device, Belnet wraps your request in <b>multiple layers of encryption</b>, like nesting envelopes inside each other.', ip:{ label:'Your real IP address', val:'145.299.85.58', cls:'ip-visible' } },
+  { step:'Step 2 · Edge Node', title:'First server sees your IP but not the site', body:'This is the only server that ever sees your real IP (because you connected to it directly). It peels one layer and forwards the message, but has <b>no idea which website you want</b>.', ip:{ label:'Your IP seen here?', val:'Yes, but it goes no further ✓', cls:'ip-visible' } },
+  { step:'Step 3 · Transit Nodes', title:'The link between you and the site is broken', body:'These middle servers peel more layers. They don\'t know your IP and they don\'t know the final site. <b>No single server can connect you to your destination.</b>', ip:{ label:'Your IP visible?', val:'No, completely gone ✓', cls:'ip-safe' } },
+  { step:'Step 4 · Exit Node', title:'This server visits the site instead of you', body:'The last server removes the final layer. It knows the site and opens it <b>on your behalf</b>. The website only ever sees this server\'s IP address, not yours.', ip:{ label:'Website sees', val:'185.180.223.12 (not your real IP)', cls:'ip-hidden' } },
+  { step:'Step 5 · Website', title:'The website has no idea who you really are', body:'The website responds and sends content back through the same chain to you. From its perspective, the visitor was <b>185.180.223.12</b>. Your real IP was never exposed.', ip:{ label:'Your real IP exposed?', val:'Never ✓', cls:'ip-safe' } }
+];
+function belnetClick(el, idx) {
+  document.querySelectorAll('.bn-item').forEach(n => n.classList.remove('on'));
+  el.classList.add('on');
+  const d = bnData[idx];
+  document.querySelector('.bp-placeholder').style.display = 'none';
+  const c = document.getElementById('belnet-content');
+  c.innerHTML = `<div class="dp-step">${d.step}</div><div class="dp-title">${d.title}</div><div class="dp-body">${d.body}</div>${d.ip?`<div class="ip-box"><div class="ib-label">${d.ip.label}</div><div class="${d.ip.cls}">${d.ip.val}</div></div>`:''}`;
+  c.classList.add('show');
+}
+</script>
+</body>
+</html>

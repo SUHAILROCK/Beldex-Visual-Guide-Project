@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex - Federated Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+/* FEDERATED LEARNING */
+@keyframes fedOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes fedGlow { 0%,100% { box-shadow: 0 0 20px rgba(167,139,250,0.15), inset 0 0 14px rgba(167,139,250,0.06); } 50% { box-shadow: 0 0 40px rgba(167,139,250,0.3), inset 0 0 22px rgba(167,139,250,0.12); } }
+
+.fed-hero {
+  display: grid; grid-template-columns: 1fr 340px; gap: 2.5rem;
+  align-items: start; margin-bottom: 2.5rem;
+}
+
+/* Cycle diagram */
+.fed-cycle {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 2.5rem 2rem; position: relative; overflow: hidden;
+}
+.fed-cycle::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(167,139,250,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.fc-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--violet);
+  text-align: center; margin-bottom: 2rem;
+}
+.fc-ring {
+  position: relative; width: 360px; height: 360px; margin: 0 auto;
+}
+.fc-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 110px; height: 110px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(167,139,250,0.18) 0%, rgba(167,139,250,0.04) 70%, transparent 100%);
+  border: 2px solid rgba(167,139,250,0.5);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 2; animation: fedGlow 3s ease-in-out infinite;
+}
+.fc-center-icon { font-size: 2rem; margin-bottom: 0.25rem; }
+.fc-center-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; color: var(--violet); text-transform: uppercase; letter-spacing: 0.1em; }
+.fc-orbit {
+  position: absolute; border-radius: 50%;
+  border: 1.5px solid transparent; border-top-color: rgba(167,139,250,0.4);
+  border-right-color: rgba(167,139,250,0.1);
+  animation: fedOrbit 10s linear infinite;
+  width: 126px; height: 126px; z-index: 2;
+  top: calc(50% - 63px); left: calc(50% - 63px);
+}
+.fc-node {
+  position: absolute; width: 90px; height: 90px;
+  background: var(--surface2); border: 2px solid var(--border);
+  border-radius: 14px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.3rem;
+  cursor: pointer; transition: all 0.25s; z-index: 3;
+}
+.fc-node:hover, .fc-node.on {
+  border-color: var(--violet); background: rgba(167,139,250,0.12);
+  box-shadow: 0 6px 28px rgba(167,139,250,0.25);
+}
+.fc-node .fn-icon { font-size: 1.7rem; }
+.fc-node .fn-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; text-align: center; line-height: 1.2; }
+.fc-node.on .fn-label { color: var(--violet); }
+/* Positions: top, top-right, bottom-right, bottom-left, top-left */
+.fc-node.fc-pos-top    { top: -20px; left: 50%; transform: translateX(-50%); }
+.fc-node.fc-pos-right  { top: 34%; right: -22px; }
+.fc-node.fc-pos-br     { bottom: -14px; right: 28px; }
+.fc-node.fc-pos-bl     { bottom: -14px; left: 28px; }
+.fc-node.fc-pos-left   { top: 34%; left: -22px; }
+.fc-node.fc-pos-top:hover, .fc-node.fc-pos-top.on { transform: translateX(-50%) scale(1.06); }
+.fc-node:not(.fc-pos-top):hover, .fc-node:not(.fc-pos-top).on { transform: scale(1.06); }
+
+/* Right side: privacy guarantee card */
+.fed-privacy {
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+.fp-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem; position: relative; overflow: hidden;
+}
+.fp-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--violet), var(--teal));
+  background-size: 200% 100%; animation: gradientFlow 3s ease infinite;
+}
+.fp-card-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--violet); margin-bottom: 1rem;
+}
+.fp-row {
+  display: flex; align-items: center; gap: 0.85rem; padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.fp-row:last-child { border-bottom: none; }
+.fp-icon { font-size: 1.3rem; min-width: 28px; text-align: center; }
+.fp-label { font-size: 0.95rem; color: var(--text); flex: 1; }
+.fp-status { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; }
+.fp-safe   { color: var(--green); }
+.fp-local  { color: var(--violet); }
+.fp-never  { color: var(--teal); }
+
+/* Comparison card */
+.fed-compare {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem; overflow: hidden;
+}
+.fcomp-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1rem;
+}
+.fcomp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.fcomp-box { border-radius: 10px; padding: 1rem; }
+.fcomp-traditional { background: rgba(251,113,133,0.06); border: 1px solid rgba(251,113,133,0.2); }
+.fcomp-beldex { background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.2); }
+.fcomp-box-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+.fcomp-traditional .fcomp-box-label { color: var(--rose); }
+.fcomp-beldex .fcomp-box-label { color: var(--violet); }
+.fcomp-box li { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.35rem; list-style: none; padding-left: 1.2em; text-indent: -1.2em; line-height: 1.5; }
+
+/* Detail panel for federated learning */
+.fed-detail {
+  display: none; margin-top: 2rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-top: 3px solid var(--violet);
+  border-radius: 16px; padding: 2rem 2.25rem;
+  animation: fadeUp 0.2s ease;
+}
+.fed-detail.show { display: block; }
+.fd-step { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet); margin-bottom: 0.5rem; }
+.fd-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+.fd-body { font-size: 1rem; color: #b8ccd8; line-height: 1.8; }
+.fd-body b { color: var(--text); }
+.fd-note { margin-top: 1.25rem; background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); border-radius: 10px; padding: 0.9rem 1.2rem; font-size: 0.95rem; color: rgba(167,139,250,0.9); line-height: 1.6; }
+.fd-meta { display: flex; gap: 0.85rem; margin-top: 1.25rem; flex-wrap: wrap; }
+.fd-pill { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--violet); border-radius: 0 8px 8px 0; padding: 0.55rem 0.85rem; }
+.fd-pill .fdp-lbl { font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.15rem; }
+.fd-pill .fdp-val { color: var(--text); font-size: 0.92rem; font-weight: 600; }
+
+/* Steps timeline below */
+.fed-timeline { margin-top: 2.5rem; }
+.fed-timeline .sub-heading { margin-bottom: 1.25rem; }
+.ft-steps { display: flex; gap: 0; align-items: stretch; overflow-x: auto; padding-bottom: 0.75rem; }
+.ft-step {
+  flex: 1; min-width: 155px; position: relative;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1rem;
+  text-align: center; cursor: pointer; transition: all 0.22s;
+}
+.ft-step::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--violet); opacity: 0; transition: opacity 0.22s;
+  border-radius: 14px 14px 0 0;
+}
+.ft-step:hover, .ft-step.on {
+  border-color: var(--violet); background: var(--surface2);
+  transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+.ft-step:hover::after, .ft-step.on::after { opacity: 1; }
+.ft-num { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700; color: var(--violet); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.ft-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+.ft-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+.ft-hint { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+.ft-arrow { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 34px; color: var(--dim); }
+.ft-arrow svg { width: 22px; height: 14px; }
+
+@media (max-width: 768px) {
+  .fed-hero { grid-template-columns: 1fr; }
+  .fc-ring { width: 280px; height: 280px; }
+  .fc-node { width: 72px; height: 72px; }
+  .fc-node .fn-icon { font-size: 1.3rem; }
+  .fc-node .fn-label { font-size: 0.62rem; }
+  .ft-steps { flex-direction: column; }
+  .ft-arrow { transform: rotate(90deg); width: auto; height: 34px; }
+  .fcomp-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<a href="../beldex-products.html" class="back-link"><svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> All Products</a>
+
+<!-- ══ FEDERATED LEARNING ══ -->
+<div class="diagram-section">
+  <div class="sec-header">
+    <div class="sec-badge badge-violet">🤖 Federated Learning</div>
+    <h2>AI That Gets Smarter <span style="color:var(--violet)">Without</span> Reading Your Messages</h2>
+    <p>The AI model improves across thousands of devices, but your actual messages never leave your phone.</p>
+  </div>
+
+  <!-- Hero: Cycle diagram + Privacy card -->
+  <div class="fed-hero">
+    <div class="fed-cycle">
+      <div class="fc-title">The Learning Cycle</div>
+      <div class="fc-ring">
+        <!-- 5 nodes around the ring -->
+        <div class="fc-node fc-pos-top" onclick="fedNodeClick(this,0)"><div class="fn-icon">📲</div><div class="fn-label">Install</div></div>
+        <div class="fc-node fc-pos-right" onclick="fedNodeClick(this,1)"><div class="fn-icon">🛡️</div><div class="fn-label">Local Scan</div></div>
+        <div class="fc-node fc-pos-br" onclick="fedNodeClick(this,2)"><div class="fn-icon">📊</div><div class="fn-label">Gradients</div></div>
+        <div class="fc-node fc-pos-bl" onclick="fedNodeClick(this,3)"><div class="fn-icon">🔄</div><div class="fn-label">Aggregate</div></div>
+        <div class="fc-node fc-pos-left" onclick="fedNodeClick(this,4)"><div class="fn-icon">⬇️</div><div class="fn-label">Update</div></div>
+        <!-- Dashed circle connector -->
+        <svg class="fc-circle-svg" viewBox="0 0 280 280" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;">
+          <circle cx="140" cy="140" r="105" fill="none" stroke="rgba(167,139,250,0.15)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <!-- Arrow indicators on the circle -->
+          <circle cx="210" cy="60" r="3" fill="rgba(167,139,250,0.4)"/>
+          <circle cx="235" cy="170" r="3" fill="rgba(167,139,250,0.4)"/>
+          <circle cx="140" cy="248" r="3" fill="rgba(167,139,250,0.4)"/>
+          <circle cx="48" cy="170" r="3" fill="rgba(167,139,250,0.4)"/>
+          <circle cx="70" cy="60" r="3" fill="rgba(167,139,250,0.4)"/>
+        </svg>
+        <!-- Center hub -->
+        <div class="fc-center">
+          <div class="fc-center-icon">🧠</div>
+          <div class="fc-center-label">Global AI</div>
+        </div>
+        <div class="fc-orbit"></div>
+      </div>
+    </div>
+
+    <div class="fed-privacy">
+      <!-- Privacy guarantee card -->
+      <div class="fp-card">
+        <div class="fp-card-title">Privacy Guarantee</div>
+        <div class="fp-row"><div class="fp-icon">💬</div><div class="fp-label">Your messages</div><div class="fp-status fp-safe">Stay on device</div></div>
+        <div class="fp-row"><div class="fp-icon">📊</div><div class="fp-label">What's shared</div><div class="fp-status fp-local">Math gradients only</div></div>
+        <div class="fp-row"><div class="fp-icon">🔑</div><div class="fp-label">Personal data</div><div class="fp-status fp-never">Never collected</div></div>
+        <div class="fp-row"><div class="fp-icon">🌐</div><div class="fp-label">Server access</div><div class="fp-status fp-never">Zero knowledge</div></div>
+        <div class="fp-row"><div class="fp-icon">📱</div><div class="fp-label">Works offline</div><div class="fp-status fp-safe">Yes</div></div>
+      </div>
+
+      <!-- Comparison card -->
+      <div class="fed-compare">
+        <div class="fcomp-title">Traditional AI vs Beldex FL</div>
+        <div class="fcomp-grid">
+          <div class="fcomp-box fcomp-traditional">
+            <div class="fcomp-box-label">✗ Traditional AI</div>
+            <ul>
+              <li>❌ Data sent to cloud</li>
+              <li>❌ Server reads messages</li>
+              <li>❌ Central data storage</li>
+              <li>❌ Privacy risks</li>
+            </ul>
+          </div>
+          <div class="fcomp-box fcomp-beldex">
+            <div class="fcomp-box-label">✓ Beldex FL</div>
+            <ul>
+              <li>✅ Data stays on phone</li>
+              <li>✅ Local AI only</li>
+              <li>✅ No data collection</li>
+              <li>✅ Fully private</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail panel (shown on node click) -->
+  <div class="fed-detail" id="fed-detail">
+    <div class="fd-step" id="fd-step"></div>
+    <div class="fd-title" id="fd-title"></div>
+    <div class="fd-body" id="fd-body"></div>
+    <div class="fd-note" id="fd-note"></div>
+    <div class="fd-meta" id="fd-meta"></div>
+  </div>
+
+  <!-- Step-by-step pipeline -->
+  <div class="fed-timeline">
+    <div class="section-divider"></div>
+    <div class="sub-heading">How It Works · Step by Step</div>
+    <div class="ft-steps">
+      <div class="ft-step" onclick="fedStepClick(this,0)">
+        <div class="ft-num">Step 01</div><div class="ft-icon">📲</div>
+        <div class="ft-name">AI Pre-installed</div><div class="ft-hint">Small model ships with BChat</div>
+      </div>
+      <div class="ft-arrow"><svg viewBox="0 0 20 12"><path d="M2 6h14M12 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="ft-step" onclick="fedStepClick(this,1)">
+        <div class="ft-num">Step 02</div><div class="ft-icon">🛡️</div>
+        <div class="ft-name">On-Device Scan</div><div class="ft-hint">Messages checked locally</div>
+      </div>
+      <div class="ft-arrow"><svg viewBox="0 0 20 12"><path d="M2 6h14M12 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="ft-step" onclick="fedStepClick(this,2)">
+        <div class="ft-num">Step 03</div><div class="ft-icon">📊</div>
+        <div class="ft-name">Share Gradients</div><div class="ft-hint">Only math signals leave</div>
+      </div>
+      <div class="ft-arrow"><svg viewBox="0 0 20 12"><path d="M2 6h14M12 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="ft-step" onclick="fedStepClick(this,3)">
+        <div class="ft-num">Step 04</div><div class="ft-icon">🔄</div>
+        <div class="ft-name">Global Merge</div><div class="ft-hint">Signals from all phones combined</div>
+      </div>
+      <div class="ft-arrow"><svg viewBox="0 0 20 12"><path d="M2 6h14M12 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="ft-step" onclick="fedStepClick(this,4)">
+        <div class="ft-num">Step 05</div><div class="ft-icon">⬇️</div>
+        <div class="ft-name">Smarter AI Back</div><div class="ft-hint">Updated model sent to all</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tags">
+    <span class="tag t-violet">On-device AI</span><span class="tag t-green">Messages never leave phone</span>
+    <span class="tag t-blue">Only math signals shared</span><span class="tag t-teal">Gets smarter over time</span>
+    <span class="tag t-amber">No central data collection</span><span class="tag t-rose">Works offline</span>
+  </div>
+</div>
+
+<script>
+/* Federated Learning */
+const fedData = [
+  { step:'Step 1 · Install', title:'A small AI model ships with BChat', body:'When you install BChat, a lightweight machine learning model is bundled in. It can detect spam, scams, and abusive content <b>entirely on your device</b>, even without internet. The model is pre-trained on public datasets before it ever reaches you.', note:'💡 Think of it like installing a guard dog that already knows basic commands. It works immediately, no cloud connection needed.', meta:[{lbl:'Model size',val:'~12 MB'},{lbl:'Works offline',val:'Yes'},{lbl:'Privacy',val:'100% local'}] },
+  { step:'Step 2 · Local Scan', title:'Messages are scanned right on your phone', body:'Every incoming message passes through the on-device AI. It checks for harmful patterns like phishing links, spam, and abusive language. If something is flagged, BChat can <b>warn you, blur the message, or block it</b>. The server never sees the message content.', note:'💡 Like having a personal email filter that runs entirely on your laptop. Nothing leaves your machine.', meta:[{lbl:'Latency',val:'< 50ms'},{lbl:'Server access',val:'None'},{lbl:'Detection',val:'Real-time'}] },
+  { step:'Step 3 · Gradients Only', title:'Only math signals are shared, never messages', body:'When the AI makes a mistake (like missing spam or wrongly flagging a safe message), your phone learns from the correction. It computes <b>gradient updates</b>, tiny mathematical adjustments. Only these numbers are sent to help improve the global model. <b>Your actual messages never leave your device.</b>', note:'💡 Imagine telling a teacher "I got question 7 wrong" without showing them your exam paper. The teacher can improve the curriculum without reading anyone\'s answers.', meta:[{lbl:'Data shared',val:'Gradients only'},{lbl:'Messages shared',val:'Never'},{lbl:'Encryption',val:'End-to-end'}] },
+  { step:'Step 4 · Global Aggregation', title:'Updates from thousands of phones are merged', body:'A coordination server collects encrypted gradient updates from thousands of devices. Using <b>Federated Averaging</b>, these are combined into a single improved model. The server never sees individual messages, user identities, or raw data. Only aggregated mathematical values.', note:'💡 Like a teacher collecting anonymous feedback forms, averaging the results, and improving the course. Without knowing who wrote what.', meta:[{lbl:'Method',val:'FedAvg'},{lbl:'Devices',val:'Thousands'},{lbl:'Raw data',val:'Never stored'}] },
+  { step:'Step 5 · Model Update', title:'The improved AI is sent back to every phone', body:'The newly trained global model is distributed to all BChat users. Your phone replaces its old model with the smarter one. <b>Only the AI model weights move</b>, never your messages, contacts, or any personal data. The cycle then repeats, making the AI progressively better.', note:'💡 Like a software update that makes your spam filter smarter. The update was built from lessons across millions of users, without anyone\'s data ever being exposed.', meta:[{lbl:'Update size',val:'~5 MB'},{lbl:'Frequency',val:'Weekly'},{lbl:'Automatic',val:'Yes'}] }
+];
+function fedNodeClick(el, idx) {
+  const nodes = document.querySelectorAll('.fc-node');
+  const panel = document.getElementById('fed-detail');
+  const wasOn = el.classList.contains('on');
+  nodes.forEach(n => n.classList.remove('on'));
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  showFedDetail(idx);
+}
+function fedStepClick(el, idx) {
+  const steps = document.querySelectorAll('.ft-step');
+  const nodes = document.querySelectorAll('.fc-node');
+  const panel = document.getElementById('fed-detail');
+  const wasOn = el.classList.contains('on');
+  steps.forEach(s => s.classList.remove('on'));
+  nodes.forEach(n => n.classList.remove('on'));
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  if (nodes[idx]) nodes[idx].classList.add('on');
+  showFedDetail(idx);
+}
+function showFedDetail(idx) {
+  const d = fedData[idx];
+  const panel = document.getElementById('fed-detail');
+  document.getElementById('fd-step').textContent = d.step;
+  document.getElementById('fd-title').textContent = d.title;
+  document.getElementById('fd-body').innerHTML = d.body;
+  document.getElementById('fd-note').textContent = d.note;
+  document.getElementById('fd-meta').innerHTML = d.meta.map(m =>
+    '<div class="fd-pill"><div class="fdp-lbl">' + m.lbl + '</div><div class="fdp-val">' + m.val + '</div></div>'
+  ).join('');
+  panel.classList.add('show');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>

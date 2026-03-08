@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex - Browser</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Oxanium:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared-styles.css">
+<style>
+/* BROWSER TAB */
+.br-chrome { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; box-shadow: 0 0 50px rgba(255,159,67,0.05), 0 16px 50px rgba(0,0,0,0.5); }
+.br-chrome-bar { display: flex; align-items: center; gap: 0.75rem; background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.65rem 1rem; }
+.br-dots { display: flex; gap: 5px; }
+.br-dot  { width: 10px; height: 10px; border-radius: 50%; }
+.brd-r { background: #ff5f57; } .brd-y { background: #febc2e; } .brd-g { background: #28c840; }
+.br-url-bar { flex: 1; display: flex; align-items: center; gap: 0.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 0.3rem 0.85rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; }
+.url-txt { color: var(--text); }
+.br-status { margin-left: auto; font-size: 0.62rem; color: var(--green); font-family: 'JetBrains Mono', monospace; }
+.br-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; padding: 1.25rem; }
+.bf-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1rem; cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden; }
+.bf-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--orange); opacity: 0; transition: opacity 0.22s; }
+.bf-card:hover, .bf-card.on { border-color: var(--orange); background: var(--bg); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 12px rgba(255,159,67,0.08); }
+.bf-card:hover::after, .bf-card.on::after { opacity: 1; }
+.bf-icon  { font-size: 1.4rem; margin-bottom: 0.45rem; }
+.bf-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--orange); margin-bottom: 0.3rem; }
+.bf-name  { font-size: 0.84rem; font-weight: 700; margin-bottom: 0.2rem; }
+.bf-desc  { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.bf-tag   { display: inline-block; margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; padding: 0.14rem 0.5rem; border-radius: 4px; background: rgba(255,159,67,0.1); color: var(--orange); border: 1px solid rgba(255,159,67,0.2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.br-detail { display: none; margin-bottom: 1.5rem; background: var(--surface2); border: 1px solid var(--border); border-top: 2px solid var(--orange); border-radius: 12px; padding: 1.4rem 1.5rem; animation: fadeUp 0.2s ease; }
+.br-detail.show { display: block; }
+.brd-row  { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.brd-left { flex: 1; min-width: 220px; }
+.brd-lbl  { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); margin-bottom: 0.35rem; }
+.brd-ttl  { font-size: 1rem; font-weight: 700; margin-bottom: 0.6rem; }
+.brd-body { font-size: 0.86rem; color: #b8ccd8; line-height: 1.7; }
+.brd-body b { color: var(--text); }
+.brd-right { flex: 0 0 200px; display: flex; flex-direction: column; gap: 0.5rem; }
+.hud-stat { background: var(--bg); border: 1px solid var(--border); border-left: 2px solid var(--orange); border-radius: 0 6px 6px 0; padding: 0.55rem 0.85rem; }
+.hs-lbl { font-size: 0.58rem; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.15rem; }
+.hs-val { font-size: 0.82rem; font-weight: 700; color: var(--amber); }
+
+.how-flow { display: flex; gap: 0; overflow-x: auto; padding-bottom: 0.5rem; margin: 0 0 1.5rem; }
+.hf-step { flex: 1; min-width: 100px; text-align: center; position: relative; }
+.hf-step:not(:last-child)::after { content: '\2192'; position: absolute; right: -9px; top: 17px; color: var(--dim); font-size: 0.9rem; z-index: 2; }
+.hf-num { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; font-family: 'Oxanium', monospace; font-size: 0.8rem; font-weight: 800; color: var(--orange); margin: 0 auto 0.5rem; }
+.hf-label { font-size: 0.72rem; font-weight: 600; margin-bottom: 0.15rem; }
+.hf-sub   { font-size: 0.63rem; color: var(--muted); line-height: 1.4; }
+
+.br-statusbar { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.9rem 1.1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+.bsb-item { display: flex; align-items: center; gap: 0.45rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+.bsb-dot { width: 6px; height: 6px; border-radius: 50%; }
+.bsb-g { background: var(--green); } .bsb-a { background: var(--amber); } .bsb-b { background: var(--blue); }
+
+@media (max-width: 680px) {
+  .br-features { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 440px) {
+  .br-features { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<a href="../beldex-products.html" class="back-link"><svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> All Products</a>
+
+<!-- ══ BELDEX BROWSER ══ -->
+<div class="diagram-section">
+  <div class="sec-header">
+    <div class="sec-badge badge-orange">🛡️ Beldex Browser</div>
+    <h2>Browse the Web. Leave No Trace.</h2>
+    <p>A privacy-first browser built on the Beldex network. Every feature works together to keep you invisible online.</p>
+  </div>
+
+  <div class="sub-heading">Click Any Feature to Learn More</div>
+
+  <div class="br-chrome">
+    <div class="br-chrome-bar">
+      <div class="br-dots"><div class="br-dot brd-r"></div><div class="br-dot brd-y"></div><div class="br-dot brd-g"></div></div>
+      <div class="br-url-bar"><span>🔒</span><span class="url-txt">https://anywebsite.com</span><span class="br-status">PROTECTED</span></div>
+    </div>
+    <div class="br-features">
+      <div class="bf-card" onclick="brClick(this,0)"><div class="bf-icon">🛡️</div><div class="bf-label">Ad Blocking</div><div class="bf-name">No More Ads</div><div class="bf-desc">Intrusive ads and tracking scripts blocked by default.</div><span class="bf-tag">Default ON</span></div>
+      <div class="bf-card" onclick="brClick(this,1)"><div class="bf-icon">🎭</div><div class="bf-label">Anti-Fingerprinting</div><div class="bf-name">No Device Profile</div><div class="bf-desc">Stops websites from building a unique signature of your device.</div><span class="bf-tag">Built-in</span></div>
+      <div class="bf-card" onclick="brClick(this,2)"><div class="bf-icon">🌐</div><div class="bf-label">BelNet dVPN</div><div class="bf-name">IP Always Hidden</div><div class="bf-desc">Decentralised VPN built right in, routes traffic via masternodes.</div><span class="bf-tag">Integrated</span></div>
+      <div class="bf-card" onclick="brClick(this,3)"><div class="bf-icon">🍪</div><div class="bf-label">Cookie / JS Blocking</div><div class="bf-name">Nothing Remembers You</div><div class="bf-desc">Cookies and JavaScript trackers blocked automatically.</div><span class="bf-tag">Default ON</span></div>
+      <div class="bf-card" onclick="brClick(this,4)"><div class="bf-icon">🗑️</div><div class="bf-label">History Destruction</div><div class="bf-name">Auto-Wipe on Close</div><div class="bf-desc">Browsing history erased completely when the browser closes.</div><span class="bf-tag">Auto Clear</span></div>
+      <div class="bf-card" onclick="brClick(this,5)"><div class="bf-icon">🤖</div><div class="bf-label">AI Page Summaries</div><div class="bf-name">Key Points, Instantly</div><div class="bf-desc">BeldexAI summarises articles privately. No data leaves your device.</div><span class="bf-tag">AI Powered</span></div>
+    </div>
+  </div>
+
+  <div class="br-detail" id="br-detail">
+    <div class="brd-row">
+      <div class="brd-left"><div class="brd-lbl" id="brd-lbl"></div><div class="brd-ttl" id="brd-ttl"></div><div class="brd-body" id="brd-body"></div></div>
+      <div class="brd-right" id="brd-stats"></div>
+    </div>
+  </div>
+
+  <div class="sub-heading">How It Protects You · Step by Step</div>
+  <div class="how-flow">
+    <div class="hf-step"><div class="hf-num">1</div><div class="hf-label">You open a site</div><div class="hf-sub">Request created on device</div></div>
+    <div class="hf-step"><div class="hf-num">2</div><div class="hf-label">Cookies blocked</div><div class="hf-sub">No trackers can load</div></div>
+    <div class="hf-step"><div class="hf-num">3</div><div class="hf-label">Traffic encrypted</div><div class="hf-sub">Wrapped via BelNet nodes</div></div>
+    <div class="hf-step"><div class="hf-num">4</div><div class="hf-label">Exit node connects</div><div class="hf-sub">Site sees exit IP only</div></div>
+    <div class="hf-step"><div class="hf-num">5</div><div class="hf-label">Page loads</div><div class="hf-sub">Ads stripped, fingerprint masked</div></div>
+    <div class="hf-step"><div class="hf-num">6</div><div class="hf-label">Session ends</div><div class="hf-sub">History wiped, no trace</div></div>
+  </div>
+
+  <div class="br-statusbar">
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> Open Source</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> No Data Collected</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> No History Stored</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-a"></div> BelNet dVPN Built-in</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-b"></div> Android · iOS · Desktop</div>
+    <div class="bsb-item"><div class="bsb-dot bsb-g"></div> Country Switching</div>
+  </div>
+
+  <div class="tags">
+    <span class="tag t-orange">Privacy by default</span><span class="tag t-green">Open source</span>
+    <span class="tag t-amber">BelNet dVPN integrated</span><span class="tag t-blue">Anti-fingerprinting</span>
+    <span class="tag t-teal">AI summaries · private</span><span class="tag t-rose">Zero history retained</span>
+  </div>
+</div>
+
+<script>
+/* Browser features */
+const brData = [
+  { lbl:'Feature · Ad Blocking', ttl:'Ads Blocked. Trackers Gone.',
+    body:'Most websites earn money by tracking every site you visit and showing targeted ads. Beldex Browser <b>blocks these ads and the tracking scripts behind them by default</b>. No extension needed.',
+    stats:[{l:'Status',v:'On by default'},{l:'What it blocks',v:'Ads, trackers, ad networks'},{l:'Effect',v:'Pages load faster, no targeted ads'}] },
+  { lbl:'Feature · Anti-Fingerprinting', ttl:'Your Device Has No Unique Signature.',
+    body:'Every browser leaks tiny details like screen size, fonts, and time zone that websites combine into a "fingerprint" of you. Even without cookies, this can track you. Beldex Browser <b>randomises and blocks these signals</b>.',
+    stats:[{l:'Protects against',v:'Canvas, WebGL, font fingerprinting'},{l:'Method',v:'Signal randomisation + blocking'},{l:'Works even if',v:'Cookies cleared or VPN off'}] },
+  { lbl:'Feature · BelNet dVPN', ttl:'Your Real IP Address Is Never Seen.',
+    body:'Beldex Browser has BelNet\'s decentralised VPN <b>built directly in</b>. Traffic passes through multiple masternodes. The website only ever sees the exit node\'s IP, not yours. Switch countries anytime.',
+    stats:[{l:'Routing',v:'Via Beldex masternodes'},{l:'IP shown to website',v:'Exit node IP only'},{l:'Country switching',v:'Yes, change exit node location'}] },
+  { lbl:'Feature · Cookie & JS Blocking', ttl:'Websites Can\'t Remember You.',
+    body:'Cookies track your activity across sessions. JavaScript trackers go further, collecting clicks and device details. Beldex Browser <b>blocks both by default</b>. No site can build a profile on you.',
+    stats:[{l:'Cookies',v:'Blocked by default'},{l:'JS trackers',v:'Blocked by default'},{l:'Data stored',v:'None, no history, no cookies'}] },
+  { lbl:'Feature · History Destruction', ttl:'Close the Browser. History Disappears.',
+    body:'Traditional browsers keep every site you\'ve ever visited. Beldex Browser never stores browsing history, and your <b>download history is wiped when you close the browser</b>. There is nothing to find or seize.',
+    stats:[{l:'Browsing history',v:'Never stored'},{l:'Download history',v:'Cleared on close'},{l:'Session data',v:'Wiped after each session'}] },
+  { lbl:'Feature · AI Page Summaries', ttl:'Get the Key Points. Skip the Noise.',
+    body:'Beldex AI is built into the browser. When you open a long article, the AI <b>instantly summarises the key points</b> for you. This happens privately. Your content is never sent to a third-party server.',
+    stats:[{l:'Powered by',v:'BeldexAI (on-device)'},{l:'Data sent out?',v:'No, runs privately'},{l:'Works on',v:'Articles, news, research papers'}] }
+];
+function brClick(el, idx) {
+  const cards = document.querySelectorAll('.bf-card');
+  const panel = document.getElementById('br-detail');
+  const wasOn = el.classList.contains('on');
+  cards.forEach(c => c.classList.remove('on'));
+  if (wasOn) { panel.classList.remove('show'); return; }
+  el.classList.add('on');
+  const d = brData[idx];
+  document.getElementById('brd-lbl').textContent = d.lbl;
+  document.getElementById('brd-ttl').textContent = d.ttl;
+  document.getElementById('brd-body').innerHTML = d.body;
+  document.getElementById('brd-stats').innerHTML = d.stats.map(s =>
+    `<div class="hud-stat"><div class="hs-lbl">${s.l}</div><div class="hs-val">${s.v}</div></div>`
+  ).join('');
+  panel.classList.add('show');
+}
+</script>
+</body>
+</html>
