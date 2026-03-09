@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex Browser. Full Breakdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #07090d;
+  --s1:       #0b0f17;
+  --s2:       #0f1520;
+  --s3:       #131d2c;
+  --border:   #1c2d42;
+  --dim:      #253545;
+  --muted:    #4a6680;
+  --text:     #d8e8f4;
+  --sub:      #8eaabf;
+
+  --orange:   #ff9f43;
+  --amber:    #ffc048;
+  --red:      #ff5370;
+  --teal:     #00e5c0;
+  --green:    #3ddc97;
+  --blue:     #4db8ff;
+  --violet:   #b39ddb;
+  --yellow:   #f1e05a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,159,67,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,159,67,0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes pulse    { 0%,100%{opacity:.5} 50%{opacity:1} }
+@keyframes scan     { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+@keyframes glow     { 0%,100%{box-shadow:0 0 8px rgba(255,83,112,0.2)} 50%{box-shadow:0 0 22px rgba(255,83,112,0.5)} }
+@keyframes glowG    { 0%,100%{box-shadow:0 0 8px rgba(61,220,151,0.2)} 50%{box-shadow:0 0 22px rgba(61,220,151,0.4)} }
+@keyframes spinRing { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes slideIn  { from{opacity:0;transform:translateX(-14px)} to{opacity:1;transform:translateX(0)} }
+
+/* ─── TOPBAR ─── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(7,9,13,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 0 2rem;
+  height: 52px;
+}
+.tb-logo { font-family: 'Oxanium', monospace; font-size: 0.85rem; font-weight: 800; color: var(--orange); letter-spacing: 0.06em; display: flex; align-items: center; gap: 0.5rem; }
+.tb-sep  { width: 1px; height: 22px; background: var(--border); }
+.tb-nav  { display: flex; gap: 0; overflow-x: auto; }
+.tb-link { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; color: var(--muted); padding: 0 0.85rem; height: 52px; display: flex; align-items: center; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; text-decoration: none; }
+.tb-link:hover { color: var(--text); }
+.tb-link.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+/* ─── SECTIONS ─── */
+section { position: relative; z-index: 1; }
+
+.container { max-width: 1020px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ─── HERO ─── */
+.hero {
+  padding: 4.5rem 1.5rem 3.5rem;
+  text-align: center;
+  max-width: 1020px; margin: 0 auto;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600;
+  color: var(--orange); text-transform: uppercase; letter-spacing: 0.14em;
+  background: rgba(255,159,67,0.08); border: 1px solid rgba(255,159,67,0.25);
+  border-radius: 20px; padding: 0.3rem 1rem; margin-bottom: 1.4rem;
+}
+.hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: pulse 2s ease-in-out infinite; }
+.hero h1 {
+  font-family: 'Oxanium', monospace; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800;
+  line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 1.1rem;
+}
+.hero h1 span { color: var(--orange); }
+.hero-sub { font-size: 1rem; color: var(--sub); max-width: 580px; margin: 0 auto 2.5rem; }
+
+/* Browser logos row */
+.browser-logos {
+  display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.bl-item { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.bl-circle {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--s2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; position: relative;
+}
+.bl-circle.danger::after {
+  content: '⚠'; position: absolute; bottom: -4px; right: -4px;
+  font-size: 0.7rem;
+  background: var(--red); border-radius: 50%; width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--bg);
+}
+.bl-name { font-size: 0.62rem; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+.bl-arrow { font-size: 1.3rem; color: var(--dim); }
+
+/* ─── SECTION HEADER ─── */
+.sec-hd {
+  padding: 3.5rem 1.5rem 0;
+  max-width: 1020px; margin: 0 auto;
+}
+.sec-pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 0.25rem 0.85rem; border-radius: 20px; border: 1px solid;
+  margin-bottom: 0.85rem;
+}
+.pill-red    { color: var(--red);    border-color: rgba(255,83,112,0.3);  background: rgba(255,83,112,0.07); }
+.pill-orange { color: var(--orange); border-color: rgba(255,159,67,0.3); background: rgba(255,159,67,0.07); }
+.pill-teal   { color: var(--teal);   border-color: rgba(0,229,192,0.3);  background: rgba(0,229,192,0.07); }
+.pill-green  { color: var(--green);  border-color: rgba(61,220,151,0.3); background: rgba(61,220,151,0.07); }
+.pill-blue   { color: var(--blue);   border-color: rgba(77,184,255,0.3); background: rgba(77,184,255,0.07); }
+.pill-violet { color: var(--violet); border-color: rgba(179,157,219,0.3);background: rgba(179,157,219,0.07); }
+.pill-amber  { color: var(--amber);  border-color: rgba(255,192,72,0.3); background: rgba(255,192,72,0.07); }
+
+.sec-hd h2 { font-family: 'Oxanium', monospace; font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.4rem; }
+.sec-hd p  { font-size: 0.88rem; color: var(--sub); max-width: 560px; }
+
+.hline { height: 1px; background: linear-gradient(90deg, var(--border), transparent); margin: 1.5rem 0 0; }
+
+/* ─── RISK GRID ─── */
+.risks-wrap { padding: 1.5rem 1.5rem 0; max-width: 1020px; margin: 0 auto; }
+.risks-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+.risk-card {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem 1rem;
+  cursor: pointer; transition: all 0.22s;
+  animation: glow 4s ease-in-out infinite;
+  position: relative; overflow: hidden;
+}
+.risk-card::before { content: ''; position: absolute; top:0;left:0;right:0; height: 2px; background: var(--red); opacity: 0.5; }
+.risk-card:hover { border-color: var(--red); background: var(--s2); transform: translateY(-2px); }
+.rc-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.rc-title { font-size: 0.82rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+/* ─── CONTENT BLOCK ─── */
+.content-block {
+  padding: 2rem 1.5rem 0;
+  max-width: 1020px; margin: 0 auto;
+}
+
+/* ─── COMPARE SPLIT ─── */
+.compare-split { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.compare-col { flex: 1; min-width: 260px; }
+.col-header {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px 8px 0 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 0;
+}
+.col-danger { background: rgba(255,83,112,0.12); border: 1px solid rgba(255,83,112,0.3); color: var(--red); border-bottom: none; }
+.col-safe   { background: rgba(61,220,151,0.1);  border: 1px solid rgba(61,220,151,0.3);  color: var(--green); border-bottom: none; }
+.col-body {
+  background: var(--s2); border-radius: 0 0 8px 8px;
+  border: 1px solid var(--border); border-top: none;
+  padding: 0;
+}
+.col-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.col-item:last-child { border-bottom: none; }
+.ci-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.dot-bad  { background: var(--red); }
+.dot-good { background: var(--green); }
+.ci-text  { color: var(--text); line-height: 1.5; }
+.ci-text b { font-weight: 700; }
+
+/* ─── FLOW DIAGRAM ─── */
+.flow-diagram { margin-top: 1.25rem; }
+.flow-title { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.85rem; }
+.flow-chain { display: flex; align-items: stretch; overflow-x: auto; padding-bottom: 0.5rem; gap: 0; }
+.fc-node {
+  flex: 1; min-width: 130px;
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.9rem 0.85rem;
+  text-align: center; transition: all 0.2s;
+}
+.fc-node:hover { border-color: var(--orange); transform: translateY(-2px); }
+.fc-icon  { font-size: 1.3rem; margin-bottom: 0.35rem; }
+.fc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--orange); margin-bottom: 0.25rem; }
+.fc-text  { font-size: 0.75rem; color: var(--sub); line-height: 1.4; }
+.fc-arrow { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 28px; color: var(--dim); font-size: 0.9rem; }
+.fc-result {
+  background: var(--s3); border: 1px solid rgba(61,220,151,0.3);
+  border-radius: 8px; padding: 0.9rem 0.85rem;
+  min-width: 140px;
+  animation: glowG 4s ease-in-out infinite;
+}
+.fc-result .fc-label { color: var(--green); }
+.fc-result .fc-text  { color: var(--text); }
+
+/* ─── FP DETAIL ─── */
+.fp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; margin-top: 1.25rem; }
+.fp-card {
+  background: var(--s2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1.1rem 1.15rem; transition: all 0.2s;
+  border-left: 2px solid var(--orange);
+}
+.fp-card:hover { background: var(--s3); border-color: rgba(255,159,67,0.5); }
+.fp-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; }
+.fp-icon { font-size: 1.2rem; }
+.fp-name { font-size: 0.84rem; font-weight: 700; }
+.fp-sub  { font-size: 0.73rem; color: var(--sub); line-height: 1.5; }
+.fp-shield {
+  margin-top: 0.65rem; display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700;
+  color: var(--green); background: rgba(61,220,151,0.08); border: 1px solid rgba(61,220,151,0.25);
+  border-radius: 4px; padding: 0.2rem 0.55rem;
+}
+
+/* ─── HTTPS COMPARE TABLE ─── */
+.https-table { margin-top: 1.25rem; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.ht-header {
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0;
+  background: var(--s2); border-bottom: 1px solid var(--border);
+}
+.ht-cell { padding: 0.7rem 1rem; }
+.ht-cell.topic { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.ht-cell.bad-hd { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; border-left: 1px solid var(--border); }
+.ht-cell.good-hd { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.08em; border-left: 1px solid var(--border); }
+.ht-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+.ht-row:last-child { border-bottom: none; }
+.ht-row:nth-child(odd) .ht-cell { background: var(--s1); }
+.ht-row:nth-child(even) .ht-cell { background: var(--s2); }
+.ht-cell { padding: 0.75rem 1rem; font-size: 0.8rem; }
+.ht-cell.topic-cell { font-weight: 700; color: var(--text); }
+.ht-cell.bad-cell { color: var(--red); border-left: 1px solid var(--border); }
+.ht-cell.good-cell { color: var(--green); border-left: 1px solid var(--border); }
+
+/* ─── ISP BLOCK ─── */
+.isp-block { margin-top: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+.isp-flow {
+  flex: 1; min-width: 260px;
+  background: var(--s2); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem;
+}
+.isp-flow-title { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.85rem; }
+.isp-chain { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.isp-node { background: var(--s3); border: 1px solid var(--border); border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.72rem; font-weight: 600; }
+.isp-node.you  { color: var(--blue); border-color: rgba(77,184,255,0.3); }
+.isp-node.ispc { color: var(--red); border-color: rgba(255,83,112,0.3); }
+.isp-node.site { color: var(--teal); border-color: rgba(0,229,192,0.3); }
+.isp-arr { color: var(--dim); font-size: 0.85rem; }
+.isp-sees {
+  background: rgba(255,83,112,0.07); border: 1px solid rgba(255,83,112,0.2);
+  border-radius: 7px; padding: 0.7rem 0.9rem;
+}
+.isp-sees .is-title { font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--red); margin-bottom: 0.4rem; }
+.isp-sees ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.isp-sees li { font-size: 0.73rem; background: var(--s2); border: 1px solid var(--border); border-radius: 4px; padding: 0.18rem 0.55rem; }
+
+.analogy-box {
+  flex: 0 0 220px;
+  background: rgba(77,184,255,0.07); border: 1px solid rgba(77,184,255,0.25);
+  border-radius: 10px; padding: 1.1rem;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.ab-head { font-size: 0.58rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue); margin-bottom: 0.5rem; }
+.ab-text { font-size: 0.82rem; color: var(--text); line-height: 1.6; }
+.ab-text em { color: var(--blue); font-style: normal; font-weight: 700; }
+
+/* ─── MITM ─── */
+.mitm-flow {
+  margin-top: 1rem; display: flex; align-items: center; gap: 0; overflow-x: auto; padding-bottom: 0.5rem;
+  background: var(--s2); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem;
+}
+.mf-node { text-align: center; flex: 1; min-width: 90px; }
+.mf-circle {
+  width: 54px; height: 54px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin: 0 auto 0.4rem;
+  border: 2px solid;
+}
+.mf-you     { border-color: rgba(77,184,255,0.4); background: rgba(77,184,255,0.1); }
+.mf-attack  { border-color: rgba(255,83,112,0.5); background: rgba(255,83,112,0.1); animation: glow 3s ease-in-out infinite; }
+.mf-wifi    { border-color: rgba(245,166,35,0.4); background: rgba(245,166,35,0.1); }
+.mf-label { font-size: 0.7rem; font-weight: 700; }
+.mf-sub   { font-size: 0.62rem; color: var(--sub); }
+.mf-arrow { flex-shrink: 0; width: 32px; text-align: center; color: var(--dim); font-size: 1rem; }
+.mitm-solution {
+  margin-top: 0.75rem; background: rgba(61,220,151,0.07); border: 1px solid rgba(61,220,151,0.25);
+  border-radius: 8px; padding: 0.65rem 1rem;
+  display: flex; align-items: center; gap: 0.65rem; font-size: 0.82rem;
+}
+.mitm-solution .ms-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; color: var(--green); background: rgba(61,220,151,0.1); border: 1px solid rgba(61,220,151,0.3); border-radius: 4px; padding: 0.18rem 0.6rem; flex-shrink: 0; }
+
+/* ─── HISTORY STORAGE ─── */
+.storage-compare { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.sc-col { flex: 1; min-width: 260px; }
+.sc-title { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; }
+.sc-bad  { color: var(--red);   background: rgba(255,83,112,0.1);  border: 1px solid rgba(255,83,112,0.3);  border-bottom: none; }
+.sc-good { color: var(--green); background: rgba(61,220,151,0.08); border: 1px solid rgba(61,220,151,0.3); border-bottom: none; }
+.sc-body { background: var(--s2); border-radius: 0 0 8px 8px; border: 1px solid var(--border); border-top: none; }
+.sc-row {
+  display: flex; align-items: flex-start; gap: 0.7rem;
+  padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+  font-size: 0.81rem; line-height: 1.5;
+}
+.sc-row:last-child { border-bottom: none; }
+.sc-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── NETWORK IDENTITY ─── */
+.netid-compare { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.ni-box { flex: 1; min-width: 260px; background: var(--s2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.ni-head { padding: 0.65rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+.ni-head.bad  { background: rgba(255,83,112,0.1);  color: var(--red);   border-bottom: 1px solid rgba(255,83,112,0.25); }
+.ni-head.good { background: rgba(0,229,192,0.07);  color: var(--teal);  border-bottom: 1px solid rgba(0,229,192,0.25); }
+.ni-body { padding: 1rem; }
+.terminal-box { background: #050a0f; border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; margin-bottom: 0.65rem; line-height: 1.8; }
+.tb-ip  { color: var(--red); }
+.tb-loc { color: var(--amber); }
+.tb-isp { color: var(--orange); }
+.tb-key { color: var(--muted); }
+
+.route-flow { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.rf-node { background: var(--s3); border: 1px solid var(--border); border-radius: 5px; padding: 0.35rem 0.65rem; font-size: 0.72rem; font-weight: 600; }
+.rf-you     { color: var(--teal);  border-color: rgba(0,229,192,0.3); }
+.rf-isp     { color: var(--red);   border-color: rgba(255,83,112,0.3); font-size: 0.65rem; }
+.rf-node1   { color: var(--blue);  border-color: rgba(77,184,255,0.3); }
+.rf-relay   { color: var(--violet);border-color: rgba(179,157,219,0.3); }
+.rf-site    { color: var(--teal);  border-color: rgba(0,229,192,0.3); }
+.rf-arr { color: var(--dim); font-size: 0.8rem; }
+
+.webrtc-warn {
+  margin-top: 1rem; background: rgba(255,159,67,0.07); border: 1px solid rgba(255,159,67,0.3);
+  border-radius: 8px; padding: 0.85rem 1rem;
+}
+.ww-title { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); margin-bottom: 0.4rem; }
+.ww-body  { font-size: 0.8rem; color: var(--sub); line-height: 1.6; }
+.ww-body b { color: var(--text); }
+.ww-solution { margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; }
+.ww-solution .badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700; color: var(--green); background: rgba(61,220,151,0.1); border: 1px solid rgba(61,220,151,0.25); border-radius: 4px; padding: 0.18rem 0.55rem; }
+
+/* ─── AI SECTION ─── */
+.ai-timeline { margin-top: 1.75rem; }
+.ai-track { position: relative; display: flex; gap: 0; align-items: flex-start; overflow-x: auto; padding-bottom: 1rem; }
+.ai-track::before {
+  content: ''; position: absolute;
+  top: 22px; left: 20px; right: 20px; height: 2px;
+  background: linear-gradient(90deg, var(--amber), var(--orange), var(--teal));
+  z-index: 0;
+}
+.ai-step { flex: 1; min-width: 200px; position: relative; z-index: 1; padding: 0 0.5rem; }
+.ai-dot {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--s1); border: 2px solid var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; margin: 0 auto 0.9rem;
+  font-family: 'Oxanium', monospace; font-weight: 800; color: var(--amber);
+  box-shadow: 0 0 12px rgba(255,192,72,0.2);
+}
+.ai-card {
+  background: var(--s2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1.05rem; transition: all 0.22s;
+}
+.ai-card:hover { background: var(--s3); border-color: rgba(255,192,72,0.4); transform: translateY(-3px); }
+.ai-num   { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); margin-bottom: 0.25rem; }
+.ai-title { font-size: 0.86rem; font-weight: 700; margin-bottom: 0.4rem; }
+.ai-desc  { font-size: 0.76rem; color: var(--sub); line-height: 1.55; }
+.ai-privacy {
+  margin-top: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700;
+  color: var(--teal); background: rgba(0,229,192,0.07); border: 1px solid rgba(0,229,192,0.2);
+  border-radius: 4px; padding: 0.18rem 0.5rem; display: inline-block;
+}
+
+/* ─── BLOCKCHAIN SECTION ─── */
+.chain-blocks { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+.chain-block {
+  flex: 1; min-width: 280px;
+  background: var(--s2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+}
+.cb-head {
+  padding: 0.85rem 1.1rem;
+  font-family: 'Oxanium', monospace; font-size: 0.9rem; font-weight: 800;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.cb-head.wallet { background: rgba(77,184,255,0.08); color: var(--blue); }
+.cb-head.rpc    { background: rgba(0,229,192,0.08);  color: var(--teal); }
+.cb-icon { font-size: 1.2rem; }
+.cb-note { font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 500; color: var(--sub); padding: 0.55rem 1.1rem; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); font-style: italic; }
+.cb-feature {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.82rem;
+}
+.cb-feature:last-child { border-bottom: none; }
+.cbf-arrow {
+  flex-shrink: 0; width: 20px; height: 20px; border-radius: 3px;
+  background: var(--green); display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: var(--bg); font-weight: 700;
+}
+.cbf-arrow.blue-bg { background: var(--blue); }
+
+/* ─── SUMMARY SHIELDS ─── */
+.shields-wrap { padding: 2.5rem 1.5rem; max-width: 1020px; margin: 0 auto; }
+.shields-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+.shield-card {
+  background: var(--s2); border: 1px solid rgba(61,220,151,0.25);
+  border-radius: 10px; padding: 0.9rem 1rem;
+  text-align: center; animation: glowG 5s ease-in-out infinite;
+}
+.shield-card::before { content: '✓'; display: block; font-size: 1.1rem; color: var(--green); margin-bottom: 0.3rem; }
+.shield-title { font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 0.15rem; }
+.shield-sub   { font-size: 0.68rem; color: var(--sub); line-height: 1.4; }
+
+/* ─── FOOTER LINE ─── */
+.page-footer {
+  text-align: center; padding: 2rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--dim);
+  border-top: 1px solid var(--border);
+}
+
+/* ─── TOPBAR FINAL TAB ─── */
+.tb-final { color: var(--teal) !important; font-weight: 700 !important; letter-spacing: 0.05em; border-left: 1px solid var(--border); margin-left: 0.25rem; padding-left: 1.1rem !important; }
+.tb-final:hover { color: var(--green) !important; }
+.tb-final.active { border-bottom-color: var(--teal) !important; }
+
+/* ═══════════════════════════════════════════════
+   MISSION LOG. HOW IT PROTECTS YOU
+═══════════════════════════════════════════════ */
+@keyframes missionPulse { 0%,100%{box-shadow:0 0 0 0 rgba(0,229,192,0.4)} 50%{box-shadow:0 0 0 10px rgba(0,229,192,0)} }
+@keyframes lineGrow     { from{height:0} to{height:100%} }
+@keyframes checkIn      { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes checkInR     { from{opacity:0;transform:translateX(20px)}  to{opacity:1;transform:translateX(0)} }
+@keyframes countUp      { from{opacity:0;transform:scale(0.6)} to{opacity:1;transform:scale(1)} }
+@keyframes finalGlow    { 0%,100%{box-shadow:0 0 30px rgba(0,229,192,0.15),0 0 60px rgba(0,229,192,0.05)} 50%{box-shadow:0 0 50px rgba(0,229,192,0.3),0 0 100px rgba(0,229,192,0.1)} }
+
+.mission-hero {
+  padding: 3.5rem 1.5rem 1rem;
+  max-width: 1020px; margin: 0 auto; text-align: center;
+}
+.mission-badge {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--teal);
+  background: rgba(0,229,192,0.08); border: 1px solid rgba(0,229,192,0.3);
+  border-radius: 20px; padding: 0.3rem 1.1rem; margin-bottom: 1.2rem;
+}
+.mission-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); animation: pulse 1.5s ease-in-out infinite; }
+.mission-hero h2 {
+  font-family: 'Oxanium', monospace; font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 0.9rem;
+}
+.mission-hero h2 em { color: var(--teal); font-style: normal; }
+.mission-hero p { font-size: 0.92rem; color: var(--sub); max-width: 580px; margin: 0 auto 1.5rem; }
+
+/* Phase label */
+.phase-label {
+  max-width: 1020px; margin: 2rem auto 0; padding: 0 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.phase-pill {
+  font-family: 'Oxanium', monospace; font-size: 0.65rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  padding: 0.28rem 1rem; border-radius: 20px; border: 1px solid; flex-shrink: 0;
+}
+.ph-launch  { color: var(--orange); border-color: rgba(255,159,67,0.4); background: rgba(255,159,67,0.08); }
+.ph-nav     { color: var(--amber);  border-color: rgba(255,192,72,0.4); background: rgba(255,192,72,0.08); }
+.ph-route   { color: var(--blue);   border-color: rgba(77,184,255,0.4); background: rgba(77,184,255,0.08); }
+.ph-load    { color: var(--violet); border-color: rgba(179,157,219,0.4);background: rgba(179,157,219,0.08); }
+.ph-close   { color: var(--teal);   border-color: rgba(0,229,192,0.4);  background: rgba(0,229,192,0.08); }
+.phase-line { flex: 1; height: 1px; background: var(--border); }
+.phase-desc { font-size: 0.72rem; color: var(--dim); font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+
+/* Mission timeline wrapper */
+.mission-wrap {
+  max-width: 1020px; margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+  position: relative;
+}
+/* Central vertical line */
+.mission-wrap.no-timeline::before { display:none; }
+.mission-wrap::before {
+  content: ''; position: absolute;
+  left: 50%; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom,
+    rgba(255,159,67,0.3) 0%,
+    rgba(77,184,255,0.3) 30%,
+    rgba(0,229,192,0.5) 70%,
+    rgba(0,229,192,0.8) 100%);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+/* Individual step */
+.ms-row {
+  display: grid; grid-template-columns: 1fr 64px 1fr;
+  gap: 0 1rem; position: relative; z-index: 1;
+  margin-bottom: 0.5rem; align-items: start;
+}
+.ms-row.flip .ms-left  { grid-column: 3; order: 3; }
+.ms-row.flip .ms-mid   { grid-column: 2; order: 2; }
+.ms-row.flip .ms-right { grid-column: 1; order: 1; }
+
+.ms-left, .ms-right { padding: 0.5rem 0; }
+.ms-right { text-align: right; }
+.ms-row.flip .ms-left  { text-align: left; }
+.ms-row.flip .ms-right { text-align: right; }
+
+/* Center node */
+.ms-mid {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.5rem 0;
+}
+.ms-node {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--bg); border: 3px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oxanium', monospace; font-size: 0.72rem; font-weight: 800;
+  position: relative; flex-shrink: 0; z-index: 2;
+  transition: all 0.3s;
+}
+.ms-node.n-orange  { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 14px rgba(255,159,67,0.25); }
+.ms-node.n-amber   { border-color: var(--amber);  color: var(--amber);  box-shadow: 0 0 14px rgba(255,192,72,0.25); }
+.ms-node.n-blue    { border-color: var(--blue);   color: var(--blue);   box-shadow: 0 0 14px rgba(77,184,255,0.25); }
+.ms-node.n-violet  { border-color: var(--violet); color: var(--violet); box-shadow: 0 0 14px rgba(179,157,219,0.25); }
+.ms-node.n-teal    { border-color: var(--teal);   color: var(--teal);   box-shadow: 0 0 18px rgba(0,229,192,0.35); }
+.ms-node-icon { font-size: 1.4rem; }
+.ms-node-num {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+}
+.ms-vline { flex: 1; width: 2px; background: transparent; min-height: 20px; }
+
+/* Step card */
+.ms-card {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.2rem 1.25rem;
+  transition: all 0.25s; cursor: default;
+  position: relative; overflow: hidden;
+}
+.ms-card::before {
+  content: ''; position: absolute; top:0; left:0; width:3px; height:100%;
+}
+.ms-card.side-right::before { left:auto; right:0; }
+.ms-card:hover { transform: translateY(-2px); background: var(--s3); }
+.mc-phase { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.35rem; opacity: 0.8; }
+.mc-event { font-family: 'Oxanium', monospace; font-size: 0.95rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.25; }
+.mc-what  { font-size: 0.8rem; color: var(--sub); line-height: 1.55; margin-bottom: 0.8rem; }
+
+/* Threat vs Shield split inside card */
+.mc-split { display: flex; flex-direction: column; gap: 0.45rem; }
+.mc-threat {
+  background: rgba(255,83,112,0.06); border: 1px solid rgba(255,83,112,0.2);
+  border-radius: 7px; padding: 0.55rem 0.75rem;
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  font-size: 0.74rem; line-height: 1.5;
+}
+.mc-shield {
+  background: rgba(61,220,151,0.06); border: 1px solid rgba(61,220,151,0.22);
+  border-radius: 7px; padding: 0.55rem 0.75rem;
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  font-size: 0.74rem; line-height: 1.5;
+}
+.mc-threat-ico { font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
+.mc-threat-txt { color: rgba(255,139,139,0.9); }
+.mc-threat-txt b { color: var(--red); }
+.mc-shield-txt { color: rgba(120,230,180,0.9); }
+.mc-shield-txt b { color: var(--green); }
+
+/* Feature link badge */
+.mc-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  margin-top: 0.75rem; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 0.2rem 0.65rem; border-radius: 4px; border: 1px solid; cursor: pointer;
+  text-decoration: none; transition: all 0.2s;
+}
+.mc-badge:hover { opacity: 0.8; transform: translateY(-1px); }
+
+/* empty side (for alternating layout) */
+.ms-empty { visibility: hidden; }
+
+/* ─── GRAND FINALE ─── */
+.mission-finale {
+  max-width: 1020px; margin: 1rem auto 0; padding: 0 1.5rem 4rem;
+}
+.finale-card {
+  background: linear-gradient(135deg, rgba(0,229,192,0.05) 0%, rgba(0,229,192,0.02) 50%, rgba(61,220,151,0.05) 100%);
+  border: 1px solid rgba(0,229,192,0.35);
+  border-radius: 18px; padding: 3rem 2.5rem;
+  text-align: center; position: relative; overflow: hidden;
+  animation: finalGlow 4s ease-in-out infinite;
+}
+.finale-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,229,192,0.012) 3px, rgba(0,229,192,0.012) 4px);
+  pointer-events: none;
+}
+.finale-icon {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,192,0.2) 0%, rgba(0,229,192,0.05) 60%, transparent 100%);
+  border: 2px solid rgba(0,229,192,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem; margin: 0 auto 1.5rem;
+  animation: missionPulse 3s ease-in-out infinite;
+}
+.finale-status {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.2em; color: var(--teal);
+  margin-bottom: 0.75rem; opacity: 0.8;
+}
+.finale-title {
+  font-family: 'Oxanium', monospace; font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800; color: var(--teal); letter-spacing: -0.01em;
+  margin-bottom: 0.75rem; line-height: 1.1;
+}
+.finale-sub { font-size: 0.92rem; color: var(--sub); max-width: 560px; margin: 0 auto 2rem; line-height: 1.7; }
+
+/* Stats row in finale */
+.finale-stats { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.fs-stat {
+  background: rgba(0,229,192,0.07); border: 1px solid rgba(0,229,192,0.2);
+  border-radius: 10px; padding: 0.9rem 1.5rem; min-width: 130px; text-align: center;
+}
+.fs-num { font-family: 'Oxanium', monospace; font-size: 1.8rem; font-weight: 800; color: var(--teal); line-height: 1; margin-bottom: 0.25rem; }
+.fs-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sub); }
+
+/* Final protection row */
+.finale-row {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.fr-item {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.65rem 0.5rem; text-align: center;
+  font-size: 0.68rem; font-weight: 700; color: var(--sub);
+  transition: all 0.2s;
+}
+.fr-item:hover { border-color: rgba(0,229,192,0.4); color: var(--teal); }
+.fr-item .fr-icon { font-size: 1.1rem; margin-bottom: 0.3rem; display: block; }
+.finale-note {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  color: var(--dim); letter-spacing: 0.06em;
+}
+
+/* Responsive mission log */
+@media (max-width: 680px) {
+  .mission-wrap::before { left: 28px; transform: none; }
+  .ms-row { grid-template-columns: 56px 1fr; }
+  .ms-row.flip .ms-left  { grid-column: 2; order: 2; }
+  .ms-row.flip .ms-mid   { grid-column: 1; order: 1; }
+  .ms-row.flip .ms-right { display: none; }
+  .ms-mid { grid-column: 1; }
+  .ms-left, .ms-row .ms-left { grid-column: 2; text-align: left !important; }
+  .ms-right { display: none; }
+  .ms-card.side-right::before { left: 0; right: auto; }
+  .ms-node { width: 52px; height: 52px; }
+  .ms-node-icon { font-size: 1.2rem; }
+  .finale-row { grid-template-columns: repeat(3, 1fr); }
+  .finale-stats { gap: 0.75rem; }
+  .fs-stat { min-width: 100px; padding: 0.75rem 1rem; }
+}
+
+@media (max-width: 720px) {
+  .risks-grid { grid-template-columns: repeat(2, 1fr); }
+  .fp-grid { grid-template-columns: 1fr; }
+  .ht-header, .ht-row { grid-template-columns: 1fr 1fr; }
+  .ht-cell.topic, .ht-cell.topic-cell { display: none; }
+  .shields-grid { grid-template-columns: repeat(2, 1fr); }
+  .ai-track { flex-direction: column; }
+  .ai-track::before { display: none; }
+  .ai-step { min-width: unset; width: 100%; }
+  .ai-dot { margin: 0 0 0.6rem 0; }
+}
+@media (max-width: 480px) {
+  .risks-grid { grid-template-columns: repeat(2, 1fr); }
+  .shields-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="tb-logo">🛡️ Beldex Browser</div>
+  <div class="tb-sep"></div>
+  <div class="tb-nav">
+    <a class="tb-link active" href="#risks">Risks</a>
+    <a class="tb-link" href="#cookies">Cookies</a>
+    <a class="tb-link" href="#fingerprint">Fingerprinting</a>
+    <a class="tb-link" href="#https">HTTPS</a>
+    <a class="tb-link" href="#history">History</a>
+    <a class="tb-link" href="#network">Network</a>
+    <a class="tb-link" href="#ai">AI</a>
+    <a class="tb-link" href="#blockchain">Blockchain</a>
+    <a class="tb-link tb-final" href="#protection">🎯 How It Protects You</a>
+  </div>
+</nav>
+
+
+<!-- ─── HERO ─── -->
+<section>
+<div class="hero">
+  <div class="hero-eyebrow">Beldex Browser. Plain English Guide</div>
+  <h1>Your browser is watching you.<br><span>Here is how to stop it.</span></h1>
+  <p class="hero-sub">Every time you open Chrome, companies track what you read and where you are. Beldex Browser was built to stop that.</p>
+  <div class="browser-logos">
+    <div class="bl-item"><div class="bl-circle danger">🌐</div><div class="bl-name">Chrome</div></div>
+    <div class="bl-arrow">→</div>
+    <div class="bl-item"><div class="bl-circle danger">🔍</div><div class="bl-name">Google</div></div>
+    <div class="bl-arrow">→</div>
+    <div class="bl-item"><div class="bl-circle danger">💙</div><div class="bl-name">Edge</div></div>
+    <div class="bl-arrow" style="font-size:1.6rem;color:var(--red)">⟶</div>
+    <div class="bl-item"><div class="bl-circle" style="border-color:rgba(255,159,67,0.5);box-shadow:0 0 18px rgba(255,159,67,0.18)">🛡️</div><div class="bl-name" style="color:var(--orange)">Beldex</div></div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 1: RISKS ─── -->
+<section id="risks">
+<div class="sec-hd container">
+  <div class="sec-pill pill-red">⚠ What Other Browsers Do To You</div>
+  <h2>8 Things Happening Right Now Without You Knowing</h2>
+  <p>Not hacker attacks. These happen on every normal browsing session. automatically, silently, without asking you.</p>
+  <div class="hline"></div>
+</div>
+<div class="risks-wrap">
+  <div class="risks-grid">
+    <div class="risk-card"><div class="rc-icon">🍪</div><div class="rc-title">Websites plant tiny files to remember and track you</div></div>
+    <div class="risk-card"><div class="rc-icon">🫆</div><div class="rc-title">Your device has a hidden fingerprint. No cookies needed.</div></div>
+    <div class="risk-card"><div class="rc-icon">🔓</div><div class="rc-title">Connections are not always locked. Data can be intercepted.</div></div>
+    <div class="risk-card"><div class="rc-icon">📡</div><div class="rc-title">Every site can see your real location and internet provider</div></div>
+    <div class="risk-card"><div class="rc-icon">📊</div><div class="rc-title">Browsers silently report your activity back to their makers</div></div>
+    <div class="risk-card"><div class="rc-icon">🗄️</div><div class="rc-title">Your full history stays saved on your device permanently.</div></div>
+    <div class="risk-card"><div class="rc-icon">📶</div><div class="rc-title">Anyone on the same public Wi-Fi can spy on you</div></div>
+    <div class="risk-card"><div class="rc-icon">🕶️</div><div class="rc-title">Incognito does not hide you from your provider or websites</div></div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 2: COOKIES ─── -->
+<section id="cookies">
+<div class="sec-hd container">
+  <div class="sec-pill pill-orange">🍪 Cookies</div>
+  <h2>Websites Leave Behind Little Files to Remember You. Here is What That Really Means</h2>
+  <p>Websites save tiny files on your device to remember you. Advertisers plant their own cookies across thousands of sites to follow you everywhere.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div class="compare-split">
+    <div class="compare-col">
+      <div class="col-header col-danger">⚠ Chrome / Edge / Normal Browsers</div>
+      <div class="col-body">
+        <div class="col-item"><div class="ci-dot dot-bad"></div><div class="ci-text"><b>Cookies stay forever</b>. A shopping site still recognises you months later from a file on your device</div></div>
+        <div class="col-item"><div class="ci-dot dot-bad"></div><div class="ci-text"><b>Ad companies plant their own cookies</b>. Google, Meta, and hundreds of others follow you from site to site</div></div>
+        <div class="col-item"><div class="ci-dot dot-bad"></div><div class="ci-text"><b>One tracker, thousands of sites</b>. A single company sees everywhere you go and builds a profile of your habits</div></div>
+        <div class="col-item"><div class="ci-dot dot-bad"></div><div class="ci-text"><b>They just pile up silently</b>. Most people have thousands of cookies and have no idea</div></div>
+      </div>
+    </div>
+    <div class="compare-col">
+      <div class="col-header col-safe">✓ Beldex Browser</div>
+      <div class="col-body">
+        <div class="col-item"><div class="ci-dot dot-good"></div><div class="ci-text"><b>Cookies only last while the tab is open</b>. Close the tab, the cookie disappears. No file stays behind</div></div>
+        <div class="col-item"><div class="ci-dot dot-good"></div><div class="ci-text"><b>All cookie data deleted when you close</b>. Next time you open Beldex, no site knows who you are</div></div>
+        <div class="col-item"><div class="ci-dot dot-good"></div><div class="ci-text"><b>Ad company cookies blocked completely</b>. Only the site you are on can set a cookie, and even that gets deleted when you leave</div></div>
+        <div class="col-item"><div class="ci-dot dot-good"></div><div class="ci-text"><b>No profile ever builds up</b>. Cookies never survive between sessions, so nothing can be pieced together about you</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 3: FINGERPRINTING ─── -->
+<section id="fingerprint">
+<div class="sec-hd container" style="margin-top:2.5rem">
+  <div class="sec-pill pill-orange">🫆 Device Fingerprinting</div>
+  <h2>There is a Way to Recognise You That Has Nothing to Do With Cookies</h2>
+  <p>Even if you clear every cookie, websites can still recognise you. They read tiny details about your device. Every device is unique enough to identify you. Beldex answers every test with made-up data.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div class="fp-grid">
+    <div class="fp-card">
+      <div class="fp-head"><div class="fp-icon">🖼️</div><div class="fp-name">The Screen Drawing Test</div></div>
+      <div class="fp-sub">A site draws an invisible shape. Your screen renders it slightly differently than every other device. The result is unique to your device.</div>
+      <div class="fp-shield">🛡 Beldex returns fake results. Every user looks identical. The test fails.</div>
+    </div>
+    <div class="fp-card">
+      <div class="fp-head"><div class="fp-icon">🔊</div><div class="fp-name">The Silent Sound Test</div></div>
+      <div class="fp-sub">A site plays a sound you cannot hear. Your audio hardware processes it in a unique way. It produces a tiny number like 0.0001234 that is specific to your device.</div>
+      <div class="fp-shield">🛡 Beldex gives every site the same standard number. Your hardware is never revealed.</div>
+    </div>
+    <div class="fp-card">
+      <div class="fp-head"><div class="fp-icon">🔤</div><div class="fp-name">The Font &amp; Screen Size Test</div></div>
+      <div class="fp-sub">Every device has a different set of fonts and screen size. A site can ask for both. That combination identifies you even if your IP address changes.</div>
+      <div class="fp-shield">🛡 Beldex reports only basic fonts and a rounded screen size. Nothing specific is shared.</div>
+    </div>
+    <div class="fp-card">
+      <div class="fp-head"><div class="fp-icon">🔗</div><div class="fp-name">Tracking Across Many Sites</div></div>
+      <div class="fp-sub">One ad company embeds on thousands of sites. Your fingerprint is the same everywhere. They link all your visits together without any cookies.</div>
+      <div class="fp-shield">🛡 Beldex sends the same fake fingerprint to every site. Nothing can be linked to you.</div>
+    </div>
+  </div>
+
+  <!-- Canvas flow - rewritten -->
+  <div class="flow-diagram" style="margin-top:1.75rem">
+    <div class="flow-title">How the Screen Drawing Test Works and How Beldex Beats It</div>
+    <div class="flow-chain">
+      <div class="fc-node"><div class="fc-icon">🌐</div><div class="fc-label">Website</div><div class="fc-text">Draws an invisible shape you cannot see</div></div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-node"><div class="fc-icon">🎮</div><div class="fc-label">Your Screen</div><div class="fc-text">Renders it using your exact screen and drivers</div></div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-node"><div class="fc-icon">📋</div><div class="fc-label">Site reads it</div><div class="fc-text">Pixel differences reveal your exact device</div></div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-result"><div class="fc-icon">🛡️</div><div class="fc-label">Beldex steps in</div><div class="fc-text">Swaps the real result with fake data. All users look the same.</div></div>
+    </div>
+  </div>
+
+  <!-- AudioContext flow - rewritten -->
+  <div class="flow-diagram" style="margin-top:1.25rem">
+    <div class="flow-title">How the Silent Sound Test Works</div>
+    <div class="flow-chain">
+      <div class="fc-node"><div class="fc-icon">🌐</div><div class="fc-label">Website</div><div class="fc-text">Plays a tone too quiet to hear</div></div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-node"><div class="fc-icon">⚙️</div><div class="fc-label">Your Device</div><div class="fc-text">Your speakers and processor handle it uniquely</div></div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-node"><div class="fc-icon">🔢</div><div class="fc-label">A Unique Number</div><div class="fc-text">Result: 0.0001234. Different for every device.</div></div>
+      <div class="fc-arrow">→</div>
+      <div class="fc-result"><div class="fc-icon">🛡️</div><div class="fc-label">Beldex</div><div class="fc-text">Returns a standard made-up number. Your hardware stays hidden.</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 4: HTTPS / NETWORK ─── -->
+<section id="https">
+<div class="sec-hd container" style="margin-top:2.5rem">
+  <div class="sec-pill pill-blue">🔒 Connection Security</div>
+  <h2>When You Send Data Online, Is Anyone Watching in the Middle?</h2>
+  <p>When you visit a website, your data travels across the internet to get there. If that connection is not locked, someone in the middle can read it. Beldex locks every connection every time.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div class="https-table">
+    <div class="ht-header">
+      <div class="ht-cell topic">What we are comparing</div>
+      <div class="ht-cell bad-hd">⚠ Normal Browsers</div>
+      <div class="ht-cell good-hd">✓ Beldex Browser</div>
+    </div>
+    <div class="ht-row">
+      <div class="ht-cell topic-cell">Unlocked connections</div>
+      <div class="ht-cell bad-cell">Sometimes loads sites without encryption. Anyone watching your traffic can read it</div>
+      <div class="ht-cell good-cell">Refuses to load any site unless the connection is fully locked. No exceptions.</div>
+    </div>
+    <div class="ht-row">
+      <div class="ht-cell topic-cell">Mixed content</div>
+      <div class="ht-cell bad-cell">A "secure" page can still load unsafe ads or images. One weak link breaks everything</div>
+      <div class="ht-cell good-cell">Blocks every insecure element. even one unsafe item inside a locked page gets stopped</div>
+    </div>
+    <div class="ht-row">
+      <div class="ht-cell topic-cell">Can you bypass it?</div>
+      <div class="ht-cell bad-cell">Yes. You see a warning and can click "proceed anyway." Most people do.</div>
+      <div class="ht-cell good-cell">No warning to click past. An unsafe page simply does not open.</div>
+    </div>
+    <div class="ht-row">
+      <div class="ht-cell topic-cell">Café Wi-Fi attacks</div>
+      <div class="ht-cell bad-cell">Someone on the same Wi-Fi can quietly read or alter what you are seeing</div>
+      <div class="ht-cell good-cell">Traffic routes through BelNet and is locked. Attackers on the same Wi-Fi see only scrambled data.</div>
+    </div>
+  </div>
+
+  <div class="isp-block">
+    <div class="isp-flow">
+      <div class="isp-flow-title">What Your Internet Provider Can See When You Use a Normal Browser</div>
+      <div class="isp-chain">
+        <div class="isp-node you">You</div>
+        <div class="isp-arr">→</div>
+        <div class="isp-node ispc">Your Internet Provider (Airtel / Jio / BSNL / ACT)</div>
+        <div class="isp-arr">→</div>
+        <div class="isp-node site">Website</div>
+      </div>
+      <div class="isp-sees">
+        <div class="is-title">Your provider can see:</div>
+        <ul>
+          <li>Which website you visited</li>
+          <li>What time you visited it</li>
+          <li>How long you stayed</li>
+          <li>How much data was transferred</li>
+          <li>Your home address (IP)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="analogy-box">
+      <div class="ab-head">💡 Think of it this way</div>
+      <div class="ab-text">With a normal browser, your provider is like a phone operator who writes down every number you dial and how long you talked.<br><br>With Beldex and BelNet, they can see you made a call. But they do not know who you called.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem">
+    <div class="flow-title" style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.85rem">What a "Man in the Middle" Attack Looks Like on Public Wi-Fi</div>
+    <div class="mitm-flow">
+      <div class="mf-node"><div class="mf-circle mf-you">👤</div><div class="mf-label">You</div><div class="mf-sub">At a café, airport, or mall</div></div>
+      <div class="mf-arrow">→</div>
+      <div class="mf-node"><div class="mf-circle mf-attack">😈</div><div class="mf-label">Someone Nearby</div><div class="mf-sub">Connected to the same Wi-Fi</div></div>
+      <div class="mf-arrow">→</div>
+      <div class="mf-node"><div class="mf-circle mf-wifi">📶</div><div class="mf-label">Shared Wi-Fi</div><div class="mf-sub">Everyone uses the same network</div></div>
+      <div class="mf-arrow">→</div>
+      <div class="mf-node"><div class="mf-circle" style="border-color:rgba(77,184,255,0.4);background:rgba(77,184,255,0.1)">🌐</div><div class="mf-label">Website</div><div class="mf-sub">Where you are trying to go</div></div>
+    </div>
+    <div class="mitm-solution">
+      <span class="ms-badge">How Beldex Stops This</span>
+      Your connection routes through BelNet and is fully locked. The person at the next table sees nothing but scrambled data.
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 5: HISTORY & STORAGE ─── -->
+<section id="history">
+<div class="sec-hd container" style="margin-top:2.5rem">
+  <div class="sec-pill pill-teal">🗄️ Your Browsing History</div>
+  <h2>Your Browser Keeps a Diary of Everything You Do. Beldex Burns It</h2>
+  <p>Chrome saves every site you visit and keeps it forever. Beldex does not save any of it.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div class="storage-compare">
+    <div class="sc-col">
+      <div class="sc-title sc-bad">⚠ What Chrome / Edge Keep After You Close</div>
+      <div class="sc-body">
+        <div class="sc-row"><div class="sc-icon">📁</div><div><b>Full visit list saved</b>. every URL, timestamped. Anyone who picks up your phone can scroll through it.</div></div>
+        <div class="sc-row"><div class="sc-icon">💾</div><div><b>Page files stored forever</b>. images and scripts from sites you have visited sit on your device indefinitely.</div></div>
+        <div class="sc-row"><div class="sc-icon">🗃️</div><div><b>Website notes stay on your device</b>. sites store their own data directly on your phone and read it back weeks later.</div></div>
+        <div class="sc-row"><div class="sc-icon">🔍</div><div><b>Web app data kept permanently</b>. browser-based tools and games store large amounts of data on your device.</div></div>
+        <div class="sc-row"><div class="sc-icon">🔄</div><div><b>Last session saved</b>. your open tabs are recorded so the browser can "restore" them after a crash.</div></div>
+      </div>
+    </div>
+    <div class="sc-col">
+      <div class="sc-title sc-good">✓ What Beldex Does When You Close</div>
+      <div class="sc-body">
+        <div class="sc-row"><div class="sc-icon">🔥</div><div><b>Visit list deleted immediately</b>. close Beldex and the entire session history disappears. Nothing written to disk.</div></div>
+        <div class="sc-row"><div class="sc-icon">🔒</div><div><b>Page files erased on close</b>. nothing cached during your session carries over to the next one.</div></div>
+        <div class="sc-row"><div class="sc-icon">✂️</div><div><b>Website notes cleared automatically</b>. any data a site stored is wiped when you close. No site remembers you next time.</div></div>
+        <div class="sc-row"><div class="sc-icon">🗑️</div><div><b>Web app data wiped</b>. anything stored by browser apps during your session is fully removed on close.</div></div>
+        <div class="sc-row"><div class="sc-icon">🚫</div><div><b>No session snapshot saved</b>. Beldex never records what you had open. Nothing to restore because nothing was saved.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 6: NETWORK IDENTITY ─── -->
+<section id="network">
+<div class="sec-hd container" style="margin-top:2.5rem">
+  <div class="sec-pill pill-blue">📡 Your Location &amp; Identity Online</div>
+  <h2>Every Website You Visit Can See Where You Are. Beldex Hides It</h2>
+  <p>Every website you visit automatically sees your IP address. That reveals your city and internet provider. BelNet routes your connection through multiple stops so websites only ever see the last one.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div class="netid-compare">
+    <div class="ni-box">
+      <div class="ni-head bad">⚠ What Every Website Sees When You Use Chrome</div>
+      <div class="ni-body">
+        <div style="font-size:0.75rem;color:var(--sub);margin-bottom:0.65rem">Sent automatically with every page you visit:</div>
+        <div class="terminal-box">
+          <span class="tb-key">Your Number  : </span><span class="tb-ip">49.xx.xx.xx</span><br>
+          <span class="tb-key">Your City    : </span><span class="tb-loc">Chennai, India</span><br>
+          <span class="tb-key">Your Provider: </span><span class="tb-isp">Airtel</span>
+        </div>
+        <div style="font-size:0.78rem;color:var(--sub)">This is automatic. You do not choose to share it. Every site sees it.</div>
+      </div>
+    </div>
+    <div class="ni-box">
+      <div class="ni-head good">✓ What Websites See When You Use Beldex</div>
+      <div class="ni-body">
+        <div style="font-size:0.75rem;color:var(--sub);margin-bottom:0.65rem">How your request travels before reaching the website:</div>
+        <div class="route-flow">
+          <div class="rf-node rf-you">You</div>
+          <div class="rf-arr">→</div>
+          <div class="rf-node rf-isp">Provider only sees encrypted data</div>
+          <div class="rf-arr">→</div>
+          <div class="rf-node rf-node1">First BelNet Stop</div>
+          <div class="rf-arr">→</div>
+          <div class="rf-node rf-relay">Middle Stops</div>
+          <div class="rf-arr">→</div>
+          <div class="rf-node rf-site">Website</div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--sub);margin-top:0.75rem">The website only sees the <b style="color:var(--teal)">last stop address</b>. Your real city and provider are never shared.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="webrtc-warn">
+    <div class="ww-title">⚠ Your Location Can Leak Even Through a VPN</div>
+    <div class="ww-body">Browsers have a built-in feature for video calls that finds the fastest path between two devices. To do that, it reveals your real address. The dangerous part: <b>it bypasses VPNs completely</b>. You think you are hidden. You are not.</div>
+    <div class="ww-solution">
+      <span class="badge">How Beldex Fixes This</span>
+      That feature is switched off by default. No site can ever use it to find your real location.
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 7: AI ─── -->
+<section id="ai">
+<div class="sec-hd container" style="margin-top:2.5rem">
+  <div class="sec-pill pill-amber">🤖 Built-in AI</div>
+  <h2>There is an AI Assistant in the Browser. And It Never Reads Your Data</h2>
+  <p>Most AI tools send your content to a company server to process it. Beldex AI runs entirely on your device. What you read and ask never leaves your phone.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div class="ai-timeline">
+    <div class="ai-track">
+      <div class="ai-step">
+        <div class="ai-dot">01</div>
+        <div class="ai-card">
+          <div class="ai-num">Feature 01. Article Summariser</div>
+          <div class="ai-title">Too long to read? Get the key points in seconds</div>
+          <div class="ai-desc">Too long to read? Tap once. Beldex AI reads the page and gives you the key points. Works on any text-based page. news, research, docs, anything.</div>
+          <div class="ai-privacy">🔒 Article never leaves your device. AI reads it right there</div>
+        </div>
+      </div>
+      <div class="ai-step">
+        <div class="ai-dot">02</div>
+        <div class="ai-card">
+          <div class="ai-num">Feature 02. Video &amp; Podcast Summaries</div>
+          <div class="ai-title">Do not have time to watch? Get the takeaways instead</div>
+          <div class="ai-desc">Found a 40-minute video but only have 5 minutes? Beldex AI pulls out the main ideas. Works on YouTube and audio content.</div>
+          <div class="ai-privacy">🔒 No audio or video uploaded. All processing stays on device.</div>
+        </div>
+      </div>
+      <div class="ai-step">
+        <div class="ai-dot">03</div>
+        <div class="ai-card">
+          <div class="ai-num">Feature 03. Summaries Shaped by Your Question</div>
+          <div class="ai-title">Two people read the same page and get different summaries</div>
+          <div class="ai-desc">Tell the AI what you are looking for. Business angle? Technical side? It focuses on that. Same article, different questions, different summaries.</div>
+          <div class="ai-privacy">🔒 Your question and the page both stay on your device</div>
+        </div>
+      </div>
+      <div class="ai-step">
+        <div class="ai-dot">04</div>
+        <div class="ai-card">
+          <div class="ai-num">Feature 04. Chat With the AI</div>
+          <div class="ai-title">Ask follow-up questions like talking to someone who just read the page</div>
+          <div class="ai-desc">Ask for more detail, clarification, or a different angle. Like a knowledgeable friend who read the same thing. except private, and on your device.</div>
+          <div class="ai-privacy">🔒 AI learns privately on device. Never shares what you read or asked.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SECTION 8: BLOCKCHAIN ─── -->
+<section id="blockchain">
+<div class="sec-hd container" style="margin-top:2.5rem">
+  <div class="sec-pill pill-teal">⛓️ Blockchain &amp; Wallet</div>
+  <h2>Beldex Browser Has a Crypto Wallet Built In. No Extra App Needed</h2>
+  <p>Beldex Browser has a crypto wallet built in. No separate app needed. Your secret keys never leave your device.</p>
+  <div class="hline"></div>
+</div>
+<div class="content-block">
+  <div style="background:rgba(255,159,67,0.07);border:1px solid rgba(255,159,67,0.25);border-radius:8px;padding:0.75rem 1.1rem;font-size:0.82rem;color:var(--sub);margin-bottom:1rem;line-height:1.7">
+    <span style="color:var(--orange);font-weight:700">Worth knowing: </span>The browser talks to a <em style="color:var(--amber)">network node</em> first, and the node talks to the blockchain. This is how all blockchain apps work.
+  </div>
+  <div class="chain-blocks">
+    <div class="chain-block">
+      <div class="cb-head wallet"><div class="cb-icon">💼</div> Your Built-in Wallet</div>
+      <div class="cb-note">Everything wallet-related happens on your device. Your secret keys are created here, stored here, never sent anywhere.</div>
+      <div class="cb-feature"><div class="cbf-arrow blue-bg">→</div> Creates wallet keys on your device. never on a server</div>
+      <div class="cb-feature"><div class="cbf-arrow blue-bg">→</div> Stores keys securely on your device only</div>
+      <div class="cb-feature"><div class="cbf-arrow blue-bg">→</div> Signs transactions without exposing your keys</div>
+      <div class="cb-feature"><div class="cbf-arrow blue-bg">→</div> Manage multiple wallets in one place</div>
+    </div>
+    <div class="chain-block">
+      <div class="cb-head rpc"><div class="cb-icon">🔗</div> How It Talks to the Blockchain</div>
+      <div class="cb-note">Once you approve a transaction, this layer delivers it to the blockchain through a trusted node.</div>
+      <div class="cb-feature"><div class="cbf-arrow">→</div> Connects to the Beldex network through trusted nodes</div>
+      <div class="cb-feature"><div class="cbf-arrow">→</div> Sends your approved transactions to the network</div>
+      <div class="cb-feature"><div class="cbf-arrow">→</div> Checks your wallet balance whenever you need it</div>
+      <div class="cb-feature"><div class="cbf-arrow">→</div> Reads information from smart contracts and dApps</div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ─── SUMMARY SHIELDS ─── -->
+<section>
+<div class="shields-wrap">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);text-align:center;margin-bottom:1.1rem">In Plain English. What Beldex Protects You From</div>
+  <div class="shields-grid">
+    <div class="shield-card"><div class="shield-title">No Tracking Files</div><div class="shield-sub">Cookies are deleted when you close. No site remembers you.</div></div>
+    <div class="shield-card"><div class="shield-title">Device Tests All Faked</div><div class="shield-sub">Screen, sound, and font tests all get made-up answers.</div></div>
+    <div class="shield-card"><div class="shield-title">Connection Always Locked</div><div class="shield-sub">Every site you visit is encrypted. No exceptions.</div></div>
+    <div class="shield-card"><div class="shield-title">Location Always Hidden</div><div class="shield-sub">Websites see a relay address, never yours.</div></div>
+    <div class="shield-card"><div class="shield-title">History Deleted on Close</div><div class="shield-sub">Nothing is written down. Open the browser fresh every time.</div></div>
+    <div class="shield-card"><div class="shield-title">No Secret Location Leaks</div><div class="shield-sub">Even the loophole that bypasses VPNs is blocked.</div></div>
+    <div class="shield-card"><div class="shield-title">AI Works On Your Device</div><div class="shield-sub">What you read and ask never leaves your phone.</div></div>
+    <div class="shield-card"><div class="shield-title">Wallet Keys Stay With You</div><div class="shield-sub">Created on your device, stored on your device, never uploaded.</div></div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOW IT PROTECTS YOU. STEP BY STEP (MISSION LOG)
+═══════════════════════════════════════════════════════════ -->
+<section id="protection" style="border-top: 2px solid rgba(0,229,192,0.2); margin-top: 1rem;">
+
+<!-- Mission Hero -->
+<div class="mission-hero">
+  <div class="mission-badge">Finishing Touch · Full Session Walkthrough</div>
+  <h2>Follow Along: What Beldex Does<br><em>Every Time You Browse</em></h2>
+  <p>Open the browser. Visit a website. Use AI. Close it. Here is what Beldex is doing in the background. every single time.</p>
+
+  <!-- Session status bar -->
+  <div style="display:inline-flex;align-items:center;gap:0;background:var(--s2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:0.5rem;">
+    <div style="padding:0.55rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);border-right:1px solid var(--border);">Session Status</div>
+    <div style="padding:0.55rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;color:var(--orange);border-right:1px solid var(--border);">● OPEN</div>
+    <div style="padding:0.55rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--muted);">10 Protections Active</div>
+    <div style="padding:0.55rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--teal);border-left:1px solid var(--border);">0 Threats Got Through</div>
+  </div>
+</div>
+
+<!-- ─── PHASE 1: LAUNCH ─── -->
+<div class="phase-label">
+  <div class="phase-pill ph-launch">Phase 1. Launch</div>
+  <div class="phase-line"></div>
+  <div class="phase-desc">Steps 1–2</div>
+</div>
+
+<div class="mission-wrap">
+
+  <!-- STEP 1 -->
+  <div class="ms-row">
+    <div class="ms-left">
+      <div class="ms-card" style="--card-color:var(--orange);">
+        <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:var(--orange);border-radius:12px 0 0 12px;"></div>
+        <div class="mc-phase" style="color:var(--orange);">Step 01 · You Open the Browser</div>
+        <div class="mc-event">You start completely fresh. every single time</div>
+        <div class="mc-what">Think of a hotel room. When you check in, it is completely clean. No trace of the last guest. Beldex starts every session the same way. Everything from last time is already gone.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Chrome / Edge:</b> Open the browser and websites already recognise you from leftover files before you type a single word.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> Clears out everything from last time before you start. Every session is a fresh room.</div></div>
+        </div>
+        <a class="mc-badge" href="#history" style="color:var(--orange);border-color:rgba(255,159,67,0.35);background:rgba(255,159,67,0.07);">↗ See: History &amp; Storage section</a>
+      </div>
+    </div>
+    <div class="ms-mid">
+      <div class="ms-node n-orange"><div class="ms-node-icon">🚀</div><div class="ms-node-num">01</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-right ms-empty"></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="ms-row flip">
+    <div class="ms-right ms-empty"></div>
+    <div class="ms-mid">
+      <div class="ms-node n-orange"><div class="ms-node-icon">🌐</div><div class="ms-node-num">02</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-left">
+      <div class="ms-card side-right">
+        <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:var(--orange);border-radius:0 12px 12px 0;"></div>
+        <div class="mc-phase" style="color:var(--orange);">Step 02 · Before Any Page Opens</div>
+        <div class="mc-event">A sneaky address-leak trick gets blocked before you visit anything</div>
+        <div class="mc-what">There is a hidden feature websites use to find your real location. It bypasses VPNs completely. Beldex switches it off before you open a single page.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Chrome / Edge:</b> This runs in the background on every page. Any site can silently use it to find your real location, even through a VPN.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> Turns it off completely before any page opens. No site can ever use it. Door locked before anyone tries.</div></div>
+        </div>
+        <a class="mc-badge" href="#network" style="color:var(--orange);border-color:rgba(255,159,67,0.35);background:rgba(255,159,67,0.07);">↗ See: Network Identity section</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mission-wrap phase 1 -->
+
+<!-- ─── PHASE 2: NAVIGATE ─── -->
+<div class="phase-label">
+  <div class="phase-pill ph-nav">Phase 2. Navigate</div>
+  <div class="phase-line"></div>
+  <div class="phase-desc">Steps 3–4</div>
+</div>
+
+<div class="mission-wrap">
+
+  <!-- STEP 3 -->
+  <div class="ms-row">
+    <div class="ms-left">
+      <div class="ms-card">
+        <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:var(--amber);border-radius:12px 0 0 12px;"></div>
+        <div class="mc-phase" style="color:var(--amber);">Step 03 · You Type a Website Address</div>
+        <div class="mc-event">Your connection is locked before you land on the page</div>
+        <div class="mc-what">HTTP is like a postcard. Anyone can read it. HTTPS is a sealed envelope. Only you and the site can read it. Beldex forces every page to use HTTPS.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Chrome / Edge:</b> Sometimes loads pages without encryption, or mixes safe and unsafe content. You see a warning you can just click past.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> Refuses to load any unencrypted page. No warning to click past. it just blocks it.</div></div>
+        </div>
+        <a class="mc-badge" href="#https" style="color:var(--amber);border-color:rgba(255,192,72,0.35);background:rgba(255,192,72,0.07);">↗ See: HTTPS / Network Security section</a>
+      </div>
+    </div>
+    <div class="ms-mid">
+      <div class="ms-node n-amber"><div class="ms-node-icon">⌨️</div><div class="ms-node-num">03</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-right ms-empty"></div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="ms-row flip">
+    <div class="ms-right ms-empty"></div>
+    <div class="ms-mid">
+      <div class="ms-node n-amber"><div class="ms-node-icon">🔍</div><div class="ms-node-num">04</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-left">
+      <div class="ms-card side-right">
+        <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:var(--amber);border-radius:0 12px 12px 0;"></div>
+        <div class="mc-phase" style="color:var(--amber);">Step 04 · The Website Name Gets Looked Up</div>
+        <div class="mc-event">Your internet provider never finds out which websites you are visiting</div>
+        <div class="mc-what">Before connecting to a site, your browser looks up its address. In Chrome, your internet provider handles this lookup. So they already know which site you are visiting before the page even loads. Beldex routes this privately.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Chrome / Edge:</b> Your provider sees every site name you look up, the exact time, and that it was you. Like an operator writing down every number you ask for.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> Looks up site names through a private path. Your provider knows you are online. But they have no idea which sites you are visiting.</div></div>
+        </div>
+        <a class="mc-badge" href="#https" style="color:var(--amber);border-color:rgba(255,192,72,0.35);background:rgba(255,192,72,0.07);">↗ See: ISP visibility diagram</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mission-wrap phase 2 -->
+
+<!-- ─── PHASE 3: ROUTING ─── -->
+<div class="phase-label">
+  <div class="phase-pill ph-route">Phase 3. Routing</div>
+  <div class="phase-line"></div>
+  <div class="phase-desc">Steps 5–6</div>
+</div>
+
+<div class="mission-wrap">
+
+  <!-- STEP 5 -->
+  <div class="ms-row">
+    <div class="ms-left">
+      <div class="ms-card">
+        <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:var(--blue);border-radius:12px 0 0 12px;"></div>
+        <div class="mc-phase" style="color:var(--blue);">Step 05 · Your Request Leaves Your Device</div>
+        <div class="mc-event">Your real location is hidden before the message is even sent</div>
+        <div class="mc-what">Every request has your home address on it. Anyone who handles it sees where it came from. BelNet picks up your request first and replaces your real address before it goes anywhere.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Chrome / Edge:</b> Your request goes out with your real address visible. Your provider sees it. Every site sees it. It reveals your city and internet company.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> BelNet hides your real address before anything leaves. The first stop sees your address but not where your request is going.</div></div>
+        </div>
+        <a class="mc-badge" href="#network" style="color:var(--blue);border-color:rgba(77,184,255,0.35);background:rgba(77,184,255,0.07);">↗ See: Network Identity. BelNet routing</a>
+      </div>
+    </div>
+    <div class="ms-mid">
+      <div class="ms-node n-blue"><div class="ms-node-icon">🌐</div><div class="ms-node-num">05</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-right ms-empty"></div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="ms-row flip">
+    <div class="ms-right ms-empty"></div>
+    <div class="ms-mid">
+      <div class="ms-node n-blue"><div class="ms-node-icon">🔀</div><div class="ms-node-num">06</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-left">
+      <div class="ms-card side-right">
+        <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:var(--blue);border-radius:0 12px 12px 0;"></div>
+        <div class="mc-phase" style="color:var(--blue);">Step 06 · Your Request Travels to the Website</div>
+        <div class="mc-event">It takes a secret multi-stop journey so nobody can trace it back to you</div>
+        <div class="mc-what">Think of passing a secret note around a classroom. The first person knows who wrote it but not where it is going. The last person delivers it without knowing who sent it. That is how your request travels through BelNet.</div>
+
+        <!-- Mini route diagram -->
+        <div style="margin:0.85rem 0 0.9rem;background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:0.9rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.65rem;">Your Request Journey</div>
+          <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;">
+            <div style="background:rgba(77,184,255,0.12);border:1px solid rgba(77,184,255,0.3);border-radius:5px;padding:0.3rem 0.6rem;font-size:0.68rem;font-weight:700;color:var(--blue);">📱 You</div>
+            <div style="color:var(--dim);font-size:0.8rem;">→</div>
+            <div style="background:rgba(255,159,67,0.1);border:1px solid rgba(255,159,67,0.3);border-radius:5px;padding:0.3rem 0.6rem;font-size:0.65rem;font-weight:600;color:var(--orange);">First Stop<br><span style="font-size:0.55rem;opacity:0.7;">knows who you are, not where you are going</span></div>
+            <div style="color:var(--dim);font-size:0.8rem;">→</div>
+            <div style="background:rgba(179,157,219,0.1);border:1px solid rgba(179,157,219,0.3);border-radius:5px;padding:0.3rem 0.6rem;font-size:0.65rem;font-weight:600;color:var(--violet);">Middle Stops<br><span style="font-size:0.55rem;opacity:0.7;">just passes it along, knows nothing</span></div>
+            <div style="color:var(--dim);font-size:0.8rem;">→</div>
+            <div style="background:rgba(61,220,151,0.1);border:1px solid rgba(61,220,151,0.3);border-radius:5px;padding:0.3rem 0.6rem;font-size:0.65rem;font-weight:600;color:var(--green);">Last Stop<br><span style="font-size:0.55rem;opacity:0.7;">delivers it, does not know who sent it</span></div>
+            <div style="color:var(--dim);font-size:0.8rem;">→</div>
+            <div style="background:rgba(0,229,192,0.1);border:1px solid rgba(0,229,192,0.3);border-radius:5px;padding:0.3rem 0.6rem;font-size:0.68rem;font-weight:700;color:var(--teal);">🌐 Website</div>
+          </div>
+          <div style="margin-top:0.65rem;font-size:0.7rem;color:var(--sub);">The website only ever sees the Last Stop address. <b style="color:var(--teal)">it has no idea you were ever involved.</b></div>
+        </div>
+
+        <div class="mc-shield" style="margin-top:0;"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>What this means:</b> To spy on you, someone would need to control every relay point at once. each run by a different person in a different place. That is practically impossible.</div></div>
+        <a class="mc-badge" href="#https" style="color:var(--blue);border-color:rgba(77,184,255,0.35);background:rgba(77,184,255,0.07);">↗ See: MITM attack diagram</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mission-wrap phase 3 -->
+
+<!-- ─── PHASE 4: PAGE LOAD ─── -->
+<div class="phase-label">
+  <div class="phase-pill ph-load">Phase 4. Page Load</div>
+  <div class="phase-line"></div>
+  <div class="phase-desc">Steps 7–9</div>
+</div>
+
+<div class="mission-wrap">
+
+  <!-- STEP 7 -->
+  <div class="ms-row">
+    <div class="ms-left">
+      <div class="ms-card">
+        <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:var(--violet);border-radius:12px 0 0 12px;"></div>
+        <div class="mc-phase" style="color:var(--violet);">Step 07 · The Page Starts Loading</div>
+        <div class="mc-event">Invisible spy tools hidden on the page get stopped before they start</div>
+        <div class="mc-what">Most pages have dozens of hidden programs from advertisers. The moment a page loads, they run silently and track what you read. You would never know. Beldex stops them before they run.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Chrome / Edge:</b> Opening a news article can silently activate dozens of trackers from Google, Facebook, and ad companies. all sending your behaviour to their servers.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> Blocks all hidden trackers before the page finishes loading. You get the content. The trackers get nothing.</div></div>
+        </div>
+        <a class="mc-badge" href="#risks" style="color:var(--violet);border-color:rgba(179,157,219,0.35);background:rgba(179,157,219,0.07);">↗ See: Risk overview</a>
+      </div>
+    </div>
+    <div class="ms-mid">
+      <div class="ms-node n-violet"><div class="ms-node-icon">📄</div><div class="ms-node-num">07</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-right ms-empty"></div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="ms-row flip">
+    <div class="ms-right ms-empty"></div>
+    <div class="ms-mid">
+      <div class="ms-node n-violet"><div class="ms-node-icon">🖥️</div><div class="ms-node-num">08</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-left">
+      <div class="ms-card side-right">
+        <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:var(--violet);border-radius:0 12px 12px 0;"></div>
+        <div class="mc-phase" style="color:var(--violet);">Step 08 · The Page Appears on Your Screen</div>
+        <div class="mc-event">Three hidden identity tests fire at once. Beldex answers all three with fake information</div>
+        <div class="mc-what">Even without cookies, sites run three silent tests. They check your screen, your sound, and your fonts. Together these form a fingerprint unique to you. Beldex does not block the tests. It feeds them fake answers.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Test 1. Screen:</b> Site draws invisible shape → reveals your screen and graphics chip.<br><b>Test 2. Sound:</b> Site plays silent tone → reveals your audio hardware.<br><b>Test 3. Fonts:</b> Site checks installed fonts → your exact mix is surprisingly unique.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex:</b> Fake data for all three. Random screen result. Standard sound number. Basic fonts only. Every Beldex user looks exactly the same.</div></div>
+        </div>
+        <a class="mc-badge" href="#fingerprint" style="color:var(--violet);border-color:rgba(179,157,219,0.35);background:rgba(179,157,219,0.07);">↗ See: Full Fingerprinting breakdown</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 9 -->
+  <div class="ms-row">
+    <div class="ms-left">
+      <div class="ms-card">
+        <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:var(--amber);border-radius:12px 0 0 12px;"></div>
+        <div class="mc-phase" style="color:var(--amber);">Step 09 · You Ask the AI to Summarise the Page</div>
+        <div class="mc-event">The AI reads the page for you without the page ever leaving your device</div>
+        <div class="mc-what">You tap the AI button. The AI reads the page right there on your device. The article never leaves. Your question never leaves. Everything stays on your phone.</div>
+        <div class="mc-split">
+          <div class="mc-threat"><div class="mc-threat-ico">⚠</div><div class="mc-threat-txt"><b>Other AI tools:</b> Send the full article and your question to a company server. That company sees what you are reading and asked about it.</div></div>
+          <div class="mc-shield"><div class="mc-threat-ico">🛡</div><div class="mc-shield-txt"><b>Beldex AI:</b> Everything happens on your own device. Summarising, videos, questions. Nothing leaves.</div></div>
+        </div>
+        <a class="mc-badge" href="#ai" style="color:var(--amber);border-color:rgba(255,192,72,0.35);background:rgba(255,192,72,0.07);">↗ See: Beldex Browser AI section</a>
+      </div>
+    </div>
+    <div class="ms-mid">
+      <div class="ms-node n-amber"><div class="ms-node-icon">🤖</div><div class="ms-node-num">09</div></div>
+      <div class="ms-vline"></div>
+    </div>
+    <div class="ms-right ms-empty"></div>
+  </div>
+
+</div><!-- /mission-wrap phase 4 -->
+
+<!-- ─── PHASE 5: CLOSE ─── -->
+<div class="phase-label">
+  <div class="phase-pill ph-close">Phase 5. Session Close</div>
+  <div class="phase-line"></div>
+  <div class="phase-desc">Step 10 · The Final Wipe</div>
+</div>
+
+<div class="mission-wrap no-timeline" style="padding-bottom:1.5rem;">
+
+  <!-- STEP 10. special full-width treatment -->
+  <div style="position:relative;z-index:1;padding:0.5rem 0;">
+    <!-- center node -->
+    <div style="display:flex;justify-content:center;margin-bottom:1.25rem;">
+      <div style="text-align:center;">
+        <div class="ms-node n-teal" style="width:72px;height:72px;margin:0 auto;animation:missionPulse 2.5s ease-in-out infinite;">
+          <div style="font-size:1.8rem;">🔥</div>
+          <div class="ms-node-num" style="width:22px;height:22px;font-size:0.55rem;">10</div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal);margin-top:0.5rem;">Final Step</div>
+      </div>
+    </div>
+
+    <!-- Full-width wipe card -->
+    <div style="background:linear-gradient(135deg,rgba(0,229,192,0.06) 0%,rgba(0,229,192,0.03) 100%);border:1px solid rgba(0,229,192,0.3);border-radius:14px;padding:2rem 2rem;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);"></div>
+
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--teal);margin-bottom:0.4rem;">Step 10 · You Close the Browser</div>
+        <div style="font-family:'Oxanium',monospace;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:0.5rem;">Everything Is Deleted. Right Now. Automatically.</div>
+        <div style="font-size:0.85rem;color:var(--sub);max-width:580px;margin:0 auto;">The moment you press the X button to close Beldex Browser, it runs through a complete cleanup. Every site you visited, every image it stored to load faster, every cookie, every bit of data websites left behind, all of it gets permanently deleted. The next time you open the browser, there is no record this session ever happened.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.25rem;">
+        <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,192,0.2);border-radius:9px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.3rem;margin-bottom:0.4rem;">📜</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--teal);margin-bottom:0.2rem;">Your Visit List</div>
+          <div style="font-size:0.68rem;color:var(--sub);">Every site you visited. Deleted. Gone forever.</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,192,0.2);border-radius:9px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.3rem;margin-bottom:0.4rem;">💾</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--teal);margin-bottom:0.2rem;">Stored Page Files</div>
+          <div style="font-size:0.68rem;color:var(--sub);">Images and files saved to load pages faster. All wiped when you close.</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,192,0.2);border-radius:9px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.3rem;margin-bottom:0.4rem;">🍪</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--teal);margin-bottom:0.2rem;">All Tracking Files</div>
+          <div style="font-size:0.68rem;color:var(--sub);">Every cookie gone. No site remembers you next time.</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,192,0.2);border-radius:9px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.3rem;margin-bottom:0.4rem;">🗃️</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--teal);margin-bottom:0.2rem;">Website Data</div>
+          <div style="font-size:0.68rem;color:var(--sub);">Small bits websites stored on your device. Cleared.</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,192,0.2);border-radius:9px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.3rem;margin-bottom:0.4rem;">🔍</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--teal);margin-bottom:0.2rem;">App Data</div>
+          <div style="font-size:0.68rem;color:var(--sub);">Larger files from web apps. Removed entirely.</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,192,0.2);border-radius:9px;padding:0.85rem;text-align:center;">
+          <div style="font-size:1.3rem;margin-bottom:0.4rem;">🔄</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--teal);margin-bottom:0.2rem;">"Restore My Session" Data</div>
+          <div style="font-size:0.68rem;color:var(--sub);">Beldex never saves this. Nothing to restore.</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--sub);line-height:1.9;">
+        <span style="color:var(--teal);">✓</span> Visit list deleted<span style="color:var(--dim);"> .............. </span><span style="color:var(--green);">DONE</span><br>
+        <span style="color:var(--teal);">✓</span> Stored page files cleared<span style="color:var(--dim);"> ......... </span><span style="color:var(--green);">DONE</span><br>
+        <span style="color:var(--teal);">✓</span> All tracking cookies removed<span style="color:var(--dim);"> ....... </span><span style="color:var(--green);">DONE</span><br>
+        <span style="color:var(--teal);">✓</span> Website data wiped<span style="color:var(--dim);"> ............. </span><span style="color:var(--green);">DONE</span><br>
+        <span style="color:var(--teal);">✓</span> App data removed<span style="color:var(--dim);"> ............... </span><span style="color:var(--green);">DONE</span><br>
+        <span style="color:var(--teal);">✓</span> Session snapshot discarded<span style="color:var(--dim);"> ........ </span><span style="color:var(--green);">DONE</span><br>
+        <span style="color:var(--green);font-weight:700;">→ Session ended. Nothing left behind. You were never here.</span>
+      </div>
+      <a class="mc-badge" href="#history" style="margin-top:0.85rem;color:var(--teal);border-color:rgba(0,229,192,0.35);background:rgba(0,229,192,0.07);">↗ See: History &amp; Storage section</a>
+    </div>
+  </div>
+
+</div><!-- /mission-wrap phase 5 -->
+
+
+<!-- ═══ GRAND FINALE ═══ -->
+<div class="mission-finale">
+  <div class="finale-card">
+    <div class="finale-icon">🛡️</div>
+    <div class="finale-status">Session Complete · All 10 Protections Worked</div>
+    <div class="finale-title">SECURED.</div>
+    <div class="finale-sub">You visited sites. Read articles. Used AI. Closed the browser. No record exists. No company knows where you went.</div>
+
+    <!-- Stats -->
+    <div class="finale-stats">
+      <div class="fs-stat"><div class="fs-num">10</div><div class="fs-lbl">Protections Active</div></div>
+      <div class="fs-stat"><div class="fs-num">0</div><div class="fs-lbl">Trackers Got Through</div></div>
+      <div class="fs-stat"><div class="fs-num">0</div><div class="fs-lbl">Personal Data Sent Out</div></div>
+      <div class="fs-stat"><div class="fs-num">∅</div><div class="fs-lbl">Evidence Left Behind</div></div>
+    </div>
+
+    <div class="finale-row">
+      <div class="fr-item"><span class="fr-icon">🍪</span>Tracking Files Blocked</div>
+      <div class="fr-item"><span class="fr-icon">🫆</span>Device Tests Faked</div>
+      <div class="fr-item"><span class="fr-icon">🔒</span>Encrypted Connection</div>
+      <div class="fr-item"><span class="fr-icon">👁️</span>Location Hidden</div>
+      <div class="fr-item"><span class="fr-icon">🌐</span>Site Lookups Private</div>
+      <div class="fr-item"><span class="fr-icon">📡</span>Address Leak Blocked</div>
+      <div class="fr-item"><span class="fr-icon">😈</span>Spy-in-the-Middle Blocked</div>
+      <div class="fr-item"><span class="fr-icon">🤖</span>AI Stays On Device</div>
+      <div class="fr-item"><span class="fr-icon">📜</span>History Wiped on Close</div>
+      <div class="fr-item"><span class="fr-icon">💼</span>Wallet Keys Never Leave</div>
+    </div>
+
+    <div class="finale-note">beldex-guide-project.vercel.app · Every protection covered, every step explained.</div>
+  </div>
+</div>
+
+</section>
+<!-- ═══ END: HOW IT PROTECTS YOU ═══ -->
+
+
+<footer class="page-footer">
+  beldex-browser-explained.html · Beldex Ecosystem Guide · beldex-guide-project.vercel.app
+</footer>
+
+<script>
+// Highlight active nav link on scroll
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.tb-link');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+  links.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === '#' + cur) l.classList.add('active');
+  });
+});
+
+// Animate steps into view on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.ms-card').forEach((el, i) => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = `opacity 0.45s ease ${i * 0.06}s, transform 0.45s ease ${i * 0.06}s`;
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
