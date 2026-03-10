@@ -81,51 +81,51 @@ function renderCoreTechStack() {
   }).join('');
 }
 
-var sectionObserver = null;
-var sectionNavInitialized = false;
-
-function initSectionNav() {
-  var navLinks = document.querySelectorAll('.section-nav-link');
-  var panel = document.getElementById('evm-deep-dive');
-  if (!navLinks.length || !panel) return;
-
-  // Only bind click handlers once
-  if (!sectionNavInitialized) {
-    navLinks.forEach(function (link) {
-      link.addEventListener('click', function () {
-        var targetId = link.getAttribute('data-section');
-        var target = document.getElementById(targetId);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-    sectionNavInitialized = true;
-  }
-
-  // Scroll-spy: highlight active section (re-init observer each time)
-  if (sectionObserver) {
-    sectionObserver.disconnect();
-  }
-
-  var sections = panel.querySelectorAll('.diagram[id^="section-"]');
-  sectionObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        navLinks.forEach(function (l) { l.classList.remove('active'); });
-        var activeLink = document.querySelector(
-          '.section-nav-link[data-section="' + entry.target.id + '"]'
-        );
-        if (activeLink) activeLink.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-20% 0px -60% 0px' });
-
-  sections.forEach(function (section) { sectionObserver.observe(section); });
-}
-
 export function initTabs() {
   document.body.classList.add('js-loaded');
+
+  var sectionObserver = null;
+  var sectionNavInitialized = false;
+
+  function initSectionNav() {
+    var navLinks = document.querySelectorAll('.section-nav-link');
+    var panel = document.getElementById('evm-deep-dive');
+    if (!navLinks.length || !panel) return;
+
+    // Only bind click handlers once
+    if (!sectionNavInitialized) {
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          var targetId = link.getAttribute('data-section');
+          var target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+      sectionNavInitialized = true;
+    }
+
+    // Scroll-spy: highlight active section (re-init observer each time)
+    if (sectionObserver) {
+      sectionObserver.disconnect();
+    }
+
+    var sections = panel.querySelectorAll('.diagram[id^="section-"]');
+    sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(function (l) { l.classList.remove('active'); });
+          var activeLink = document.querySelector(
+            '.section-nav-link[data-section="' + entry.target.id + '"]'
+          );
+          if (activeLink) activeLink.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -60% 0px' });
+
+    sections.forEach(function (section) { sectionObserver.observe(section); });
+  }
 
   var tabButtons = Array.from(document.querySelectorAll('.nav-tab[data-tab]'));
   var tabPanels = Array.from(document.querySelectorAll('.tab-content[role="tabpanel"]'));

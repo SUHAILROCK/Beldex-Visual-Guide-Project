@@ -1,4 +1,6 @@
 /* Animation module */
+import { throttleRaf } from './utils.js';
+
 export function initAnimations() {
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
@@ -55,9 +57,9 @@ export function initAnimations() {
 
   var scrollTopBtn = document.getElementById('scrollTopBtn');
   if (scrollTopBtn) {
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', throttleRaf(function () {
       scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
-    });
+    }));
     scrollTopBtn.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });

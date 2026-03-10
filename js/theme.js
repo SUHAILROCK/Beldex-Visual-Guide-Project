@@ -10,6 +10,8 @@ export function initTheme() {
 
   if (!themeToggle) return;
 
+  var themeTransitionTimer = null;
+
   themeToggle.addEventListener('click', function () {
     var isCurrentlyLight = document.documentElement.getAttribute('data-theme') === 'light';
     var newTheme = isCurrentlyLight ? 'dark' : 'light';
@@ -26,7 +28,8 @@ export function initTheme() {
       localStorage.setItem('beldex-theme', 'dark');
     }
 
-    setTimeout(function () {
+    if (themeTransitionTimer) clearTimeout(themeTransitionTimer);
+    themeTransitionTimer = setTimeout(function () {
       document.documentElement.classList.remove('theme-transitioning');
     }, 500);
   });
