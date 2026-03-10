@@ -183,4 +183,16 @@ export function initPriceWidget() {
   if (!refreshTimer) {
     refreshTimer = setInterval(fetchPrice, REFRESH_MS);
   }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      clearInterval(refreshTimer);
+      refreshTimer = null;
+    } else {
+      fetchPrice();
+      if (!refreshTimer) {
+        refreshTimer = setInterval(fetchPrice, REFRESH_MS);
+      }
+    }
+  });
 }
