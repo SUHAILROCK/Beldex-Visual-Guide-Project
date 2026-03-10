@@ -1,6 +1,7 @@
 /**
  * Search / filter functionality for Exchanges and Official Links tabs
  */
+import { debounce } from './utils.js';
 
 /**
  * Generic card‐filter that hides non‐matching cards and collapses
@@ -60,9 +61,9 @@ function filterCards(containerId, cardSelector, query, noResultsId) {
 function initExchangeSearch() {
   var input = document.getElementById('exchange-search');
   if (!input) return;
-  input.addEventListener('input', function () {
+  input.addEventListener('input', debounce(function () {
     filterCards('exchanges', '.exchange-card', input.value, 'exchange-no-results');
-  });
+  }, 300));
 }
 
 /**
@@ -71,9 +72,9 @@ function initExchangeSearch() {
 function initLinksSearch() {
   var input = document.getElementById('links-search');
   if (!input) return;
-  input.addEventListener('input', function () {
+  input.addEventListener('input', debounce(function () {
     filterCards('links', '.official-link-card', input.value, 'links-no-results');
-  });
+  }, 300));
 }
 
 /**
