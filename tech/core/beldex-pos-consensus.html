@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex PoS Consensus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0d1117;--ink2:#141b24;--ink3:#1b2535;--ink4:#232f42;--gold:#e8a420;--gold2:#f5c842;--gold3:#fde68a;--rust:#c25c1a;--sage:#6bab7c;--sage2:#a8d5b5;--smoke:#9bafc8;--dim:#4a5f7a;--text:#edf2f9;--sub:#9bafc8}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;overflow-x:hidden}
+.radar-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.radar-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(232,164,32,0.06) 0%,transparent 60%)}
+@keyframes sweep{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+.radar-sweep{position:absolute;width:1200px;height:1200px;top:0;left:50%;transform-origin:center;animation:sweep 12s linear infinite;background:conic-gradient(from 0deg,transparent 0deg,transparent 340deg,rgba(232,164,32,0.04) 355deg,rgba(232,164,32,0.12) 360deg);border-radius:50%}
+nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,0.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(232,164,32,0.15);display:flex;align-items:center;padding:0 2rem;height:54px;gap:1rem;overflow-x:auto}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.12em;color:var(--gold);flex-shrink:0;line-height:1}
+.nav-brand span{color:var(--smoke)}
+.nav-div{width:1px;height:22px;background:var(--dim);flex-shrink:0}
+.nav-links{display:flex;gap:0.1rem;flex-shrink:0}
+.nav-a{font-family:'Space Mono',monospace;font-size:0.56rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--smoke);text-decoration:none;padding:0.28rem 0.65rem;border-radius:3px;transition:all 0.18s;white-space:nowrap}
+.nav-a:hover,.nav-a.on{color:var(--gold);background:rgba(232,164,32,0.08)}
+.nav-cta{margin-left:auto;flex-shrink:0;font-family:'Space Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:0.3rem 0.9rem;border-radius:3px;text-decoration:none;transition:background 0.18s}
+.nav-cta:hover{background:var(--gold2)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
+.sec-gap{height:5rem}.half-gap{height:2.5rem}
+.sec-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem}
+.se-line{flex:0 0 28px;height:2px;background:var(--gold)}
+.se-text{font-family:'Space Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold)}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.8rem);line-height:0.95;letter-spacing:0.04em;color:var(--text);margin-bottom:1rem}
+.sec-h em{color:var(--gold);font-style:normal}
+.sec-sub{font-size:0.95rem;color:#b0c0d8;line-height:1.75;max-width:580px}
+#hero{min-height:92vh;display:flex;align-items:center;position:relative;z-index:1}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:5rem 2rem 4rem;max-width:1080px;margin:0 auto}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-eyebrow{font-family:'Space Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem}
+.hero-eyebrow::before{content:'';display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.5s ease-in-out infinite}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6.5vw,5.5rem);line-height:0.93;letter-spacing:0.03em;color:var(--text);margin-bottom:1.5rem}
+.hero-h1 em{color:var(--gold);font-style:normal;display:block}
+.hero-desc{font-size:0.95rem;color:#b0c0d8;line-height:1.75;max-width:420px;margin-bottom:2rem}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--dim);border-radius:6px;overflow:hidden;background:var(--dim)}
+.hs-item{background:var(--ink2);padding:0.85rem 0.75rem;text-align:center}
+.hs-num{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1;letter-spacing:0.04em;color:var(--gold);display:block}
+.hs-label{font-family:'Space Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--smoke);margin-top:0.15rem}
+.hero-right{display:flex;justify-content:center;align-items:center}
+.radar-dial{position:relative;width:340px;height:340px}
+.rd-ring{position:absolute;border-radius:50%;border:1px solid;transform:translate(-50%,-50%);top:50%;left:50%}
+.rd-r1{width:340px;height:340px;border-color:rgba(232,164,32,0.12)}
+.rd-r2{width:240px;height:240px;border-color:rgba(232,164,32,0.18)}
+.rd-r3{width:140px;height:140px;border-color:rgba(232,164,32,0.28)}
+.rd-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:rgba(232,164,32,0.12);border:2px solid rgba(232,164,32,0.5);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:0.5rem;font-weight:700;color:var(--gold);letter-spacing:0.06em;text-transform:uppercase;text-align:center;line-height:1.3;z-index:2;box-shadow:0 0 24px rgba(232,164,32,0.2)}
+@keyframes dialSweep{from{transform:translate(0,0) rotate(0deg)}to{transform:translate(0,0) rotate(360deg)}}
+.rd-sweep{position:absolute;top:50%;left:50%;transform-origin:0 0;width:170px;height:170px;animation:dialSweep 6s linear infinite;background:conic-gradient(from 0deg,transparent 340deg,rgba(232,164,32,0.06) 355deg,rgba(232,164,32,0.25) 360deg);clip-path:polygon(0 0,100% 100%,0 100%)}
+@keyframes dialOrbit{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes dialCounter{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+.rd-orbit{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:340px;height:340px;border-radius:50%;animation:dialOrbit 18s linear infinite;z-index:3}
+.rd-node{position:absolute;width:42px;height:42px;border-radius:50%;background:var(--ink3);border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);transition:border-color 0.3s;z-index:3}
+.rd-node-txt{animation:dialCounter 18s linear infinite;font-family:'Space Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.04em;color:var(--smoke)}
+.rd-node.active{border-color:rgba(232,164,32,0.5);background:rgba(232,164,32,0.06);box-shadow:0 0 10px rgba(232,164,32,0.15)}
+.rd-node.active .rd-node-txt{color:var(--gold)}
+.rd-node.producer{width:52px;height:52px;border-color:var(--gold2);background:rgba(245,200,66,0.12);box-shadow:0 0 22px rgba(245,200,66,0.4)}
+.rd-node.producer .rd-node-txt{color:var(--gold2);font-size:0.65rem}
+.rd-cross-h,.rd-cross-v{position:absolute;background:rgba(232,164,32,0.07)}
+.rd-cross-h{width:340px;height:1px;top:50%;left:0;transform:translateY(-50%)}
+.rd-cross-v{width:1px;height:340px;left:50%;top:0;transform:translateX(-50%)}
+.analogy-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dim);border:1px solid var(--dim);border-radius:8px;overflow:hidden}
+.ana{background:var(--ink2);padding:1.75rem 1.5rem;position:relative;transition:background 0.2s}
+.ana:hover{background:var(--ink3)}
+.ana-num{font-family:'Bebas Neue',sans-serif;font-size:4rem;line-height:0.85;letter-spacing:0.04em;color:rgba(232,164,32,0.1);margin-bottom:0.5rem;display:block}
+.ana-icon{font-size:1.5rem;margin-bottom:0.6rem;display:block}
+.ana-title{font-family:'Space Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.5rem;line-height:1.3}
+.ana-text{font-size:0.82rem;color:#b0c0d8;line-height:1.65}
+.split-compare{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--dim);border-radius:8px;overflow:hidden}
+.sc-head{padding:1rem 1.5rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.08em;display:flex;align-items:center;gap:0.5rem}
+.sc-head.old{background:rgba(194,92,26,0.1);border-bottom:2px solid var(--rust);color:#e07848;border-right:1px solid var(--dim)}
+.sc-head.now{background:rgba(107,171,124,0.08);border-bottom:2px solid var(--sage);color:var(--sage)}
+.sc-body{padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0}
+.sc-body.old-body{border-right:1px solid var(--dim);background:rgba(194,92,26,0.03)}
+.sc-body.new-body{background:rgba(107,171,124,0.03)}
+.sc-row{display:flex;gap:0.75rem;align-items:flex-start;padding:0.7rem 0;border-bottom:1px solid rgba(61,79,103,0.4);font-size:0.82rem;line-height:1.55}
+.sc-row:last-child{border-bottom:none}
+.sc-ico{font-size:0.9rem;flex-shrink:0;margin-top:1px}
+.sc-txt{color:#b0c0d8}
+.sc-txt b{color:#edf2f9;font-weight:600}
+.year-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:0.52rem;font-weight:700;letter-spacing:0.1em;padding:0.18rem 0.5rem;border-radius:3px;margin-left:0.5rem;vertical-align:middle}
+.yb-old{background:rgba(194,92,26,0.15);color:var(--rust)}
+.yb-now{background:rgba(107,171,124,0.15);color:var(--sage)}
+.mn-layout{display:grid;grid-template-columns:300px 1fr;gap:3rem;align-items:start}
+.mn-tower{position:sticky;top:80px}
+.tower-visual{background:var(--ink2);border:1px solid var(--dim);border-radius:8px;overflow:hidden;padding:1.5rem;text-align:center}
+.tower-top{background:var(--ink3);border:1px solid rgba(232,164,32,0.25);border-radius:6px;padding:1.25rem 1rem;margin-bottom:1px;position:relative}
+.tower-top::before{content:'MASTERNODE';font-family:'Space Mono',monospace;font-size:0.45rem;font-weight:700;letter-spacing:0.18em;color:var(--gold);position:absolute;top:-0.5rem;left:50%;transform:translateX(-50%);background:var(--ink3);padding:0 0.4rem}
+.leds{display:flex;gap:0.4rem;justify-content:center;margin-bottom:0.75rem}
+.led{width:8px;height:8px;border-radius:50%;animation:blink 1.8s ease-in-out infinite}
+.led.g{background:var(--sage)}.led.a{background:var(--gold);animation-delay:0.4s}.led.b{background:#60a5fa;animation-delay:0.8s}
+.tower-label{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--smoke)}
+.stake-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;color:var(--gold);margin:0.5rem 0 0.1rem;display:block}
+.stake-sub{font-family:'Space Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--smoke)}
+.tower-bar{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0;font-size:0.72rem;color:var(--sub);border-top:1px solid var(--dim);margin-top:0.5rem;padding-top:0.75rem}
+.tower-bar-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.mn-facts{display:flex;flex-direction:column;gap:1.25rem}
+.mn-fact{display:flex;gap:1.5rem;align-items:flex-start;padding:1.25rem 1.5rem;background:var(--ink2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;transition:all 0.2s}
+.mn-fact:hover{background:var(--ink3);transform:translateX(3px)}
+.mn-fact.sage{border-left-color:var(--sage)}.mn-fact.rust{border-left-color:var(--rust)}.mn-fact.smk{border-left-color:var(--smoke)}
+.mf-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1;letter-spacing:0.04em;color:rgba(232,164,32,0.18);flex-shrink:0;width:40px}
+.mn-fact.sage .mf-num{color:rgba(107,171,124,0.18)}.mn-fact.rust .mf-num{color:rgba(194,92,26,0.18)}.mn-fact.smk .mf-num{color:rgba(123,143,168,0.18)}
+.mf-title{font-family:'Space Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text);margin-bottom:0.35rem}
+.mf-body{font-size:0.85rem;color:#b0c0d8;line-height:1.65}
+.quorum-ring-wrap{text-align:center;margin-bottom:2rem}
+.quorum-ring{position:relative;width:520px;height:520px;margin:0 auto}
+.qr-base{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;border:1px dashed rgba(232,164,32,0.2)}
+.qr-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;border-radius:50%;border:1px dashed rgba(61,79,103,0.4)}
+.qr-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;border-radius:50%;background:rgba(232,164,32,0.1);border:2px solid rgba(232,164,32,0.5);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(232,164,32,0.2),0 0 80px rgba(232,164,32,0.08);z-index:10}
+.qrc-big{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:0.04em;color:var(--gold2);line-height:1}
+.qrc-small{font-family:'Space Mono',monospace;font-size:0.42rem;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;text-align:center;line-height:1.5;margin-top:0.1rem}
+@keyframes orbitSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes counterSpin{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+.qr-orbit{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;animation:orbitSpin 22s linear infinite}
+.qr-node{position:absolute;width:64px;height:64px;border-radius:50%;background:var(--ink3);border:2px solid rgba(61,79,103,0.7);display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);transition:border-color 0.3s,box-shadow 0.3s;cursor:default}
+.qr-node-inner{animation:counterSpin 22s linear infinite;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;height:100%;border-radius:50%}
+.qr-node-lbl{font-family:'Space Mono',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.04em;color:#c8d5e8}
+.qr-node.v{border-color:rgba(232,164,32,0.45);background:rgba(13,17,23,0.95)}
+.qr-node.v:hover{border-color:rgba(232,164,32,0.9);box-shadow:0 0 18px rgba(232,164,32,0.3);background:rgba(232,164,32,0.07)}
+.qr-node.v:hover .qr-node-lbl{color:var(--gold2)}
+.qr-node.bp-orbit{width:76px;height:76px;background:rgba(245,200,66,0.12);border:2px solid var(--gold2);box-shadow:0 0 28px rgba(245,200,66,0.45),0 0 60px rgba(245,200,66,0.15)}
+.qr-node.bp-orbit .qr-node-lbl{color:var(--gold2);font-size:0.8rem;font-weight:700}
+.quorum-explainer{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.qe-card{padding:1.25rem 1.5rem;border-radius:6px;border:1px solid var(--dim);background:var(--ink2)}
+.qe-head{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.06em;margin-bottom:0.35rem}
+.qe-body{font-size:0.83rem;color:#b0c0d8;line-height:1.65}
+.qe-card.bpc{border-color:rgba(245,200,66,0.3);background:rgba(245,200,66,0.04)}.qe-card.bpc .qe-head{color:var(--gold2)}
+.qe-card.vc{border-color:rgba(232,164,32,0.2);background:rgba(232,164,32,0.03)}.qe-card.vc .qe-head{color:var(--gold)}
+.threshold-bar{margin-top:1.25rem;background:var(--ink2);border:1px solid var(--dim);border-radius:6px;padding:1.25rem 1.5rem}
+.tb-label{font-family:'Space Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--smoke);margin-bottom:0.85rem}
+.tb-track{height:12px;background:var(--ink3);border-radius:6px;overflow:visible;margin-bottom:0.5rem;border:1px solid var(--dim);position:relative}
+.tb-fill{height:100%;width:63.6%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:6px 0 0 6px}
+.tb-nodes{display:flex;gap:0.35rem;margin-top:0.75rem;flex-wrap:wrap}
+.tb-node{width:30px;height:30px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:0.42rem;font-weight:700}
+.tb-node.pass{background:rgba(232,164,32,0.12);border:1px solid rgba(232,164,32,0.3);color:var(--gold)}
+.tb-node.fail{background:var(--ink3);border:1px solid var(--dim);color:var(--dim)}
+.tb-caption{font-size:0.78rem;color:#b0c0d8;margin-top:0.5rem;line-height:1.55}
+.phase-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.ph-num{font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:0.85;letter-spacing:0.04em;color:rgba(232,164,32,0.1);flex-shrink:0;width:70px}
+.ph-tag{font-family:'Space Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem}
+.ph-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.06em;color:var(--text);line-height:1}
+.ph-desc{font-size:0.8rem;color:#b0c0d8;margin-top:0.25rem;line-height:1.5}
+.steps-grid{display:grid;gap:0.75rem}
+.step-item{display:grid;grid-template-columns:64px 1fr;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--dim);background:var(--ink2);transition:all 0.2s}
+.step-item:hover{border-color:rgba(232,164,32,0.3);background:var(--ink3)}
+.si-num{background:rgba(232,164,32,0.05);border-right:1px solid var(--dim);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;color:rgba(232,164,32,0.35);padding:1.25rem 0}
+.step-item:hover .si-num{color:var(--gold);background:rgba(232,164,32,0.1)}
+.si-body{padding:1.1rem 1.25rem}
+.si-phase-tag{font-family:'Space Mono',monospace;font-size:0.48rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem}
+.si-title{font-family:'Space Mono',monospace;font-size:0.75rem;font-weight:700;color:#edf2f9;margin-bottom:0.4rem;line-height:1.3}
+.si-what{font-size:0.83rem;color:#b0c0d8;line-height:1.65;margin-bottom:0.5rem}
+.si-note{display:flex;gap:0.5rem;align-items:flex-start;font-size:0.72rem;padding:0.45rem 0.65rem;border-radius:4px;line-height:1.5}
+.si-note.warn{background:rgba(194,92,26,0.07);border:1px solid rgba(194,92,26,0.2);color:#e09060}
+.si-note.good{background:rgba(107,171,124,0.07);border:1px solid rgba(107,171,124,0.2);color:var(--sage2)}
+.si-note.info{background:rgba(232,164,32,0.06);border:1px solid rgba(232,164,32,0.2);color:var(--gold3)}
+.phase-divider{height:2px;background:var(--dim);margin:2.5rem 0;position:relative}
+.phase-divider::after{content:attr(data-label);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--ink);padding:0 1rem;font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.numbers-panel{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dim);border:1px solid var(--dim);border-radius:8px;overflow:hidden}
+.np-item{background:var(--ink2);padding:2rem 1.5rem;text-align:center;transition:background 0.2s}
+.np-item:hover{background:var(--ink3)}
+.np-big{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:0.9;letter-spacing:0.04em;display:block;margin-bottom:0.3rem}
+.np-unit{font-family:'Space Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--smoke);margin-bottom:0.65rem;display:block}
+.np-title{font-family:'Space Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text);margin-bottom:0.3rem}
+.np-desc{font-size:0.75rem;color:#b0c0d8;line-height:1.6}
+.rewards-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.block-reward-visual{background:var(--ink2);border:1px solid var(--dim);border-radius:8px;padding:1.75rem;text-align:center}
+.brv-label{font-family:'Space Mono',monospace;font-size:0.52rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--smoke);margin-bottom:1.5rem}
+.brv-blocks{display:flex;gap:0.5rem;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem}
+.brv-box{border-radius:6px;padding:1rem 1.25rem;text-align:center;min-width:90px}
+.brv-box.total{background:rgba(232,164,32,0.08);border:1px solid rgba(232,164,32,0.3)}
+.brv-box.mn{background:rgba(107,171,124,0.08);border:1px solid rgba(107,171,124,0.3)}
+.brv-box.other{background:rgba(123,143,168,0.08);border:1px solid rgba(123,143,168,0.2)}
+.brv-n{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;letter-spacing:0.04em;display:block;margin-bottom:0.2rem}
+.brv-box.total .brv-n{color:var(--gold)}.brv-box.mn .brv-n{color:var(--sage)}.brv-box.other .brv-n{color:var(--smoke)}
+.brv-lbl{font-family:'Space Mono',monospace;font-size:0.44rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--sub)}
+.brv-op{font-size:1.4rem;color:#6a7f9a;font-weight:700}
+.brv-note{font-size:0.8rem;color:#b0c0d8;line-height:1.65;text-align:left}
+.queue-visual{background:var(--ink2);border:1px solid var(--dim);border-radius:8px;padding:1.75rem}
+.qv-label{font-family:'Space Mono',monospace;font-size:0.52rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--smoke);margin-bottom:1.25rem}
+.queue-row{display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.qv-node{display:flex;flex-direction:column;align-items:center;gap:0.2rem;font-family:'Space Mono',monospace}
+.qvn-c{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.48rem;font-weight:700;transition:all 0.3s}
+.qvn-now{background:rgba(245,200,66,0.15);border:2px solid var(--gold2);color:var(--gold2);box-shadow:0 0 12px rgba(245,200,66,0.25)}
+.qvn-next{background:var(--ink3);border:1px solid rgba(232,164,32,0.3);color:var(--gold)}
+.qvn-later{background:var(--ink3);border:1px solid var(--dim);color:var(--smoke)}
+.qvn-end{background:var(--ink3);border:1px dashed var(--dim);color:var(--dim)}
+.qvn-label{font-size:0.5rem;color:#7a90a8;text-transform:uppercase;letter-spacing:0.06em}
+.qv-arrow{color:#6a7f9a;font-size:1rem}
+.qv-caption{font-size:0.8rem;color:#b0c0d8;line-height:1.65}
+.bw-body{font-size:0.82rem;color:#b0c0d8;line-height:1.65}
+.vrf-banner{background:linear-gradient(135deg,rgba(107,171,124,0.06) 0%,rgba(232,164,32,0.04) 100%);border:1px solid rgba(107,171,124,0.2);border-radius:8px;padding:2.5rem;position:relative;overflow:hidden}
+.vrf-banner::before{content:'VRF';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:8rem;line-height:1;letter-spacing:0.06em;color:rgba(107,171,124,0.06);pointer-events:none}
+.vb-tag{font-family:'Space Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--sage);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+.vb-tag::before{content:'●';font-size:0.5rem;animation:blink 2s ease-in-out infinite}
+.vb-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.05em;color:var(--text);margin-bottom:0.75rem}
+.vb-desc{font-size:0.88rem;color:#b0c0d8;line-height:1.75;max-width:560px;margin-bottom:1.5rem}
+.vb-points{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem}
+.vbp{background:rgba(107,171,124,0.06);border:1px solid rgba(107,171,124,0.15);border-radius:6px;padding:1rem}
+.vbp-icon{font-size:1.2rem;margin-bottom:0.4rem;display:block}
+.vbp-title{font-family:'Space Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--sage2);margin-bottom:0.3rem}
+.vbp-body{font-size:0.75rem;color:#b0c0d8;line-height:1.6}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dim);border:1px solid var(--dim);border-radius:8px;overflow:hidden}
+.sg-item{background:var(--ink2);padding:1.25rem 1rem;text-align:center;transition:background 0.2s}
+.sg-item:hover{background:var(--ink3)}
+.sg-icon{font-size:1.3rem;margin-bottom:0.5rem;display:block}
+.sg-title{font-family:'Space Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#edf2f9;margin-bottom:0.3rem;line-height:1.3}
+.sg-sub{font-size:0.68rem;color:#9bafc8;line-height:1.5}
+footer{padding:2.5rem 2rem;border-top:1px solid var(--dim);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;position:relative;z-index:1}
+.ft-brand{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.12em;color:var(--gold)}
+.ft-note{font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:0.08em;color:#5a7090}
+.fi{opacity:0;transform:translateY(14px);transition:opacity 0.45s ease,transform 0.45s ease}
+.fi.in{opacity:1;transform:translateY(0)}
+.benefits-wall{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dim);border:1px solid var(--dim);border-radius:8px;overflow:hidden}
+.bw-item{background:var(--ink2);padding:1.5rem;transition:background 0.2s;position:relative;overflow:hidden}
+.bw-item:hover{background:var(--ink3)}
+.bw-item::before{content:attr(data-n);position:absolute;top:-0.5rem;right:0.75rem;font-family:'Bebas Neue',sans-serif;font-size:5rem;color:rgba(232,164,32,0.04);line-height:1;pointer-events:none}
+.bw-icon{font-size:1.5rem;margin-bottom:0.65rem;display:block}
+.bw-title{font-family:'Space Mono',monospace;font-size:0.63rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;line-height:1.3;color:var(--text)}
+@media(max-width:860px){.hero-inner{grid-template-columns:1fr;gap:2.5rem}.hero-right{display:none}.mn-layout{grid-template-columns:1fr}.mn-tower{position:static}.split-compare{grid-template-columns:1fr}.sc-head.old{border-right:none}.sc-body.old-body{border-right:none;border-bottom:1px solid var(--dim)}.quorum-explainer{grid-template-columns:1fr}.rewards-layout{grid-template-columns:1fr}.numbers-panel{grid-template-columns:1fr 1fr}.benefits-wall{grid-template-columns:1fr 1fr}.summary-grid{grid-template-columns:repeat(2,1fr)}.vb-points{grid-template-columns:1fr}.analogy-row{grid-template-columns:1fr}}
+@media(max-width:500px){.numbers-panel{grid-template-columns:1fr}.benefits-wall{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="radar-bg" aria-hidden="true"><div class="radar-sweep"></div></div>
+
+<nav>
+  <div class="nav-brand">BELDEX <span>// POS</span></div>
+  <div class="nav-div"></div>
+  <div class="nav-links">
+    <a class="nav-a on" href="#hero">Start</a>
+    <a class="nav-a" href="#vs">PoW vs PoS</a>
+    <a class="nav-a" href="#masternode">Masternode</a>
+    <a class="nav-a" href="#quorum">Quorum</a>
+    <a class="nav-a" href="#steps">Steps</a>
+    <a class="nav-a" href="#timing">Numbers</a>
+    <a class="nav-a" href="#rewards">Rewards</a>
+    <a class="nav-a" href="#benefits">Why It Works</a>
+  </div>
+  <a class="nav-cta" href="../../beldex-tree.html">Guide: HOME</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+<div class="hero-inner">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Beldex Proof of Stake Consensus</div>
+    <h1 class="hero-h1">HOW DOES<br>BELDEX<br><em>AGREE?</em></h1>
+    <p class="hero-desc">Every transaction on Beldex needs a group of trusted computers to confirm it before it is saved forever. No single company controls this. The network runs itself.</p>
+    <div class="hero-stats">
+      <div class="hs-item"><span class="hs-num">12</span><div class="hs-label">Nodes per block</div></div>
+      <div class="hs-item"><span class="hs-num">30s</span><div class="hs-label">Block target</div></div>
+      <div class="hs-item"><span class="hs-num">2021</span><div class="hs-label">PoS upgrade</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="radar-dial" id="dial">
+      <div class="rd-cross-h"></div><div class="rd-cross-v"></div>
+      <div class="rd-ring rd-r1"></div><div class="rd-ring rd-r2"></div><div class="rd-ring rd-r3"></div>
+      <div class="rd-sweep"></div>
+      <div class="rd-center">QUORUM<br>ACTIVE</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CONSENSUS -->
+<div class="sec-gap"></div>
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">Understanding Consensus</div></div>
+  <h2 class="sec-h">FIRST, WHAT DOES<br><em>CONSENSUS MEAN?</em></h2>
+  <p class="sec-sub" style="margin-bottom:2rem;">Before understanding Beldex PoS, you need one simple idea. Consensus means agreement between multiple computers about what is true.</p>
+  <div class="analogy-row fi">
+    <div class="ana"><span class="ana-num">01</span><span class="ana-icon">🏦</span><div class="ana-title">How a Bank Works</div><div class="ana-text">When you send money, the bank checks your balance and approves the transfer. One company is in charge. You have to trust them completely.</div></div>
+    <div class="ana"><span class="ana-num">02</span><span class="ana-icon">⚖️</span><div class="ana-title">How Blockchain Works</div><div class="ana-text">There is no single company. A group of computers all check the same transaction and must agree it is valid before it is permanently saved.</div></div>
+    <div class="ana"><span class="ana-num">03</span><span class="ana-icon">🛡️</span><div class="ana-title">Why This Is Safer</div><div class="ana-text">To cheat, you would need to take control of most computers at the same time. That is extremely difficult and expensive. The network stays honest.</div></div>
+  </div>
+</div>
+
+<!-- POW VS POS -->
+<div class="sec-gap"></div>
+<section id="vs">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">The Big Switch</div></div>
+  <h2 class="sec-h">BELDEX UPGRADED<br><em>IN DECEMBER 2021</em></h2>
+  <p class="sec-sub" style="margin-bottom:2rem;">The Bucephalus hardfork replaced Proof of Work with Proof of Stake. Here is what changed and why it made the network better.</p>
+  <div class="split-compare fi">
+    <div class="sc-col">
+      <div class="sc-head old">⛏ PROOF OF WORK <span class="year-badge yb-old">BEFORE 2021</span></div>
+      <div class="sc-body old-body">
+        <div class="sc-row"><div class="sc-ico">🖥️</div><div class="sc-txt"><b>Computers raced to solve a maths puzzle.</b> The first to solve it wins the right to add a block.</div></div>
+        <div class="sc-row"><div class="sc-ico">💸</div><div class="sc-txt"><b>Required expensive specialised hardware.</b> Normal computers could not compete.</div></div>
+        <div class="sc-row"><div class="sc-ico">⚡</div><div class="sc-txt"><b>Used enormous electricity.</b> Running 24 hours a day, non-stop.</div></div>
+        <div class="sc-row"><div class="sc-ico">🐢</div><div class="sc-txt"><b>Slower block times.</b> Less suitable for growing a fast, scalable network.</div></div>
+        <div class="sc-row"><div class="sc-ico">🏭</div><div class="sc-txt"><b>Mining farms could dominate</b> by having more hardware than everyone else.</div></div>
+      </div>
+    </div>
+    <div class="sc-col">
+      <div class="sc-head now">⬡ PROOF OF STAKE <span class="year-badge yb-now">CURRENT</span></div>
+      <div class="sc-body new-body">
+        <div class="sc-row"><div class="sc-ico">🎲</div><div class="sc-txt"><b>No puzzle to solve.</b> Nodes are selected based on their stake and a random process.</div></div>
+        <div class="sc-row"><div class="sc-ico">💻</div><div class="sc-txt"><b>Any computer can run a masternode.</b> No special hardware or mining rigs needed.</div></div>
+        <div class="sc-row"><div class="sc-ico">🌱</div><div class="sc-txt"><b>Very low energy use.</b> A masternode runs on a standard server or home computer.</div></div>
+        <div class="sc-row"><div class="sc-ico">⚡</div><div class="sc-txt"><b>Target block time of 30 seconds.</b> Faster and more predictable than PoW.</div></div>
+        <div class="sc-row"><div class="sc-ico">🌍</div><div class="sc-txt"><b>Anyone with 10,000 BDX can participate.</b> The community runs most of the nodes.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- MASTERNODE -->
+<div class="sec-gap"></div>
+<section id="masternode">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">The Foundation</div></div>
+  <h2 class="sec-h">WHAT IS A<br><em>MASTERNODE?</em></h2>
+  <p class="sec-sub" style="margin-bottom:2.5rem;">A masternode is a computer that helps run the Beldex network. It checks transactions, votes on blocks, and keeps the network honest. Anyone can run one.</p>
+  <div class="mn-layout">
+    <div class="mn-tower fi">
+      <div class="tower-visual">
+        <div class="tower-top">
+          <div class="leds"><div class="led g"></div><div class="led a"></div><div class="led b"></div></div>
+          <div class="tower-label">STATUS: ACTIVE</div>
+          <span class="stake-num">10,000</span>
+          <div class="stake-sub">BDX Staked</div>
+        </div>
+        <div class="tower-bar"><div class="tower-bar-dot"></div>Validates transactions</div>
+        <div class="tower-bar"><div class="tower-bar-dot"></div>Votes on new blocks</div>
+        <div class="tower-bar"><div class="tower-bar-dot"></div>Earns BDX rewards</div>
+        <div class="tower-bar"><div class="tower-bar-dot"></div>Joins quorum randomly</div>
+      </div>
+    </div>
+    <div class="mn-facts">
+      <div class="mn-fact fi">
+        <div class="mf-num">01</div>
+        <div><div class="mf-title">You Lock 10,000 BDX as a Deposit</div><div class="mf-body">This deposit is your stake. If you try to cheat the network, you risk losing it. That financial risk is what keeps masternode operators honest. It aligns your interests with the network.</div></div>
+      </div>
+      <div class="mn-fact sage fi">
+        <div class="mf-num">02</div>
+        <div><div class="mf-title">You Can Run Multiple Masternodes</div><div class="mf-body">Each masternode needs its own 10,000 BDX. One masternode, one stake. Running more nodes means more chances to be selected for block rounds and earn more rewards over time.</div></div>
+      </div>
+      <div class="mn-fact rust fi">
+        <div class="mf-num">03</div>
+        <div><div class="mf-title">The Community Runs Most Nodes</div><div class="mf-body">The Beldex Foundation runs fewer than 200 masternodes. The rest are operated by community members worldwide. This is what keeps the network genuinely decentralized and independent.</div></div>
+      </div>
+      <div class="mn-fact smk fi">
+        <div class="mf-num">04</div>
+        <div><div class="mf-title">Nodes Are Selected Randomly Each Round</div><div class="mf-body">For each new block, 12 masternodes are picked at random from the full pool. After producing a block, your node goes to the back of the queue. Every node gets a fair turn.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- QUORUM -->
+<div class="sec-gap"></div>
+<section id="quorum">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">The Voting Group</div></div>
+  <h2 class="sec-h">MEET THE<br><em>QUORUM</em></h2>
+  <p class="sec-sub" style="margin-bottom:2.5rem;">For every new block, 12 masternodes are randomly selected. One becomes the Block Producer. The other 11 are Validators. Together they form the Quorum.</p>
+  <div class="quorum-ring-wrap fi">
+    <div class="quorum-ring" id="quorumRing">
+      <div class="qr-base"></div><div class="qr-inner"></div>
+      <div class="qr-center"><div class="qrc-big">12</div><div class="qrc-small">NODES<br>PER ROUND</div></div>
+    </div>
+  </div>
+  <div class="quorum-explainer fi">
+    <div class="qe-card bpc">
+      <div class="qe-head">⭐ The Block Producer (1 Node)</div>
+      <div class="qe-body">The Block Producer collects all pending transactions and bundles them into a candidate block called the block template. It signs the template and sends it to all 11 validators. After that, it waits for them to approve it.</div>
+    </div>
+    <div class="qe-card vc">
+      <div class="qe-head">✓ The Validators (11 Nodes)</div>
+      <div class="qe-body">Each validator checks the block template from the Block Producer. They verify the signature, check the transactions, contribute a random number, and sign the final block. Their combined signatures are what makes the block valid.</div>
+    </div>
+  </div>
+  <div class="threshold-bar fi">
+    <div class="tb-label">Minimum Participation Required to Proceed</div>
+    <div class="tb-track"><div class="tb-fill"></div></div>
+    <div class="tb-nodes">
+      <div class="tb-node pass">V1</div><div class="tb-node pass">V2</div><div class="tb-node pass">V3</div>
+      <div class="tb-node pass">V4</div><div class="tb-node pass">V5</div><div class="tb-node pass">V6</div>
+      <div class="tb-node pass">V7</div><div class="tb-node fail">V8</div><div class="tb-node fail">V9</div>
+      <div class="tb-node fail">V10</div><div class="tb-node fail">V11</div>
+    </div>
+    <div class="tb-caption">At least 7 out of 11 validators must be online and agree. That is 60% of the group. If fewer are active, the round fails and restarts automatically.</div>
+  </div>
+</div>
+</section>
+
+<!-- STEPS -->
+<div class="sec-gap"></div>
+<section id="steps">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">Step by Step</div></div>
+  <h2 class="sec-h">11 STEPS.<br><em>ONE NEW BLOCK.</em></h2>
+  <p class="sec-sub" style="margin-bottom:2.5rem;">Every 30 seconds, the Beldex network runs through this exact process. Here is what happens at each stage.</p>
+
+  <div class="phase-header fi">
+    <div class="ph-num">01</div>
+    <div class="ph-info"><div class="ph-tag">Phase One</div><div class="ph-title">PREPARATION</div><div class="ph-desc">The network gets ready and all 12 nodes confirm they are online.</div></div>
+  </div>
+  <div class="steps-grid fi">
+    <div class="step-item">
+      <div class="si-num">01</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Timing</div>
+        <div class="si-title">The Network Waits for the Right Moment</div>
+        <div class="si-what">Beldex does not create blocks constantly. It follows a strict clock. The target is one block every 30 seconds. When the time arrives, the process starts. Until then, every node sleeps.</div>
+        <div class="si-note good"><span>✓</span><span>Predictable timing means the network is stable. Everyone knows when the next block is coming.</span></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="si-num">02</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Setup</div>
+        <div class="si-title">The System Prepares for This Round</div>
+        <div class="si-what">The system calculates which 12 masternodes will handle this round and sets timing for every stage. If any previous round failed, the system resets here and tries again with a new set of nodes.</div>
+        <div class="si-note info"><span>↺</span><span>This is the recovery point. Any failed stage always returns here to start fresh.</span></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="si-num">03</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Sync</div>
+        <div class="si-title">All 12 Nodes Check the Clock</div>
+        <div class="si-what">Each selected node checks its own clock against the expected block timestamp. Only when the time matches does the node proceed. This makes sure every participant starts at exactly the same moment.</div>
+        <div class="si-note good"><span>✓</span><span>Synchronized start. No node can get a head start or act before the others are ready.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-divider" data-label="phase two begins"></div>
+  <div class="phase-header fi">
+    <div class="ph-num">02</div>
+    <div class="ph-info"><div class="ph-tag">Phase Two</div><div class="ph-title">HANDSHAKE</div><div class="ph-desc">Every active node proves it is online and ready. Only confirmed nodes continue.</div></div>
+  </div>
+  <div class="steps-grid fi">
+    <div class="step-item">
+      <div class="si-num">04</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Identity Check</div>
+        <div class="si-title">Every Validator Says "I Am Here and Ready"</div>
+        <div class="si-what">Each validator sends a small signed message to all other nodes. This handshake says: I am online, I am the correct node for this round, and I am ready to participate. Validators also check the handshakes they receive from others.</div>
+        <div class="si-note warn"><span>⚠</span><span>Without this step an offline or fake node could pretend to participate. The handshake catches them.</span></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="si-num">05</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Participant List</div>
+        <div class="si-title">Each Node Broadcasts the Active Participant List</div>
+        <div class="si-what">After collecting handshakes, each validator creates a bitset. A bitset is a compact list of every validator it confirmed is online. Everyone sends their bitset. The group compares lists to agree on who is actually participating.</div>
+        <div class="si-note warn"><span>⚠</span><span>If fewer than 60% agree on the participant list, the round fails and restarts from Step 2.</span></div>
+        <div class="si-note good" style="margin-top:0.35rem"><span>✓</span><span>If 60% or more agree, the group is confirmed and the Block Producer moves forward.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-divider" data-label="phase three begins"></div>
+  <div class="phase-header fi">
+    <div class="ph-num">03</div>
+    <div class="ph-info"><div class="ph-tag">Phase Three</div><div class="ph-title">BLOCK BUILDING</div><div class="ph-desc">The Block Producer builds the block. Validators check it thoroughly.</div></div>
+  </div>
+  <div class="steps-grid fi">
+    <div class="step-item">
+      <div class="si-num">06</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Block Producer Task</div>
+        <div class="si-title">The Block Producer Builds the Candidate Block</div>
+        <div class="si-what">The Block Producer collects all pending transactions and packages them into a block template. It signs the template with its own private key and sends it to all 11 validators. After sending, the Block Producer waits for approval.</div>
+        <div class="si-note info"><span>📦</span><span>The block template contains the transaction list, round number, validator list, and Block Producer signature.</span></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="si-num">07</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Validator Task</div>
+        <div class="si-title">The 11 Validators Inspect the Block Template</div>
+        <div class="si-what">Each validator receives the block template and checks it. They verify the Block Producer signature is genuine and that every transaction inside is legitimate. If satisfied, each validator creates their piece of a random number that will help seal the block.</div>
+        <div class="si-note warn"><span>⚠</span><span>Why a random number? Without it, someone could predict which node builds the next block and try to manipulate it.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-divider" data-label="phase four begins"></div>
+  <div class="phase-header fi">
+    <div class="ph-num">04</div>
+    <div class="ph-info"><div class="ph-tag">Phase Four</div><div class="ph-title">RANDOMNESS AND SIGNING</div><div class="ph-desc">A tamper-proof random number is built. The block is signed by all validators.</div></div>
+  </div>
+  <div class="steps-grid fi">
+    <div class="step-item">
+      <div class="si-num">08</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Commit Phase</div>
+        <div class="si-title">Validators Lock Their Numbers First</div>
+        <div class="si-what">Each validator sends a hash of their random number to the group. A hash is like a sealed envelope. It proves you have a number without revealing what it is. Once everyone sends their sealed envelopes, nobody can change their number.</div>
+        <div class="si-note warn"><span>⚠</span><span>Hashes come first so no validator can see others numbers and adjust their own to control the final result.</span></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="si-num">09</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Reveal Phase</div>
+        <div class="si-title">Now Validators Open Their Envelopes</div>
+        <div class="si-what">Once all locked hashes are collected, each validator reveals their actual number. All numbers are combined into one final random number. This combined number is used to complete and seal the block.</div>
+        <div class="si-note warn"><span>⚠</span><span>If any validator number is missing, the round fails and resets. All 11 must contribute their piece.</span></div>
+        <div class="si-note good" style="margin-top:0.35rem"><span>🎲</span><span>Result: a truly unpredictable final number that nobody could have planned for in advance.</span></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="si-num">10</div>
+      <div class="si-body">
+        <div class="si-phase-tag">Signing</div>
+        <div class="si-title">Every Validator Signs the Completed Block</div>
+        <div class="si-what">Each validator uses the combined random number to sign the final block. They send their signature to the group and wait for the others. Every signature is verified to make sure nobody altered the block between steps.</div>
+        <div class="si-note good"><span>✅</span><span>The block now carries signatures from all participating validators. Anyone can verify the group agreed.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-divider" data-label="phase five begins"></div>
+  <div class="phase-header fi">
+    <div class="ph-num">05</div>
+    <div class="ph-info"><div class="ph-tag">Phase Five</div><div class="ph-title">BROADCAST</div><div class="ph-desc">The block is published to the entire network. All transactions are now permanent.</div></div>
+  </div>
+  <div class="steps-grid fi">
+    <div class="step-item" style="border-color:rgba(232,164,32,0.25);background:rgba(232,164,32,0.03)">
+      <div class="si-num" style="background:rgba(232,164,32,0.08);color:var(--gold)">11</div>
+      <div class="si-body">
+        <div class="si-phase-tag" style="color:var(--gold)">Final Step</div>
+        <div class="si-title">The Block is Published to the Entire Network</div>
+        <div class="si-what">As soon as enough signatures arrive, the block is broadcast across the entire Beldex network. Every node adds it to their copy of the blockchain. The transactions inside are permanently recorded. The Block Producer moves to the back of the reward queue and the process begins again.</div>
+        <div class="si-note good"><span>🏆</span><span>One block confirmed. The same 11-step process starts again in roughly 30 seconds. Around the clock, without stopping.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- KEY NUMBERS -->
+<div class="sec-gap"></div>
+<section id="timing">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">The Numbers That Define Beldex PoS</div></div>
+  <h2 class="sec-h">KNOW THE<br><em>KEY STATS</em></h2>
+  <div class="half-gap"></div>
+  <div class="numbers-panel fi">
+    <div class="np-item"><span class="np-big" style="color:var(--gold)">30</span><span class="np-unit">Seconds</span><div class="np-title">Target Block Time</div><div class="np-desc">One new block every 30 seconds. If a round fails, the next slot starts immediately.</div></div>
+    <div class="np-item"><span class="np-big" style="color:var(--gold2)">12</span><span class="np-unit">Nodes per Round</span><div class="np-title">The Quorum Size</div><div class="np-desc">1 Block Producer and 11 Validators. Randomly chosen from all active masternodes.</div></div>
+    <div class="np-item"><span class="np-big" style="color:var(--sage)">60%</span><span class="np-unit">Min Agreement</span><div class="np-title">Participation Threshold</div><div class="np-desc">At least 7 of 11 validators must be online and agree. Below that, the round resets.</div></div>
+    <div class="np-item"><span class="np-big" style="color:var(--smoke)">10K</span><span class="np-unit">BDX per Node</span><div class="np-title">Stake Requirement</div><div class="np-desc">Maximum stake per masternode. Each node you run needs its own 10,000 BDX deposit.</div></div>
+  </div>
+</div>
+</section>
+
+<!-- REWARDS -->
+<div class="sec-gap"></div>
+<section id="rewards">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">Earning from the Network</div></div>
+  <h2 class="sec-h">HOW MASTERNODES<br><em>EARN BDX</em></h2>
+  <p class="sec-sub" style="margin-bottom:2.5rem;">Every new block creates 10 BDX. The majority goes to masternode operators as a reward for keeping the network running.</p>
+  <div class="rewards-layout fi">
+    <div class="block-reward-visual">
+      <div class="brv-label">Block Reward Breakdown Per Block</div>
+      <div class="brv-blocks">
+        <div class="brv-box total"><span class="brv-n">10</span><div class="brv-lbl">BDX Created</div></div>
+        <div class="brv-op">=</div>
+        <div class="brv-box mn"><span class="brv-n">6.25</span><div class="brv-lbl">To Masternodes</div></div>
+        <div class="brv-op">+</div>
+        <div class="brv-box other"><span class="brv-n">3.75</span><div class="brv-lbl">Other Uses</div></div>
+      </div>
+      <div class="brv-note">6.25 BDX per block is shared among the validators who participated in that round. The more blocks your masternode contributes to, the more BDX you earn over time.</div>
+    </div>
+    <div class="queue-visual">
+      <div class="qv-label">The Reward Queue: Fair Rotation</div>
+      <div class="queue-row">
+        <div class="qv-node"><div class="qvn-c qvn-now">NOW</div><div class="qvn-label">Produces</div></div>
+        <div class="qv-arrow">→</div>
+        <div class="qv-node"><div class="qvn-c qvn-next">NEXT</div><div class="qvn-label">Waiting</div></div>
+        <div class="qv-node"><div class="qvn-c qvn-later">MN3</div><div class="qvn-label">Later</div></div>
+        <div class="qv-node"><div class="qvn-c qvn-later">MN4</div><div class="qvn-label">Later</div></div>
+        <div class="qv-arrow">→</div>
+        <div class="qv-node"><div class="qvn-c qvn-end">DONE</div><div class="qvn-label">Back of queue</div></div>
+      </div>
+      <div class="qv-caption">After a masternode produces a block, it moves to the back of the queue. Every other masternode gets its turn first. No single node can dominate block production. The rotation is automatic and enforced by the protocol.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- BENEFITS -->
+<div class="sec-gap"></div>
+<section id="benefits">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">Why It Holds Up</div></div>
+  <h2 class="sec-h">SIX REASONS<br><em>IT WORKS</em></h2>
+  <p class="sec-sub" style="margin-bottom:2rem;">Every design choice in Beldex PoS serves a specific purpose. Here is what each one protects against.</p>
+  <div class="benefits-wall fi">
+    <div class="bw-item" data-n="1"><span class="bw-icon">🔒</span><div class="bw-title" style="color:var(--gold)">Stake at Risk Means Honest Behavior</div><div class="bw-body">Every masternode put 10,000 BDX on the line. That money is at risk if they cheat. Real financial consequences mean operators stay honest without needing to trust them.</div></div>
+    <div class="bw-item" data-n="2"><span class="bw-icon">⚡</span><div class="bw-title" style="color:var(--sage)">Near Zero Energy Use</div><div class="bw-body">No puzzle to solve. No competition. A masternode uses a fraction of the electricity that Bitcoin mining requires. Anyone can run one on normal hardware.</div></div>
+    <div class="bw-item" data-n="3"><span class="bw-icon">🎲</span><div class="bw-title" style="color:var(--gold2)">Tamper-Proof Randomness</div><div class="bw-body">The final random number comes from all 11 validators together. No single node controls it. Nobody can predict or influence who builds the next block.</div></div>
+    <div class="bw-item" data-n="4"><span class="bw-icon">🌍</span><div class="bw-title" style="color:var(--smoke)">Open to Anyone</div><div class="bw-body">No special hardware. No mining rigs. Just 10,000 BDX and a standard server. This keeps the network decentralized. No single entity can control it.</div></div>
+    <div class="bw-item" data-n="5"><span class="bw-icon">🔁</span><div class="bw-title" style="color:var(--gold)">Self-Healing Network</div><div class="bw-body">If a validator goes offline during a round, the round fails and restarts automatically. The network detects problems and rebuilds without any human intervention.</div></div>
+    <div class="bw-item" data-n="6"><span class="bw-icon">⚖️</span><div class="bw-title" style="color:var(--sage)">Equal Earning Opportunity</div><div class="bw-body">The reward queue ensures every masternode gets a fair turn. Producing a block sends you to the back of the line. No node can dominate the reward cycle.</div></div>
+  </div>
+</div>
+</section>
+
+<!-- VRF -->
+<div class="sec-gap"></div>
+<section id="vrf">
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">What Is Being Built Next</div></div>
+  <h2 class="sec-h">THE NEXT<br><em>UPGRADE</em></h2>
+  <div class="half-gap"></div>
+  <div class="vrf-banner fi">
+    <div class="vb-tag">Research In Progress at Beldex Research Labs</div>
+    <div class="vb-title">VERIFIABLE RANDOM FUNCTIONS</div>
+    <div class="vb-desc">The current PoS system works well. But there is a small amount of predictability in which masternodes get selected. VRF eliminates this with cryptographically unpredictable, fully verifiable selection. It also increases quorum size for stronger security.</div>
+    <div class="vb-points">
+      <div class="vbp"><span class="vbp-icon">🎰</span><div class="vbp-title">True Randomness</div><div class="vbp-body">Node selection becomes completely unpredictable. Nobody can know in advance which node will be chosen for a round.</div></div>
+      <div class="vbp"><span class="vbp-icon">👥</span><div class="vbp-title">Larger Quorums</div><div class="vbp-body">More nodes per round means more must be compromised simultaneously for any attack to succeed.</div></div>
+      <div class="vbp"><span class="vbp-icon">✅</span><div class="vbp-title">Verifiable by Anyone</div><div class="vbp-body">Anyone can verify the selection was fair and random. Full transparency with full unpredictability at the same time.</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SUMMARY -->
+<div class="sec-gap"></div>
+<div class="wrap">
+  <div class="sec-eyebrow"><div class="se-line"></div><div class="se-text">Everything on This Page</div></div>
+  <h2 class="sec-h">BELDEX POS<br><em>IN EIGHT POINTS</em></h2>
+  <div class="half-gap"></div>
+  <div class="summary-grid fi">
+    <div class="sg-item"><span class="sg-icon">⬡</span><div class="sg-title">Proof of Stake</div><div class="sg-sub">Upgraded from PoW in Dec 2021 via Bucephalus hardfork</div></div>
+    <div class="sg-item"><span class="sg-icon">🖥️</span><div class="sg-title">Masternodes</div><div class="sg-sub">Each stakes 10,000 BDX. Run by community worldwide.</div></div>
+    <div class="sg-item"><span class="sg-icon">👥</span><div class="sg-title">Quorum of 12</div><div class="sg-sub">1 Block Producer plus 11 Validators per round.</div></div>
+    <div class="sg-item"><span class="sg-icon">⏱</span><div class="sg-title">30 Second Blocks</div><div class="sg-sub">One new block every 30 seconds around the clock.</div></div>
+    <div class="sg-item"><span class="sg-icon">🎲</span><div class="sg-title">Tamper-Proof Random</div><div class="sg-sub">11 nodes together build one number nobody controls.</div></div>
+    <div class="sg-item"><span class="sg-icon">💰</span><div class="sg-title">6.25 BDX Reward</div><div class="sg-sub">Shared among validators for each confirmed block.</div></div>
+    <div class="sg-item"><span class="sg-icon">🔁</span><div class="sg-title">Auto Recovery</div><div class="sg-sub">Failed rounds restart automatically. No human needed.</div></div>
+    <div class="sg-item"><span class="sg-icon">⚡</span><div class="sg-title">VRF Coming Next</div><div class="sg-sub">More randomness, larger quorums, stronger security ahead.</div></div>
+  </div>
+</div>
+<div class="sec-gap"></div>
+
+<footer>
+  <div class="ft-brand">BELDEX // POS CONSENSUS</div>
+  <div class="ft-note">beldex-pos-consensus.html · beldex-guide-project.vercel.app</div>
+</footer>
+
+<script>
+(function(){
+  var dial=document.getElementById('dial');
+  if(!dial)return;
+  var r=157, dialSize=340, center=170;
+  // Create orbit wrapper that spins
+  var orbit=document.createElement('div');
+  orbit.className='rd-orbit';
+  dial.appendChild(orbit);
+  // 12 nodes evenly at 30deg each, no collisions
+  var nodes=[
+    {l:'BP',c:'producer',a:-90},
+    {l:'V1',c:'active',a:-60},{l:'V2',c:'active',a:-30},
+    {l:'V3',c:'active',a:0},{l:'V4',c:'active',a:30},
+    {l:'V5',c:'active',a:60},{l:'V6',c:'active',a:90},
+    {l:'V7',c:'active',a:120},{l:'V8',c:'active',a:150},
+    {l:'V9',c:'active',a:180},{l:'V10',c:'active',a:210},
+    {l:'V11',c:'active',a:240}
+  ];
+  nodes.forEach(function(n){
+    var rad=n.a*Math.PI/180;
+    var el=document.createElement('div');
+    el.className='rd-node '+n.c;
+    // Position within orbit div (170x170 center within 340x340)
+    el.style.left=(center+r*Math.cos(rad))+'px';
+    el.style.top=(center+r*Math.sin(rad))+'px';
+    var txt=document.createElement('span');
+    txt.className='rd-node-txt';
+    txt.textContent=n.l;
+    el.appendChild(txt);
+    orbit.appendChild(el);
+  });
+})();
+(function(){
+  var ring=document.getElementById('quorumRing');
+  if(!ring)return;
+  // ring is 520px, orbit is 500px, orbit center = 250px from orbit top-left
+  var r=230, orbitCenter=250;
+  var orbit=document.createElement('div');
+  orbit.className='qr-orbit';
+  ring.appendChild(orbit);
+  // 12 nodes evenly at 30deg - BP at top, then V1..V11 clockwise
+  var allNodes=[
+    {l:'BP',cls:'bp-orbit'},
+    {l:'V1',cls:'v'},{l:'V2',cls:'v'},{l:'V3',cls:'v'},
+    {l:'V4',cls:'v'},{l:'V5',cls:'v'},{l:'V6',cls:'v'},
+    {l:'V7',cls:'v'},{l:'V8',cls:'v'},{l:'V9',cls:'v'},
+    {l:'V10',cls:'v'},{l:'V11',cls:'v'}
+  ];
+  allNodes.forEach(function(n,i){
+    var angle=-90+(30*i);
+    var rad=angle*Math.PI/180;
+    var el=document.createElement('div');
+    el.className='qr-node '+n.cls;
+    el.style.left=(orbitCenter+r*Math.cos(rad))+'px';
+    el.style.top=(orbitCenter+r*Math.sin(rad))+'px';
+    var inner=document.createElement('div');
+    inner.className='qr-node-inner';
+    inner.innerHTML='<span class="qr-node-lbl">'+n.l+'</span>';
+    el.appendChild(inner);
+    orbit.appendChild(el);
+  });
+})();
+var secs=document.querySelectorAll('section[id]');
+var navAs=document.querySelectorAll('.nav-a');
+window.addEventListener('scroll',function(){
+  var cur='';
+  secs.forEach(function(s){if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  navAs.forEach(function(a){
+    a.classList.remove('on');
+    if(a.getAttribute('href')==='#'+cur)a.classList.add('on');
+  });
+},{passive:true});
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e,i){
+    if(e.isIntersecting)setTimeout(function(){e.target.classList.add('in');},i*60);
+  });
+},{threshold:0.08});
+document.querySelectorAll('.fi').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>

@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex Masternode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void:#04080f; --deep:#070e1a; --panel:#0b1624; --plate:#101e2e;
+  --wall:#162436; --line:#1e3448;
+  --teal:#00c9a7; --teal2:#00f0c8; --tealfaint:rgba(0,201,167,0.08);
+  --lime:#63f5c2; --amber:#f5a623; --red:#ff4d4d;
+  --text:#dff0ea; --mid:#7ab8a8; --dim:#2e4a5a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--void);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  font-size:16px;
+}
+
+/* ─── VERTICAL STRIPE BACKGROUND ─── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    repeating-linear-gradient(90deg,
+      transparent, transparent 79px,
+      rgba(0,201,167,0.025) 80px
+    );
+}
+
+/* ─── NAV ─── */
+nav {
+  position:sticky; top:0; z-index:200;
+  background:rgba(4,8,15,0.96);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+  height:50px;
+  display:flex; align-items:center;
+  padding:0 2.5rem; gap:0.75rem;
+  overflow-x:auto;
+}
+.nb { font-family:'Oxanium',sans-serif; font-size:0.82rem; font-weight:800; color:var(--teal); letter-spacing:0.08em; flex-shrink:0; }
+.nb span { color:var(--mid); font-weight:400; }
+.nd { width:1px; height:18px; background:var(--line); flex-shrink:0; margin:0 0.25rem; }
+nav a { font-family:'Space Mono',monospace; font-size:0.5rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid); text-decoration:none; padding:0.22rem 0.55rem; border-radius:2px; white-space:nowrap; transition:all 0.15s; }
+nav a:hover, nav a.on { color:var(--teal); background:var(--tealfaint); }
+.ncta { margin-left:auto; flex-shrink:0; background:var(--teal); color:var(--void); font-family:'Space Mono',monospace; font-size:0.5rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.22rem 0.8rem; border-radius:2px; text-decoration:none; transition:background 0.15s; }
+.ncta:hover { background:var(--teal2); }
+
+/* ─── HERO ─── */
+#hero {
+  min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+  align-items:center; text-align:center;
+  position:relative; z-index:1; padding:5rem 2rem 4rem;
+  overflow:hidden;
+}
+#hero::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%, rgba(0,201,167,0.07) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-status {
+  display:inline-flex; align-items:center; gap:0.5rem;
+  font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700;
+  letter-spacing:0.18em; text-transform:uppercase; color:var(--teal);
+  background:var(--panel); border:1px solid rgba(0,201,167,0.25);
+  padding:0.35rem 1rem; border-radius:2rem; margin-bottom:2.5rem;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+.status-dot { width:6px; height:6px; border-radius:50%; background:var(--teal); animation:pulse 1.8s ease-in-out infinite; }
+.hero-title {
+  font-family:'Oxanium',sans-serif; font-weight:800;
+  font-size:clamp(3rem,10vw,9rem);
+  line-height:0.9; letter-spacing:-0.02em;
+  color:var(--text); margin-bottom:0.5rem;
+}
+.hero-title em { color:var(--teal); font-style:normal; display:block; }
+.hero-sub {
+  font-family:'Space Mono',monospace; font-size:0.82rem; letter-spacing:0.12em;
+  text-transform:uppercase; color:#a8d4c8; margin-bottom:3rem; line-height:2;
+}
+.hero-ticker {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:var(--line);
+  border:1px solid var(--line); max-width:720px; width:100%;
+}
+.ht-cell {
+  background:var(--panel); padding:1rem 1.25rem; text-align:center;
+}
+.ht-val { font-family:'Oxanium',sans-serif; font-size:1.8rem; font-weight:800; line-height:1; letter-spacing:-0.02em; color:var(--teal); display:block; }
+.ht-key { font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:#a8d4c8; margin-top:0.3rem; }
+
+/* ─── SECTION WRAP ─── */
+.w { max-width:1080px; margin:0 auto; padding:0 2.5rem; position:relative; z-index:1; }
+.gap { height:6rem; }
+.half { height:3rem; }
+
+/* ─── BOLD STRIP TITLE ─── */
+.strip-title {
+  font-family:'Oxanium',sans-serif; font-weight:800;
+  font-size:clamp(2rem,4vw,3.2rem); line-height:0.95;
+  letter-spacing:-0.02em; color:var(--text); margin-bottom:0.5rem;
+}
+.strip-title em { color:var(--teal); font-style:normal; }
+.strip-meta {
+  font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700;
+  letter-spacing:0.16em; text-transform:uppercase; color:var(--teal);
+  margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;
+}
+.strip-meta::before { content:''; width:24px; height:2px; background:var(--teal); }
+.strip-sub { font-size:1.05rem; color:#a8d4c8; line-height:1.8; max-width:580px; }
+
+/* ─── WHY SECTION ─── */
+#why { background:var(--deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:5rem 0; }
+.why-list { margin-top:3rem; display:flex; flex-direction:column; }
+.why-item {
+  display:flex; align-items:stretch; gap:0;
+  border-top:1px solid var(--line); cursor:pointer;
+  transition:background 0.2s;
+  position:relative; overflow:hidden;
+}
+.why-item:last-child { border-bottom:1px solid var(--line); }
+.why-item:hover { background:rgba(0,201,167,0.04); }
+.why-item.open { background:rgba(0,201,167,0.05); }
+.wi-num {
+  font-family:'Oxanium',sans-serif; font-weight:800; font-size:3.5rem;
+  line-height:1; color:rgba(0,201,167,0.12);
+  padding:1.25rem 1.5rem; min-width:100px; display:flex;
+  align-items:center; justify-content:center; flex-shrink:0;
+  border-right:1px solid var(--line); transition:color 0.2s;
+}
+.why-item.open .wi-num, .why-item:hover .wi-num { color:rgba(0,201,167,0.3); }
+.wi-body { flex:1; padding:1.25rem 1.75rem; display:flex; flex-direction:column; justify-content:center; gap:0.3rem; }
+.wi-head {
+  font-family:'Oxanium',sans-serif; font-weight:700;
+  font-size:clamp(1.1rem,2.5vw,1.5rem); color:var(--text); letter-spacing:-0.01em;
+}
+.wi-tag {
+  font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--teal); font-weight:700;
+}
+.wi-detail {
+  font-size:0.97rem; color:#a8d4c8; line-height:1.75;
+  max-height:0; overflow:hidden;
+  transition:max-height 0.35s ease, margin-top 0.35s ease, opacity 0.35s ease;
+  opacity:0; margin-top:0;
+}
+.why-item.open .wi-detail { max-height:120px; opacity:1; margin-top:0.5rem; }
+.wi-arrow {
+  padding:1.25rem 1.5rem; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; color:var(--dim); font-size:1rem;
+  transition:transform 0.3s, color 0.2s;
+}
+.why-item.open .wi-arrow { transform:rotate(90deg); color:var(--teal); }
+
+/* ─── ROLE SWITCHER ─── */
+#roles { padding:5rem 0; }
+.role-tabs { display:flex; gap:0; border:1px solid var(--line); margin-bottom:0; overflow:hidden; }
+.rtab {
+  flex:1; padding:1.1rem 1rem; text-align:center; cursor:pointer;
+  background:var(--panel); border-right:1px solid var(--line);
+  transition:all 0.2s; position:relative;
+}
+.rtab:last-child { border-right:none; }
+.rtab-icon { font-size:1.4rem; margin-bottom:0.4rem; display:block; filter:grayscale(0.6); transition:filter 0.2s; }
+.rtab-label { font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); transition:color 0.2s; }
+.rtab.active { background:var(--tealfaint); }
+.rtab.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--teal); }
+.rtab.active .rtab-icon { filter:grayscale(0); }
+.rtab.active .rtab-label { color:var(--teal); }
+.rtab:hover:not(.active) { background:rgba(0,201,167,0.03); }
+.role-panel {
+  border:1px solid var(--line); border-top:none;
+  background:var(--panel); padding:2.5rem;
+  display:none; animation:rpShow 0.3s ease;
+}
+.role-panel.show { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; }
+@keyframes rpShow { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.rp-tag { font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
+.rp-title { font-family:'Oxanium',sans-serif; font-weight:800; font-size:2rem; letter-spacing:-0.01em; color:var(--text); margin-bottom:0.75rem; line-height:1.1; }
+.rp-body { font-size:1rem; color:#a8d4c8; line-height:1.8; margin-bottom:1.25rem; }
+.rp-points { display:flex; flex-direction:column; gap:0.4rem; }
+.rp-point { display:flex; gap:0.6rem; font-size:0.92rem; color:#a8d4c8; align-items:flex-start; }
+.rp-point::before { content:'→'; color:var(--teal); flex-shrink:0; font-size:0.7rem; margin-top:2px; }
+.rp-right { display:flex; justify-content:center; align-items:center; }
+.role-visual { width:220px; height:220px; position:relative; }
+
+/* ─── STAKE ─── */
+#stake { background:var(--deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:5rem 0; }
+.stake-layout { display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line); }
+.stake-left {
+  padding:3rem; border-right:1px solid var(--line);
+  display:flex; flex-direction:column; gap:1.5rem;
+}
+.stake-right { padding:3rem; display:flex; flex-direction:column; gap:1rem; }
+.vault-display {
+  display:flex; flex-direction:column; align-items:flex-start; gap:0.4rem;
+  padding:2rem; border:1px solid rgba(0,201,167,0.2);
+  background:var(--tealfaint); position:relative;
+}
+.vault-display::before {
+  content:'LOCKED ON-CHAIN'; position:absolute; top:-0.5rem; left:1rem;
+  font-family:'Space Mono',monospace; font-size:0.42rem; font-weight:700;
+  letter-spacing:0.12em; color:var(--teal); background:var(--deep); padding:0 0.4rem;
+}
+.vault-num { font-family:'Oxanium',sans-serif; font-weight:800; font-size:4rem; letter-spacing:-0.03em; line-height:1; color:var(--teal); }
+.vault-bdx { font-family:'Space Mono',monospace; font-size:0.88rem; font-weight:700; letter-spacing:0.1em; color:#a8d4c8; }
+.vault-note { font-size:0.95rem; color:#a8d4c8; line-height:1.7; }
+.stake-fact {
+  display:flex; gap:1rem; padding:0.9rem 1rem;
+  background:var(--panel); border-left:2px solid;
+}
+.stake-fact.t { border-left-color:var(--teal); }
+.stake-fact.a { border-left-color:var(--amber); }
+.stake-fact.r { border-left-color:var(--red); }
+.stake-fact.l { border-left-color:var(--lime); }
+.sf-label { font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text); margin-bottom:0.25rem; }
+.sf-val { font-size:0.93rem; color:#a8d4c8; line-height:1.65; }
+
+/* ─── CALCULATOR ─── */
+#calc { padding:5rem 0; position:relative; z-index:1; }
+.calc-wrap {
+  border:1px solid rgba(0,201,167,0.25); background:var(--panel);
+  overflow:hidden; position:relative;
+}
+.calc-wrap::before {
+  content:''; position:absolute; top:-60px; right:-60px;
+  width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle, rgba(0,201,167,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.calc-top {
+  display:grid; grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--line);
+}
+.calc-left { padding:2.5rem; border-right:1px solid var(--line); }
+.calc-title { font-family:'Oxanium',sans-serif; font-weight:800; font-size:1.75rem; letter-spacing:-0.01em; color:var(--text); margin-bottom:0.4rem; }
+.calc-sub { font-size:1rem; color:#a8d4c8; line-height:1.7; margin-bottom:2rem; }
+.calc-field { margin-bottom:2rem; }
+.cf-label {
+  font-family:'Space Mono',monospace; font-size:0.72rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; color:#a8d4c8;
+  margin-bottom:0.75rem; display:flex; justify-content:space-between; align-items:center;
+}
+.cf-val-badge {
+  font-family:'Oxanium',sans-serif; font-size:1.2rem; font-weight:800;
+  color:var(--teal); letter-spacing:-0.01em;
+}
+input[type=range] {
+  -webkit-appearance:none; appearance:none; width:100%; height:6px;
+  background:var(--wall); border-radius:3px; outline:none; cursor:pointer;
+  margin-bottom:0.5rem;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+  background:var(--teal); cursor:pointer;
+  box-shadow:0 0 12px rgba(0,201,167,0.6), 0 0 0 3px rgba(0,201,167,0.15);
+}
+.range-ticks { display:flex; justify-content:space-between; }
+.range-ticks span { font-family:'Space Mono',monospace; font-size:0.52rem; color:var(--dim); }
+select.calc-select {
+  width:100%; background:var(--plate); border:1px solid var(--line);
+  color:var(--text); font-family:'Space Mono',monospace; font-size:0.75rem;
+  padding:0.8rem 1rem; cursor:pointer; outline:none;
+  transition:border-color 0.2s;
+}
+select.calc-select:focus { border-color:var(--teal); }
+.calc-right {
+  padding:2.5rem; background:rgba(0,0,0,0.2);
+  display:flex; flex-direction:column; justify-content:center; gap:0;
+}
+.cr-label {
+  font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--teal);
+  margin-bottom:1.5rem; display:flex; align-items:center; gap:0.5rem;
+}
+.cr-label::before { content:''; width:16px; height:2px; background:var(--teal); }
+.calc-output { display:flex; flex-direction:column; gap:2px; }
+.co-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1.4rem 1.5rem; background:var(--panel);
+  border-left:3px solid transparent; transition:border-color 0.3s, background 0.2s;
+  position:relative; overflow:hidden;
+}
+.co-row:hover { border-left-color:var(--teal); background:rgba(0,201,167,0.04); }
+.co-row.day { border-left-color:var(--teal); }
+.co-left { display:flex; flex-direction:column; gap:0.3rem; }
+.co-period { font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:#a8d4c8; }
+.co-bar-wrap { width:140px; height:4px; background:var(--wall); border-radius:2px; }
+.co-bar { height:100%; border-radius:2px; background:var(--teal); transition:width 0.5s ease; }
+.co-val {
+  font-family:'Oxanium',sans-serif; font-weight:800; font-size:2.4rem;
+  letter-spacing:-0.03em; color:var(--teal);
+  transition:all 0.3s ease; text-align:right;
+}
+.co-val .unit { font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:400; color:var(--mid); margin-left:0.3rem; }
+.calc-bottom {
+  background:var(--void); border-top:1px solid var(--line);
+  padding:1.5rem 2.5rem; display:flex; align-items:center; justify-content:space-between;
+  gap:2rem;
+}
+.calc-note { font-size:0.85rem; color:var(--dim); line-height:1.55; flex:1; }
+.calc-price-box { display:flex; align-items:center; gap:1rem; flex-shrink:0; }
+.cpb-label { font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#a8d4c8; }
+.cpb-input {
+  background:var(--plate); border:1px solid var(--line);
+  color:var(--teal); font-family:'Oxanium',sans-serif; font-size:1rem; font-weight:700;
+  padding:0.5rem 0.75rem; width:100px; outline:none; text-align:right;
+  transition:border-color 0.2s;
+}
+.cpb-input:focus { border-color:var(--teal); }
+.cpb-suffix { font-family:'Space Mono',monospace; font-size:0.65rem; color:var(--mid); }
+.calc-usd-hint { font-family:'Space Mono',monospace; font-size:0.65rem; color:rgba(0,201,167,0.5); margin-top:0.3rem; text-align:right; }
+
+/* ─── REQUIREMENTS ─── */
+#requirements { background:var(--deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:5rem 0; }
+.req-table {
+  width:100%; border:1px solid var(--line); border-collapse:collapse;
+  margin-top:2rem;
+}
+.req-table th {
+  font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--teal);
+  background:var(--panel); padding:0.85rem 1rem; text-align:left;
+  border:1px solid var(--line);
+}
+.req-table td {
+  padding:0.9rem 1rem; font-size:0.93rem; color:#a8d4c8;
+  border:1px solid rgba(30,52,72,0.6);
+  transition:background 0.2s;
+}
+.req-table tr:hover td { background:rgba(0,201,167,0.03); }
+.req-table td:first-child { font-family:'Space Mono',monospace; font-size:0.75rem; font-weight:700; letter-spacing:0.06em; color:var(--text); width:160px; }
+.req-table td:last-child { font-size:0.85rem; color:#a8d4c8; }
+.req-badge {
+  display:inline-block; font-family:'Space Mono',monospace; font-size:0.6rem;
+  font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  padding:0.15rem 0.45rem; border-radius:2px;
+}
+.rb-must { background:rgba(0,201,167,0.1); color:var(--teal); border:1px solid rgba(0,201,167,0.2); }
+.rb-rec { background:rgba(245,166,35,0.1); color:var(--amber); border:1px solid rgba(245,166,35,0.2); }
+
+/* ─── LIFECYCLE ─── */
+#lifecycle { padding:5rem 0; }
+.lc-steps { margin-top:3rem; position:relative; }
+.lc-steps::before {
+  content:''; position:absolute; left:24px; top:0; bottom:0;
+  width:2px; background:linear-gradient(to bottom, var(--teal), transparent);
+}
+.lc-item {
+  display:flex; gap:2rem; padding-bottom:2.5rem; position:relative;
+}
+.lc-item:last-child { padding-bottom:0; }
+.lc-dot {
+  width:50px; height:50px; border-radius:50%;
+  background:var(--panel); border:2px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; position:relative; z-index:1;
+  font-family:'Oxanium',sans-serif; font-size:1rem; font-weight:800; color:var(--dim);
+  transition:border-color 0.3s, color 0.3s;
+}
+.lc-item.hl .lc-dot { border-color:var(--teal); color:var(--teal); box-shadow:0 0 16px rgba(0,201,167,0.2); }
+.lc-content { padding-top:0.6rem; }
+.lc-title { font-family:'Oxanium',sans-serif; font-weight:700; font-size:1.25rem; color:var(--text); margin-bottom:0.4rem; letter-spacing:-0.01em; }
+.lc-body { font-size:0.97rem; color:#a8d4c8; line-height:1.75; max-width:600px; }
+.lc-badge { display:inline-block; font-family:'Space Mono',monospace; font-size:0.6rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.2rem 0.55rem; margin-bottom:0.5rem; }
+.lb-active { background:rgba(0,201,167,0.1); color:var(--teal); }
+.lb-passive { background:var(--panel); color:var(--dim); }
+
+/* ─── NETWORK STATS ─── */
+#network { background:var(--deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:5rem 0; }
+.net-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:2.5rem; }
+.net-cell { background:var(--panel); padding:2rem 1.5rem; transition:background 0.2s; }
+.net-cell:hover { background:var(--plate); }
+.nc-big { font-family:'Oxanium',sans-serif; font-weight:800; font-size:3rem; letter-spacing:-0.03em; line-height:1; display:block; margin-bottom:0.2rem; }
+.nc-unit { font-family:'Space Mono',monospace; font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); display:block; margin-bottom:0.5rem; }
+.nc-title { font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text); margin-bottom:0.3rem; }
+.nc-sub { font-size:0.88rem; color:#a8d4c8; line-height:1.6; }
+
+/* ─── SUMMARY ─── */
+#summary { padding:5rem 0; }
+.sum-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:2.5rem; }
+.sg { background:var(--panel); padding:1.5rem 1.25rem; transition:background 0.2s; }
+.sg:hover { background:var(--plate); }
+.sg-i { font-size:1.2rem; margin-bottom:0.5rem; display:block; }
+.sg-t { font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text); margin-bottom:0.3rem; line-height:1.4; }
+.sg-s { font-size:0.85rem; color:#a8d4c8; line-height:1.55; }
+
+/* ─── FOOTER ─── */
+footer { padding:2.5rem 2.5rem; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; position:relative; z-index:1; }
+.fb { font-family:'Oxanium',sans-serif; font-weight:800; font-size:0.82rem; color:var(--teal); letter-spacing:0.08em; }
+.fn { font-family:'Space Mono',monospace; font-size:0.46rem; letter-spacing:0.08em; color:var(--dim); }
+
+/* ─── FADE IN ─── */
+.fi { opacity:0; transform:translateY(12px); transition:opacity 0.4s ease, transform 0.4s ease; }
+.fi.in { opacity:1; transform:none; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:860px){
+  .hero-ticker{grid-template-columns:repeat(2,1fr);}
+  .stake-layout,.calc-wrap{grid-template-columns:1fr;}
+  .stake-left,.calc-left{border-right:none;border-bottom:1px solid var(--line);}
+  .role-panel.show{grid-template-columns:1fr;}
+  .rp-right{display:none;}
+  .net-row{grid-template-columns:1fr 1fr;}
+  .sum-grid{grid-template-columns:repeat(2,1fr);}
+  .req-table td:last-child{display:none;}
+  .req-table th:last-child{display:none;}
+}
+@media(max-width:500px){
+  .wi-num{min-width:60px;font-size:2.5rem;}
+  .net-row{grid-template-columns:1fr;}
+  .sum-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* ═══ LIVE ANIMATIONS ═══ */
+
+/* Floating particles on hero */
+@keyframes floatUp {
+  0%   { transform:translateY(0) translateX(0); opacity:0; }
+  10%  { opacity:0.7; }
+  90%  { opacity:0.4; }
+  100% { transform:translateY(-100vh) translateX(var(--dx)); opacity:0; }
+}
+.hero-particle {
+  position:absolute; border-radius:50%; pointer-events:none;
+  animation:floatUp var(--dur,12s) linear var(--delay,0s) infinite;
+}
+
+/* Scan-line sweep on WHY items */
+@keyframes scanLine {
+  0%   { left:-100%; }
+  100% { left:200%; }
+}
+.why-item.open::after {
+  content:''; position:absolute; top:0; left:-100%; width:60%;
+  height:100%; background:linear-gradient(90deg, transparent, rgba(0,201,167,0.04), transparent);
+  animation:scanLine 1.8s ease infinite;
+  pointer-events:none;
+}
+
+/* Lifecycle dot pulse glow */
+@keyframes dotPulse {
+  0%,100% { box-shadow:0 0 12px rgba(0,201,167,0.2); }
+  50%     { box-shadow:0 0 28px rgba(0,201,167,0.55), 0 0 0 6px rgba(0,201,167,0.08); }
+}
+.lc-item.hl .lc-dot { animation:dotPulse 2.4s ease-in-out infinite; }
+
+/* Vault shimmer */
+@keyframes vaultShimmer {
+  0%   { background-position:-200% 0; }
+  100% { background-position:200% 0; }
+}
+.vault-display {
+  background:linear-gradient(110deg, rgba(0,201,167,0.06) 40%, rgba(0,201,167,0.14) 50%, rgba(0,201,167,0.06) 60%);
+  background-size:200% 100%;
+  animation:vaultShimmer 3.5s ease-in-out infinite;
+}
+
+/* Rolling block counter in hero */
+@keyframes rollUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+.rolling-num { display:inline-block; animation:rollUp 0.35s ease; }
+
+/* Network cells live counter blink */
+@keyframes statBlink {
+  0%,100% { opacity:1; }
+  50%     { opacity:0.6; }
+}
+.nc-big.live { animation:statBlink 3s ease-in-out infinite; }
+
+/* Teal border glow on stake facts on hover */
+.stake-fact {
+  transition:background 0.2s, border-left-color 0.2s, transform 0.2s;
+}
+.stake-fact:hover { background:rgba(0,201,167,0.05); transform:translateX(4px); }
+
+/* Tab active glow */
+.rtab.active { box-shadow:inset 0 -3px 0 var(--teal); }
+
+/* Calc row flash on value change */
+@keyframes valFlash {
+  0%   { background:rgba(0,201,167,0.15); }
+  100% { background:var(--panel); }
+}
+.co-row.flash { animation:valFlash 0.5s ease; }
+
+/* Summary grid hover lift */
+.sg { transition:background 0.2s, transform 0.2s; }
+.sg:hover { background:var(--plate); transform:translateY(-2px); }
+
+/* Responsive calc fixes */
+@media(max-width:860px){
+  .calc-top { grid-template-columns:1fr; }
+  .calc-left { border-right:none; border-bottom:1px solid var(--line); }
+  .calc-bottom { flex-direction:column; align-items:flex-start; }
+}
+
+
+/* ═══ HOW IT WORKS SECTION ═══ */
+#howitworks {
+  background:var(--deep); border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line); padding:6rem 0;
+  position:relative; z-index:1; overflow:hidden;
+}
+#howitworks::after {
+  content:''; position:absolute; left:-200px; top:50%;
+  transform:translateY(-50%);
+  width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle, rgba(0,201,167,0.04) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hiw-flow {
+  margin-top:3.5rem;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0;
+  position:relative;
+}
+/* vertical connector line */
+.hiw-flow::before {
+  content:''; position:absolute;
+  left:38px; top:48px; bottom:48px; width:2px;
+  background:linear-gradient(to bottom, var(--teal) 0%, rgba(0,201,167,0.1) 100%);
+  z-index:0;
+}
+.hiw-step {
+  display:grid;
+  grid-template-columns:80px 1fr;
+  gap:0 2rem;
+  padding:1.75rem 0;
+  position:relative;
+  z-index:1;
+  cursor:default;
+}
+.hiw-step:hover .hiw-icon-wrap { box-shadow:0 0 0 8px rgba(0,201,167,0.08), 0 0 24px rgba(0,201,167,0.3); }
+.hiw-icon-wrap {
+  width:78px; height:78px; border-radius:50%;
+  background:var(--panel); border:2px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:1.6rem; position:relative;
+  transition:box-shadow 0.3s, border-color 0.3s;
+  z-index:1;
+}
+.hiw-step.act .hiw-icon-wrap {
+  border-color:var(--teal);
+  background:rgba(0,201,167,0.07);
+  box-shadow:0 0 20px rgba(0,201,167,0.2);
+}
+.hiw-step-num {
+  position:absolute; top:-4px; right:-4px;
+  font-family:'Oxanium',sans-serif; font-weight:800; font-size:0.65rem;
+  background:var(--teal); color:var(--void);
+  width:18px; height:18px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+}
+.hiw-body { padding-top:1.1rem; }
+.hiw-label {
+  font-family:'Space Mono',monospace; font-size:0.65rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--teal);
+  margin-bottom:0.3rem;
+}
+.hiw-title {
+  font-family:'Oxanium',sans-serif; font-weight:800;
+  font-size:clamp(1.1rem,2vw,1.4rem); color:var(--text);
+  letter-spacing:-0.01em; margin-bottom:0.5rem; line-height:1.15;
+}
+.hiw-desc {
+  font-size:1rem; color:#a8d4c8; line-height:1.75; max-width:640px;
+}
+.hiw-detail-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--line); border:1px solid var(--line);
+  margin-top:3.5rem;
+}
+.hiw-dg-cell {
+  background:var(--panel); padding:1.5rem;
+  transition:background 0.2s, transform 0.2s;
+}
+.hiw-dg-cell:hover { background:var(--plate); transform:translateY(-2px); }
+.hiw-dg-num {
+  font-family:'Oxanium',sans-serif; font-weight:800; font-size:2.2rem;
+  color:var(--teal); letter-spacing:-0.03em; line-height:1; display:block;
+  margin-bottom:0.2rem;
+}
+.hiw-dg-label {
+  font-family:'Space Mono',monospace; font-size:0.62rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; color:#a8d4c8;
+  margin-bottom:0.4rem;
+}
+.hiw-dg-sub { font-size:0.9rem; color:var(--mid); line-height:1.6; }
+
+/* ═══ CANVAS ROLES SECTION ═══ */
+#roles { padding:5rem 0; position:relative; z-index:1; }
+.role-tabs {
+  display:flex; gap:0; border:1px solid var(--line);
+  margin-bottom:0; overflow:hidden;
+}
+.rtab {
+  flex:1; padding:1.25rem 1rem; text-align:center; cursor:pointer;
+  background:var(--panel); border-right:1px solid var(--line);
+  transition:all 0.2s; position:relative;
+}
+.rtab:last-child { border-right:none; }
+.rtab-icon { font-size:1.5rem; margin-bottom:0.4rem; display:block;
+  filter:grayscale(0.5); transition:filter 0.2s; }
+.rtab-label { font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); transition:color 0.2s; }
+.rtab.active { background:var(--tealfaint); }
+.rtab.active::after { content:''; position:absolute; bottom:0; left:0; right:0;
+  height:3px; background:var(--teal); }
+.rtab.active .rtab-icon { filter:grayscale(0); }
+.rtab.active .rtab-label { color:var(--teal); }
+.rtab:hover:not(.active) { background:rgba(0,201,167,0.03); }
+
+.role-panel {
+  border:1px solid var(--line); border-top:none;
+  background:var(--panel);
+  display:none; animation:rpShow 0.3s ease;
+}
+.role-panel.show { display:grid; grid-template-columns:1fr 1fr; align-items:stretch; }
+@keyframes rpShow { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.rp-left { padding:2.5rem; border-right:1px solid var(--line); display:flex; flex-direction:column; justify-content:center; }
+.rp-tag { font-family:'Space Mono',monospace; font-size:0.68rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.75rem; }
+.rp-title { font-family:'Oxanium',sans-serif; font-weight:800; font-size:2rem;
+  letter-spacing:-0.01em; color:var(--text); margin-bottom:0.75rem; line-height:1.1; }
+.rp-body { font-size:1rem; color:#a8d4c8; line-height:1.8; margin-bottom:1.5rem; }
+.rp-points { display:flex; flex-direction:column; gap:0.5rem; }
+.rp-point { display:flex; gap:0.65rem; font-size:0.95rem; color:#a8d4c8; align-items:flex-start; }
+.rp-point::before { content:'→'; color:var(--teal); flex-shrink:0; font-size:0.8rem; margin-top:3px; }
+.rp-canvas-wrap {
+  position:relative; background:var(--void);
+  min-height:320px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.rp-canvas-wrap canvas { display:block; }
+
+@media(max-width:800px){
+  .role-panel.show { grid-template-columns:1fr; }
+  .rp-left { border-right:none; border-bottom:1px solid var(--line); }
+  .hiw-detail-grid { grid-template-columns:1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nb">BELDEX <span>// NODE</span></div>
+  <div class="nd"></div>
+  <a href="#hero" class="on">Overview</a>
+  <a href="#why">Why Run</a>
+  <a href="#howitworks">How It Works</a>
+  <a href="#roles">Three Roles</a>
+  <a href="#stake">Stake</a>
+  <a href="#calc">Calculator</a>
+  <a href="#requirements">Setup</a>
+  <a href="#lifecycle">Lifecycle</a>
+  <a href="#network">Network</a>
+  <a class="ncta" href="../../beldex-tree.html">GUIDE HOME</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div id="heroParticles" aria-hidden="true"></div>
+  <div class="hero-status"><div class="status-dot"></div>BELDEX NETWORK ACTIVE</div>
+  <div class="hero-title">MASTER<br><em>NODE</em></div>
+  <div class="hero-sub">
+    THE COMPUTER THAT KEEPS BELDEX ALIVE<br>
+    VALIDATE. ROUTE. HOST. EARN.
+  </div>
+  <div class="hero-ticker">
+    <div class="ht-cell"><span class="ht-val">10K</span><div class="ht-key">BDX Stake</div></div>
+    <div class="ht-cell"><span class="ht-val">24/7</span><div class="ht-key">Always Online</div></div>
+    <div class="ht-cell"><span class="ht-val">3</span><div class="ht-key">Jobs at Once</div></div>
+    <div class="ht-cell"><span class="ht-val">BDX</span><div class="ht-key">Daily Rewards</div></div>
+  </div>
+</section>
+
+<!-- ═══ WHY RUN A MASTERNODE ═══ -->
+<section id="why">
+<div class="w">
+  <div class="strip-meta">Why Run One</div>
+  <div class="strip-title">SIX REASONS TO<br><em>RUN A NODE</em></div>
+  <div class="strip-sub">Every masternode is the network. Not a part of it. The entire thing depends on operators like you.</div>
+
+  <div class="why-list fi" style="margin-top:2.5rem;">
+
+    <div class="why-item" onclick="toggleWhy(this)">
+      <div class="wi-num">01</div>
+      <div class="wi-body">
+        <div class="wi-tag">Passive Income</div>
+        <div class="wi-head">You earn BDX every single day</div>
+        <div class="wi-detail">Every new block pays 6.25 BDX to masternodes. With roughly 2,880 blocks per day, the total pool is 18,000 BDX daily. Your share depends on the total number of active nodes. Your stake works while you sleep.</div>
+      </div>
+      <div class="wi-arrow">›</div>
+    </div>
+
+    <div class="why-item" onclick="toggleWhy(this)">
+      <div class="wi-num">02</div>
+      <div class="wi-body">
+        <div class="wi-tag">Network Security</div>
+        <div class="wi-head">You make Beldex harder to attack</div>
+        <div class="wi-detail">More masternodes means an attacker needs to control more nodes simultaneously to corrupt a quorum. Each new masternode you run directly raises the cost of any attack on the network. Your node is a shield.</div>
+      </div>
+      <div class="wi-arrow">›</div>
+    </div>
+
+    <div class="why-item" onclick="toggleWhy(this)">
+      <div class="wi-num">03</div>
+      <div class="wi-body">
+        <div class="wi-tag">Real-World Impact</div>
+        <div class="wi-head">Real people use BChat and Belnet right now</div>
+        <div class="wi-detail">Your masternode routes private internet traffic for Belnet users and holds encrypted BChat messages in transit. These are live products with real users. Without masternodes, both services stop functioning entirely.</div>
+      </div>
+      <div class="wi-arrow">›</div>
+    </div>
+
+    <div class="why-item" onclick="toggleWhy(this)">
+      <div class="wi-num">04</div>
+      <div class="wi-body">
+        <div class="wi-tag">Zero Permanent Cost</div>
+        <div class="wi-head">Your 10,000 BDX comes back to you</div>
+        <div class="wi-detail">The stake is a refundable deposit. It is locked on-chain in your wallet, not paid to anyone. When you choose to stop, the full 10,000 BDX is returned automatically after the exit period. Running costs are server and electricity only.</div>
+      </div>
+      <div class="wi-arrow">›</div>
+    </div>
+
+    <div class="why-item" onclick="toggleWhy(this)">
+      <div class="wi-num">05</div>
+      <div class="wi-body">
+        <div class="wi-tag">Decentralization</div>
+        <div class="wi-head">You keep power out of one company's hands</div>
+        <div class="wi-detail">The Beldex Foundation controls fewer than 200 masternodes. Every node you run is a node they do not control. Community ownership of the majority of nodes is what keeps Beldex genuinely decentralized and censorship-resistant.</div>
+      </div>
+      <div class="wi-arrow">›</div>
+    </div>
+
+    <div class="why-item" onclick="toggleWhy(this)">
+      <div class="wi-num">06</div>
+      <div class="wi-body">
+        <div class="wi-tag">Low Barrier</div>
+        <div class="wi-head">No special hardware required</div>
+        <div class="wi-detail">Any standard server or VPS works. No mining rigs, no GPUs, no custom chips. A basic cloud server with 4 GB RAM and a static IP is enough. The barrier is the stake, not the hardware. Anyone can participate.</div>
+      </div>
+      <div class="wi-arrow">›</div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="howitworks">
+<div class="w">
+  <div class="strip-meta">Inner Mechanics</div>
+  <div class="strip-title">HOW A MASTERNODE<br><em>ACTUALLY WORKS</em></div>
+  <div class="strip-sub">From the moment a transaction lands to the moment BDX rewards arrive in your wallet. Here is every step, no jargon.</div>
+
+  <div class="hiw-flow">
+
+    <div class="hiw-step act">
+      <div class="hiw-icon-wrap">🔐<div class="hiw-step-num">1</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Always-On Requirement</div>
+        <div class="hiw-title">Your Node Stays Online 24/7</div>
+        <div class="hiw-desc">A masternode is a server you run on the internet that never switches off. It holds 10,000 BDX locked as a bond, which proves you are serious and have skin in the game. The network needs your node alive at all times to function. If it goes offline, it gets removed from the active list automatically.</div>
+      </div>
+    </div>
+
+    <div class="hiw-step act">
+      <div class="hiw-icon-wrap">🎲<div class="hiw-step-num">2</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Random Selection</div>
+        <div class="hiw-title">The Network Picks 12 Nodes at Random</div>
+        <div class="hiw-desc">Every 30 seconds, a new block of transactions needs to be confirmed. The Beldex protocol uses a verifiable random selection to pick 12 masternodes from the entire pool. One becomes the Block Producer. The other 11 become Validators. Your node could be picked at any moment.</div>
+      </div>
+    </div>
+
+    <div class="hiw-step act">
+      <div class="hiw-icon-wrap">📦<div class="hiw-step-num">3</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Block Production</div>
+        <div class="hiw-title">One Node Assembles the Block</div>
+        <div class="hiw-desc">The Block Producer collects all pending transactions from the memory pool. It bundles them into a candidate block with a header, a timestamp, and a proof that it was its turn. It then broadcasts this candidate block to the 11 Validator nodes in the quorum for review.</div>
+      </div>
+    </div>
+
+    <div class="hiw-step act">
+      <div class="hiw-icon-wrap">✅<div class="hiw-step-num">4</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Quorum Voting</div>
+        <div class="hiw-title">11 Validators Check Every Transaction</div>
+        <div class="hiw-desc">Each Validator independently verifies the block. They check that no coins are spent twice, that signatures are valid, and that the block follows all the protocol rules. Each Validator casts a signed vote: approve or reject. At least 7 out of 11 must vote to approve for the block to pass. This is called the 60% threshold rule.</div>
+      </div>
+    </div>
+
+    <div class="hiw-step act">
+      <div class="hiw-icon-wrap">⛓️<div class="hiw-step-num">5</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Block Finalisation</div>
+        <div class="hiw-title">The Block Gets Added to the Chain</div>
+        <div class="hiw-desc">Once 7 or more Validators approve, the block is finalised. It is cryptographically chained to the previous block and broadcast to all nodes in the network. Every node in the network updates its copy of the blockchain. The transaction is now confirmed and permanent.</div>
+      </div>
+    </div>
+
+    <div class="hiw-step act">
+      <div class="hiw-icon-wrap">💰<div class="hiw-step-num">6</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Reward Distribution</div>
+        <div class="hiw-title">6.25 BDX Goes to Masternodes</div>
+        <div class="hiw-desc">Every confirmed block mints a block reward. Of the 10 BDX total reward, 6.25 BDX is split among the masternodes that participated in that round. The remaining portion goes to the miner or block producer. Over time, these rewards add up. The more nodes on the network, the smaller each share, but the more secure the network becomes.</div>
+      </div>
+    </div>
+
+    <div class="hiw-step">
+      <div class="hiw-icon-wrap">🔄<div class="hiw-step-num">7</div></div>
+      <div class="hiw-body">
+        <div class="hiw-label">Continuous Loop</div>
+        <div class="hiw-title">Every 30 Seconds, It Happens Again</div>
+        <div class="hiw-desc">Block time is 30 seconds. That means this full cycle (selection, production, voting, finalisation, reward) completes about 2,880 times per day. Your node participates in each round it is selected for. The more nodes on the network, the less often any single node is selected, but participation is always rewarded.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hiw-detail-grid">
+    <div class="hiw-dg-cell">
+      <span class="hiw-dg-num">30s</span>
+      <div class="hiw-dg-label">Block Time</div>
+      <div class="hiw-dg-sub">A new block is produced and finalised every 30 seconds on the Beldex network.</div>
+    </div>
+    <div class="hiw-dg-cell">
+      <span class="hiw-dg-num">12</span>
+      <div class="hiw-dg-label">Nodes Per Quorum</div>
+      <div class="hiw-dg-sub">1 Block Producer and 11 Validators are randomly picked each round.</div>
+    </div>
+    <div class="hiw-dg-cell">
+      <span class="hiw-dg-num">60%</span>
+      <div class="hiw-dg-label">Vote Threshold</div>
+      <div class="hiw-dg-sub">At least 7 of 11 validators must approve a block for it to be confirmed.</div>
+    </div>
+    <div class="hiw-dg-cell">
+      <span class="hiw-dg-num">6.25</span>
+      <div class="hiw-dg-label">BDX Per Block</div>
+      <div class="hiw-dg-sub">The masternode portion of every block reward, shared among participating nodes.</div>
+    </div>
+    <div class="hiw-dg-cell">
+      <span class="hiw-dg-num">2,880</span>
+      <div class="hiw-dg-label">Blocks Per Day</div>
+      <div class="hiw-dg-sub">How many validation rounds happen every single day on the network.</div>
+    </div>
+    <div class="hiw-dg-cell">
+      <span class="hiw-dg-num">10K</span>
+      <div class="hiw-dg-label">BDX Stake</div>
+      <div class="hiw-dg-sub">Locked on-chain as a participation bond. Fully returned when you exit.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="gap"></div>
+
+<!-- ═══ WHAT IT DOES ═══ -->
+<section id="roles" style="padding:5rem 0;position:relative;z-index:1;">
+<div class="w">
+  <div class="strip-meta">Three Simultaneous Jobs</div>
+  <div class="strip-title">ONE NODE.<br><em>THREE ROLES.</em></div>
+  <div class="strip-sub" style="margin-bottom:2.5rem;">Your masternode does all three of these jobs at the same time, every second it is online.</div>
+
+  <div class="role-tabs">
+    <div class="rtab active" onclick="switchRole(0)">
+      <span class="rtab-icon">⬡</span>
+      <div class="rtab-label">Block Validator</div>
+    </div>
+    <div class="rtab" onclick="switchRole(1)">
+      <span class="rtab-icon">🌐</span>
+      <div class="rtab-label">Belnet Router</div>
+    </div>
+    <div class="rtab" onclick="switchRole(2)">
+      <span class="rtab-icon">💬</span>
+      <div class="rtab-label">BChat Host</div>
+    </div>
+  </div>
+
+  <!-- ROLE 0: BLOCK VALIDATOR -->
+  <div class="role-panel show" id="rp0">
+    <div class="rp-left">
+      <div class="rp-tag" style="color:var(--teal)">Consensus Role</div>
+      <div class="rp-title">Block Validation</div>
+      <div class="rp-body">12 masternodes are selected at random each block. Your node checks every transaction, votes to approve or reject, and co-signs the final block. No masternode quorum means no new blocks.</div>
+      <div class="rp-points">
+        <div class="rp-point">12 nodes selected randomly from the entire pool</div>
+        <div class="rp-point">1 Block Producer builds the template, 11 Validators vote</div>
+        <div class="rp-point">At least 7 of 11 must agree to confirm the block</div>
+        <div class="rp-point">Earn 6.25 BDX split across every round you join</div>
+      </div>
+    </div>
+    <div class="rp-canvas-wrap">
+      <canvas id="canvas0" width="480" height="320"></canvas>
+    </div>
+  </div>
+
+  <!-- ROLE 1: BELNET ROUTER -->
+  <div class="role-panel" id="rp1">
+    <div class="rp-left">
+      <div class="rp-tag" style="color:var(--amber)">Privacy Network</div>
+      <div class="rp-title">Belnet Routing</div>
+      <div class="rp-body">Belnet is a private routing network built entirely on masternodes. Your node acts as a relay hop in a multi-layer privacy tunnel. The user's real IP address is never revealed to the destination site.</div>
+      <div class="rp-points">
+        <div class="rp-point">Traffic enters the network fully encrypted</div>
+        <div class="rp-point">Routes through multiple masternodes as relay hops</div>
+        <div class="rp-point">Destination only sees the exit node, not the real user</div>
+        <div class="rp-point">More masternodes means faster and more reliable routing</div>
+      </div>
+    </div>
+    <div class="rp-canvas-wrap">
+      <canvas id="canvas1" width="480" height="320"></canvas>
+    </div>
+  </div>
+
+  <!-- ROLE 2: BCHAT HOST -->
+  <div class="role-panel" id="rp2">
+    <div class="rp-left">
+      <div class="rp-tag" style="color:#38bdf8">Message Infrastructure</div>
+      <div class="rp-title">BChat Message Hosting</div>
+      <div class="rp-body">BChat is an end-to-end encrypted messaging app. When someone sends a message, masternodes hold the encrypted packet until the recipient comes online. No server ever reads the content. No central server exists at all.</div>
+      <div class="rp-points">
+        <div class="rp-point">Messages arrive encrypted. Your node never decrypts them.</div>
+        <div class="rp-point">Stored in a distributed swarm of masternodes</div>
+        <div class="rp-point">Delivered automatically when the recipient reconnects</div>
+        <div class="rp-point">No single point of failure or central server</div>
+      </div>
+    </div>
+    <div class="rp-canvas-wrap">
+      <canvas id="canvas2" width="480" height="320"></canvas>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══ THE STAKE ═══ -->
+<section id="stake">
+<div class="w">
+  <div class="strip-meta">The Security Bond</div>
+  <div class="strip-title">YOUR 10,000 BDX<br><em>IS NEVER SPENT</em></div>
+  <div class="half"></div>
+  <div class="stake-layout fi">
+    <div class="stake-left">
+      <div class="vault-display">
+        <div class="vault-num" id="vaultCount">10,000</div>
+        <div class="vault-bdx">BDX LOCKED</div>
+        <div class="vault-note" style="margin-top:0.75rem;">Your coins. On-chain in your wallet. Not sent to anyone. Returned in full when you exit.</div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--mid);line-height:1.7;padding:1rem;border:1px solid var(--line);background:var(--panel);">
+        Think of it as a hotel key deposit. You hand over cash to check in. The hotel holds it while you stay. You get every cent back when you leave, as long as you did not damage the room.
+      </div>
+    </div>
+    <div class="stake-right">
+      <div class="stake-fact t">
+        <div><div class="sf-label">Not a Fee</div><div class="sf-val">The stake is locked on-chain in your wallet. Beldex does not receive it. No one does.</div></div>
+      </div>
+      <div class="stake-fact a">
+        <div><div class="sf-label">Creates Consequences</div><div class="sf-val">If you try to submit a fraudulent block, your stake is at risk. Real money = real honesty.</div></div>
+      </div>
+      <div class="stake-fact l">
+        <div><div class="sf-label">Fully Refundable</div><div class="sf-val">Deregister your node. Wait the exit period. All 10,000 BDX returns to your wallet automatically.</div></div>
+      </div>
+      <div class="stake-fact r">
+        <div><div class="sf-label">Offline Penalty</div><div class="sf-val">Going offline causes deregistration, not stake slashing. Your BDX is not destroyed for downtime.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ EARNINGS CALCULATOR ═══ -->
+<section id="calc">
+<div class="w">
+  <div class="strip-meta">Earnings Estimator</div>
+  <div class="strip-title">HOW MUCH<br><em>CAN YOU EARN?</em></div>
+  <div class="half"></div>
+  <div class="calc-wrap fi">
+    <div class="calc-top">
+      <div class="calc-left">
+        <div class="calc-title">Node Earnings Calculator</div>
+        <div class="calc-sub">Slide to set your node count. Pick the estimated network size. Results update live every time you change anything.</div>
+        <div class="calc-field">
+          <div class="cf-label">
+            <span>Masternodes You Run</span>
+            <span class="cf-val-badge" id="nodeCountDisplay">1 NODE</span>
+          </div>
+          <input type="range" min="1" max="10" value="1" id="nodeSlider" oninput="updateCalc()">
+          <div class="range-ticks">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+          </div>
+        </div>
+        <div class="calc-field">
+          <div class="cf-label">Total Active Masternodes on Network</div>
+          <select class="calc-select" id="networkSize" onchange="updateCalc()">
+            <option value="1000">~1,000 nodes: smaller network</option>
+            <option value="1500" selected>~1,500 nodes: estimated current</option>
+            <option value="2000">~2,000 nodes: larger network</option>
+            <option value="2500">~2,500 nodes: very large</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-right">
+        <div class="cr-label">Estimated Rewards</div>
+        <div class="calc-output">
+          <div class="co-row day">
+            <div class="co-left">
+              <div class="co-period">Per Day</div>
+              <div class="co-bar-wrap"><div class="co-bar" id="barDay" style="width:8%"></div></div>
+            </div>
+            <div class="co-val" id="calcDay">12.00<span class="unit">BDX</span></div>
+          </div>
+          <div class="co-row">
+            <div class="co-left">
+              <div class="co-period">Per Month</div>
+              <div class="co-bar-wrap"><div class="co-bar" id="barMonth" style="width:25%"></div></div>
+            </div>
+            <div class="co-val" id="calcMonth">360<span class="unit">BDX</span></div>
+          </div>
+          <div class="co-row">
+            <div class="co-left">
+              <div class="co-period">Per Year</div>
+              <div class="co-bar-wrap"><div class="co-bar" id="barYear" style="width:100%"></div></div>
+            </div>
+            <div class="co-val" id="calcYear">4,380<span class="unit">BDX</span></div>
+          </div>
+          <div class="co-row" style="background:rgba(0,201,167,0.04);border-left:3px solid rgba(0,201,167,0.3);">
+            <div class="co-left">
+              <div class="co-period" style="color:var(--lime);">Est. USD / Year</div>
+              <div style="font-size:0.82rem;color:var(--dim);margin-top:0.2rem;">at your BDX price below</div>
+            </div>
+            <div class="co-val" id="calcUSD" style="color:var(--lime);">$43<span class="unit">USD</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="calc-bottom">
+      <div class="calc-note">Estimates only. Real rewards depend on network conditions, total active nodes, and block schedule.</div>
+      <div class="calc-price-box">
+        <div class="cpb-label">BDX Price</div>
+        <input type="number" class="cpb-input" id="bdxPrice" value="0.01" step="0.001" min="0" oninput="updateCalc()">
+        <div class="cpb-suffix">USD</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ REQUIREMENTS ═══ -->
+<section id="requirements">
+<div class="w">
+  <div class="strip-meta">What You Need</div>
+  <div class="strip-title">SETUP<br><em>REQUIREMENTS</em></div>
+  <div class="strip-sub" style="margin-bottom:0;">No special hardware. No mining equipment. A standard server is all you need.</div>
+  <table class="req-table fi">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Minimum Spec</th>
+        <th>Requirement</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>CPU</td><td>Dual-core modern processor</td><td><span class="req-badge rb-must">Required</span></td><td>No GPU or mining chip needed</td></tr>
+      <tr><td>RAM</td><td>4 GB minimum</td><td><span class="req-badge rb-must">Required</span></td><td>8 GB recommended for stability</td></tr>
+      <tr><td>Storage</td><td>30 GB free disk space</td><td><span class="req-badge rb-must">Required</span></td><td>Full blockchain sync needed</td></tr>
+      <tr><td>Uptime</td><td>24 hours / 7 days</td><td><span class="req-badge rb-must">Required</span></td><td>Offline nodes get deregistered</td></tr>
+      <tr><td>Bandwidth</td><td>100 Mbps</td><td><span class="req-badge rb-must">Required</span></td><td>Stable connection, not peak speed</td></tr>
+      <tr><td>IP Address</td><td>Static public IP</td><td><span class="req-badge rb-must">Required</span></td><td>Port 19090 must be open</td></tr>
+      <tr><td>OS</td><td>Ubuntu 20.04 LTS or later</td><td><span class="req-badge rb-rec">Recommended</span></td><td>Other Linux distros may work</td></tr>
+      <tr><td>Software</td><td>Official beldexd binary</td><td><span class="req-badge rb-must">Required</span></td><td>Available on Beldex GitHub</td></tr>
+      <tr><td>Wallet</td><td>Beldex CLI or GUI wallet</td><td><span class="req-badge rb-must">Required</span></td><td>Must be your own wallet, not an exchange</td></tr>
+      <tr><td>BDX Stake</td><td>10,000 BDX per node</td><td><span class="req-badge rb-must">Required</span></td><td>Returned on exit. One stake per node.</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- ═══ LIFECYCLE ═══ -->
+<section id="lifecycle" style="padding:5rem 0; position:relative; z-index:1;">
+<div class="w">
+  <div class="strip-meta">From Start to Exit</div>
+  <div class="strip-title">THE<br><em>LIFECYCLE</em></div>
+  <div class="lc-steps fi">
+
+    <div class="lc-item">
+      <div class="lc-dot">01</div>
+      <div class="lc-content">
+        <span class="lc-badge lb-passive">Setup Phase</span>
+        <div class="lc-title">Get 10,000 BDX into your own wallet</div>
+        <div class="lc-body">Acquire BDX from an exchange. Transfer it to your personal Beldex wallet. Never register from an exchange account. You must hold the private key.</div>
+      </div>
+    </div>
+
+    <div class="lc-item">
+      <div class="lc-dot">02</div>
+      <div class="lc-content">
+        <span class="lc-badge lb-passive">Setup Phase</span>
+        <div class="lc-title">Provision your server and sync the chain</div>
+        <div class="lc-body">Install Ubuntu, deploy beldexd, and wait for the full blockchain to sync. This can take several hours on a new server.</div>
+      </div>
+    </div>
+
+    <div class="lc-item hl">
+      <div class="lc-dot">03</div>
+      <div class="lc-content">
+        <span class="lc-badge lb-active">Active</span>
+        <div class="lc-title">Register on-chain and lock your stake</div>
+        <div class="lc-body">Use the Beldex wallet to broadcast a registration transaction. Your node joins the active masternode list and your stake locks on-chain immediately.</div>
+      </div>
+    </div>
+
+    <div class="lc-item hl">
+      <div class="lc-dot">04</div>
+      <div class="lc-content">
+        <span class="lc-badge lb-active">Earning</span>
+        <div class="lc-title">Your node serves and earns around the clock</div>
+        <div class="lc-body">Quorum selection, Belnet routing, BChat message hosting. Rewards accumulate automatically. No action required after this point.</div>
+      </div>
+    </div>
+
+    <div class="lc-item hl">
+      <div class="lc-dot">05</div>
+      <div class="lc-content">
+        <span class="lc-badge lb-active">Maintenance</span>
+        <div class="lc-title">Keep it updated and monitored</div>
+        <div class="lc-body">Apply software updates. Watch the masternode explorer to confirm your node appears healthy. Check uptime regularly to avoid missing quorum rounds.</div>
+      </div>
+    </div>
+
+    <div class="lc-item">
+      <div class="lc-dot">06</div>
+      <div class="lc-content">
+        <span class="lc-badge lb-passive">Exit</span>
+        <div class="lc-title">Deregister when ready and reclaim your stake</div>
+        <div class="lc-body">Send a deregistration transaction from your wallet. After the exit period, your full 10,000 BDX returns automatically. No approval needed.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ═══ NETWORK ═══ -->
+<section id="network">
+<div class="w">
+  <div class="strip-meta">The Bigger Picture</div>
+  <div class="strip-title">MORE NODES,<br><em>SAFER NETWORK</em></div>
+  <div class="net-row fi">
+    <div class="net-cell">
+      <span class="nc-big" style="color:var(--teal)">200</span>
+      <span class="nc-unit">Foundation Nodes Max</span>
+      <div class="nc-title">Foundation Control</div>
+      <div class="nc-sub">Community members run the rest. No single entity can dominate.</div>
+    </div>
+    <div class="net-cell">
+      <span class="nc-big" style="color:var(--amber)">12</span>
+      <span class="nc-unit">Nodes Per Block</span>
+      <div class="nc-title">Quorum Size</div>
+      <div class="nc-sub">Randomly chosen each round. Nobody predicts who gets selected.</div>
+    </div>
+    <div class="net-cell">
+      <span class="nc-big" style="color:var(--lime)">60%</span>
+      <span class="nc-unit">Minimum Agreement</span>
+      <div class="nc-title">Threshold Rule</div>
+      <div class="nc-sub">7 of 11 validators must agree. Minority cannot corrupt majority.</div>
+    </div>
+    <div class="net-cell">
+      <span class="nc-big" style="color:var(--mid)">∞</span>
+      <span class="nc-unit">No Permission Needed</span>
+      <div class="nc-title">Open Access</div>
+      <div class="nc-sub">Just 10,000 BDX and a server. The network is open to everyone.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ SUMMARY ═══ -->
+<section id="summary" style="padding:5rem 0; position:relative; z-index:1;">
+<div class="w">
+  <div class="strip-meta">Everything on This Page</div>
+  <div class="strip-title">IN<br><em>EIGHT POINTS</em></div>
+  <div class="sum-grid fi">
+    <div class="sg"><span class="sg-i">🔐</span><div class="sg-t">Refundable Stake</div><div class="sg-s">10,000 BDX deposited, not spent. Returns on exit.</div></div>
+    <div class="sg"><span class="sg-i">⬡</span><div class="sg-t">Block Validation</div><div class="sg-s">Confirms every new BDX block via quorum voting.</div></div>
+    <div class="sg"><span class="sg-i">🌐</span><div class="sg-t">Belnet Routing</div><div class="sg-s">Relays private internet traffic for Belnet users.</div></div>
+    <div class="sg"><span class="sg-i">💬</span><div class="sg-t">BChat Hosting</div><div class="sg-s">Stores encrypted messages in transit for BChat.</div></div>
+    <div class="sg"><span class="sg-i">💰</span><div class="sg-t">Daily BDX Rewards</div><div class="sg-s">6.25 BDX per block shared among active nodes.</div></div>
+    <div class="sg"><span class="sg-i">🛡️</span><div class="sg-t">Network Security</div><div class="sg-s">More nodes = harder to attack. You are the shield.</div></div>
+    <div class="sg"><span class="sg-i">🔁</span><div class="sg-t">Fair Queue Rotation</div><div class="sg-s">Every node gets equal turns. Protocol enforced.</div></div>
+    <div class="sg"><span class="sg-i">🌍</span><div class="sg-t">Open to Anyone</div><div class="sg-s">Standard server, no special hardware, no gatekeeping.</div></div>
+  </div>
+</div>
+</section>
+<div style="height:1px;background:var(--line);position:relative;z-index:1;"></div>
+
+<footer>
+  <div class="fb">BELDEX // MASTERNODE</div>
+  <div class="fn">beldex-masternode.html · beldex-guide-project.vercel.app</div>
+</footer>
+
+<script>
+/* ── POLYFILL: roundRect for Safari/Firefox older ── */
+(function(){
+  var p = CanvasRenderingContext2D.prototype;
+  if (!p.roundRect) {
+    p.roundRect = function(x, y, w, h, r) {
+      r = Math.min(r, w/2, h/2);
+      this.beginPath();
+      this.moveTo(x + r, y);
+      this.lineTo(x + w - r, y);
+      this.quadraticCurveTo(x + w, y, x + w, y + r);
+      this.lineTo(x + w, y + h - r);
+      this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      this.lineTo(x + r, y + h);
+      this.quadraticCurveTo(x, y + h, x, y + h - r);
+      this.lineTo(x, y + r);
+      this.quadraticCurveTo(x, y, x + r, y);
+      this.closePath();
+    };
+  }
+})();
+
+/* ─────────────────────────────────────────────────────
+   CANVAS 0: BLOCK VALIDATOR
+   11 validator nodes orbit a central block.
+   Votes (glowing dots) fly inward. Block flashes on confirm.
+───────────────────────────────────────────────────── */
+function buildCanvas0(canvas) {
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var cx = W / 2, cy = H / 2;
+  var t = 0, voteTimer = 0, approvedCount = 0, confirmed = false, flashAlpha = 0;
+  var votes = [];
+
+  var nodeCount = 11;
+  var nodes = [];
+  for (var i = 0; i < nodeCount; i++) {
+    nodes.push({
+      angle: (i / nodeCount) * Math.PI * 2,
+      orbitR: Math.min(W, H) * 0.42,
+      r: (i === 4) ? 13 : 9,
+      label: (i === 4) ? 'YOU' : 'V' + (i + 1),
+      isYou: (i === 4),
+      approved: false,
+      pulseT: Math.random() * Math.PI * 2
+    });
+  }
+
+  function spawnVote() {
+    if (votes.length > 20) return;
+    var n = nodes[Math.floor(Math.random() * nodes.length)];
+    var nx = cx + Math.cos(n.angle) * n.orbitR;
+    var ny = cy + Math.sin(n.angle) * n.orbitR;
+    votes.push({ x: nx, y: ny, tx: cx, ty: cy, prog: 0, spd: 0.018 + Math.random() * 0.012,
+      color: n.isYou ? '#f5a623' : '#00c9a7', done: false });
+    n.approved = true;
+    approvedCount++;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* bg glow */
+    var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 150);
+    bg.addColorStop(0, 'rgba(0,201,167,0.06)');
+    bg.addColorStop(1, 'transparent');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    /* orbit ring */
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, nodes[0].orbitR, 0, Math.PI * 2);
+    ctx.setLineDash([4, 6]);
+    ctx.strokeStyle = 'rgba(0,201,167,0.12)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    /* rotating arc */
+    ctx.beginPath();
+    ctx.arc(cx, cy, nodes[0].orbitR, t * 0.3, t * 0.3 + 0.7);
+    ctx.setLineDash([]);
+    ctx.strokeStyle = 'rgba(0,201,167,0.4)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+
+    /* connector lines */
+    nodes.forEach(function(n) {
+      var nx = cx + Math.cos(n.angle + t * 0.12) * n.orbitR;
+      var ny = cy + Math.sin(n.angle + t * 0.12) * n.orbitR;
+      ctx.beginPath();
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(cx, cy);
+      ctx.strokeStyle = n.approved ? 'rgba(0,201,167,0.2)' : 'rgba(30,52,72,0.8)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    /* vote signals */
+    for (var vi = votes.length - 1; vi >= 0; vi--) {
+      var v = votes[vi];
+      if (v.done) { votes.splice(vi, 1); continue; }
+      v.prog = Math.min(1, v.prog + v.spd);
+      var vx = v.x + (v.tx - v.x) * v.prog;
+      var vy = v.y + (v.ty - v.y) * v.prog;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(vx, vy, 4, 0, Math.PI * 2);
+      ctx.fillStyle = v.color;
+      ctx.shadowColor = v.color;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.restore();
+      if (v.prog >= 1) v.done = true;
+    }
+
+    /* center block */
+    var bSize = 32;
+    ctx.save();
+    ctx.shadowColor = confirmed ? '#00f0c8' : '#00c9a7';
+    ctx.shadowBlur = confirmed ? 28 : 12;
+    ctx.beginPath();
+    ctx.roundRect(cx - bSize, cy - bSize, bSize * 2, bSize * 2, 6);
+    ctx.fillStyle = 'rgba(0,201,167,' + (0.06 + flashAlpha * 0.12) + ')';
+    ctx.strokeStyle = confirmed ? '#00f0c8' : 'rgba(0,201,167,0.7)';
+    ctx.lineWidth = confirmed ? 2.5 : 1.5;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = '#dff0ea';
+    ctx.font = '700 10px "Space Mono",monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('BLOCK', cx, cy - 4);
+    ctx.fillStyle = confirmed ? '#00f0c8' : '#7ab8a8';
+    ctx.font = '700 9px "Space Mono",monospace';
+    ctx.fillText(confirmed ? 'CONFIRMED' : 'PENDING', cx, cy + 8);
+    ctx.fillStyle = 'rgba(0,201,167,0.6)';
+    ctx.font = '700 8px "Space Mono",monospace';
+    ctx.fillText(Math.min(approvedCount, 11) + '/11 VOTES', cx, cy + bSize + 16);
+
+    /* validator nodes */
+    nodes.forEach(function(n) {
+      n.pulseT += 0.04;
+      var nx = cx + Math.cos(n.angle + t * 0.12) * n.orbitR;
+      var ny = cy + Math.sin(n.angle + t * 0.12) * n.orbitR;
+      var pulse = Math.sin(n.pulseT) * 0.5 + 0.5;
+      ctx.save();
+      ctx.shadowColor = n.isYou ? '#f5a623' : (n.approved ? '#00c9a7' : '#1e3448');
+      ctx.shadowBlur = n.isYou ? 14 : (n.approved ? 10 : 3);
+      ctx.beginPath();
+      ctx.arc(nx, ny, n.r + (n.approved ? pulse * 2 : 0), 0, Math.PI * 2);
+      ctx.fillStyle = n.isYou ? 'rgba(245,166,35,0.15)' : (n.approved ? 'rgba(0,201,167,0.12)' : 'rgba(11,22,36,0.9)');
+      ctx.strokeStyle = n.isYou ? '#f5a623' : (n.approved ? '#00c9a7' : 'rgba(0,201,167,0.35)');
+      ctx.lineWidth = n.isYou ? 2 : 1.5;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = n.isYou ? '#f5a623' : (n.approved ? '#00c9a7' : '#7ab8a8');
+      ctx.font = (n.isYou ? '700' : '400') + ' ' + (n.isYou ? '8px' : '7px') + ' "Space Mono",monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(n.label, nx, ny + 3);
+    });
+
+    /* flash overlay */
+    if (flashAlpha > 0.01) {
+      ctx.fillStyle = 'rgba(0,201,167,' + flashAlpha * 0.1 + ')';
+      ctx.fillRect(0, 0, W, H);
+      flashAlpha *= 0.87;
+    }
+
+    voteTimer++;
+    if (voteTimer % 30 === 0) spawnVote();
+    if (approvedCount >= 7 && !confirmed) { confirmed = true; flashAlpha = 1; }
+    if (approvedCount >= 11) {
+      setTimeout(function() {
+        approvedCount = 0; confirmed = false; flashAlpha = 0; votes = [];
+        nodes.forEach(function(n) { n.approved = false; });
+      }, 2000);
+      approvedCount = 999; /* prevent repeat trigger */
+    }
+    t += 0.016;
+  }
+  return draw;
+}
+
+/* ─────────────────────────────────────────────────────
+   CANVAS 1: BELNET ROUTING
+   Packets travel left-to-right through 3 relay nodes.
+   Each hop re-encrypts. Real IP never reaches website.
+───────────────────────────────────────────────────── */
+function buildCanvas1(canvas) {
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var t = 0, pktTimer = 0;
+  var packets = [];
+
+  var nh = H / 2;
+  var relays = [
+    { x: W * 0.12, y: nh,        label: 'USER',    color: '#f5a623', w: 54, h: 36, end: true },
+    { x: W * 0.35, y: nh - 55,   label: 'NODE 1',  color: '#00c9a7', w: 52, h: 32, you: true },
+    { x: W * 0.55, y: nh + 40,   label: 'NODE 2',  color: '#00c9a7', w: 52, h: 32 },
+    { x: W * 0.75, y: nh - 30,   label: 'NODE 3',  color: '#00c9a7', w: 52, h: 32 },
+    { x: W * 0.92, y: nh,        label: 'WEBSITE', color: '#63f5c2', w: 58, h: 36, end: true }
+  ];
+
+  function spawnPkt() {
+    packets.push({ leg: 0, prog: 0, spd: 0.022 + Math.random() * 0.01 });
+  }
+
+  function quadPt(ax, ay, bx, by, i, prog) {
+    var mx = (ax + bx) / 2;
+    var my = (ay + by) / 2 + (i % 2 === 0 ? -24 : 24);
+    var e = prog < 0.5 ? 2 * prog * prog : 1 - Math.pow(-2 * prog + 2, 2) / 2;
+    return {
+      x: (1-e)*(1-e)*ax + 2*(1-e)*e*mx + e*e*bx,
+      y: (1-e)*(1-e)*ay + 2*(1-e)*e*my + e*e*by
+    };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* connection lines */
+    ctx.save();
+    ctx.setLineDash([5, 7]);
+    for (var i = 0; i < relays.length - 1; i++) {
+      var a = relays[i], b = relays[i + 1];
+      var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 + (i % 2 === 0 ? -24 : 24);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.quadraticCurveTo(mx, my, b.x, b.y);
+      ctx.strokeStyle = 'rgba(0,201,167,0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    /* packets */
+    for (var pi = packets.length - 1; pi >= 0; pi--) {
+      var p = packets[pi];
+      if (p.leg >= relays.length - 1) { packets.splice(pi, 1); continue; }
+      p.prog += p.spd;
+      if (p.prog >= 1) { p.leg++; p.prog = 0; if (p.leg >= relays.length - 1) { packets.splice(pi, 1); continue; } }
+      var from = relays[p.leg], to = relays[p.leg + 1];
+      var pt = quadPt(from.x, from.y, to.x, to.y, p.leg, p.prog);
+      var pcolor = p.leg === 0 ? '#f5a623' : (p.leg >= relays.length - 2 ? '#63f5c2' : '#00c9a7');
+      /* glow trail */
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,201,167,0.07)';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = pcolor;
+      ctx.shadowColor = pcolor;
+      ctx.shadowBlur = 12;
+      ctx.fill();
+      ctx.restore();
+      /* lock icon */
+      ctx.font = '7px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('\uD83D\uDD12', pt.x, pt.y + 2);
+    }
+
+    /* relay node boxes */
+    relays.forEach(function(n) {
+      ctx.save();
+      ctx.shadowColor = n.color;
+      ctx.shadowBlur = n.you ? 18 : 8;
+      ctx.beginPath();
+      ctx.roundRect(n.x - n.w / 2, n.y - n.h / 2, n.w, n.h, 5);
+      ctx.fillStyle = 'rgba(11,22,36,0.95)';
+      ctx.strokeStyle = n.color + (n.you ? 'ff' : '88');
+      ctx.lineWidth = n.you ? 2 : 1.5;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = n.color;
+      ctx.font = '700 7px "Space Mono",monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(n.label, n.x, n.y + 3);
+      if (n.you) {
+        ctx.fillStyle = 'rgba(0,201,167,0.5)';
+        ctx.font = '6px "Space Mono",monospace';
+        ctx.fillText('(Your Node)', n.x, n.y + 14);
+      }
+    });
+
+    ctx.fillStyle = 'rgba(0,201,167,0.4)';
+    ctx.font = '700 8px "Space Mono",monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('REAL IP STAYS HIDDEN', W / 2, H - 10);
+
+    pktTimer++;
+    if (pktTimer % 55 === 0 || packets.length === 0) spawnPkt();
+    t += 0.016;
+  }
+  return draw;
+}
+
+/* ─────────────────────────────────────────────────────
+   CANVAS 2: BCHAT MESSAGE HOSTING
+   Alice sends → swarm stores → Bob comes online → delivered
+───────────────────────────────────────────────────── */
+function buildCanvas2(canvas) {
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var t = 0, phase = 'idle', phaseT = 0;
+  var msgs = [];
+
+  var alice = { x: W * 0.09, y: H / 2, label: 'ALICE', color: '#38bdf8' };
+  var bob   = { x: W * 0.91, y: H / 2, label: 'BOB',   color: '#63f5c2', online: false };
+
+  var swarmPos = [
+    { x: W*0.38, y: H*0.22 },
+    { x: W*0.55, y: H*0.18 },
+    { x: W*0.42, y: H*0.50 },
+    { x: W*0.60, y: H*0.55 },
+    { x: W*0.50, y: H*0.35 }
+  ];
+  var swarm = swarmPos.map(function(pos, i) {
+    return { x: pos.x, y: pos.y, isYou: i === 2, hasMsg: false, floatT: Math.random() * Math.PI * 2 };
+  });
+
+  function spawnMsg(fx, fy, tx, ty, color, cb) {
+    msgs.push({ x: fx, y: fy, tx: tx, ty: ty, prog: 0, spd: 0.026, color: color, cb: cb, done: false });
+  }
+
+  function drawPerson(obj) {
+    ctx.save();
+    ctx.shadowColor = obj.color;
+    ctx.shadowBlur = obj.online !== false ? 16 : 6;
+    ctx.beginPath();
+    ctx.arc(obj.x, obj.y - 8, 13, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(11,22,36,0.95)';
+    ctx.strokeStyle = obj.color + (obj.online !== false ? 'ff' : '44');
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = obj.color;
+    ctx.font = '700 8px "Space Mono",monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(obj.label, obj.x, obj.y + 10);
+    if (obj === bob) {
+      ctx.fillStyle = bob.online ? 'rgba(99,245,194,0.7)' : 'rgba(255,100,100,0.6)';
+      ctx.font = '7px "Space Mono",monospace';
+      ctx.fillText(bob.online ? 'ONLINE' : 'OFFLINE', obj.x, obj.y + 22);
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    phaseT++;
+
+    /* phase machine */
+    if (phase === 'idle' && phaseT > 40) {
+      phase = 'sending';
+      phaseT = 0;
+      swarm.forEach(function(n, i) {
+        setTimeout(function() {
+          spawnMsg(alice.x, alice.y, n.x, n.y, '#38bdf8', function() { n.hasMsg = true; });
+        }, i * 110);
+      });
+    }
+    if (phase === 'sending' && phaseT > 160) {
+      phase = 'stored';
+      phaseT = 0;
+    }
+    if (phase === 'stored' && phaseT > 90) {
+      phase = 'delivering';
+      bob.online = true;
+      phaseT = 0;
+      swarm.forEach(function(n, i) {
+        if (!n.hasMsg) return;
+        setTimeout(function() {
+          spawnMsg(n.x, n.y, bob.x, bob.y, '#63f5c2', function() { n.hasMsg = false; });
+        }, i * 100);
+      });
+    }
+    if (phase === 'delivering' && phaseT > 180) {
+      phase = 'idle';
+      phaseT = 0;
+      bob.online = false;
+    }
+
+    /* swarm mesh lines */
+    ctx.save();
+    swarm.forEach(function(n) {
+      ctx.beginPath();
+      ctx.moveTo(n.x, n.y);
+      ctx.lineTo(W * 0.50, H * 0.35);
+      ctx.strokeStyle = 'rgba(0,201,167,0.06)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    /* swarm nodes */
+    swarm.forEach(function(n) {
+      n.floatT += 0.022;
+      var fy = n.y + Math.sin(n.floatT) * 3;
+      ctx.save();
+      ctx.shadowColor = n.isYou ? '#f5a623' : (n.hasMsg ? '#00c9a7' : 'rgba(0,201,167,0.25)');
+      ctx.shadowBlur = n.hasMsg ? 14 : (n.isYou ? 12 : 4);
+      ctx.beginPath();
+      ctx.roundRect(n.x - 26, fy - 17, 52, 34, 4);
+      ctx.fillStyle = n.hasMsg ? 'rgba(0,201,167,0.1)' : 'rgba(11,22,36,0.95)';
+      ctx.strokeStyle = n.isYou ? '#f5a623' : (n.hasMsg ? '#00c9a7' : 'rgba(0,201,167,0.3)');
+      ctx.lineWidth = n.isYou ? 2 : 1.5;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = n.isYou ? '#f5a623' : (n.hasMsg ? '#00f0c8' : '#7ab8a8');
+      ctx.font = '700 7px "Space Mono",monospace';
+      ctx.textAlign = 'center';
+      if (n.isYou) {
+        ctx.fillText('YOUR', n.x, fy - 4);
+        ctx.fillText('NODE', n.x, fy + 7);
+      } else {
+        ctx.fillText('NODE', n.x, fy + 3);
+      }
+      if (n.hasMsg) {
+        ctx.font = '10px sans-serif';
+        ctx.fillText('\uD83D\uDCE8', n.x, fy + 20);
+      }
+    });
+
+    /* flying messages */
+    for (var mi = msgs.length - 1; mi >= 0; mi--) {
+      var m = msgs[mi];
+      if (m.done) { msgs.splice(mi, 1); continue; }
+      m.prog += m.spd;
+      if (m.prog >= 1) { m.done = true; if (m.cb) m.cb(); continue; }
+      var e = m.prog < 0.5 ? 2*m.prog*m.prog : 1 - Math.pow(-2*m.prog+2,2)/2;
+      var mx = m.x + (m.tx - m.x) * e;
+      var my = m.y + (m.ty - m.y) * e - Math.sin(m.prog * Math.PI) * 16;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(mx, my, 5, 0, Math.PI * 2);
+      ctx.fillStyle = m.color;
+      ctx.shadowColor = m.color;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    /* people */
+    drawPerson(alice);
+    drawPerson(bob);
+
+    /* status */
+    var status = phase === 'idle' ? 'WAITING FOR MESSAGES...'
+      : phase === 'sending'   ? 'ALICE SENDING ENCRYPTED MESSAGE...'
+      : phase === 'stored'    ? 'NODES HOLDING MESSAGE. BOB IS OFFLINE.'
+      : 'BOB IS ONLINE. DELIVERING NOW.';
+    ctx.fillStyle = 'rgba(0,201,167,0.45)';
+    ctx.font = '700 8px "Space Mono",monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(status, W / 2, H - 10);
+
+    t += 0.016;
+  }
+  return draw;
+}
+
+/* ─────────────────────────────────────────────────────
+   ANIMATION LOOP MANAGER
+───────────────────────────────────────────────────── */
+var _raf = null;
+
+function startCanvas(idx) {
+  if (_raf) { cancelAnimationFrame(_raf); _raf = null; }
+  var canvas = document.getElementById('canvas' + idx);
+  if (!canvas) return;
+  var wrap = canvas.parentElement;
+  canvas.width  = wrap.clientWidth  > 0 ? wrap.clientWidth  : 480;
+  canvas.height = wrap.clientHeight > 100 ? wrap.clientHeight : 300;
+  var builders = [buildCanvas0, buildCanvas1, buildCanvas2];
+  if (!builders[idx]) return;
+  var drawFn = builders[idx](canvas);
+  function loop() { drawFn(); _raf = requestAnimationFrame(loop); }
+  loop();
+}
+
+/* ─────────────────────────────────────────────────────
+   ROLE TAB SWITCHER
+───────────────────────────────────────────────────── */
+function switchRole(idx) {
+  document.querySelectorAll('.rtab').forEach(function(tab, i) {
+    tab.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.role-panel').forEach(function(panel) {
+    panel.classList.remove('show');
+  });
+  var panel = document.getElementById('rp' + idx);
+  if (panel) panel.classList.add('show');
+  setTimeout(function() { startCanvas(idx); }, 40);
+}
+
+/* ─────────────────────────────────────────────────────
+   WHY ACCORDION
+───────────────────────────────────────────────────── */
+function toggleWhy(el) {
+  var wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.why-item').forEach(function(item) {
+    item.classList.remove('open');
+  });
+  if (!wasOpen) el.classList.add('open');
+}
+
+/* ─────────────────────────────────────────────────────
+   EARNINGS CALCULATOR
+───────────────────────────────────────────────────── */
+function animateValue(el, newHTML) {
+  if (!el) return;
+  el.style.transform = 'scale(0.9)';
+  el.style.opacity = '0.3';
+  el.style.transition = 'none';
+  setTimeout(function() {
+    el.innerHTML = newHTML;
+    el.style.transition = 'transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease';
+    el.style.transform = 'scale(1)';
+    el.style.opacity = '1';
+  }, 110);
+  var row = el.closest ? el.closest('.co-row') : null;
+  if (row) {
+    row.classList.add('flash');
+    setTimeout(function() { row.classList.remove('flash'); }, 500);
+  }
+}
+
+function updateCalc() {
+  var slider   = document.getElementById('nodeSlider');
+  var netSel   = document.getElementById('networkSize');
+  var priceInp = document.getElementById('bdxPrice');
+  if (!slider || !netSel) return;
+  var nodes    = parseInt(slider.value) || 1;
+  var network  = parseInt(netSel.value) || 1500;
+  var bdxPrice = parseFloat(priceInp ? priceInp.value : 0) || 0;
+
+  var badge = document.getElementById('nodeCountDisplay');
+  if (badge) badge.textContent = nodes + (nodes === 1 ? ' NODE' : ' NODES');
+
+  var perDay   = (2880 * 6.25 / network) * nodes;
+  var perMonth = perDay * 30;
+  var perYear  = perDay * 365;
+  var usd      = perYear * bdxPrice;
+
+  function fmt(n) {
+    if (n >= 10000) return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    if (n >= 100)   return n.toLocaleString('en-US', { maximumFractionDigits: 1 });
+    return n.toFixed(2);
+  }
+
+  animateValue(document.getElementById('calcDay'),   fmt(perDay)   + '<span class="unit">BDX</span>');
+  animateValue(document.getElementById('calcMonth'), fmt(perMonth) + '<span class="unit">BDX</span>');
+  animateValue(document.getElementById('calcYear'),  fmt(perYear)  + '<span class="unit">BDX</span>');
+  animateValue(document.getElementById('calcUSD'),   '$' + fmt(usd)+ '<span class="unit">USD</span>');
+
+  var bd = document.getElementById('barDay');
+  var bm = document.getElementById('barMonth');
+  var by = document.getElementById('barYear');
+  if (bd) bd.style.width = Math.min(88, Math.max(4, (perDay / Math.max(perYear, 1)) * 100 * 15)) + '%';
+  if (bm) bm.style.width = Math.min(88, Math.max(8, (perMonth / Math.max(perYear, 1)) * 100)) + '%';
+  if (by) by.style.width = '94%';
+}
+
+/* ─────────────────────────────────────────────────────
+   HERO FLOATING PARTICLES
+───────────────────────────────────────────────────── */
+(function() {
+  var container = document.getElementById('heroParticles');
+  if (!container) return;
+  container.style.cssText = 'position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;';
+  for (var i = 0; i < 22; i++) {
+    var p = document.createElement('div');
+    var size  = 2 + Math.random() * 4;
+    var left  = Math.random() * 100;
+    var dur   = 8 + Math.random() * 14;
+    var delay = -(Math.random() * dur);
+    var dx    = (Math.random() - 0.5) * 120;
+    p.className = 'hero-particle';
+    p.style.cssText = [
+      'width:' + size + 'px', 'height:' + size + 'px',
+      'left:' + left + '%', 'bottom:-20px',
+      'background:rgba(0,201,167,' + (0.15 + Math.random() * 0.35) + ')',
+      '--dur:' + dur + 's', '--delay:' + delay + 's', '--dx:' + dx + 'px'
+    ].join(';');
+    container.appendChild(p);
+  }
+})();
+
+/* ─────────────────────────────────────────────────────
+   NAV SCROLL HIGHLIGHT
+───────────────────────────────────────────────────── */
+window.addEventListener('scroll', function() {
+  var cur = '';
+  document.querySelectorAll('section[id]').forEach(function(s) {
+    if (window.scrollY >= s.offsetTop - 90) cur = s.id;
+  });
+  document.querySelectorAll('nav a').forEach(function(a) {
+    a.classList.toggle('on', a.getAttribute('href') === '#' + cur);
+  });
+}, { passive: true });
+
+/* ─────────────────────────────────────────────────────
+   FADE-IN OBSERVER
+───────────────────────────────────────────────────── */
+var _io = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) {
+    if (e.isIntersecting) {
+      setTimeout(function() { e.target.classList.add('in'); }, i * 55);
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.fi').forEach(function(el) { _io.observe(el); });
+
+/* ─────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────── */
+updateCalc();
+window.addEventListener('load', function() {
+  setTimeout(function() { startCanvas(0); }, 120);
+});
+</script>
+
+</body>
+</html>
