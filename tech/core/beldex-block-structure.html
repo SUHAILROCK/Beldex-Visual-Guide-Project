@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beldex Block Structure</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;600;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030507;--dp:#050a10;--pn:#080f1a;--wl:#0d1a27;--ln:#152233;
+  --teal:#00c9a7;--t2:#00f0c8;--lime:#aaff00;--amber:#f5a623;--red:#ff4545;--blue:#38bdf8;--purple:#a78bfa;
+  --tx:#e2eff8;--mid:#6a9ab0;--dim:#1e3344;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.018) 3px,rgba(0,0,0,.018) 4px);}
+
+/* NAV DOTS */
+#navdots{position:fixed;right:1.4rem;top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:10px;}
+.nd{width:8px;height:8px;border-radius:50%;background:var(--dim);cursor:pointer;transition:all .3s;position:relative;}
+.nd:hover,.nd.on{background:var(--teal);box-shadow:0 0 8px var(--teal);transform:scale(1.4);}
+.nd::after{content:attr(data-label);position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  white-space:nowrap;font-family:'Space Mono',monospace;font-size:.5rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);background:rgba(5,10,16,.95);padding:.18rem .45rem;border:1px solid var(--ln);
+  opacity:0;pointer-events:none;transition:opacity .2s;}
+.nd:hover::after{opacity:1;}
+
+/* HERO */
+#s0{position:relative;height:100vh;min-height:600px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+#scanCanvas{position:absolute;inset:0;width:100%;height:100%;}
+.hero-content{position:relative;z-index:10;padding:0 3rem 3.5rem;}
+.hc-tag{font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--lime);display:flex;align-items:center;gap:.6rem;margin-bottom:1.2rem;}
+.hc-tag::before{content:'';width:28px;height:1px;background:var(--lime);}
+.hero-big{font-family:'Oxanium',sans-serif;font-weight:800;font-size:clamp(3.2rem,8.5vw,8.5rem);line-height:.88;letter-spacing:-.03em;color:var(--tx);}
+.hero-big em{color:var(--teal);font-style:normal;}
+.hero-strip{display:flex;gap:0;margin-top:2.2rem;border:1px solid var(--ln);background:rgba(5,10,16,.9);width:fit-content;}
+.hs-cell{padding:.7rem 1.6rem;border-right:1px solid var(--ln);}
+.hs-cell:last-child{border-right:none;}
+.hs-v{font-family:'Oxanium',sans-serif;font-weight:800;font-size:1.55rem;color:var(--teal);line-height:1;}
+.hs-k{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-top:.2rem;}
+
+/* SECTION SHARED */
+section{position:relative;z-index:1;}
+.w{max-width:1080px;margin:0 auto;padding:0 2.5rem;}
+.sec-label{font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem;}
+.sec-title{font-family:'Oxanium',sans-serif;font-weight:800;font-size:clamp(1.8rem,3.5vw,3.2rem);line-height:.95;letter-spacing:-.02em;color:var(--tx);margin-bottom:.8rem;}
+.sec-title em{color:var(--teal);font-style:normal;}
+.sec-num-bg{font-family:'Oxanium',sans-serif;font-weight:800;font-size:clamp(5rem,12vw,12rem);line-height:1;color:var(--dim);letter-spacing:-.04em;user-select:none;}
+
+/* ============================================================
+   S1  -  BLOCK DISSECTOR (3D exploding layers)
+   ============================================================ */
+#s1{padding:5rem 0;}
+.dissector-wrap{display:grid;grid-template-columns:1fr 420px;gap:4rem;align-items:start;margin-top:3rem;}
+.dissector-stage{
+  position:relative;height:480px;perspective:800px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:default;
+}
+.layer-explode{
+  position:absolute;width:100%;max-width:380px;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s;
+  border:1px solid var(--ln);padding:1rem 1.4rem;background:var(--pn);
+  cursor:pointer;
+}
+.layer-explode:hover,.layer-explode.peek{z-index:10;}
+.le-bar{position:absolute;left:0;top:0;bottom:0;width:4px;}
+.le-tag{font-family:'Space Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem;}
+.le-name{font-family:'Oxanium',sans-serif;font-weight:600;font-size:1rem;color:var(--tx);margin-bottom:.2rem;}
+.le-size{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.08em;opacity:.6;}
+.le-fields{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem;overflow:hidden;max-height:0;transition:max-height .4s ease;}
+.layer-explode.peek .le-fields,.layer-explode:hover .le-fields{max-height:80px;}
+.lf{font-family:'Space Mono',monospace;font-size:.55rem;padding:.15rem .4rem;background:rgba(255,255,255,.04);}
+
+/* detail panel */
+.dissector-detail{padding-top:1rem;}
+.dd-empty{font-size:.9rem;color:var(--dim);font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.08em;}
+.dd-panel{display:none;}
+.dd-panel.show{display:block;animation:dpIn .25s ease;}
+@keyframes dpIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+.dd-tag{font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;}
+.dd-name{font-family:'Oxanium',sans-serif;font-weight:700;font-size:1.6rem;color:var(--tx);margin-bottom:.75rem;line-height:1.1;}
+.dd-body{font-size:.93rem;color:var(--mid);line-height:1.75;margin-bottom:1.2rem;}
+.dd-fields{display:flex;flex-direction:column;gap:.4rem;}
+.ddf{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;
+  padding:.55rem .8rem;background:var(--pn);border-left:2px solid;}
+.ddf-name{font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;}
+.ddf-size{font-family:'Oxanium',sans-serif;font-size:.85rem;font-weight:700;opacity:.8;}
+
+/* ============================================================
+   S2  -  RING MIXER
+   ============================================================ */
+#s2{background:var(--dp);border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);padding:5rem 0;}
+.mixer-layout{display:grid;grid-template-columns:1fr 400px;gap:3rem;align-items:center;}
+.mixer-canvas-wrap{position:relative;}
+#mixCanvas{display:block;width:100%;}
+.mix-btn{position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);
+  font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--bg);background:var(--teal);border:none;padding:.45rem 1.4rem;cursor:pointer;transition:background .15s;}
+.mix-btn:hover{background:var(--t2);}
+.fact-list{margin-top:1.2rem;display:flex;flex-direction:column;gap:.65rem;}
+.fact{display:flex;gap:.7rem;align-items:flex-start;font-size:.92rem;color:var(--mid);line-height:1.65;}
+.fact::before{content:'//';font-family:'Space Mono',monospace;font-size:.6rem;color:var(--teal);flex-shrink:0;margin-top:3px;}
+.formula-box{margin-top:1.4rem;padding:.85rem 1rem;background:var(--pn);border:1px solid var(--ln);}
+.formula-box .fb-label{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;}
+.formula-box .fb-eq{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--tx);}
+.formula-box .fb-desc{font-size:.8rem;color:var(--mid);margin-top:.3rem;}
+
+/* ============================================================
+   S3  -  CLASSIFIED DOSSIER  (redesigned)
+   ============================================================ */
+#s3{padding:5rem 0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.blink{animation:blink 1.2s ease-in-out infinite;}
+
+/* Shield cards grid */
+.clr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2.5rem;}
+.clr-card{
+  border:1px solid var(--ln);padding:1.4rem 1.2rem;cursor:pointer;
+  transition:border-color .3s,background .3s,box-shadow .3s;
+  position:relative;overflow:hidden;background:var(--pn);user-select:none;
+}
+.clr-card:hover{box-shadow:0 0 16px rgba(0,0,0,.4);}
+.clr-card.active-ringct{border-color:rgba(0,201,167,.45);background:rgba(0,201,167,.04);}
+.clr-card.active-stealth{border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.04);}
+.clr-card.active-bp{border-color:rgba(170,255,0,.45);background:rgba(170,255,0,.04);}
+.clr-card.breached{border-color:rgba(255,69,69,.7)!important;background:rgba(255,69,69,.06)!important;}
+@keyframes breachPulse{0%{box-shadow:0 0 0 0 rgba(255,69,69,.5)}100%{box-shadow:0 0 0 18px rgba(255,69,69,0)}}
+.clr-card.breach-anim{animation:breachPulse .7s ease-out;}
+.clr-top{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;}
+.clr-icon-wrap{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.clr-name{font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+.clr-desc{font-size:.78rem;color:var(--mid);line-height:1.55;margin-bottom:.9rem;}
+.clr-foot{display:flex;align-items:center;gap:.5rem;}
+.clr-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s,box-shadow .3s;}
+.clr-status-txt{font-family:'Space Mono',monospace;font-size:.57rem;font-weight:700;letter-spacing:.1em;transition:color .3s;}
+.clr-badge{font-family:'Space Mono',monospace;font-size:.52rem;font-weight:700;letter-spacing:.1em;padding:.15rem .5rem;border:1px solid;margin-left:auto;transition:all .3s;}
+.clr-badge.bon{color:#00e070;border-color:rgba(0,224,112,.35);background:rgba(0,224,112,.07);}
+.clr-badge.boff{color:var(--red);border-color:rgba(255,69,69,.35);background:rgba(255,69,69,.07);}
+
+/* Dossier split layout */
+.dossier-split{display:grid;grid-template-columns:1.15fr .85fr;border:1px solid var(--ln);overflow:hidden;}
+
+/* Left: classified document */
+.dos-doc{background:#020c05;border-right:1px solid var(--ln);}
+.dos-doc-hd{
+  background:#030e07;border-bottom:1px solid #0a2010;
+  padding:.65rem 1.2rem;display:flex;align-items:center;gap:1rem;
+}
+.dos-stamp{
+  font-family:'Space Mono',monospace;font-size:.46rem;font-weight:700;letter-spacing:.2em;
+  padding:.18rem .55rem;border:2px solid var(--red);color:var(--red);
+  transform:rotate(-3deg);display:inline-block;flex-shrink:0;
+}
+.dos-meta-txt{font-family:'Space Mono',monospace;font-size:.48rem;color:#1e4a28;letter-spacing:.1em;line-height:1.9;}
+.dos-body{padding:.8rem 1.2rem 1.2rem;}
+.dos-row{
+  display:grid;grid-template-columns:130px 1fr;gap:.4rem;
+  padding:.55rem 0;border-bottom:1px solid #060f08;align-items:center;
+}
+.dos-row:last-child{border-bottom:none;}
+.dos-field-lbl{font-family:'Space Mono',monospace;font-size:.55rem;color:#1e4a28;letter-spacing:.1em;line-height:1.4;}
+.dos-val-cell{position:relative;overflow:hidden;min-height:1.4em;display:flex;align-items:center;}
+.dos-real{font-family:'Space Mono',monospace;font-size:.62rem;transition:opacity .25s;}
+.dos-real.dimmed{opacity:.25;}
+.redact-bar{
+  position:absolute;inset:0;
+  display:flex;align-items:center;padding-left:.5rem;
+  font-family:'Space Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:.07em;
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
+}
+.redact-bar.in{transform:translateX(0);}
+.redact-bar.out{transform:translateX(105%);}
+.rb-rc{background:rgba(0,201,167,.14);color:var(--teal);border-left:3px solid var(--teal);}
+.rb-st{background:rgba(56,189,248,.11);color:var(--blue);border-left:3px solid var(--blue);}
+.rb-bp{background:rgba(170,255,0,.09);color:var(--lime);border-left:3px solid var(--lime);}
+.dos-exposed-val{color:var(--red)!important;font-family:'Space Mono',monospace;font-size:.62rem;}
+@keyframes flashRow{0%{background:rgba(255,69,69,.18)}100%{background:transparent}}
+.dos-row.flash{animation:flashRow .5s ease-out;}
+
+/* Right: attacker terminal */
+.dos-terminal{background:#040000;display:flex;flex-direction:column;}
+.att-hd{
+  background:#06000a;border-bottom:1px solid #1a0505;
+  padding:.65rem 1rem;display:flex;align-items:center;gap:.4rem;flex-shrink:0;
+}
+.att-dot{width:8px;height:8px;border-radius:50%;}
+.att-title{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.14em;color:#3a1a1a;flex:1;margin-left:.4rem;}
+.att-live{font-family:'Space Mono',monospace;font-size:.48rem;color:var(--red);letter-spacing:.1em;}
+.att-scanline{height:2px;overflow:hidden;background:transparent;}
+.att-scan-inner{height:2px;width:60%;background:linear-gradient(90deg,transparent,rgba(255,69,69,.6),transparent);animation:scanMove 2.5s linear infinite;}
+@keyframes scanMove{0%{transform:translateX(-100%)}100%{transform:translateX(280%)};}
+.att-body{padding:.9rem 1rem;font-family:'Space Mono',monospace;flex:1;overflow:hidden;font-size:.62rem;}
+.att-empty{color:#1e1a1a;line-height:2.2;font-size:.62rem;}
+.att-prompt{color:#2a0808;font-size:.58rem;margin-bottom:.5rem;}
+.att-breach-count{color:var(--red);font-size:.62rem;margin-bottom:.7rem;font-weight:700;}
+.att-field-block{margin-bottom:.7rem;padding:.5rem;border:1px solid rgba(255,69,69,.18);background:rgba(255,69,69,.04);}
+.att-field-key{color:#5a1a1a;font-size:.52rem;letter-spacing:.08em;margin-bottom:.2rem;}
+.att-field-val{color:var(--red);font-size:.65rem;font-weight:700;text-decoration:underline dotted;}
+.att-field-note{color:#3a1a1a;font-size:.52rem;margin-top:.2rem;line-height:1.5;}
+.att-enc-section{border-top:1px solid #100505;margin-top:.7rem;padding-top:.5rem;}
+.att-enc-line{color:#1a0a0a;font-size:.54rem;line-height:1.8;}
+
+/* Privacy integrity bar */
+.integrity-wrap{margin-top:2.5rem;}
+.int-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;}
+.int-label{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+.int-right{display:flex;align-items:baseline;gap:.8rem;}
+.int-score{font-family:'Oxanium',sans-serif;font-size:2.2rem;font-weight:700;line-height:1;transition:color .4s;}
+.int-tier{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.12em;font-weight:700;padding:.2rem .6rem;border:1px solid;transition:color .4s,border-color .4s;}
+.int-track{height:10px;background:var(--pn);border:1px solid var(--ln);overflow:hidden;}
+.int-fill{height:100%;transition:width .5s cubic-bezier(.4,0,.2,1),background .5s;}
+.int-segs{display:flex;gap:2px;margin-top:.6rem;}
+.int-seg{flex:1;height:4px;border-radius:1px;transition:background .4s;}
+.int-hint{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--mid);margin-top:.6rem;letter-spacing:.07em;line-height:1.6;}
+
+/* ============================================================
+   S4  -  QUORUM PIPELINE
+   ============================================================ */
+#s4{background:var(--dp);border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);padding:5rem 0;}
+#pipeCanvas{display:block;width:100%;margin-top:2rem;}
+
+/* ============================================================
+   S5  -  BLOCK BUILDER
+   ============================================================ */
+#s5{padding:5rem 0;}
+.builder-layout{display:grid;grid-template-columns:1fr 340px;gap:3rem;align-items:start;margin-top:2rem;}
+.builder-canvas-wrap{background:var(--pn);border:1px solid var(--ln);}
+#buildCanvas{display:block;width:100%;}
+.bc-title{font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);margin-bottom:.9rem;}
+.tx-card{background:var(--pn);border:1px solid var(--ln);padding:.85rem 1rem;margin-bottom:.4rem;
+  display:flex;align-items:center;gap:.7rem;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+.tx-card:hover{border-left-color:var(--teal);background:rgba(0,201,167,.04);}
+.tx-card.used{opacity:.25;pointer-events:none;}
+.txc-type{font-family:'Space Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);}
+.txc-ring{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--mid);margin-top:.2rem;}
+.txc-size{font-family:'Oxanium',sans-serif;font-size:.95rem;font-weight:700;color:var(--tx);margin-left:auto;}
+.builder-stats{margin-top:1.2rem;border:1px solid var(--ln);}
+.bs-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;border-bottom:1px solid rgba(21,34,51,.7);}
+.bs-row:last-child{border-bottom:none;}
+.bs-k{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--mid);letter-spacing:.06em;text-transform:uppercase;}
+.bs-v{font-family:'Oxanium',sans-serif;font-size:.98rem;font-weight:700;color:var(--teal);}
+.reset-btn{width:100%;margin-top:.7rem;font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;background:none;border:1px solid var(--ln);
+  color:var(--mid);padding:.5rem;cursor:pointer;transition:all .2s;}
+.reset-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+/* ============================================================
+   S6  -  STATS
+   ============================================================ */
+#s6{padding:5rem 0;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ln);border:1px solid var(--ln);margin-top:1.5rem;}
+.sg{background:var(--bg);padding:2.2rem 1.8rem;transition:background .2s;}
+.sg:hover{background:var(--dp);}
+.sg-v{font-family:'Oxanium',sans-serif;font-weight:800;font-size:clamp(2.2rem,4.5vw,3.5rem);line-height:1;margin-bottom:.25rem;}
+.sg-k{font-family:'Space Mono',monospace;font-size:.56rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-bottom:.4rem;}
+.sg-d{font-size:.87rem;color:var(--mid);line-height:1.6;}
+
+/* FADE */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fi{opacity:0;transform:translateY(18px);}
+.fi.in{animation:fadeUp .5s ease forwards;}
+
+footer{background:var(--dp);border-top:1px solid var(--ln);padding:1.1rem 2.5rem;
+  font-family:'Space Mono',monospace;font-size:.5rem;color:var(--dim);letter-spacing:.08em;}
+
+/* BREACH overlay */
+#breachOverlay{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .15s;
+}
+#breachOverlay.active{opacity:1;pointer-events:none;}
+#breachOverlay .bo-bg{position:absolute;inset:0;background:rgba(255,69,69,.06);}
+#breachOverlay .bo-text{
+  font-family:'Oxanium',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,7rem);
+  color:#ff4545;letter-spacing:.08em;text-shadow:0 0 40px rgba(255,69,69,.7);
+  animation:breachPulse .18s ease-in-out 3 alternate;position:relative;
+}
+#breachOverlay .bo-sub{
+  font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--red);margin-top:.5rem;position:relative;
+}
+@keyframes breachPulse{from{opacity:1;transform:scale(1)}to{opacity:.6;transform:scale(1.04)}}
+
+@media(max-width:860px){
+  .dissector-wrap,.mixer-layout,.intercept-intro,.builder-layout{grid-template-columns:1fr;}
+  .dissector-stage{height:auto;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<div id="navdots">
+  <div class="nd on" data-label="Hero" onclick="goSec(0)"></div>
+  <div class="nd" data-label="Layers" onclick="goSec(1)"></div>
+  <div class="nd" data-label="Ring" onclick="goSec(2)"></div>
+  <div class="nd" data-label="Privacy" onclick="goSec(3)"></div>
+  <div class="nd" data-label="Quorum" onclick="goSec(4)"></div>
+  <div class="nd" data-label="Builder" onclick="goSec(5)"></div>
+  <div class="nd" data-label="Numbers" onclick="goSec(6)"></div>
+</div>
+
+<!-- ════ HERO ════ -->
+<section id="s0">
+  <canvas id="scanCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hc-tag">X-RAY ANALYSIS ACTIVE</div>
+    <div class="hero-big">BLOCK<br><em>ANATOMY</em></div>
+    <div class="hero-strip">
+      <div class="hs-cell"><div class="hs-v">30s</div><div class="hs-k">Block Time</div></div>
+      <div class="hs-cell"><div class="hs-v">6 layers</div><div class="hs-k">Structure</div></div>
+      <div class="hs-cell"><div class="hs-v">ring:11</div><div class="hs-k">Decoy Size</div></div>
+      <div class="hs-cell"><div class="hs-v">10 BDX</div><div class="hs-k">Per Block</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ S1: BLOCK DISSECTOR ════ -->
+<section id="s1">
+<div class="w">
+  <div class="fi" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:3rem;">
+    <div>
+      <div class="sec-num-bg">01</div>
+    </div>
+    <div style="padding-bottom:.5rem;">
+      <div class="sec-label">Block Architecture</div>
+      <div class="sec-title">HOVER A LAYER.<br><em>SEE WHAT IS INSIDE.</em></div>
+      <p style="font-size:.95rem;color:var(--mid);line-height:1.75;margin-top:.5rem;">Every Beldex block has six stacked layers. Hover any layer to lift it and inspect every field it contains.</p>
+    </div>
+  </div>
+
+  <div class="dissector-wrap fi">
+    <div class="dissector-stage" id="dissectorStage" style="position:relative;height:420px;">
+      <canvas id="dissectCanvas" style="position:absolute;inset:0;width:100%;height:100%;cursor:pointer;"></canvas>
+    </div>
+    <div class="dissector-detail" id="dissectorDetail">
+      <div class="dd-empty" id="ddEmpty">// HOVER A LAYER TO INSPECT</div>
+      <div class="dd-panel" id="dd0">
+        <div class="dd-tag" style="color:var(--teal);">Layer 1 of 6</div>
+        <div class="dd-name">Block Header</div>
+        <div class="dd-body">The block's identity card. Hash this header with Keccak-256 and you get the block ID. Change one byte anywhere and the hash changes completely.</div>
+        <div class="dd-fields">
+          <div class="ddf" style="border-color:var(--teal);"><span class="ddf-name" style="color:var(--teal);">major_version</span><span class="ddf-size" style="color:var(--teal);">1 B</span></div>
+          <div class="ddf" style="border-color:var(--teal);"><span class="ddf-name" style="color:var(--teal);">minor_version</span><span class="ddf-size" style="color:var(--teal);">1 B</span></div>
+          <div class="ddf" style="border-color:var(--teal);"><span class="ddf-name" style="color:var(--teal);">timestamp</span><span class="ddf-size" style="color:var(--teal);">4 B</span></div>
+          <div class="ddf" style="border-color:var(--teal);"><span class="ddf-name" style="color:var(--teal);">prev_id (chain link)</span><span class="ddf-size" style="color:var(--teal);">32 B</span></div>
+          <div class="ddf" style="border-color:var(--teal);"><span class="ddf-name" style="color:var(--teal);">nonce</span><span class="ddf-size" style="color:var(--teal);">4 B</span></div>
+        </div>
+      </div>
+      <div class="dd-panel" id="dd1">
+        <div class="dd-tag" style="color:var(--amber);">Layer 2 of 6</div>
+        <div class="dd-name">Coinbase Transaction</div>
+        <div class="dd-body">Creates 10 BDX from nothing. The first transaction in every block. No inputs, only outputs. Reward outputs lock for 60 blocks before they can be spent.</div>
+        <div class="dd-fields">
+          <div class="ddf" style="border-color:var(--amber);"><span class="ddf-name" style="color:var(--amber);">txin_gen (block height)</span><span class="ddf-size" style="color:var(--amber);">varint</span></div>
+          <div class="ddf" style="border-color:var(--amber);"><span class="ddf-name" style="color:var(--amber);">unlock_time</span><span class="ddf-size" style="color:var(--amber);">+60 blocks</span></div>
+          <div class="ddf" style="border-color:var(--amber);"><span class="ddf-name" style="color:var(--amber);">stealth reward outputs</span><span class="ddf-size" style="color:var(--amber);">per node</span></div>
+          <div class="ddf" style="border-color:var(--amber);"><span class="ddf-name" style="color:var(--amber);">tx_public_key R</span><span class="ddf-size" style="color:var(--amber);">32 B</span></div>
+        </div>
+      </div>
+      <div class="dd-panel" id="dd2">
+        <div class="dd-tag" style="color:var(--purple);">Layer 3 of 6</div>
+        <div class="dd-name">Transaction Inputs</div>
+        <div class="dd-body">Each input hides the real spend inside 10 decoys using a ring of size 11. A key image proves ownership and blocks double-spending.</div>
+        <div class="dd-fields">
+          <div class="ddf" style="border-color:var(--purple);"><span class="ddf-name" style="color:var(--purple);">key_offsets (ring)</span><span class="ddf-size" style="color:var(--purple);">11 x varint</span></div>
+          <div class="ddf" style="border-color:var(--purple);"><span class="ddf-name" style="color:var(--purple);">key_image</span><span class="ddf-size" style="color:var(--purple);">32 B</span></div>
+          <div class="ddf" style="border-color:var(--purple);"><span class="ddf-name" style="color:var(--purple);">pseudo-output commit</span><span class="ddf-size" style="color:var(--purple);">32 B</span></div>
+        </div>
+      </div>
+      <div class="dd-panel" id="dd3">
+        <div class="dd-tag" style="color:var(--blue);">Layer 4 of 6</div>
+        <div class="dd-name">Transaction Outputs</div>
+        <div class="dd-body">Every output goes to a unique one-time stealth address. The recipient scans with their private view key. Nobody else can link any output to any wallet address.</div>
+        <div class="dd-fields">
+          <div class="ddf" style="border-color:var(--blue);"><span class="ddf-name" style="color:var(--blue);">stealth_key P</span><span class="ddf-size" style="color:var(--blue);">32 B</span></div>
+          <div class="ddf" style="border-color:var(--blue);"><span class="ddf-name" style="color:var(--blue);">ecdhInfo (enc. amount)</span><span class="ddf-size" style="color:var(--blue);">8 B each</span></div>
+          <div class="ddf" style="border-color:var(--blue);"><span class="ddf-name" style="color:var(--blue);">amount (plaintext)</span><span class="ddf-size" style="color:var(--blue);">0 = HIDDEN</span></div>
+        </div>
+      </div>
+      <div class="dd-panel" id="dd4">
+        <div class="dd-tag" style="color:var(--lime);">Layer 5 of 6</div>
+        <div class="dd-name">RingCT + Bulletproofs</div>
+        <div class="dd-body">MLSAG signatures prove the sender owns an input without revealing which ring member is real. Bulletproof+ range proofs confirm all amounts are positive, 90% smaller than originals.</div>
+        <div class="dd-fields">
+          <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">MLSAG signature</span><span class="ddf-size" style="color:var(--lime);">per input</span></div>
+          <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">outPk commitments</span><span class="ddf-size" style="color:var(--lime);">32 B each</span></div>
+          <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">Bulletproof+</span><span class="ddf-size" style="color:var(--lime);">~675 B / output</span></div>
+        </div>
+      </div>
+      <div class="dd-panel" id="dd5">
+        <div class="dd-tag" style="color:var(--red);">Layer 6 of 6  -  Beldex Exclusive</div>
+        <div class="dd-name">Masternode Quorum Votes</div>
+        <div class="dd-body">This layer does not exist in standard CryptoNote chains. At least 7 of 11 validator Ed25519 signatures must be present for the block to be valid. Checkpoints every 4 blocks prevent rollback attacks.</div>
+        <div class="dd-fields">
+          <div class="ddf" style="border-color:var(--red);"><span class="ddf-name" style="color:var(--red);">validator signatures</span><span class="ddf-size" style="color:var(--red);">11 x 64 B</span></div>
+          <div class="ddf" style="border-color:var(--red);"><span class="ddf-name" style="color:var(--red);">checkpoint_hash</span><span class="ddf-size" style="color:var(--red);">32 B</span></div>
+          <div class="ddf" style="border-color:var(--red);"><span class="ddf-name" style="color:var(--red);">deregister_votes</span><span class="ddf-size" style="color:var(--red);">conditional</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════ S2: RING MIXER ════ -->
+<section id="s2">
+<div class="w">
+  <div class="mixer-layout fi">
+    <div class="mixer-canvas-wrap">
+      <canvas id="mixCanvas" height="340"></canvas>
+      <button class="mix-btn" id="mixBtn">RESHUFFLE RING</button>
+    </div>
+    <div class="mixer-text">
+      <div class="sec-label">Section 02</div>
+      <div class="sec-title">11 OUTPUTS.<br><em>1 IS REAL.</em><br>WHICH ONE?</div>
+      <div class="fact-list">
+        <div class="fact">Your spend hides among 10 randomly chosen decoys.</div>
+        <div class="fact">Ring size is fixed at 11 for every transaction.</div>
+        <div class="fact">MLSAG signature covers all 11 members simultaneously.</div>
+        <div class="fact">Key image prevents spending the same output twice.</div>
+      </div>
+            <!-- Interactive key-image canvas demo -->
+      <canvas id="kiCanvas" height="130" style="display:block;width:100%;margin-top:1.4rem;cursor:default;"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.8rem;">
+        <div>
+          <div style="font-family:'Space Mono',monospace;font-size:.52rem;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem;">x  -  Private Key (only you know this)</div>
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <input id="kiX" type="range" min="1" max="255" value="42" style="flex:1;accent-color:var(--teal);cursor:pointer;height:3px;" />
+            <span id="kiXVal" style="font-family:'Space Mono',monospace;font-size:.75rem;font-weight:700;color:var(--teal);min-width:44px;text-align:right;">0x2a</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Space Mono',monospace;font-size:.52rem;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem;">P  -  Public Key (visible on-chain)</div>
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <input id="kiP" type="range" min="1" max="255" value="137" style="flex:1;accent-color:var(--blue);cursor:pointer;height:3px;" />
+            <span id="kiPVal" style="font-family:'Space Mono',monospace;font-size:.75rem;font-weight:700;color:var(--blue);min-width:44px;text-align:right;">0x89</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:.75rem;padding:.65rem .9rem;background:rgba(170,255,0,.05);border:1px solid rgba(170,255,0,.18);display:flex;align-items:center;gap:1rem;">
+        <div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--lime);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;">I =</div>
+        <div id="kiResult" style="font-family:'Space Mono',monospace;font-size:.72rem;font-weight:700;color:var(--lime);letter-spacing:.06em;word-break:break-all;line-height:1.5;flex:1;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:.5rem;color:rgba(170,255,0,.5);letter-spacing:.06em;text-align:right;flex-shrink:0;">KEY<br>IMAGE</div>
+      </div>
+      <div style="font-size:.83rem;color:var(--mid);line-height:1.7;margin-top:.7rem;border-top:1px solid var(--ln);padding-top:.6rem;">
+        Change either slider. The key image <span style="color:var(--lime);font-weight:700;">I</span> changes completely. 
+        It is tied to both <span style="color:var(--teal);">x</span> and <span style="color:var(--blue);">P</span>  -  but nobody can reverse <span style="color:var(--lime);">I</span> back to your private key <span style="color:var(--teal);">x</span>.
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════ S3: CLASSIFIED DOSSIER ════ -->
+<section id="s3">
+<div class="w">
+
+  <!-- Section header -->
+  <div class="fi" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:3rem;align-items:end;">
+    <div>
+      <div class="sec-num-bg" style="line-height:1;">03</div>
+      <div class="sec-label" style="margin-top:.4rem;">Privacy Simulation</div>
+      <div class="sec-title">WHAT DOES AN<br><em>ATTACKER SEE?</em></div>
+    </div>
+    <div style="padding-bottom:.5rem;">
+      <p style="font-size:.93rem;color:var(--mid);line-height:1.8;">Click any shield card to disable it. Watch the classified fields slide open and the attacker feed fill with real data. All three shields must be active for full anonymity.</p>
+    </div>
+  </div>
+
+  <!-- Shield toggle cards -->
+  <div class="clr-grid fi" id="clrGrid">
+    <!-- RingCT -->
+    <div class="clr-card active-ringct" id="cardRingCT" onclick="toggleShield('ringct')">
+      <div class="clr-top">
+        <div class="clr-icon-wrap" style="background:rgba(0,201,167,.1);color:var(--teal);">&#9632;</div>
+        <div class="clr-name" style="color:var(--teal);">RingCT</div>
+      </div>
+      <div class="clr-desc">Hides the transfer amount. Nobody outside the transaction can read how many BDX moved.</div>
+      <div class="clr-foot">
+        <div class="clr-dot" id="dotRC" style="background:var(--teal);box-shadow:0 0 6px var(--teal);"></div>
+        <span class="clr-status-txt" id="stRC" style="color:var(--teal);">ACTIVE</span>
+        <span class="clr-badge bon" id="badgeRC">SHIELD ON</span>
+      </div>
+    </div>
+    <!-- Stealth -->
+    <div class="clr-card active-stealth" id="cardStealth" onclick="toggleShield('stealth')">
+      <div class="clr-top">
+        <div class="clr-icon-wrap" style="background:rgba(56,189,248,.1);color:var(--blue);">&#9632;</div>
+        <div class="clr-name" style="color:var(--blue);">Stealth Address</div>
+      </div>
+      <div class="clr-desc">Hides sender and receiver wallet addresses. Creates a unique one-time address per transaction.</div>
+      <div class="clr-foot">
+        <div class="clr-dot" id="dotST" style="background:var(--blue);box-shadow:0 0 6px var(--blue);"></div>
+        <span class="clr-status-txt" id="stST" style="color:var(--blue);">ACTIVE</span>
+        <span class="clr-badge bon" id="badgeST">SHIELD ON</span>
+      </div>
+    </div>
+    <!-- Bulletproofs+ -->
+    <div class="clr-card active-bp" id="cardBP" onclick="toggleShield('bp')">
+      <div class="clr-top">
+        <div class="clr-icon-wrap" style="background:rgba(170,255,0,.08);color:var(--lime);">&#9632;</div>
+        <div class="clr-name" style="color:var(--lime);">Bulletproofs+</div>
+      </div>
+      <div class="clr-desc">Seals the range proof. Proves the amount is valid without revealing what it is.</div>
+      <div class="clr-foot">
+        <div class="clr-dot" id="dotBP" style="background:var(--lime);box-shadow:0 0 6px var(--lime);"></div>
+        <span class="clr-status-txt" id="stBP" style="color:var(--lime);">ACTIVE</span>
+        <span class="clr-badge bon" id="badgeBP">SHIELD ON</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dossier + Attacker split -->
+  <div class="dossier-split fi">
+
+    <!-- LEFT: Classified Document -->
+    <div class="dos-doc">
+      <div class="dos-doc-hd">
+        <div class="dos-stamp">TOP SECRET</div>
+        <div class="dos-meta-txt">
+          BELDEX NETWORK INTERCEPT<br>
+          FILE REF: TX-7743-X / CRYPTOGRAPHIC<br>
+          SUBJECT: TRANSACTION DATA ANALYSIS
+        </div>
+      </div>
+      <div class="dos-body" id="dosBody"><!-- rendered by JS --></div>
+    </div>
+
+    <!-- RIGHT: Attacker Terminal -->
+    <div class="dos-terminal">
+      <div class="att-hd">
+        <div class="att-dot" style="background:#ff5f57;"></div>
+        <div class="att-dot" style="background:#ffbd2e;margin-left:.3rem;"></div>
+        <div class="att-dot" style="background:#28c840;margin-left:.3rem;"></div>
+        <div class="att-title">ATTACKER INTERCEPT FEED v3.1</div>
+        <div class="att-live"><span class="blink">&#9679;</span> LIVE</div>
+      </div>
+      <div class="att-scanline"><div class="att-scan-inner"></div></div>
+      <div class="att-body" id="attBody"><!-- rendered by JS --></div>
+    </div>
+
+  </div>
+
+  <!-- Privacy Integrity Meter -->
+  <div class="integrity-wrap fi">
+    <div class="int-header">
+      <div class="int-label">Privacy Integrity</div>
+      <div class="int-right">
+        <div class="int-score" id="intScore" style="color:var(--teal);">100%</div>
+        <div class="int-tier" id="intTier" style="color:var(--teal);border-color:rgba(0,201,167,.3);">PHANTOM</div>
+      </div>
+    </div>
+    <div class="int-track"><div class="int-fill" id="intFill" style="width:100%;background:var(--teal);"></div></div>
+    <div class="int-segs" id="intSegs"><!-- rendered by JS --></div>
+    <div class="int-hint" id="intHint">All 3 shields are active. This transaction is invisible to anyone on the network.</div>
+  </div>
+
+</div>
+</section>
+
+<!-- ════ S4: QUORUM PIPELINE ════ -->
+<section id="s4">
+<div class="w">
+  <div class="fi" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;">
+    <div>
+      <div class="sec-num-bg">04</div>
+      <div class="sec-label" style="margin-top:.4rem;">PoS Consensus</div>
+      <div class="sec-title">QUORUM<br><em>PIPELINE</em></div>
+    </div>
+    <div style="padding-bottom:.5rem;">
+      <div class="fact-list">
+        <div class="fact">12 masternodes selected each round via verifiable randomness.</div>
+        <div class="fact">1 builds the block template. 11 validate it.</div>
+        <div class="fact">7 signatures required. 60% threshold. No single point of failure.</div>
+        <div class="fact">Checkpoint every 4 blocks locks history against rollback.</div>
+      </div>
+    </div>
+  </div>
+  <canvas id="pipeCanvas" height="240" class="fi" style="margin-top:2rem;"></canvas>
+</div>
+</section>
+
+<!-- ════ S5: BLOCK BUILDER ════ -->
+<section id="s5">
+<div class="w">
+  <div class="fi" style="margin-bottom:2rem;">
+    <div class="sec-num-bg">05</div>
+    <div class="sec-label" style="margin-top:.4rem;">Interactive</div>
+    <div class="sec-title">BUILD<br><em>A BLOCK</em></div>
+    <p style="font-size:.93rem;color:var(--mid);margin-top:.4rem;">Click transactions to pack them in. Watch the byte counter and ring dot spinner update in real time.</p>
+  </div>
+  <div class="builder-layout fi">
+    <div class="builder-canvas-wrap">
+      <canvas id="buildCanvas" height="400"></canvas>
+    </div>
+    <div class="builder-controls">
+      <div class="bc-title">AVAILABLE TRANSACTIONS</div>
+      <div id="txList"></div>
+      <div class="builder-stats">
+        <div class="bs-row"><span class="bs-k">Transactions</span><span class="bs-v" id="bsTxCount">0</span></div>
+        <div class="bs-row"><span class="bs-k">Block Size</span><span class="bs-v" id="bsBytes">376 B</span></div>
+        <div class="bs-row"><span class="bs-k">Ring Sigs</span><span class="bs-v" id="bsRings">0</span></div>
+        <div class="bs-row"><span class="bs-k">Status</span><span class="bs-v" id="bsStatus" style="color:var(--dim);">Coinbase Only</span></div>
+      </div>
+      <button class="reset-btn" id="resetBtn">RESET BLOCK</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════ S5b: HASH VISUALIZER ════ -->
+<section id="s5b" style="background:var(--dp);border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);padding:4rem 0;">
+<div class="w">
+  <div class="fi" style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:2rem;">
+    <div>
+      <div class="sec-label">Section 05B</div>
+      <div class="sec-title">TAMPER THE<br><em>BLOCK HEADER.</em></div>
+    </div>
+    <div>
+      <p style="font-size:.92rem;color:var(--mid);line-height:1.8;">Change any field below. Watch the entire block hash change completely. One byte altered - entirely different fingerprint. This is why blockchains cannot be forged.</p>
+    </div>
+  </div>
+  <div class="fi" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+    <div style="background:var(--pn);border:1px solid var(--ln);padding:1.5rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem;">BLOCK HEADER FIELDS</div>
+      <div class="hv-row">
+        <label class="hv-label">major_version</label>
+        <input class="hv-input" id="hvV" type="text" value="20" maxlength="4" />
+      </div>
+      <div class="hv-row">
+        <label class="hv-label">timestamp</label>
+        <input class="hv-input" id="hvT" type="text" value="1741607400" maxlength="12" />
+      </div>
+      <div class="hv-row">
+        <label class="hv-label">prev_id (first 8 chars)</label>
+        <input class="hv-input" id="hvP" type="text" value="3f8a9c2d" maxlength="8" />
+      </div>
+      <div class="hv-row">
+        <label class="hv-label">nonce</label>
+        <input class="hv-input" id="hvN" type="text" value="00000000" maxlength="8" />
+      </div>
+    </div>
+    <div style="background:var(--pn);border:1px solid var(--ln);padding:1.5rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:1rem;">KECCAK-256 BLOCK HASH</div>
+      <div id="hvHash" style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--teal);word-break:break-all;line-height:1.8;letter-spacing:.04em;min-height:60px;"></div>
+      <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--ln);">
+        <div style="font-family:'Space Mono',monospace;font-size:.56rem;color:var(--mid);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;">AVALANCHE EFFECT</div>
+        <div id="hvBits" style="display:flex;flex-wrap:wrap;gap:2px;"></div>
+        <div id="hvPct" style="font-family:'Oxanium',monospace;font-weight:700;font-size:1.4rem;color:var(--amber);margin-top:.5rem;">0%</div>
+        <div style="font-family:'Space Mono',monospace;font-size:.54rem;color:var(--mid);">of hash bits changed</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<style>
+.hv-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;}
+.hv-label{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--mid);letter-spacing:.06em;min-width:140px;flex-shrink:0;text-transform:uppercase;}
+.hv-input{
+  flex:1;background:rgba(0,0,0,.5);border:1px solid var(--ln);color:var(--teal);
+  font-family:'Space Mono',monospace;font-size:.72rem;padding:.4rem .6rem;
+  outline:none;transition:border-color .2s;letter-spacing:.05em;
+}
+.hv-input:focus{border-color:var(--teal);}
+.hv-bit{width:10px;height:10px;border-radius:50%;transition:background .15s;}
+</style>
+
+<!-- ════ S6: NUMBERS ════ -->
+<section id="s6">
+<div class="w">
+  <div class="fi">
+    <div class="sec-num-bg">06</div>
+    <div class="sec-label" style="margin-top:.4rem;">Network Facts</div>
+    <div class="sec-title">BY THE<br><em>NUMBERS</em></div>
+  </div>
+  <div class="stats-grid fi">
+    <div class="sg"><div class="sg-k">Block Time</div><div class="sg-v" style="color:var(--teal);">30s</div><div class="sg-d">Target interval. Adjusts ±15s based on real timing.</div></div>
+    <div class="sg"><div class="sg-k">Block Reward</div><div class="sg-v" style="color:var(--amber);">10 BDX</div><div class="sg-d">6.25 to quorum validators. Rest to block producer.</div></div>
+    <div class="sg"><div class="sg-k">Ring Size</div><div class="sg-v" style="color:var(--lime);">11</div><div class="sg-d">Fixed. 1 real output + 10 decoys every transaction.</div></div>
+    <div class="sg"><div class="sg-k">Coinbase Lock</div><div class="sg-v" style="color:var(--blue);">60 blocks</div><div class="sg-d">~30 min before rewards are spendable.</div></div>
+    <div class="sg"><div class="sg-k">Quorum Size</div><div class="sg-v" style="color:var(--red);">12 nodes</div><div class="sg-d">1 block producer + 11 validators per round.</div></div>
+    <div class="sg"><div class="sg-k">Bulletproof+</div><div class="sg-v" style="color:var(--purple);">675 B</div><div class="sg-d">90% smaller than the original 6,176 B range proof.</div></div>
+  </div>
+</div>
+</section>
+
+<div id="breachOverlay"><div class="bo-bg"></div><div class="bo-text">BREACH</div><div class="bo-sub">PRIVACY SHIELD DISABLED</div></div>
+
+<footer>beldex-block-structure.html &middot; beldex-guide-project.vercel.app</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════════ */
+function lerp(a,b,t){return a+(b-a)*t;}
+function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+function hexRgb(hex){
+  hex=hex.replace('#','');
+  return parseInt(hex.substr(0,2),16)+','+parseInt(hex.substr(2,2),16)+','+parseInt(hex.substr(4,2),16);
+}
+function rrect(ctx,x,y,w,h,r){
+  r=Math.min(r||0,w/2,h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+/* ════════════════════════════════════════════════════════════
+   NAV DOTS
+════════════════════════════════════════════════════════════ */
+var secs=['s0','s1','s2','s3','s4','s5','s6'];
+function goSec(i){var el=document.getElementById(secs[i]);if(el)el.scrollIntoView({behavior:'smooth'});}
+window.addEventListener('scroll',function(){
+  var cur=0;
+  secs.forEach(function(id,i){var el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-200)cur=i;});
+  document.querySelectorAll('.nd').forEach(function(n,i){n.classList.toggle('on',i===cur);});
+},{passive:true});
+
+/* ════════════════════════════════════════════════════════════
+   HERO SCAN CANVAS
+════════════════════════════════════════════════════════════ */
+(function(){
+  var canvas=document.getElementById('scanCanvas');
+  var ctx=canvas.getContext('2d');
+  var W,H,beamY=0,t=0;
+  var hexC='0123456789abcdef';
+  var drops=[];
+  var layers=[
+    {label:'HEADER',sub:'76 B',color:'#00c9a7',h:.08},
+    {label:'COINBASE TX',sub:'~300 B',color:'#f5a623',h:.10},
+    {label:'INPUTS',sub:'variable',color:'#a78bfa',h:.15},
+    {label:'OUTPUTS',sub:'variable',color:'#38bdf8',h:.14},
+    {label:'RINGCT+BP',sub:'2-15 KB',color:'#aaff00',h:.30},
+    {label:'QUORUM',sub:'~1.5 KB',color:'#ff4545',h:.23},
+  ];
+  function resize(){
+    W=canvas.width=canvas.parentElement.clientWidth;
+    H=canvas.height=canvas.parentElement.clientHeight||window.innerHeight;
+    drops=[];
+    for(var i=0;i<Math.floor(W/16);i++){
+      drops.push({x:i*16+8,y:Math.random()*H,spd:.3+Math.random()*.7});
+    }
+  }
+  function getBands(){
+    var b=[],y=0;
+    layers.forEach(function(l){var bh=H*l.h;b.push({y:y,h:bh,l:l});y+=bh;});
+    return b;
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#030507';ctx.fillRect(0,0,W,H);
+    drops.forEach(function(d){
+      d.y+=d.spd;if(d.y>H+16)d.y=-16;
+      ctx.fillStyle='rgba(0,201,167,0.07)';
+      ctx.font='10px "Space Mono",monospace';
+      ctx.textAlign='center';
+      ctx.fillText(hexC[Math.floor(Math.random()*16)],d.x,d.y);
+    });
+    var bands=getBands();
+    bands.forEach(function(b){
+      var sc=beamY>=b.y&&beamY<=b.y+b.h;
+      ctx.fillStyle=sc?'rgba('+hexRgb(b.l.color)+',0.08)':'rgba(5,10,16,0.55)';
+      ctx.fillRect(0,b.y,W*.56,b.h-1);
+      ctx.strokeStyle=sc?b.l.color:'rgba(21,34,51,0.6)';
+      ctx.lineWidth=sc?1.5:1;
+      ctx.strokeRect(.5,b.y+.5,W*.56-1,b.h-2);
+      var la=sc?1:.3;
+      ctx.fillStyle='rgba('+hexRgb(b.l.color)+','+la+')';
+      ctx.font='700 '+(Math.min(W*.017,12))+'px "Space Mono",monospace';
+      ctx.textAlign='left';
+      ctx.fillText(b.l.label,18,b.y+b.h*.5+3);
+      ctx.fillStyle='rgba(106,154,176,'+la+')';
+      ctx.font='9px "Space Mono",monospace';
+      ctx.fillText(b.l.sub,18,b.y+b.h*.5+17);
+      if(sc){
+        ctx.save();ctx.globalAlpha=.5+Math.sin(t*8)*.15;
+        ctx.fillStyle=b.l.color;
+        ctx.font='700 10px "Space Mono",monospace';
+        ctx.textAlign='right';
+        var ds='0x';for(var k=0;k<14;k++)ds+=hexC[Math.floor(Math.random()*16)];
+        ctx.fillText(ds,W*.545,b.y+b.h*.5+3);
+        ctx.restore();
+      }
+    });
+    /* beam */
+    ctx.save();
+    ctx.shadowColor='rgba(0,201,167,.8)';ctx.shadowBlur=22;
+    ctx.beginPath();ctx.moveTo(0,beamY);ctx.lineTo(W*.57,beamY);
+    var g=ctx.createLinearGradient(0,0,W*.57,0);
+    var ba=.65+Math.sin(t*6)*.18;
+    g.addColorStop(0,'rgba(0,201,167,'+ba+')');
+    g.addColorStop(.8,'rgba(0,240,200,'+(ba*.5)+')');
+    g.addColorStop(1,'transparent');
+    ctx.strokeStyle=g;ctx.lineWidth=2.5;ctx.stroke();
+    var hg=ctx.createLinearGradient(0,beamY-28,0,beamY+28);
+    hg.addColorStop(0,'transparent');hg.addColorStop(.5,'rgba(0,201,167,0.035)');hg.addColorStop(1,'transparent');
+    ctx.fillStyle=hg;ctx.fillRect(0,beamY-28,W*.57,56);
+    ctx.restore();
+    ctx.save();ctx.globalAlpha=.07+Math.sin(t*2.5)*.015;
+    ctx.fillStyle='#00c9a7';
+    ctx.font='700 '+(Math.min(W*.08,85))+'px "Oxanium",sans-serif';
+    ctx.textAlign='center';ctx.fillText('SCANNING',W*.78,H*.53);
+    ctx.restore();
+    beamY+=1.5;if(beamY>H+20)beamY=-20;t+=.016;
+    requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize,{passive:true});draw();
+})();
+
+/* ════════════════════════════════════════════════════════════
+   BLOCK DISSECTOR  -  3D isometric canvas exploded block
+   6 layers as perspective flat boxes. Click to explode apart.
+   Hover to highlight and drive the detail panel.
+════════════════════════════════════════════════════════════ */
+(function(){
+  var canvas=document.getElementById('dissectCanvas');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var emptyMsg=document.getElementById('ddEmpty');
+  var W,H,t=0,hovIdx=-1,exploded=false;
+  var gaps=[0,0,0,0,0,0];
+
+  var layerDefs=[
+    {id:0,label:'HDR',name:'Block Header',size:'76 B',color:'#00c9a7'},
+    {id:1,label:'CBX',name:'Coinbase TX',size:'~300 B',color:'#f5a623'},
+    {id:2,label:'INP',name:'Tx Inputs',size:'variable',color:'#a78bfa'},
+    {id:3,label:'OUT',name:'Tx Outputs',size:'variable',color:'#38bdf8'},
+    {id:4,label:'SIG',name:'RingCT + BP',size:'2-15 KB',color:'#aaff00'},
+    {id:5,label:'QRM',name:'Quorum Votes',size:'~1.5 KB',color:'#ff4545'},
+  ];
+
+  function hRgb(hex){
+    hex=hex.replace('#','');
+    return parseInt(hex.substr(0,2),16)+','+parseInt(hex.substr(2,2),16)+','+parseInt(hex.substr(4,2),16);
+  }
+  function resize(){
+    W=canvas.width=canvas.parentElement.offsetWidth;
+    H=canvas.height=canvas.parentElement.offsetHeight||420;
+  }
+  function getLh(){return Math.max(26,Math.min(44,(H-90)/layerDefs.length-6));}
+  function getLw(){return Math.min(W*0.76,380);}
+  function getDepth(){return Math.min(W*0.13,52);}
+  function getBaseY(i,lh){
+    var total=layerDefs.length*lh+(layerDefs.length-1)*4;
+    var sy=(H-total)/2+10;
+    return sy+i*(lh+4);
+  }
+  function proj(x,y,z){
+    var ox=W*0.08,oy=0;
+    return{x:ox+x+(z*0.32),y:oy+y-(z*0.18)};
+  }
+
+  function drawLayer(i,lh,lw,depth,gap,isHov){
+    var c=layerDefs[i].color;
+    var y=getBaseY(i,lh)+gap;
+    var alpha=isHov?1:0.55;
+    /* top face */
+    var tl=proj(0,y,depth),tr=proj(lw,y,depth),br=proj(lw,y,0),bl=proj(0,y,0);
+    ctx.beginPath();ctx.moveTo(tl.x,tl.y);ctx.lineTo(tr.x,tr.y);ctx.lineTo(br.x,br.y);ctx.lineTo(bl.x,bl.y);ctx.closePath();
+    ctx.fillStyle='rgba('+hRgb(c)+','+(isHov?0.25:0.1)+')';ctx.fill();
+    ctx.strokeStyle='rgba('+hRgb(c)+','+alpha+')';ctx.lineWidth=isHov?1.5:0.8;ctx.stroke();
+    /* front face */
+    var fl_tl=proj(0,y,0),fl_tr=proj(lw,y,0),fl_br=proj(lw,y+lh,0),fl_bl=proj(0,y+lh,0);
+    ctx.beginPath();ctx.moveTo(fl_tl.x,fl_tl.y);ctx.lineTo(fl_tr.x,fl_tr.y);ctx.lineTo(fl_br.x,fl_br.y);ctx.lineTo(fl_bl.x,fl_bl.y);ctx.closePath();
+    ctx.fillStyle='rgba('+hRgb(c)+','+(isHov?0.18:0.06)+')';ctx.fill();
+    ctx.strokeStyle='rgba('+hRgb(c)+','+alpha+')';ctx.lineWidth=isHov?1.5:0.8;ctx.stroke();
+    /* right face */
+    var ri_tl=proj(lw,y,depth),ri_tr=proj(lw,y,0),ri_br=proj(lw,y+lh,0),ri_bl=proj(lw,y+lh,depth);
+    ctx.beginPath();ctx.moveTo(ri_tl.x,ri_tl.y);ctx.lineTo(ri_tr.x,ri_tr.y);ctx.lineTo(ri_br.x,ri_br.y);ctx.lineTo(ri_bl.x,ri_bl.y);ctx.closePath();
+    ctx.fillStyle='rgba('+hRgb(c)+','+(isHov?0.12:0.04)+')';ctx.fill();
+    ctx.strokeStyle='rgba('+hRgb(c)+','+(alpha*0.7)+')';ctx.lineWidth=isHov?1:0.7;ctx.stroke();
+    /* label */
+    var lx=fl_tl.x+10,ly=(fl_tl.y+fl_bl.y)/2;
+    if(isHov){ctx.save();ctx.shadowColor=c;ctx.shadowBlur=12;}
+    ctx.fillStyle=isHov?c:'rgba('+hRgb(c)+',.5)';
+    ctx.font='700 '+(isHov?11:9)+'px "Space Mono",monospace';ctx.textAlign='left';
+    ctx.fillText(layerDefs[i].label,lx,ly-4);
+    ctx.fillStyle=isHov?'rgba(168,212,200,.8)':'rgba(106,154,176,.3)';
+    ctx.font='8px "Space Mono",monospace';ctx.fillText(layerDefs[i].size,lx,ly+9);
+    if(isHov)ctx.restore();
+  }
+
+  canvas.addEventListener('mousemove',function(ev){
+    var rect=canvas.getBoundingClientRect();
+    var mx=(ev.clientX-rect.left)*(W/rect.width);
+    var my=(ev.clientY-rect.top)*(H/rect.height);
+    var lh=getLh(),lw=getLw(),depth=getDepth();
+    var prev=hovIdx; hovIdx=-1;
+    for(var i=0;i<layerDefs.length;i++){
+      var y=getBaseY(i,lh)+gaps[i];
+      var fl_tl=proj(0,y,0),fl_br=proj(lw,y+lh,0);
+      if(mx>=fl_tl.x&&mx<=fl_br.x&&my>=fl_tl.y&&my<=fl_br.y){hovIdx=i;break;}
+    }
+    if(hovIdx!==prev){
+      emptyMsg.style.display=hovIdx<0?'':'none';
+      document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('show');});
+      if(hovIdx>=0){var dp=document.getElementById('dd'+hovIdx);if(dp)dp.classList.add('show');}
+    }
+  });
+  canvas.addEventListener('mouseleave',function(){
+    hovIdx=-1;emptyMsg.style.display='';
+    document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('show');});
+  });
+  canvas.addEventListener('click',function(){exploded=!exploded;});
+
+  function draw(){
+    if(!W)resize();
+    ctx.clearRect(0,0,W,H);
+    var lh=getLh(),lw=getLw(),depth=getDepth();
+    var tgt=exploded?42:0;
+    for(var i=0;i<layerDefs.length;i++){
+      var dist=(layerDefs.length/2-0.5-i)*tgt;
+      gaps[i]+=(dist-gaps[i])*.1;
+    }
+    for(var j=layerDefs.length-1;j>=0;j--){
+      drawLayer(j,lh,lw,depth,gaps[j],hovIdx===j);
+    }
+    /* hint bar at bottom */
+    var hintText=exploded?'[ CLICK TO COLLAPSE ]':'[ HOVER TO INSPECT ]  [ CLICK TO EXPLODE ]';
+    var hintW=ctx.measureText(hintText).width+40;
+    rrect(ctx,(W-hintW)/2,H-28,hintW,20,10);
+    ctx.fillStyle='rgba(0,201,167,.12)';ctx.fill();
+    ctx.strokeStyle='rgba(0,201,167,.35)';ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle='rgba(0,201,167,.85)';ctx.font='700 9px "Space Mono",monospace';ctx.textAlign='center';
+    ctx.fillText(hintText,W*0.48,H-15);
+    t+=.016;requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize,{passive:true});draw();
+})();
+
+/* ════════════════════════════════════════════════════════════
+   RING MIXER CANVAS
+════════════════════════════════════════════════════════════ */
+(function(){
+  var canvas=document.getElementById('mixCanvas');
+  var ctx=canvas.getContext('2d');
+  var W,H,t=0,shuffling=false,shuffleT=0,shuffleDur=55,realIdx=3;
+  var hexLabels=['0x3f4a','0xb82c','0xa91f','0x67de','0xc234','0x0f78','0x5e19','0xd44b','0x2a8c','0x91e0','0x7bf3'];
+  var nodes=[],fromPos=[],toPos=[];
+
+  function resize(){
+    W=canvas.width=canvas.parentElement.clientWidth;
+    H=canvas.height=parseInt(canvas.getAttribute('height'));
+    initNodes();
+  }
+  function initNodes(){
+    nodes=[];
+    var cols=4,rows=3;
+    var pw=Math.min(W-40,460),ph=H-70;
+    var ox=(W-pw)/2,oy=30;
+    for(var i=0;i<11;i++){
+      var col=i%cols,row=Math.floor(i/cols);
+      var nx=ox+col*(pw/cols)+pw/cols/2;
+      var ny=oy+row*(ph/rows)+ph/rows/2;
+      nodes.push({x:nx,y:ny,tx:nx,ty:ny,label:hexLabels[i]});
+    }
+  }
+  function doShuffle(){
+    if(shuffling)return;
+    shuffling=true;shuffleT=0;
+    realIdx=Math.floor(Math.random()*11);
+    var pos=nodes.map(function(n){return{x:n.x,y:n.y};});
+    for(var i=pos.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=pos[i];pos[i]=pos[j];pos[j]=tmp;}
+    fromPos=nodes.map(function(n){return{x:n.x,y:n.y};});toPos=pos;
+  }
+  document.getElementById('mixBtn').addEventListener('click',doShuffle);
+
+  function draw(){
+    if(!W)resize();
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#050a10';ctx.fillRect(0,0,W,H);
+    if(shuffling){
+      shuffleT++;
+      var prog=Math.min(1,shuffleT/shuffleDur),e=ease(prog);
+      nodes.forEach(function(n,i){n.x=lerp(fromPos[i].x,toPos[i].x,e);n.y=lerp(fromPos[i].y,toPos[i].y,e);});
+      if(shuffleT>=shuffleDur){shuffling=false;nodes.forEach(function(n,i){n.x=toPos[i].x;n.y=toPos[i].y;});}
+    }
+    /* mesh */
+    for(var i=0;i<nodes.length-1;i++){
+      for(var j=i+1;j<nodes.length;j++){
+        ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);
+        ctx.strokeStyle='rgba(0,201,167,0.03)';ctx.lineWidth=1;ctx.stroke();
+      }
+    }
+    /* nodes */
+    nodes.forEach(function(n,i){
+      var isR=i===realIdx;
+      ctx.save();
+      if(isR){ctx.shadowColor='rgba(0,201,167,.65)';ctx.shadowBlur=16;}
+      rrect(ctx,n.x-54,n.y-21,108,42,4);
+      ctx.fillStyle=isR?'rgba(0,201,167,0.14)':'rgba(8,15,26,0.96)';
+      ctx.fill();
+      ctx.strokeStyle=isR?'#00c9a7':'rgba(30,52,70,.9)';
+      ctx.lineWidth=isR?2:1;ctx.stroke();ctx.restore();
+      ctx.fillStyle=isR?'#00f0c8':'#5a8fa8';
+      ctx.font='700 12px "Space Mono",monospace';ctx.textAlign='center';
+      ctx.fillText(n.label,n.x,n.y+4);
+      if(isR){
+        ctx.fillStyle='#aaff00';
+        ctx.font='700 9px "Space Mono",monospace';
+        ctx.fillText('[ REAL? ]',n.x,n.y+19);
+      }
+    });
+    ctx.fillStyle='rgba(0,201,167,.35)';
+    ctx.font='700 8px "Space Mono",monospace';ctx.textAlign='center';
+    ctx.font='700 10px "Space Mono",monospace';
+    ctx.fillText('RING SIZE: 11   |   CLICK RESHUFFLE TO MIX',W/2,H-10);
+    t+=.016;requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize,{passive:true});draw();
+})();
+
+/* ════════════════════════════════════════════════════════════
+   CLASSIFIED DOSSIER - PRIVACY SHIELD SIMULATION
+════════════════════════════════════════════════════════════ */
+var shields={ringct:true,stealth:true,bp:true};
+var hexC='0123456789abcdef';
+function rndHex(n){var s='';for(var i=0;i<n;i++)s+=hexC[Math.floor(Math.random()*16)];return'0x'+s;}
+
+var dosFields=[
+  {key:'TX_HASH',      label:'Transaction ID',    p:'none',
+   value:function(){return rndHex(16)+'...';},
+   note:'Always public. Identifies the transaction on-chain.'},
+  {key:'SENDER',       label:'Sending Address',   p:'stealth',
+   exposed:function(){return 'bdx1'+rndHex(8)+'...7f2a';},
+   attNote:'Sender wallet address is visible.'},
+  {key:'RECEIVER',     label:'Receiving Address', p:'stealth',
+   exposed:function(){return 'bdx1'+rndHex(8)+'...3c91';},
+   attNote:'Receiver wallet address is visible.'},
+  {key:'AMOUNT',       label:'Transfer Amount',   p:'ringct',
+   exposed:function(){return '250.000000 BDX';},
+   attNote:'Exact BDX amount transferred is visible.'},
+  {key:'RANGE_PROOF',  label:'Amount Validity',   p:'bp',
+   exposed:function(){return 'UNKNOWN / UNVERIFIABLE';},
+   attNote:'Cannot confirm amount is in a valid range.'},
+  {key:'REAL_SPENDER', label:'True Spend Index',  p:'stealth',
+   exposed:function(){return 'Ring position '+Math.floor(Math.random()*11);},
+   attNote:'Real spender identified within the ring.'},
+  {key:'KEY_IMAGE',    label:'Key Image',          p:'none',
+   value:function(){return rndHex(24)+'...';},
+   note:'Always public. Prevents double-spending.'},
+  {key:'FEE',          label:'Network Fee',        p:'none',
+   value:function(){return '0.00002 BDX';},
+   note:'Always public. Paid to the block producer.'},
+  {key:'TIMESTAMP',    label:'Block Timestamp',    p:'none',
+   value:function(){return new Date().toISOString().slice(0,19).replace('T',' ');},
+   note:'Always public. When the block was confirmed.'},
+];
+
+var rbLabel={ringct:'[RINGCT: AMOUNT ENCRYPTED]',stealth:'[STEALTH: ADDRESS HIDDEN]',bp:'[BULLETPROOF: RANGE SEALED]'};
+var rbClass={ringct:'rb-rc',stealth:'rb-st',bp:'rb-bp'};
+var shColor={ringct:'var(--teal)',stealth:'var(--blue)',bp:'var(--lime)'};
+
+function buildDossier(){
+  var body=document.getElementById('dosBody');
+  if(!body)return;
+  var html='';
+  dosFields.forEach(function(f){
+    var isNone=f.p==='none';
+    var shOn=isNone||(shields[f.p]);
+    var realTxt=isNone?f.value():(shOn?'[PROTECTED DATA]':f.exposed());
+    var dimmed=!isNone&&shOn;
+    html+='<div class="dos-row" id="dr_'+f.key+'">';
+    html+='<div class="dos-field-lbl">'+f.key+'</div>';
+    html+='<div class="dos-val-cell">';
+    if(isNone){
+      html+='<span class="dos-real" style="color:#3a7a55;">'+realTxt+'</span>';
+    } else if(shOn){
+      html+='<span class="dos-real dimmed" style="color:'+shColor[f.p]+';">'+realTxt+'</span>';
+      html+='<div class="redact-bar in '+rbClass[f.p]+'">'+rbLabel[f.p]+'</div>';
+    } else {
+      html+='<span class="dos-exposed-val">'+f.exposed()+'</span>';
+      html+='<div class="redact-bar out '+rbClass[f.p]+'">'+rbLabel[f.p]+'</div>';
+    }
+    html+='</div>';
+    html+='</div>';
+  });
+  body.innerHTML=html;
+  buildAttacker();
+  buildIntegrity();
+  buildCards();
+}
+
+function buildAttacker(){
+  var body=document.getElementById('attBody');
+  if(!body)return;
+  var exposed=[];
+  var enc=[];
+  dosFields.forEach(function(f){
+    var isNone=f.p==='none';
+    var shOn=isNone||shields[f.p];
+    if(!isNone&&!shOn){
+      exposed.push(f);
+    } else if(!isNone){
+      enc.push(f);
+    }
+  });
+  var html='';
+  if(exposed.length===0){
+    html='<div class="att-empty">';
+    html+='&gt; TARGET: <span style="color:#1a4a1a;">ANONYMOUS</span><br>';
+    html+='&gt; FIELDS CAPTURED: 0<br>';
+    html+='&gt; AMOUNT: UNKNOWN<br>';
+    html+='&gt; ADDRESSES: HIDDEN<br>';
+    html+='&gt; RANGE: VERIFIED<br><br>';
+    html+='<span style="color:#1a2a1a;font-size:.58rem;">ALL TRANSACTION DATA IS ENCRYPTED.</span><br>';
+    html+='<span style="color:#1a2a1a;font-size:.58rem;">THE ATTACKER SEES ONLY NOISE.</span>';
+    html+='</div>';
+  } else {
+    html+='<div class="att-breach-count">&gt; BREACH: '+exposed.length+' FIELD'+(exposed.length>1?'S':'')+' EXPOSED</div>';
+    exposed.forEach(function(f){
+      html+='<div class="att-field-block">';
+      html+='<div class="att-field-key">&gt; '+f.label.toUpperCase()+'</div>';
+      html+='<div class="att-field-val">'+f.exposed()+'</div>';
+      html+='<div class="att-field-note">'+f.attNote+'</div>';
+      html+='</div>';
+    });
+    if(enc.length>0){
+      html+='<div class="att-enc-section">';
+      enc.forEach(function(f){
+        html+='<div class="att-enc-line">&gt; [ENC] '+f.label+': ??????????</div>';
+      });
+      html+='</div>';
+    }
+  }
+  body.innerHTML=html;
+}
+
+function buildIntegrity(){
+  var active=(shields.ringct?1:0)+(shields.stealth?1:0)+(shields.bp?1:0);
+  var pct=Math.round(active/3*100);
+  var color,tierTxt,hintTxt;
+  if(active===3){color='var(--teal)';tierTxt='PHANTOM';hintTxt='All 3 shields are active. This transaction is invisible to anyone on the network.';}
+  else if(active===2){color='var(--amber)';tierTxt='PARTIAL';hintTxt='1 shield is down. Partial transaction data is visible to a network observer.';}
+  else if(active===1){color='var(--red)';tierTxt='CRITICAL';hintTxt='2 shields are down. The attacker has significant intelligence about this transaction.';}
+  else{color='var(--red)';tierTxt='EXPOSED';hintTxt='All shields are off. The full transaction is readable. There is zero privacy.';}
+  var sc=document.getElementById('intScore');
+  var ti=document.getElementById('intTier');
+  var fi=document.getElementById('intFill');
+  var hi=document.getElementById('intHint');
+  if(sc){sc.textContent=pct+'%';sc.style.color=color;}
+  if(ti){ti.textContent=tierTxt;ti.style.color=color;ti.style.borderColor=color;}
+  if(fi){fi.style.width=pct+'%';fi.style.background=color;}
+  if(hi){hi.textContent=hintTxt;}
+  /* segments */
+  var segDiv=document.getElementById('intSegs');
+  if(segDiv){
+    var segHtml='';
+    var cfg=[{n:'ringct',c:'var(--teal)',count:5},{n:'stealth',c:'var(--blue)',count:4},{n:'bp',c:'var(--lime)',count:3}];
+    cfg.forEach(function(s){
+      for(var i=0;i<s.count;i++){
+        var bg=shields[s.n]?s.c:'var(--red)';
+        segHtml+='<div class="int-seg" style="background:'+bg+';"></div>';
+      }
+    });
+    segDiv.innerHTML=segHtml;
+  }
+}
+
+function buildCards(){
+  var cfg=[
+    {id:'cardRingCT',n:'ringct',c:'var(--teal)',ac:'active-ringct',dot:'dotRC',st:'stRC',badge:'badgeRC'},
+    {id:'cardStealth',n:'stealth',c:'var(--blue)',ac:'active-stealth',dot:'dotST',st:'stST',badge:'badgeST'},
+    {id:'cardBP',n:'bp',c:'var(--lime)',ac:'active-bp',dot:'dotBP',st:'stBP',badge:'badgeBP'},
+  ];
+  cfg.forEach(function(c){
+    var card=document.getElementById(c.id);
+    var dot=document.getElementById(c.dot);
+    var st=document.getElementById(c.st);
+    var badge=document.getElementById(c.badge);
+    var on=shields[c.n];
+    if(card)card.className='clr-card'+(on?' '+c.ac:' breached');
+    if(dot){dot.style.background=on?c.c:'var(--red)';dot.style.boxShadow='0 0 6px '+(on?c.c:'var(--red)');}
+    if(st){st.textContent=on?'ACTIVE':'BREACHED';st.style.color=on?c.c:'var(--red)';}
+    if(badge){badge.textContent=on?'SHIELD ON':'SHIELD OFF';badge.className='clr-badge '+(on?'bon':'boff');}
+  });
+}
+
+function toggleShield(name){
+  shields[name]=!shields[name];
+  var ov=document.getElementById('breachOverlay');
+  if(!shields[name]&&ov){ov.classList.add('active');setTimeout(function(){ov.classList.remove('active');},850);}
+  buildDossier();
+}
+buildDossier();
+
+/* ════════════════════════════════════════════════════════════
+   QUORUM PIPELINE CANVAS
+════════════════════════════════════════════════════════════ */
+(function(){
+  var canvas=document.getElementById('pipeCanvas');
+  var ctx=canvas.getContext('2d');
+  var W,H,t=0,phase=0,phaseT=0,phaseDur=90,packets=[],pkTimer=0;
+  var stages=[
+    {label:'MASTERNODE\nPOOL',sub:'2000+ nodes',color:'#4a7a90'},
+    {label:'QUORUM\nSELECTED',sub:'12 chosen',color:'#a78bfa'},
+    {label:'BLOCK\nTEMPLATE',sub:'assembled',color:'#f5a623'},
+    {label:'VALIDATORS\nVOTING',sub:'7/11 min',color:'#00c9a7'},
+    {label:'BLOCK\nSEALED',sub:'broadcast',color:'#aaff00'},
+  ];
+  function resize(){W=canvas.width=canvas.parentElement.clientWidth;H=canvas.height=parseInt(canvas.getAttribute('height'))||210;}
+  function spawnPkt(fi){if(fi>=stages.length-1)return;packets.push({from:fi,to:fi+1,prog:0,spd:.022+Math.random()*.01});}
+  function draw(){
+    if(!W)resize();ctx.clearRect(0,0,W,H);ctx.fillStyle='#050a10';ctx.fillRect(0,0,W,H);
+    phaseT++;if(phaseT>phaseDur){phaseT=0;phase=(phase+1)%stages.length;}
+    var bw=84,minGap=30,maxGap=100;
+    var totalBW=stages.length*bw;
+    var gap=Math.max(minGap,Math.min(maxGap,(W-totalBW-40)/(stages.length-1)));
+    var totalU=stages.length*bw+(stages.length-1)*gap;
+    var ox=(W-totalU)/2;
+    var sy=H/2-16;
+    var sx=stages.map(function(_,i){return ox+i*(bw+gap)+bw/2;});
+
+    /* connector lines */
+    for(var i=0;i<stages.length-1;i++){
+      ctx.beginPath();ctx.moveTo(sx[i]+bw/2,sy);ctx.lineTo(sx[i+1]-bw/2,sy);
+      ctx.setLineDash([5,7]);
+      ctx.strokeStyle=i<phase?'rgba(0,201,167,.3)':'rgba(21,34,51,.7)';
+      ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
+    }
+    /* packets */
+    pkTimer++;if(pkTimer%42===0&&phase<stages.length-1)spawnPkt(phase);
+    for(var pi=packets.length-1;pi>=0;pi--){
+      var p=packets[pi];p.prog+=p.spd;
+      if(p.prog>=1){packets.splice(pi,1);continue;}
+      var e=ease(p.prog);
+      var px=lerp(sx[p.from]+bw/2,sx[p.to]-bw/2,e);
+      ctx.save();ctx.beginPath();ctx.arc(px,sy,4.5,0,Math.PI*2);
+      ctx.fillStyle='#00c9a7';ctx.shadowColor='#00c9a7';ctx.shadowBlur=10;ctx.fill();ctx.restore();
+    }
+    /* stage boxes */
+    stages.forEach(function(s,i){
+      var x=sx[i];var active=i<=phase;var isCur=i===phase;
+      ctx.save();
+      if(isCur){ctx.shadowColor=s.color;ctx.shadowBlur=20;}
+      rrect(ctx,x-bw/2,sy-34,bw,68,5);
+      ctx.fillStyle=active?'rgba('+hexRgb(s.color)+',.1)':'rgba(8,15,26,.9)';
+      ctx.fill();
+      ctx.strokeStyle=active?s.color:'rgba(21,34,51,.8)';ctx.lineWidth=active?1.5:1;ctx.stroke();ctx.restore();
+      var lines=s.label.split('\n');
+      ctx.fillStyle=active?s.color:'rgba(74,122,144,.5)';
+      ctx.font='700 8px "Space Mono",monospace';ctx.textAlign='center';
+      lines.forEach(function(ln,li){ctx.fillText(ln,x,sy-8+li*12);});
+      ctx.fillStyle=active?'rgba(168,212,200,.6)':'rgba(30,51,68,.7)';
+      ctx.font='7px "Space Mono",monospace';
+      ctx.fillText(s.sub,x,sy+30);
+      if(isCur){
+        var pls=Math.sin(t*5)*.5+.5;
+        ctx.save();ctx.globalAlpha=pls*.35;
+        ctx.beginPath();ctx.arc(x,sy,40+pls*7,0,Math.PI*2);
+        ctx.strokeStyle=s.color;ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
+      }
+      /* step number pill */
+      var pillY=sy+50;
+      ctx.save();
+      rrect(ctx,x-16,pillY-11,32,18,9);
+      ctx.fillStyle=active?('rgba('+hexRgb(s.color)+',.15)'):'rgba(21,34,51,.5)';
+      ctx.fill();
+      ctx.strokeStyle=active?s.color:'rgba(21,34,51,.7)';
+      ctx.lineWidth=active?1.5:1;ctx.stroke();
+      ctx.fillStyle=active?s.color:'rgba(74,122,144,.45)';
+      ctx.font='700 10px "Oxanium",sans-serif';ctx.textAlign='center';
+      ctx.fillText('0'+(i+1),x,pillY+3);
+      ctx.restore();
+    });
+    /* vote label */
+    var vc=phase>=3?Math.min(11,Math.floor((phaseT/phaseDur)*12)):0;
+    if(phase>=4)vc=11;
+    ctx.fillStyle='rgba(0,201,167,.3)';ctx.font='700 8px "Space Mono",monospace';ctx.textAlign='center';
+    ctx.fillText(phase>=3?('VOTES: '+vc+'/11'+(vc>=7?' - THRESHOLD MET':'')):'AWAITING...',W/2,H-10);
+    t+=.016;requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize,{passive:true});draw();
+})();
+
+/* ════════════════════════════════════════════════════════════
+   BLOCK BUILDER
+════════════════════════════════════════════════════════════ */
+(function(){
+  var canvas=document.getElementById('buildCanvas');
+  var ctx=canvas.getContext('2d');
+  var W,H;
+  var txDefs=[
+    {id:0,type:'TRANSFER',bytes:2800,color:'#00c9a7'},
+    {id:1,type:'TRANSFER',bytes:2650,color:'#00c9a7'},
+    {id:2,type:'SPLIT TX',bytes:3100,color:'#a78bfa'},
+    {id:3,type:'MERGE TX',bytes:3400,color:'#38bdf8'},
+    {id:4,type:'TRANSFER',bytes:2720,color:'#f5a623'},
+  ];
+  var blockTxs=[];
+  var flashA=0,sealDone=false,sealHash='',bldT=0;
+
+  function resize(){
+    W=canvas.width=canvas.parentElement.clientWidth;
+    H=canvas.height=parseInt(canvas.getAttribute('height'))||400;
+  }
+
+  function pseudoKeccakB(s){var h=0x811c9dc5;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h*0x01000193)>>>0;}return ('00000000'+h.toString(16)).slice(-8)+('00000000'+(h^0xdeadbeef).toString(16)).slice(-8)+('00000000'+(h^0xcafebabe).toString(16)).slice(-8);}
+  function addTx(def){
+    if(blockTxs.length>=5)return;
+    var rings=[];
+    for(var i=0;i<11;i++)rings.push({a:(i/11)*Math.PI*2,isReal:i===Math.floor(Math.random()*11)});
+    blockTxs.push({def:def,animT:0,rings:rings});
+    document.querySelectorAll('.tx-card')[def.id].classList.add('used');
+    if(blockTxs.length===5){flashA=1;sealDone=true;sealHash=pseudoKeccakB(Date.now().toString());}
+    updateStats();
+  }
+  function resetBlock(){
+    blockTxs=[];flashA=0;sealDone=false;sealHash='';
+    document.querySelectorAll('.tx-card').forEach(function(c){c.classList.remove('used');});
+    updateStats();
+  }
+  function updateStats(){
+    var n=blockTxs.length;
+    var bytes=376+blockTxs.reduce(function(a,tx){return a+tx.def.bytes;},0);
+    var rings=n*11;
+    document.getElementById('bsTxCount').textContent=n;
+    document.getElementById('bsBytes').textContent=bytes>1024?((bytes/1024).toFixed(1)+' KB'):(bytes+' B');
+    document.getElementById('bsRings').textContent=rings;
+    var s=n===0?'Coinbase Only':n<3?'Building...':n<5?'Almost Full':'Full - Seal Now';
+    var sc=n===5?'#aaff00':n>0?'#00c9a7':'rgba(106,154,176,.5)';
+    var sv=document.getElementById('bsStatus');
+    sv.textContent=s;sv.style.color=sc;
+  }
+
+  /* tx cards */
+  var txList=document.getElementById('txList');
+  txDefs.forEach(function(def){
+    var c=document.createElement('div');c.className='tx-card';
+    c.innerHTML='<div><div class="txc-type">'+def.type+'</div><div class="txc-ring">ring:11 &middot; bulletproof+</div></div><div class="txc-size">'+(def.bytes/1000).toFixed(1)+'KB</div>';
+    c.addEventListener('click',function(){addTx(def);});
+    txList.appendChild(c);
+  });
+  document.getElementById('resetBtn').addEventListener('click',resetBlock);
+
+  function draw(){
+    if(!W)resize();
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#080f1a';ctx.fillRect(0,0,W,H);
+    var bx=16,by=16,bw=W-32,bh=H-32;
+    ctx.strokeStyle='rgba(21,34,51,.9)';ctx.lineWidth=1;
+    ctx.setLineDash([8,5]);ctx.strokeRect(bx,by,bw,bh);ctx.setLineDash([]);
+    ctx.fillStyle='rgba(21,34,51,.7)';ctx.font='700 8px "Space Mono",monospace';ctx.textAlign='left';
+    ctx.fillText('BLOCK TEMPLATE',bx+10,by+13);
+
+    /* coinbase */
+    var cbH=32;
+    rrect(ctx,bx+10,by+22,bw-20,cbH,3);
+    ctx.fillStyle='rgba(245,166,35,.09)';ctx.fill();
+    ctx.strokeStyle='rgba(245,166,35,.4)';ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle='#f5a623';ctx.font='700 8px "Space Mono",monospace';ctx.textAlign='left';
+    ctx.fillText('COINBASE TX  +10 BDX  unlock: height+60',bx+20,by+41);
+
+    /* transactions */
+    var txStartY=by+22+cbH+6;
+    var maxTxH=(bh-cbH-52-20)/5;
+    var txH=Math.max(28,Math.min(48,maxTxH-5));
+    blockTxs.forEach(function(tx,ti){
+      tx.animT=Math.min(1,tx.animT+.055);
+      var e=ease(tx.animT);
+      var tY=txStartY+ti*(txH+4);
+      var sY=tY-25;var aY=lerp(sY,tY,e);
+      ctx.save();ctx.globalAlpha=e;
+      rrect(ctx,bx+10,aY,bw-20,txH,3);
+      ctx.fillStyle='rgba('+hexRgb(tx.def.color)+',.07)';ctx.fill();
+      ctx.strokeStyle='rgba('+hexRgb(tx.def.color)+',.45)';ctx.lineWidth=1;ctx.stroke();
+      ctx.fillStyle=tx.def.color;ctx.font='700 8px "Space Mono",monospace';ctx.textAlign='left';
+      ctx.fillText('TX-'+(ti+1)+'  '+tx.def.type,bx+20,aY+txH*.42);
+      ctx.fillStyle='rgba(106,154,176,.65)';ctx.font='7px "Space Mono",monospace';
+      ctx.fillText('ring:11  bp+  '+tx.def.bytes+' B',bx+20,aY+txH*.72);
+      /* ring mini */
+      var rr=Math.min(txH*.32,11);var rx=bw-24,ry=aY+txH/2;
+      tx.rings.forEach(function(ring){
+        var ang=ring.a+tx.animT*Math.PI*.8;
+        var nx=rx+Math.cos(ang)*rr,ny=ry+Math.sin(ang)*rr;
+        ctx.beginPath();ctx.arc(nx,ny,ring.isReal?3:2,0,Math.PI*2);
+        ctx.fillStyle=ring.isReal?tx.def.color:'rgba(21,34,51,.9)';
+        if(ring.isReal){ctx.shadowColor=tx.def.color;ctx.shadowBlur=5;}
+        ctx.fill();ctx.shadowBlur=0;
+      });
+      ctx.restore();
+    });
+
+    /* fill bar */
+    if(blockTxs.length>0){
+      var fp=blockTxs.length/5;
+      ctx.fillStyle='rgba(21,34,51,.7)';
+      ctx.fillRect(bx+10,bh-18,bw-20,5);
+      ctx.fillStyle=fp>=1?'#aaff00':'#00c9a7';
+      ctx.fillRect(bx+10,bh-18,(bw-20)*fp,5);
+      ctx.fillStyle=fp>=1?'#aaff00':'rgba(0,201,167,.4)';
+      ctx.font='700 7px "Space Mono",monospace';ctx.textAlign='right';
+      ctx.fillText('FILL: '+Math.round(fp*100)+'%',bx+bw-10,bh-6);
+    }
+
+    /* ── seal finale ── */
+    if(sealDone){
+      /* dark overlay */
+      ctx.fillStyle='rgba(3,5,7,.82)';ctx.fillRect(0,0,W,H);
+      /* pulsing glow circle */
+      var pulse=Math.sin(bldT*3)*.5+.5;
+      ctx.save();
+      ctx.beginPath();ctx.arc(W/2,H/2,60+pulse*14,0,Math.PI*2);
+      ctx.fillStyle='rgba(170,255,0,.06)';ctx.fill();
+      ctx.beginPath();ctx.arc(W/2,H/2,52+pulse*8,0,Math.PI*2);
+      ctx.strokeStyle='rgba(170,255,0,'+(0.4+pulse*.3)+')';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.restore();
+      /* SEALED */
+      ctx.save();
+      ctx.shadowColor='#aaff00';ctx.shadowBlur=30;
+      ctx.fillStyle='#aaff00';ctx.font='800 32px "Oxanium",sans-serif';ctx.textAlign='center';
+      ctx.fillText('BLOCK SEALED',W/2,H/2-14);
+      ctx.restore();
+      /* hash line */
+      ctx.fillStyle='rgba(0,201,167,.7)';ctx.font='700 9px "Space Mono",monospace';ctx.textAlign='center';
+      ctx.fillText('HASH: 0x'+sealHash.substr(0,24)+'...',W/2,H/2+12);
+      /* stats row */
+      var stats=['5 TX','RING x11','10 BDX REWARD','QUORUM READY'];
+      var sw=stats.length;var spacing=W/(sw+1);
+      stats.forEach(function(s,si){
+        var sx2=(si+1)*spacing;
+        rrect(ctx,sx2-48,H/2+28,96,24,4);
+        ctx.fillStyle='rgba(0,201,167,.1)';ctx.fill();
+        ctx.strokeStyle='rgba(0,201,167,.35)';ctx.lineWidth=1;ctx.stroke();
+        ctx.fillStyle='#00c9a7';ctx.font='700 9px "Space Mono",monospace';ctx.textAlign='center';
+        ctx.fillText(s,sx2,H/2+44);
+      });
+      /* reset hint */
+      ctx.fillStyle='rgba(106,154,176,.4)';ctx.font='8px "Space Mono",monospace';ctx.textAlign='center';
+      ctx.fillText('CLICK RESET TO BUILD ANOTHER',W/2,H-12);
+    } else if(flashA>0.01){
+      ctx.fillStyle='rgba(170,255,0,'+flashA*.12+')';ctx.fillRect(0,0,W,H);
+      flashA*=.85;
+    }
+    bldT+=.016;
+    requestAnimationFrame(draw);
+  }
+  resize();window.addEventListener('resize',resize,{passive:true});updateStats();draw();
+})();
+
+/* ════════════════════════════════════════════════════════════
+   HASH VISUALIZER  -  tiny Keccak simulation
+   Not real Keccak  -  uses a seeded pseudo-hash for demo
+════════════════════════════════════════════════════════════ */
+(function(){
+  function pseudoKeccak(s){
+    /* deterministic 64-char hex from string - demo only */
+    var h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    for(var i=0;i<s.length;i++){
+      var c=s.charCodeAt(i);
+      for(var j=0;j<h.length;j++){
+        h[j]=(h[j]^c^(j*1000003))>>>0;
+        h[j]=((h[j]<<5)|(h[j]>>>27))>>>0;
+        h[j]=(h[j]+c*65599+j*31337)>>>0;
+      }
+    }
+    var out='';
+    for(var k=0;k<h.length;k++){out+=('00000000'+h[k].toString(16)).slice(-8);}
+    return out;
+  }
+
+  var baseHash='';
+
+  function getInputStr(){
+    var v=document.getElementById('hvV'),ti=document.getElementById('hvT');
+    var p=document.getElementById('hvP'),n=document.getElementById('hvN');
+    if(!v)return '';
+    return (v.value||'')+'|'+(ti.value||'')+'|'+(p.value||'')+'|'+(n.value||'');
+  }
+
+  function updateHash(){
+    var s=getInputStr();
+    var hash=pseudoKeccak(s);
+    var hashEl=document.getElementById('hvHash');
+    var bitsEl=document.getElementById('hvBits');
+    var pctEl=document.getElementById('hvPct');
+    if(!hashEl)return;
+
+    /* color diff vs base */
+    var html='';
+    var diffBits=0;
+    var totalBits=hash.length*4;
+    for(var i=0;i<hash.length;i++){
+      var changed=baseHash&&hash[i]!==baseHash[i];
+      if(changed)diffBits+=4;
+      html+='<span style="color:'+(changed?'#f5a623':'#00c9a7')+';transition:color .15s;">'+hash[i]+'</span>';
+    }
+    hashEl.innerHTML=hash.substring(0,32)+'<br>'+hash.substring(32);
+    /* color bits based on diff */
+    if(baseHash){
+      var bhtml='';
+      for(var b=0;b<64;b++){
+        var ch=hash[b]!==baseHash[b];
+        bhtml+='<div class="hv-bit" style="background:'+(ch?'#f5a623':'rgba(21,34,51,.9)')+';"></div>';
+      }
+      bitsEl.innerHTML=bhtml;
+      var pct=Math.round(diffBits/totalBits*100);
+      pctEl.textContent=pct+'%';
+      pctEl.style.color=pct>40?'#f5a623':pct>0?'#00c9a7':'rgba(106,154,176,.5)';
+    } else {
+      var bhtml2='';
+      for(var b2=0;b2<64;b2++)bhtml2+='<div class="hv-bit" style="background:rgba(0,201,167,.2);"></div>';
+      bitsEl.innerHTML=bhtml2;
+      pctEl.textContent='0%';baseHash=hash;
+    }
+  }
+
+  /* init after DOM ready */
+  setTimeout(function(){
+    updateHash();baseHash=pseudoKeccak(getInputStr());updateHash();
+    ['hvV','hvT','hvP','hvN'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el)el.addEventListener('input',updateHash);
+    });
+  },500);
+})();
+
+/* ════════════════════════════════════════════════════════════
+   KEY IMAGE INTERACTIVE CANVAS
+   Shows: x (private) + Hp(P) (hash of public) -> I (key image)
+   Animated data flow arrows. Sliders update live.
+════════════════════════════════════════════════════════════ */
+(function(){
+  function computeKI(x,p){
+    var hp=(p*2654435761+p*1234567891)>>>0;
+    var raw=(hp^(x*0x9e3779b9))>>>0;
+    return ('00000000'+raw.toString(16)).slice(-8)+('00000000'+(raw^hp).toString(16)).slice(-8);
+  }
+
+  var kiCanvas=null,kiCtx=null,kiW=0,kiH=0,kiT=0;
+  var kiX=42,kiP=137,kiI='';
+  var particles=[];
+  var ptTimer=0;
+
+  function resizeKi(){
+    if(!kiCanvas)return;
+    kiW=kiCanvas.width=kiCanvas.parentElement.offsetWidth;
+    kiH=kiCanvas.height=parseInt(kiCanvas.getAttribute('height'))||130;
+  }
+
+  function spawnParticle(fromNode,toNode,nodes){
+    var fn=nodes[fromNode],tn=nodes[toNode];
+    particles.push({fx:fn.x,fy:fn.y,tx:tn.x,ty:tn.y,prog:0,spd:.025+Math.random()*.015,color:fn.color});
+  }
+
+  function drawKi(){
+    if(!kiCtx)return;
+    kiCtx.clearRect(0,0,kiW,kiH);
+    kiCtx.fillStyle='#080f1a';kiCtx.fillRect(0,0,kiW,kiH);
+
+    /* node definitions */
+    var pad=Math.min(kiW*.1,60);
+    var mid=kiW/2;
+    var nodes={
+      x:  {x:pad+30,  y:kiH*.38, label:'x',    sub:'private key', color:'#00c9a7', val:'0x'+(kiX).toString(16).padStart(2,'0')},
+      P:  {x:pad+30,  y:kiH*.78, label:'P',     sub:'public key',  color:'#38bdf8', val:'0x'+(kiP).toString(16).padStart(2,'0')},
+      Hp: {x:mid,     y:kiH*.78, label:'Hp(P)', sub:'hash of P',   color:'#a78bfa', val:'...'},
+      mul:{x:mid,     y:kiH*.38, label:'x·Hp(P)',sub:'multiply',color:'#f5a623',val:''},
+      I:  {x:kiW-pad-30,y:kiH*.38,label:'I',    sub:'key image',   color:'#aaff00', val:'0x'+kiI.substr(0,8)+'..'},
+    };
+
+    /* connector lines */
+    var conns=[
+      {from:'x',  to:'mul', color:'#00c9a7'},
+      {from:'P',  to:'Hp',  color:'#38bdf8'},
+      {from:'Hp', to:'mul', color:'#a78bfa'},
+      {from:'mul',to:'I',   color:'#f5a623'},
+    ];
+    conns.forEach(function(c){
+      var fn=nodes[c.from],tn=nodes[c.to];
+      kiCtx.beginPath();kiCtx.moveTo(fn.x,fn.y);kiCtx.lineTo(tn.x,tn.y);
+      kiCtx.strokeStyle='rgba('+hexRgb3(c.color)+',.2)';kiCtx.lineWidth=1.5;
+      kiCtx.setLineDash([4,5]);kiCtx.stroke();kiCtx.setLineDash([]);
+    });
+
+    /* particles */
+    ptTimer++;
+    if(ptTimer%30===0){spawnParticle('x','mul',nodes);spawnParticle('P','Hp',nodes);}
+    if(ptTimer%30===15){spawnParticle('Hp','mul',nodes);}
+    if(ptTimer%30===22){spawnParticle('mul','I',nodes);}
+    for(var pi=particles.length-1;pi>=0;pi--){
+      var p=particles[pi];p.prog+=p.spd;
+      if(p.prog>=1){particles.splice(pi,1);continue;}
+      var e=ease3(p.prog);
+      var px=lerp3(p.fx,p.tx,e),py=lerp3(p.fy,p.ty,e);
+      kiCtx.save();kiCtx.beginPath();kiCtx.arc(px,py,3.5,0,Math.PI*2);
+      kiCtx.fillStyle=p.color;kiCtx.shadowColor=p.color;kiCtx.shadowBlur=8;kiCtx.fill();kiCtx.restore();
+    }
+
+    /* nodes */
+    Object.keys(nodes).forEach(function(k){
+      var n=nodes[k];
+      var r=28;
+      kiCtx.save();
+      kiCtx.beginPath();kiCtx.arc(n.x,n.y,r,0,Math.PI*2);
+      kiCtx.fillStyle='rgba('+hexRgb3(n.color)+',.1)';kiCtx.fill();
+      kiCtx.strokeStyle=n.color;kiCtx.lineWidth=1.5;kiCtx.stroke();
+      /* pulse ring on I node */
+      if(k==='I'){
+        var pls=Math.sin(kiT*4)*.5+.5;
+        kiCtx.globalAlpha=pls*.3;kiCtx.beginPath();kiCtx.arc(n.x,n.y,r+6+pls*4,0,Math.PI*2);
+        kiCtx.strokeStyle='#aaff00';kiCtx.lineWidth=1;kiCtx.stroke();
+      }
+      kiCtx.restore();
+      kiCtx.fillStyle=n.color;kiCtx.font='700 11px "Space Mono",monospace';kiCtx.textAlign='center';
+      kiCtx.fillText(n.label,n.x,n.y+4);
+      kiCtx.fillStyle='rgba('+hexRgb3(n.color)+',.55)';kiCtx.font='7px "Space Mono",monospace';
+      kiCtx.fillText(n.val||n.sub,n.x,n.y+r+11);
+    });
+
+    kiT+=.016;requestAnimationFrame(drawKi);
+  }
+
+  function hexRgb3(h){h=h.replace('#','');return parseInt(h.substr(0,2),16)+','+parseInt(h.substr(2,2),16)+','+parseInt(h.substr(4,2),16);}
+  function lerp3(a,b,t){return a+(b-a)*t;}
+  function ease3(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+
+  function updateKI(){
+    var xEl=document.getElementById('kiX'),pEl=document.getElementById('kiP');
+    var xVEl=document.getElementById('kiXVal'),pVEl=document.getElementById('kiPVal');
+    var resEl=document.getElementById('kiResult');
+    if(!xEl)return;
+    kiX=parseInt(xEl.value);kiP=parseInt(pEl.value);
+    xVEl.textContent='0x'+(kiX).toString(16).padStart(2,'0');
+    pVEl.textContent='0x'+(kiP).toString(16).padStart(2,'0');
+    kiI=computeKI(kiX,kiP);
+    if(resEl)resEl.textContent='0x'+kiI;
+  }
+
+  setTimeout(function(){
+    kiCanvas=document.getElementById('kiCanvas');
+    if(!kiCanvas)return;
+    kiCtx=kiCanvas.getContext('2d');
+    resizeKi();
+    window.addEventListener('resize',resizeKi,{passive:true});
+    var xEl=document.getElementById('kiX'),pEl=document.getElementById('kiP');
+    if(xEl){xEl.addEventListener('input',updateKI);pEl.addEventListener('input',updateKI);}
+    updateKI();
+    drawKi();
+  },400);
+})();
+
+/* ════════════════════════════════════════════════════════════
+   FADE IN
+════════════════════════════════════════════════════════════ */
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e,i){
+    if(e.isIntersecting)setTimeout(function(){e.target.classList.add('in');},i*50);
+  });
+},{threshold:.06});
+document.querySelectorAll('.fi').forEach(function(el){io.observe(el);});
+</script>
+</body>
+</html>

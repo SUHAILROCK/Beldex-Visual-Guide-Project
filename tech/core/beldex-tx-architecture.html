@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beldex Transaction Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030509;--dp:#060a12;--pn:#0a0f1e;--wl:#101828;--ln:#162040;
+  --vi:#6366f1;--vi2:#818cf8;--vi3:#4f46e5;
+  --cy:#22d3ee;--am:#f59e0b;--gr:#4ade80;--re:#f87171;--pu:#c084fc;
+  --tx:#e8edf8;--mid:#6b7fa8;--dim:#1a2540;--muted:#2a3a5a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.015) 3px,rgba(0,0,0,.015) 4px);}
+
+/* NAV DOTS */
+#navdots{position:fixed;right:1.4rem;top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:10px;}
+.nd{width:8px;height:8px;border-radius:50%;background:var(--dim);cursor:pointer;transition:all .3s;position:relative;}
+.nd:hover,.nd.on{background:var(--vi2);box-shadow:0 0 8px var(--vi);transform:scale(1.4);}
+.nd::after{content:attr(data-label);position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  white-space:nowrap;font-family:'Share Tech Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--vi2);background:rgba(3,5,9,.95);padding:.18rem .45rem;border:1px solid var(--ln);
+  opacity:0;pointer-events:none;transition:opacity .2s;}
+.nd:hover::after{opacity:1;}
+
+/* LAYOUT */
+.w{max-width:1140px;margin:0 auto;padding:0 2rem;position:relative;z-index:2;}
+
+/* TYPOGRAPHY */
+.sec-num{font-family:'Rajdhani',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--mid);margin-bottom:.3rem;}
+.sec-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--vi2);margin-bottom:.25rem;}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:2.8rem;font-weight:700;line-height:.98;letter-spacing:-.01em;text-transform:uppercase;}
+.sec-title em{color:var(--vi2);font-style:normal;}
+.sec-title-sm{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;line-height:1;text-transform:uppercase;}
+.sec-title-sm em{color:var(--vi2);font-style:normal;}
+.mono{font-family:'Share Tech Mono',monospace;}
+.fact-box{background:var(--pn);border:1px solid var(--ln);border-left:3px solid var(--vi);padding:.8rem 1rem;font-size:.85rem;color:var(--mid);line-height:1.65;margin:.6rem 0;}
+.fact-box strong{color:var(--tx);font-weight:500;}
+
+/* FADE IN */
+.fi{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+.fi.vis{opacity:1;transform:none;}
+
+/* ========== HERO ========== */
+#s0{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:5rem 0 0;}
+.hero-bg{position:absolute;inset:0;z-index:0;}
+.hero-bg-grad{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(99,102,241,.09) 0%,transparent 70%),
+             radial-gradient(ellipse 40% 40% at 80% 80%,rgba(34,211,238,.04) 0%,transparent 60%),
+             var(--bg);
+}
+.hero-grid-lines{position:absolute;inset:0;opacity:.035;
+  background-image:linear-gradient(var(--vi) 1px,transparent 1px),linear-gradient(90deg,var(--vi) 1px,transparent 1px);
+  background-size:60px 60px;}
+
+.hero-content{position:relative;z-index:2;padding:3rem 0 2rem;}
+.hero-eyebrow{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;}
+.hero-eye-line{width:40px;height:1px;background:var(--vi);}
+.hero-eye-txt{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--vi2);}
+.hero-title{font-family:'Rajdhani',sans-serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:.9;text-transform:uppercase;letter-spacing:-.02em;margin-bottom:.4rem;}
+.hero-title .line2{color:var(--vi2);}
+.hero-sub{font-size:1rem;color:var(--mid);max-width:560px;margin:1rem 0 2.5rem;line-height:1.75;}
+.hero-stats{display:flex;gap:3rem;}
+.hs-item{display:flex;flex-direction:column;gap:.15rem;}
+.hs-num{font-family:'Rajdhani',sans-serif;font-size:2.4rem;font-weight:700;color:var(--vi2);line-height:1;}
+.hs-label{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+
+/* PIPELINE STRIP */
+#pipeline-strip{position:relative;z-index:2;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);background:var(--dp);padding:0;overflow:hidden;}
+.pipe-inner{display:flex;overflow-x:auto;scrollbar-width:none;position:relative;}
+.pipe-inner::-webkit-scrollbar{display:none;}
+.pipe-node{
+  display:flex;flex-direction:column;align-items:center;padding:1rem 1.6rem;flex-shrink:0;position:relative;
+  cursor:pointer;transition:background .2s;border-right:1px solid var(--ln);
+}
+.pipe-node:last-child{border-right:none;}
+.pipe-node:hover{background:rgba(99,102,241,.06);}
+.pipe-node.active-pipe{background:rgba(99,102,241,.08);}
+.pipe-node::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--vi);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.pipe-node.active-pipe::after{transform:scaleX(1);}
+.pn-num{font-family:'Share Tech Mono',monospace;font-size:.52rem;color:var(--vi);letter-spacing:.1em;margin-bottom:.3rem;}
+.pn-icon{font-size:1.1rem;margin-bottom:.3rem;line-height:1;}
+.pn-name{font-family:'Rajdhani',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);white-space:nowrap;}
+.pipe-node.active-pipe .pn-name{color:var(--vi2);}
+/* traveling pulse */
+.pipe-pulse{position:absolute;top:0;left:0;height:2px;width:60px;pointer-events:none;z-index:5;
+  background:linear-gradient(90deg,transparent,var(--vi2),rgba(129,140,248,.3));
+  animation:pipePulse 6s linear infinite;}
+@keyframes pipePulse{0%{transform:translateX(-80px)}100%{transform:translateX(1400px)}}
+
+/* ========== OVERVIEW GRID ========== */
+#sov{padding:5rem 0;}
+.ov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ln);border:1px solid var(--ln);}
+.ov-card{background:var(--pn);padding:1.5rem 1.4rem;position:relative;overflow:hidden;cursor:pointer;transition:background .2s;}
+.ov-card:hover{background:var(--wl);}
+.ov-card-num{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--vi);letter-spacing:.2em;margin-bottom:.5rem;}
+.ov-card-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem;}
+.ov-card-desc{font-size:.82rem;color:var(--mid);line-height:1.55;}
+.ov-card-tag{
+  display:inline-block;margin-top:.8rem;font-family:'Share Tech Mono',monospace;
+  font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;padding:.18rem .6rem;
+  border:1px solid;
+}
+.tag-wallet{color:var(--am);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05);}
+.tag-crypto{color:var(--vi2);border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.05);}
+.tag-network{color:var(--cy);border-color:rgba(34,211,238,.3);background:rgba(34,211,238,.05);}
+.tag-chain{color:var(--gr);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.05);}
+.ov-card-bg-num{
+  position:absolute;right:-.5rem;bottom:-1rem;font-family:'Rajdhani',sans-serif;
+  font-size:6rem;font-weight:700;color:rgba(99,102,241,.04);letter-spacing:-.05em;pointer-events:none;user-select:none;line-height:1;
+}
+
+/* ========== STAGE SECTIONS ========== */
+.stage-section{padding:5rem 0;border-top:1px solid var(--ln);position:relative;}
+.stage-section:nth-child(even){background:var(--dp);}
+.stage-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.stage-layout.flip{direction:rtl;}
+.stage-layout.flip > *{direction:ltr;}
+.stage-badge{display:inline-flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+.stage-badge-num{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.2em;color:var(--vi2);background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);padding:.2rem .7rem;}
+.stage-badge-cat{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;color:var(--mid);}
+.stage-detail-grid{display:flex;flex-direction:column;gap:.7rem;margin-top:1.4rem;}
+.sdg-row{display:flex;gap:.9rem;align-items:flex-start;}
+.sdg-dot{width:6px;height:6px;border-radius:50%;background:var(--vi);flex-shrink:0;margin-top:.55rem;}
+.sdg-text{font-size:.88rem;color:var(--mid);line-height:1.65;}
+.sdg-text strong{color:var(--tx);}
+
+/* Highlight strip */
+.hl-strip{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-left:3px solid var(--vi);padding:1rem 1.2rem;margin-top:1.5rem;}
+.hl-strip-label{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:var(--vi2);margin-bottom:.4rem;}
+.hl-strip-val{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:var(--tx);}
+.hl-strip-sub{font-size:.82rem;color:var(--mid);margin-top:.2rem;}
+
+/* Visual panels */
+.vis-panel{background:var(--pn);border:1px solid var(--ln);padding:1.4rem;}
+.vp-title{font-family:'Share Tech Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--vi2);margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.vp-title::after{content:'';flex:1;height:1px;background:var(--ln);}
+
+/* ======= S1: OUTPUT SCAN ======= */
+.scan-blocks{display:flex;flex-direction:column;gap:.5rem;}
+.scan-block{display:flex;align-items:center;gap:.8rem;padding:.6rem .8rem;border:1px solid var(--ln);background:var(--bg);transition:border-color .3s,background .3s;}
+.scan-block.mine{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.04);}
+.sb-height{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--mid);width:60px;flex-shrink:0;}
+.sb-outputs{display:flex;gap:.25rem;flex:1;flex-wrap:wrap;}
+.sb-out{width:14px;height:14px;border-radius:2px;background:var(--muted);transition:background .4s;}
+.sb-out.owned{background:var(--gr);box-shadow:0 0 6px rgba(74,222,128,.5);}
+.sb-out.scanning{background:var(--vi);animation:scanPulse .4s ease-in-out;}
+@keyframes scanPulse{0%{transform:scale(1.5);opacity:.5}100%{transform:scale(1);opacity:1}}
+.sb-status{font-family:'Share Tech Mono',monospace;font-size:.5rem;width:80px;flex-shrink:0;text-align:right;}
+.sb-status.found{color:var(--gr);}
+.sb-status.clear{color:var(--dim);}
+.scan-info{margin-top:.9rem;display:flex;gap:1.5rem;}
+.si-item{display:flex;flex-direction:column;gap:.15rem;}
+.si-val{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:var(--vi2);line-height:1;}
+.si-lbl{font-family:'Share Tech Mono',monospace;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+.scan-btn{margin-top:1rem;font-family:'Share Tech Mono',monospace;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;padding:.5rem 1rem;background:transparent;border:1px solid var(--vi);color:var(--vi2);cursor:pointer;transition:all .2s;}
+.scan-btn:hover{background:rgba(99,102,241,.08);}
+
+/* ======= S2: RING ASSEMBLY ======= */
+.ring-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;}
+.ring-out{
+  padding:.55rem .5rem;border:1px solid var(--ln);background:var(--bg);cursor:pointer;
+  transition:all .2s;text-align:center;position:relative;
+}
+.ring-out:hover{border-color:var(--mid);}
+.ring-out.decoy{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.06);}
+.ring-out.real{border-color:rgba(245,158,11,.6);background:rgba(245,158,11,.07);}
+.ro-idx{font-family:'Share Tech Mono',monospace;font-size:.48rem;color:var(--mid);margin-bottom:.25rem;}
+.ro-hash{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:var(--tx);word-break:break-all;line-height:1.4;}
+.ro-label{font-family:'Share Tech Mono',monospace;font-size:.46rem;font-weight:700;letter-spacing:.1em;margin-top:.3rem;}
+.ring-out.decoy .ro-label{color:var(--vi2);}
+.ring-out.real .ro-label{color:var(--am);}
+.ring-assembled{margin-top:1rem;border:1px solid rgba(99,102,241,.3);background:rgba(99,102,241,.04);padding:.8rem;display:none;}
+.ring-assembled.show{display:block;}
+.ra-title{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--vi2);margin-bottom:.5rem;}
+.ra-insight{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--mid);line-height:1.7;}
+.ra-insight strong{color:var(--am);}
+.ring-actions{display:flex;gap:.5rem;margin-top:.8rem;}
+.ra-btn{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .9rem;background:transparent;border:1px solid;cursor:pointer;transition:all .2s;}
+.ra-btn.primary{border-color:var(--vi);color:var(--vi2);}
+.ra-btn.primary:hover{background:rgba(99,102,241,.08);}
+.ra-btn.secondary{border-color:var(--ln);color:var(--mid);}
+.ra-btn.secondary:hover{border-color:var(--mid);}
+.ring-counter{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--mid);margin-top:.6rem;}
+.ring-counter span{color:var(--vi2);font-weight:700;}
+
+/* ======= S3: TX CONSTRUCTION ======= */
+.tx-anatomy{background:var(--bg);border:1px solid var(--ln);padding:.8rem 1rem;font-family:'Share Tech Mono',monospace;font-size:.6rem;line-height:1.8;}
+.txa-line{display:flex;gap:.6rem;}
+.txa-indent{padding-left:1.2rem;}
+.txa-indent2{padding-left:2.4rem;}
+.txa-key{color:var(--vi2);}
+.txa-val{color:var(--am);}
+.txa-val.str{color:var(--cy);}
+.txa-val.num{color:var(--gr);}
+.txa-comment{color:var(--dim);}
+.txa-brace{color:var(--mid);}
+.txa-field{padding:.15rem 0;border-left:2px solid transparent;padding-left:.5rem;margin-left:-.5rem;transition:border-color .3s,background .3s;}
+.txa-field.highlight{border-left-color:var(--vi);background:rgba(99,102,241,.05);}
+.txa-tooltip{margin-left:auto;font-size:.48rem;color:var(--dim);}
+
+/* ======= S4: RINGCT / COMMITMENTS ======= */
+.commit-eq{display:flex;align-items:center;justify-content:center;gap:1rem;padding:1.5rem;flex-wrap:wrap;}
+.commit-box{display:flex;flex-direction:column;align-items:center;gap:.4rem;}
+.cb-pill{padding:.5rem 1rem;border:1px solid;font-family:'Share Tech Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-align:center;min-width:100px;}
+.cb-pill.input{border-color:rgba(74,222,128,.4);color:var(--gr);background:rgba(74,222,128,.06);}
+.cb-pill.output{border-color:rgba(99,102,241,.4);color:var(--vi2);background:rgba(99,102,241,.06);}
+.cb-pill.fee{border-color:rgba(245,158,11,.4);color:var(--am);background:rgba(245,158,11,.06);}
+.cb-label{font-family:'Share Tech Mono',monospace;font-size:.48rem;color:var(--mid);letter-spacing:.1em;text-transform:uppercase;}
+.commit-op{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--mid);}
+.commit-result{text-align:center;padding:.8rem;border-top:1px solid var(--ln);margin-top:.5rem;}
+.cr-txt{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:var(--gr);letter-spacing:.08em;}
+.commit-math{margin-top:1.2rem;}
+.cm-row{display:flex;align-items:center;gap:.8rem;padding:.5rem 0;border-bottom:1px solid var(--ln);font-family:'Share Tech Mono',monospace;font-size:.58rem;}
+.cm-label{color:var(--mid);width:100px;flex-shrink:0;}
+.cm-formula{color:var(--vi2);flex:1;}
+.cm-note{color:var(--dim);font-size:.5rem;}
+
+/* ======= S5: BULLETPROOFS+ ======= */
+.bp-compare{display:flex;flex-direction:column;gap:.6rem;margin:1rem 0;}
+.bpc-row{display:flex;align-items:center;gap:.7rem;}
+.bpc-label{font-family:'Share Tech Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;width:120px;flex-shrink:0;color:var(--mid);}
+.bpc-bar-wrap{flex:1;height:18px;background:var(--bg);border:1px solid var(--ln);position:relative;overflow:hidden;}
+.bpc-bar{height:100%;transition:width 1s cubic-bezier(.4,0,.2,1);}
+.bpc-val{font-family:'Share Tech Mono',monospace;font-size:.55rem;white-space:nowrap;color:var(--tx);margin-left:.4rem;}
+.bpc-row.active .bpc-val{color:var(--gr);}
+.bp-stats{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.2rem;}
+.bps-card{background:var(--bg);border:1px solid var(--ln);padding:.9rem;text-align:center;}
+.bps-val{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--vi2);line-height:1;}
+.bps-lbl{font-family:'Share Tech Mono',monospace;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-top:.2rem;}
+
+/* ======= S6: STEALTH ADDRESS ======= */
+.stealth-flow{display:flex;flex-direction:column;gap:.5rem;}
+.sf-step{display:flex;align-items:flex-start;gap:.8rem;padding:.7rem .9rem;border:1px solid var(--ln);background:var(--bg);position:relative;}
+.sf-step::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.sf-step.sender::before{background:var(--am);}
+.sf-step.math::before{background:var(--vi);}
+.sf-step.receiver::before{background:var(--cy);}
+.sf-num{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--mid);flex-shrink:0;padding-top:.05rem;}
+.sf-title{font-family:'Share Tech Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:.08em;margin-bottom:.25rem;}
+.sf-step.sender .sf-title{color:var(--am);}
+.sf-step.math .sf-title{color:var(--vi2);}
+.sf-step.receiver .sf-title{color:var(--cy);}
+.sf-txt{font-size:.8rem;color:var(--mid);line-height:1.55;}
+.sf-code{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--gr);background:rgba(74,222,128,.05);padding:.2rem .5rem;margin-top:.3rem;border-left:2px solid rgba(74,222,128,.3);display:block;}
+
+/* ======= S7: BROADCAST ======= */
+.p2p-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem;}
+.p2p-node{
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1px solid var(--ln);background:var(--bg);font-family:'Share Tech Mono',monospace;
+  font-size:.5rem;color:var(--mid);transition:all .4s;cursor:default;gap:.3rem;
+}
+.p2p-node.sender{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.06);color:var(--am);}
+.p2p-node.received{border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.06);color:var(--vi2);}
+.p2p-node.verifying{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.05);color:var(--cy);}
+.p2p-node.confirmed{border-color:rgba(74,222,128,.5);background:rgba(74,222,128,.05);color:var(--gr);}
+.p2p-node-icon{font-size:1rem;line-height:1;}
+.p2p-btn{margin-top:1rem;font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem 1rem;background:transparent;border:1px solid var(--cy);color:var(--cy);cursor:pointer;transition:all .2s;}
+.p2p-btn:hover{background:rgba(34,211,238,.06);}
+.p2p-status{font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--mid);margin-top:.6rem;min-height:1.3rem;}
+
+/* ======= S8: QUORUM ======= */
+.quorum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;}
+.qn{
+  padding:.7rem .5rem;border:1px solid var(--ln);background:var(--bg);text-align:center;
+  cursor:pointer;transition:all .25s;position:relative;
+}
+.qn:hover{border-color:var(--mid);}
+.qn.voted{border-color:rgba(74,222,128,.5);background:rgba(74,222,128,.05);}
+.qn.builder{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.06);}
+.qn-icon{font-size:1.1rem;margin-bottom:.3rem;}
+.qn-label{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:var(--mid);}
+.qn.voted .qn-label{color:var(--gr);}
+.qn.builder .qn-label{color:var(--am);}
+.qn-role{font-family:'Share Tech Mono',monospace;font-size:.44rem;color:var(--dim);margin-top:.2rem;}
+.qn.builder .qn-role{color:var(--am);opacity:.7;}
+.qn.voted .qn-role{color:var(--gr);opacity:.7;}
+.quorum-meter{margin-top:1rem;}
+.qm-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem;}
+.qm-label{font-family:'Share Tech Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);}
+.qm-count{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--vi2);line-height:1;}
+.qm-count span{font-size:.9rem;color:var(--mid);}
+.qm-track{height:10px;background:var(--pn);border:1px solid var(--ln);overflow:hidden;position:relative;}
+.qm-fill{height:100%;transition:width .4s ease,background .4s;background:var(--vi);}
+.qm-threshold{position:absolute;left:58.33%;top:-2px;bottom:-2px;width:2px;background:var(--am);z-index:2;}
+.qm-threshold::after{content:'7';position:absolute;top:50%;transform:translateY(-50%);left:4px;font-family:'Share Tech Mono',monospace;font-size:.45rem;color:var(--am);}
+.quorum-result{margin-top:.8rem;padding:.7rem;border:1px solid;font-family:'Share Tech Mono',monospace;font-size:.6rem;text-align:center;font-weight:700;letter-spacing:.1em;transition:all .4s;display:none;}
+.quorum-result.show{display:block;}
+.quorum-result.approved{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.06);color:var(--gr);}
+.quorum-result.pending{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.04);color:var(--vi2);}
+.quorum-reset{margin-top:.6rem;font-family:'Share Tech Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:.4rem .8rem;background:transparent;border:1px solid var(--ln);color:var(--mid);cursor:pointer;transition:all .2s;}
+.quorum-reset:hover{border-color:var(--mid);color:var(--tx);}
+
+/* ======= S9: FINALITY ======= */
+.finality-timeline{display:flex;flex-direction:column;gap:0;}
+.ft-row{display:flex;align-items:stretch;gap:1rem;}
+.ft-left{display:flex;flex-direction:column;align-items:center;width:36px;flex-shrink:0;}
+.ft-dot{width:12px;height:12px;border-radius:50%;background:var(--ln);border:2px solid var(--ln);flex-shrink:0;transition:all .5s;z-index:2;}
+.ft-dot.lit{background:var(--gr);border-color:var(--gr);box-shadow:0 0 8px rgba(74,222,128,.6);}
+.ft-dot.current{background:var(--vi2);border-color:var(--vi);box-shadow:0 0 8px rgba(99,102,241,.6);}
+.ft-line{flex:1;width:2px;background:var(--ln);transition:background .5s;}
+.ft-line.lit{background:var(--gr);}
+.ft-right{padding-bottom:1.2rem;flex:1;}
+.ft-block-num{font-family:'Share Tech Mono',monospace;font-size:.52rem;color:var(--vi2);letter-spacing:.1em;margin-bottom:.2rem;}
+.ft-block-title{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;text-transform:uppercase;margin-bottom:.25rem;}
+.ft-block-desc{font-size:.8rem;color:var(--mid);line-height:1.55;}
+.ft-row:last-child .ft-line{display:none;}
+
+/* ========== BOTTOM STRIP ========== */
+#sfoot{background:var(--dp);border-top:1px solid var(--ln);padding:3.5rem 0 2rem;}
+.strip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ln);}
+.strip-cell{background:var(--pn);padding:1.5rem;text-align:center;}
+.strip-num{font-family:'Rajdhani',sans-serif;font-size:2.4rem;font-weight:700;color:var(--vi2);line-height:1;}
+.strip-lbl{font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-top:.3rem;}
+.strip-sub{font-size:.78rem;color:var(--dim);margin-top:.25rem;}
+.footer-note{text-align:center;font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--dim);letter-spacing:.1em;margin-top:2rem;}
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav id="navdots">
+  <div class="nd" data-label="Overview" onclick="goSec('s0')"></div>
+  <div class="nd" data-label="9 Stages" onclick="goSec('sov')"></div>
+  <div class="nd" data-label="Output Scan" onclick="goSec('s1')"></div>
+  <div class="nd" data-label="Ring Assembly" onclick="goSec('s2')"></div>
+  <div class="nd" data-label="TX Build" onclick="goSec('s3')"></div>
+  <div class="nd" data-label="RingCT" onclick="goSec('s4')"></div>
+  <div class="nd" data-label="Bulletproofs+" onclick="goSec('s5')"></div>
+  <div class="nd" data-label="Stealth" onclick="goSec('s6')"></div>
+  <div class="nd" data-label="Broadcast" onclick="goSec('s7')"></div>
+  <div class="nd" data-label="Quorum" onclick="goSec('s8')"></div>
+  <div class="nd" data-label="Finality" onclick="goSec('s9')"></div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="s0">
+  <div class="hero-bg">
+    <div class="hero-bg-grad"></div>
+    <div class="hero-grid-lines"></div>
+  </div>
+  <div class="w">
+    <div class="hero-content fi">
+      <div class="hero-eyebrow">
+        <div class="hero-eye-line"></div>
+        <div class="hero-eye-txt">Beldex Deep Dive / Privacy Protocol</div>
+      </div>
+      <div class="hero-title">
+        <div>Transaction</div>
+        <div class="line2">Architecture</div>
+      </div>
+      <p class="hero-sub">A Beldex transaction is not just a payment. It is a cryptographic operation that hides sender, receiver, and amount all in one sealed packet. This guide traces every step from your wallet to the final confirmed block.</p>
+      <div class="hero-stats">
+        <div class="hs-item">
+          <div class="hs-num">9</div>
+          <div class="hs-label">Stages</div>
+        </div>
+        <div class="hs-item">
+          <div class="hs-num">~30s</div>
+          <div class="hs-label">To Confirm</div>
+        </div>
+        <div class="hs-item">
+          <div class="hs-num">3</div>
+          <div class="hs-label">Crypto Layers</div>
+        </div>
+        <div class="hs-item">
+          <div class="hs-num">0</div>
+          <div class="hs-label">Data Leaked</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pipeline Strip -->
+  <div id="pipeline-strip">
+    <div class="pipe-inner" id="pipeInner">
+      <div class="pipe-pulse"></div>
+      <div class="pipe-node active-pipe" onclick="goSec('s1')" data-pipe="0">
+        <div class="pn-num">01</div>
+        <div class="pn-icon">&#128065;</div>
+        <div class="pn-name">Output Scan</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s2')" data-pipe="1">
+        <div class="pn-num">02</div>
+        <div class="pn-icon">&#9826;</div>
+        <div class="pn-name">Ring Assembly</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s3')" data-pipe="2">
+        <div class="pn-num">03</div>
+        <div class="pn-icon">&#9998;</div>
+        <div class="pn-name">TX Build</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s4')" data-pipe="3">
+        <div class="pn-num">04</div>
+        <div class="pn-icon">&#128274;</div>
+        <div class="pn-name">RingCT Seal</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s5')" data-pipe="4">
+        <div class="pn-num">05</div>
+        <div class="pn-icon">&#9889;</div>
+        <div class="pn-name">Bulletproofs+</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s6')" data-pipe="5">
+        <div class="pn-num">06</div>
+        <div class="pn-icon">&#128272;</div>
+        <div class="pn-name">Stealth Addr</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s7')" data-pipe="6">
+        <div class="pn-num">07</div>
+        <div class="pn-icon">&#128225;</div>
+        <div class="pn-name">Broadcast</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s8')" data-pipe="7">
+        <div class="pn-num">08</div>
+        <div class="pn-icon">&#9878;</div>
+        <div class="pn-name">Quorum</div>
+      </div>
+      <div class="pipe-node" onclick="goSec('s9')" data-pipe="8">
+        <div class="pn-num">09</div>
+        <div class="pn-icon">&#9729;</div>
+        <div class="pn-name">Finality</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STAGE OVERVIEW GRID ========== -->
+<section id="sov" style="padding:5rem 0;">
+<div class="w">
+  <div class="fi" style="margin-bottom:2.5rem;">
+    <div class="sec-label">Complete Breakdown</div>
+    <div class="sec-title">9 STAGES.<br><em>ONE INVISIBLE TRANSACTION.</em></div>
+  </div>
+  <div class="ov-grid fi">
+    <div class="ov-card" onclick="goSec('s1')">
+      <div class="ov-card-num">STAGE 01</div>
+      <div class="ov-card-title">Output Scan</div>
+      <div class="ov-card-desc">Your wallet silently scans every block to find outputs that belong to you. It uses your private view key to check each one.</div>
+      <div class="ov-card-tag tag-wallet">Wallet Layer</div>
+      <div class="ov-card-bg-num">01</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s2')">
+      <div class="ov-card-num">STAGE 02</div>
+      <div class="ov-card-title">Ring Assembly</div>
+      <div class="ov-card-desc">Your wallet picks 10 decoy outputs from the blockchain. Mixed with your real input, they form a ring of 11 candidates.</div>
+      <div class="ov-card-tag tag-crypto">Crypto Layer</div>
+      <div class="ov-card-bg-num">02</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s3')">
+      <div class="ov-card-num">STAGE 03</div>
+      <div class="ov-card-title">Transaction Build</div>
+      <div class="ov-card-desc">The wallet assembles all components into a single transaction object: inputs, outputs, fee, version, and unlock time.</div>
+      <div class="ov-card-tag tag-wallet">Wallet Layer</div>
+      <div class="ov-card-bg-num">03</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s4')">
+      <div class="ov-card-num">STAGE 04</div>
+      <div class="ov-card-title">RingCT Seal</div>
+      <div class="ov-card-desc">Every BDX amount is converted into a cryptographic commitment. Amounts are hidden. But the math still proves inputs equal outputs.</div>
+      <div class="ov-card-tag tag-crypto">Crypto Layer</div>
+      <div class="ov-card-bg-num">04</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s5')">
+      <div class="ov-card-num">STAGE 05</div>
+      <div class="ov-card-title">Bulletproofs+</div>
+      <div class="ov-card-desc">A compact range proof (~417 bytes) certifies that every output amount is positive and within valid range without revealing the value.</div>
+      <div class="ov-card-tag tag-crypto">Crypto Layer</div>
+      <div class="ov-card-bg-num">05</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s6')">
+      <div class="ov-card-num">STAGE 06</div>
+      <div class="ov-card-title">Stealth Address</div>
+      <div class="ov-card-desc">A unique one-time address is generated for the receiver. Nobody else can link this address to any known wallet. It is never reused.</div>
+      <div class="ov-card-tag tag-crypto">Crypto Layer</div>
+      <div class="ov-card-bg-num">06</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s7')">
+      <div class="ov-card-num">STAGE 07</div>
+      <div class="ov-card-title">P2P Broadcast</div>
+      <div class="ov-card-desc">The sealed transaction is broadcast to the Beldex peer-to-peer network. Every node checks format and signatures. Then it enters the mempool.</div>
+      <div class="ov-card-tag tag-network">Network Layer</div>
+      <div class="ov-card-bg-num">07</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s8')">
+      <div class="ov-card-num">STAGE 08</div>
+      <div class="ov-card-title">Quorum Validation</div>
+      <div class="ov-card-desc">12 masternodes are selected by verifiable randomness. One builds the block. 11 verify it. 7 signatures are needed to approve. No single point of trust.</div>
+      <div class="ov-card-tag tag-network">Consensus Layer</div>
+      <div class="ov-card-bg-num">08</div>
+    </div>
+    <div class="ov-card" onclick="goSec('s9')">
+      <div class="ov-card-num">STAGE 09</div>
+      <div class="ov-card-title">Chain Finality</div>
+      <div class="ov-card-desc">The block is committed. Key images are recorded. After 10 blocks (~5 min), the transaction is irreversible. The receiver silently detects their output.</div>
+      <div class="ov-card-tag tag-chain">Chain Layer</div>
+      <div class="ov-card-bg-num">09</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S1: OUTPUT SCAN ========== -->
+<section id="s1" class="stage-section">
+<div class="w">
+  <div class="stage-layout fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 01 / 09</div>
+        <div class="stage-badge-cat">Wallet Layer</div>
+      </div>
+      <div class="sec-title-sm">OUTPUT<br><em>DETECTION</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">Before you can spend BDX, your wallet must find what you own. It does this by scanning every block and checking each output against your private view key. This process is completely silent. Nobody on the network knows your wallet is scanning.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Every output on the blockchain is public</strong> but the recipient is not. Each output uses a one-time stealth address.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Your private view key</strong> can test any output to see if it belongs to you. It cannot spend only detect.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>When a match is found</strong>, the output is marked as a UTXO (Unspent Transaction Output) and added to your balance.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Your wallet always knows your balance</strong> because it tracks all owned outputs and which ones have been spent.</div>
+        </div>
+      </div>
+      <div class="hl-strip" style="margin-top:1.5rem;">
+        <div class="hl-strip-label">Key Fact</div>
+        <div class="hl-strip-val">View Key = Read Only</div>
+        <div class="hl-strip-sub">Your private view key can scan outputs. Only your private spend key can authorize a transaction.</div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Live Block Scanner</div>
+        <div class="scan-blocks" id="scanBlocks">
+          <!-- built by JS -->
+        </div>
+        <div class="scan-info">
+          <div class="si-item"><div class="si-val" id="scanChecked">0</div><div class="si-lbl">Outputs Checked</div></div>
+          <div class="si-item"><div class="si-val" id="scanFound" style="color:var(--gr);">0</div><div class="si-lbl">Owned Found</div></div>
+          <div class="si-item"><div class="si-val" id="scanBlks">0</div><div class="si-lbl">Blocks Scanned</div></div>
+        </div>
+        <button class="scan-btn" id="scanStartBtn" onclick="startScan()">RUN SCAN SIMULATION</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S2: RING ASSEMBLY ========== -->
+<section id="s2" class="stage-section">
+<div class="w">
+  <div class="stage-layout flip fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 02 / 09</div>
+        <div class="stage-badge-cat">Crypto Layer</div>
+      </div>
+      <div class="sec-title-sm">RING<br><em>ASSEMBLY</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">To hide which output you are spending, your wallet mixes your real input with 10 decoy outputs pulled from the blockchain. This group is called a ring. Everyone on the network sees all 11 candidates, but cannot tell which one is the true spend.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Ring size is 11</strong> on Beldex. 1 real input. 10 decoys. Decoys are real past outputs they just are not being spent right now.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Decoys are selected by your wallet</strong> using a statistical distribution to mimic natural spending patterns.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>A Key Image is generated</strong> from your real output. It is unique per output. It prevents double-spending without revealing which ring member you spent.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>A ring signature is produced</strong> proving that someone in the ring authorized this transaction. Mathematically it is impossible to determine who.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Interactive Ring Builder</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.55rem;color:var(--mid);margin-bottom:.7rem;line-height:1.6;">Click one output as <span style="color:var(--am);">YOUR REAL INPUT</span> and the rest as <span style="color:var(--vi2);">DECOYS</span>. The ring forms when 1 real + 10 decoys are selected.</div>
+        <div class="ring-grid" id="ringGrid"><!-- built by JS --></div>
+        <div class="ring-counter">Selected: <span id="ringDecoyCount">0</span> decoys / <span id="ringRealCount">0</span> real &nbsp;|&nbsp; Need: 10 decoys + 1 real</div>
+        <div class="ring-assembled" id="ringAssembled">
+          <div class="ra-title">Ring Assembled: 11 Candidates</div>
+          <div class="ra-insight">The network sees all 11 outputs. The ring signature proves <strong>one</strong> of them is being spent. But <strong>nobody can determine which one</strong>. Not nodes. Not validators. Not analysts.</div>
+          <div style="margin-top:.5rem;font-family:'Share Tech Mono',monospace;font-size:.52rem;color:var(--gr);">KEY_IMAGE: 0x<span id="keyImageVal"></span></div>
+        </div>
+        <div class="ring-actions">
+          <button class="ra-btn secondary" onclick="resetRing()">RESET</button>
+          <button class="ra-btn primary" onclick="shuffleRing()">SHUFFLE OUTPUTS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S3: TX BUILD ========== -->
+<section id="s3" class="stage-section">
+<div class="w">
+  <div class="stage-layout fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 03 / 09</div>
+        <div class="stage-badge-cat">Wallet Layer</div>
+      </div>
+      <div class="sec-title-sm">TRANSACTION<br><em>CONSTRUCTION</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">With the ring assembled and the destination known, your wallet builds the full transaction object. Think of this as packing a sealed envelope with everything the network needs minus any identifying information.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>version</strong> tells the network which protocol rules apply. Beldex is currently on version 20 (HF20 Obscura).</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>inputs</strong> reference the ring of 11 outputs plus the key image. They do not reveal the real spend.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>outputs</strong> are addressed to the receiver's stealth address. Change goes back to you via a second stealth output.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>rct_signatures</strong> holds the RingCT data and Bulletproofs+ proof. This is the largest part of the transaction by byte size.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>unlock_time</strong> is typically 0 (spend immediately). It can be set to a future block height to time-lock an output.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Transaction Object Anatomy</div>
+        <div class="tx-anatomy" id="txAnatomy">
+          <div class="txa-line"><span class="txa-brace">{</span></div>
+          <div class="txa-indent">
+            <div class="txa-field" id="taf-ver"><div class="txa-line"><span class="txa-key">"version"</span><span class="txa-comment">: </span><span class="txa-val num">20</span><span class="txa-comment">,</span><span class="txa-tooltip">// HF20 Obscura</span></div></div>
+            <div class="txa-field" id="taf-ut"><div class="txa-line"><span class="txa-key">"unlock_time"</span><span class="txa-comment">: </span><span class="txa-val num">0</span><span class="txa-comment">,</span></div></div>
+            <div class="txa-field" id="taf-vin"><div class="txa-line"><span class="txa-key">"vin"</span><span class="txa-comment">: [</span></div>
+              <div class="txa-indent2">
+                <div class="txa-line"><span class="txa-brace">{</span></div>
+                <div class="txa-indent"><div class="txa-line"><span class="txa-key">"key"</span><span class="txa-comment">: {</span><span class="txa-key">"amount"</span><span class="txa-comment">: </span><span class="txa-val num">0</span><span class="txa-comment">,</span><span class="txa-key">"key_offsets"</span><span class="txa-comment">: [11 values],</span><span class="txa-key">"k_image"</span><span class="txa-comment">: </span><span class="txa-val str">"a3f9..."</span><span class="txa-comment">}</span></div></div>
+                <div class="txa-line"><span class="txa-brace">}</span></div>
+              </div>
+            <div class="txa-line"><span class="txa-comment">],</span></div></div>
+            <div class="txa-field" id="taf-vout"><div class="txa-line"><span class="txa-key">"vout"</span><span class="txa-comment">: [</span></div>
+              <div class="txa-indent2">
+                <div class="txa-line"><span class="txa-key">"amount"</span><span class="txa-comment">: </span><span class="txa-val num">0</span><span class="txa-comment">,</span><span class="txa-key">"target"</span><span class="txa-comment">: </span><span class="txa-val str">"stealth_key_P"</span></div>
+              </div>
+            <div class="txa-line"><span class="txa-comment">],</span></div></div>
+            <div class="txa-field" id="taf-rct"><div class="txa-line"><span class="txa-key">"rct_signatures"</span><span class="txa-comment">: {</span></div>
+              <div class="txa-indent2">
+                <div class="txa-line"><span class="txa-key">"type"</span><span class="txa-comment">: </span><span class="txa-val num">6</span><span class="txa-comment">,</span><span class="txa-key">"fee"</span><span class="txa-comment">: </span><span class="txa-val num">20000</span><span class="txa-comment">,</span></div>
+                <div class="txa-line"><span class="txa-key">"ecdhInfo"</span><span class="txa-comment">: [</span><span class="txa-val str">"ECDH encrypted amounts"</span><span class="txa-comment">],</span></div>
+                <div class="txa-line"><span class="txa-key">"outPk"</span><span class="txa-comment">: [</span><span class="txa-val str">"Pedersen commitments"</span><span class="txa-comment">],</span></div>
+                <div class="txa-line"><span class="txa-key">"p"</span><span class="txa-comment">: {</span><span class="txa-key">"bp+"</span><span class="txa-comment">: [</span><span class="txa-val str">"Bulletproofs+ range proof"</span><span class="txa-comment">]}</span></div>
+              </div>
+            <div class="txa-line"><span class="txa-comment">}</span></div></div>
+          </div>
+          <div class="txa-line"><span class="txa-brace">}</span></div>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap;">
+          <button class="scan-btn" onclick="highlightTxField('taf-vin')" style="border-color:var(--vi2);color:var(--vi2);font-size:.5rem;padding:.35rem .7rem;">HIGHLIGHT INPUTS</button>
+          <button class="scan-btn" onclick="highlightTxField('taf-vout')" style="border-color:var(--cy);color:var(--cy);font-size:.5rem;padding:.35rem .7rem;">HIGHLIGHT OUTPUTS</button>
+          <button class="scan-btn" onclick="highlightTxField('taf-rct')" style="border-color:var(--am);color:var(--am);font-size:.5rem;padding:.35rem .7rem;">HIGHLIGHT RINGCT</button>
+          <button class="scan-btn" onclick="clearHighlight()" style="font-size:.5rem;padding:.35rem .7rem;">CLEAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S4: RINGCT ========== -->
+<section id="s4" class="stage-section">
+<div class="w">
+  <div class="stage-layout flip fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 04 / 09</div>
+        <div class="stage-badge-cat">Crypto Layer</div>
+      </div>
+      <div class="sec-title-sm">RINGCT<br><em>SEALING</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">RingCT stands for Ring Confidential Transactions. It hides every amount in the transaction using a technique called a Pedersen Commitment. No validator, no node, and no observer can read how much BDX was sent.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>A Pedersen Commitment</strong> is a mathematical "locked box" around a number. You can prove two boxes balance without opening either one.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The formula is C = xG + aH</strong> where a is the real amount, x is a random blinding factor, G and H are elliptic curve points. The amount is invisible.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Balance is proven</strong> because: Sum(C_inputs) = Sum(C_outputs) + C_fee. The equation holds even though no amounts are visible.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>ECDH encryption</strong> is used to share the real amount privately with the receiver only. Nobody else can decrypt it.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Pedersen Commitment Balance</div>
+        <div class="commit-eq">
+          <div class="commit-box">
+            <div class="cb-pill input">C(INPUT)<br><span style="font-size:.5rem;opacity:.6;">amount hidden</span></div>
+            <div class="cb-label">Input Commitment</div>
+          </div>
+          <div class="commit-op">=</div>
+          <div class="commit-box">
+            <div class="cb-pill output">C(OUT)<br><span style="font-size:.5rem;opacity:.6;">amount hidden</span></div>
+            <div class="cb-label">Output Commitment</div>
+          </div>
+          <div class="commit-op">+</div>
+          <div class="commit-box">
+            <div class="cb-pill fee">C(FEE)<br><span style="font-size:.5rem;opacity:.6;">public</span></div>
+            <div class="cb-label">Fee Commitment</div>
+          </div>
+        </div>
+        <div class="commit-result">
+          <div class="cr-txt">&#10003; BALANCE PROVEN WITHOUT REVEALING AMOUNTS</div>
+        </div>
+        <div class="commit-math">
+          <div class="cm-row">
+            <div class="cm-label">Formula</div>
+            <div class="cm-formula">C = x&#183;G + a&#183;H</div>
+            <div class="cm-note">a=amount, x=blinding key</div>
+          </div>
+          <div class="cm-row">
+            <div class="cm-label">Inputs visible?</div>
+            <div class="cm-formula" style="color:var(--re);">NO   Hidden by RingCT</div>
+          </div>
+          <div class="cm-row">
+            <div class="cm-label">Outputs visible?</div>
+            <div class="cm-formula" style="color:var(--re);">NO   Hidden by RingCT</div>
+          </div>
+          <div class="cm-row">
+            <div class="cm-label">Balance valid?</div>
+            <div class="cm-formula" style="color:var(--gr);">YES   Cryptographic proof</div>
+          </div>
+          <div class="cm-row">
+            <div class="cm-label">Receiver gets?</div>
+            <div class="cm-formula" style="color:var(--cy);">Amount via ECDH only</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S5: BULLETPROOFS+ ========== -->
+<section id="s5" class="stage-section">
+<div class="w">
+  <div class="stage-layout fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 05 / 09</div>
+        <div class="stage-badge-cat">Crypto Layer</div>
+      </div>
+      <div class="sec-title-sm">BULLETPROOFS<em>+</em><br>RANGE PROOF</div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">RingCT hides amounts. But how do validators know you are not creating BDX from nothing? Bulletproofs+ is the answer. It generates a tiny proof that certifies every output amount is between 0 and 2^64 without revealing the actual value.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>A range proof prevents inflation attacks.</strong> Without it, someone could create a commitment to -1 BDX and trick the balance equation into passing.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Bulletproofs+ (HF20)</strong> reduced proof size by 38% compared to standard Bulletproofs. One proof for the entire transaction.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Verification is fast</strong> because Bulletproofs+ supports batch verification. Many proofs can be checked simultaneously.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The proof size history</strong> shows continuous improvement: Borromean 6.1 KB to Bulletproofs 675 B to Bulletproofs+ 417 B. A 93% total reduction.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Proof Size Comparison</div>
+        <div class="bp-compare" id="bpCompare">
+          <div class="bpc-row">
+            <div class="bpc-label">Borromean</div>
+            <div class="bpc-bar-wrap"><div class="bpc-bar" id="bar0" style="width:0;background:var(--re);"></div></div>
+            <div class="bpc-val">6,100 B</div>
+          </div>
+          <div class="bpc-row">
+            <div class="bpc-label">Bulletproofs</div>
+            <div class="bpc-bar-wrap"><div class="bpc-bar" id="bar1" style="width:0;background:var(--am);"></div></div>
+            <div class="bpc-val">~675 B</div>
+          </div>
+          <div class="bpc-row active">
+            <div class="bpc-label">Bulletproofs+</div>
+            <div class="bpc-bar-wrap"><div class="bpc-bar" id="bar2" style="width:0;background:var(--gr);"></div></div>
+            <div class="bpc-val" style="color:var(--gr);">~417 B &#10003;</div>
+          </div>
+        </div>
+        <div class="bp-stats">
+          <div class="bps-card">
+            <div class="bps-val" style="color:var(--gr);">93%</div>
+            <div class="bps-lbl">Size Reduction (total)</div>
+          </div>
+          <div class="bps-card">
+            <div class="bps-val" style="color:var(--vi2);">38%</div>
+            <div class="bps-lbl">Smaller vs Standard BP</div>
+          </div>
+          <div class="bps-card">
+            <div class="bps-val" style="color:var(--cy);">1</div>
+            <div class="bps-lbl">Proof per TX</div>
+          </div>
+          <div class="bps-card">
+            <div class="bps-val" style="color:var(--am);">0</div>
+            <div class="bps-lbl">Amounts Revealed</div>
+          </div>
+        </div>
+        <div class="fact-box" style="margin-top:1rem;">
+          <strong>What it proves:</strong> Each output amount is a valid positive number. You are not creating BDX from nothing. No amounts are disclosed.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S6: STEALTH ADDRESS ========== -->
+<section id="s6" class="stage-section">
+<div class="w">
+  <div class="stage-layout flip fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 06 / 09</div>
+        <div class="stage-badge-cat">Crypto Layer</div>
+      </div>
+      <div class="sec-title-sm">STEALTH<br><em>DELIVERY</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">Even if someone knows your wallet address (your public key), they still cannot trace any payment to you. That is because every transaction generates a completely new one-time address just for that payment. This is called a stealth address.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The sender uses your public spend key and public view key</strong> combined with a random scalar r to generate a unique output key P.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The key P appears on the blockchain</strong> as the output target. Nobody knows it belongs to you it looks like a random key.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>You scan with your private view key</strong> and find outputs addressed to you. Only you can compute the matching private key to spend them.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The address is never reused.</strong> Even two payments to the same wallet look completely unrelated on-chain.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">ECDH Stealth Key Derivation</div>
+        <div class="stealth-flow">
+          <div class="sf-step sender">
+            <div class="sf-num">01</div>
+            <div class="sf-content">
+              <div class="sf-title">SENDER: Generate Random Scalar</div>
+              <div class="sf-txt">Sender picks a random number r. This is kept secret. It seeds the entire key derivation.</div>
+              <span class="sf-code">r = random_scalar() &nbsp; // only sender knows this</span>
+            </div>
+          </div>
+          <div class="sf-step math">
+            <div class="sf-num">02</div>
+            <div class="sf-content">
+              <div class="sf-title">DERIVE: One-Time Output Key</div>
+              <div class="sf-txt">The sender computes a shared secret using ECDH (Elliptic Curve Diffie-Hellman) with the receiver's public view key V.</div>
+              <span class="sf-code">P = H(r&#183;V) &#183; G + B &nbsp; // B = receiver public spend key</span>
+            </div>
+          </div>
+          <div class="sf-step sender">
+            <div class="sf-num">03</div>
+            <div class="sf-content">
+              <div class="sf-title">SENDER: Publish Transaction Key</div>
+              <div class="sf-txt">The value r*G (called the transaction public key R) is embedded in the transaction. It lets the receiver derive the same shared secret.</div>
+              <span class="sf-code">R = r&#183;G &nbsp; // published in transaction extra field</span>
+            </div>
+          </div>
+          <div class="sf-step receiver">
+            <div class="sf-num">04</div>
+            <div class="sf-content">
+              <div class="sf-title">RECEIVER: Scan and Detect</div>
+              <div class="sf-txt">The receiver uses their private view key v and the published R to compute the same output key P. If P matches a blockchain output, that output belongs to them.</div>
+              <span class="sf-code">P_check = H(v&#183;R) &#183; G + B &nbsp; // scan with private view key</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S7: BROADCAST ========== -->
+<section id="s7" class="stage-section">
+<div class="w">
+  <div class="stage-layout fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 07 / 09</div>
+        <div class="stage-badge-cat">Network Layer</div>
+      </div>
+      <div class="sec-title-sm">P2P<br><em>BROADCAST</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">Once the transaction is sealed and signed, your wallet sends it to the Beldex peer-to-peer network. The transaction immediately starts propagating from node to node until the entire network has a copy.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Your wallet connects to multiple peers</strong> and sends the raw transaction bytes to each. They forward it to their peers as well.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Each node validates on receipt:</strong> correct version, valid ring size, key image not already spent, valid signature format.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The transaction enters the mempool</strong> a waiting room for unconfirmed transactions. The block producer will pull from here.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Higher fee transactions</strong> are generally prioritized. On Beldex, fees are extremely low due to compact transaction sizes.</div>
+        </div>
+      </div>
+      <div class="hl-strip" style="margin-top:1.5rem;border-left-color:var(--cy);">
+        <div class="hl-strip-label" style="color:var(--cy);">Network Fact</div>
+        <div class="hl-strip-val">Propagation: &lt; 2 Seconds</div>
+        <div class="hl-strip-sub">A transaction reaches most of the Beldex network within 1 to 2 seconds of broadcast.</div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">P2P Network Propagation</div>
+        <div class="p2p-grid" id="p2pGrid"><!-- built by JS --></div>
+        <div class="p2p-status" id="p2pStatus">Click BROADCAST to simulate network propagation</div>
+        <button class="p2p-btn" id="p2pBtn" onclick="startBroadcast()">BROADCAST TRANSACTION</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S8: QUORUM ========== -->
+<section id="s8" class="stage-section">
+<div class="w">
+  <div class="stage-layout flip fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 08 / 09</div>
+        <div class="stage-badge-cat">Consensus Layer</div>
+      </div>
+      <div class="sec-title-sm">QUORUM<br><em>CONSENSUS</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">Beldex does not use miners. It uses a proof-of-stake system where 12 masternodes are randomly selected every block. One builds the block template. The other 11 validate it. 7 signatures out of 11 are required to approve the block.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Selection is verifiable random.</strong> No masternode operator can predict or manipulate which quorum they will be in.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The block producer</strong> assembles transactions from the mempool, generates the block header, and sends it to the other 11 validators.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Validators check every transaction:</strong> valid ring signatures, key images not spent, valid Bulletproofs+, correct fee, valid RingCT commitments.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>7 / 11 threshold</strong> means the network tolerates up to 4 corrupt or offline validators in any quorum round.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Block time is 30 seconds.</strong> If a quorum fails, a new one is selected and the process restarts.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Interactive Quorum Simulation</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.53rem;color:var(--mid);margin-bottom:.7rem;">Click validators to cast their vote. 7 required for block approval.</div>
+        <div class="quorum-grid" id="quorumGrid"><!-- built by JS --></div>
+        <div class="quorum-meter">
+          <div class="qm-header">
+            <div class="qm-label">Signatures Collected</div>
+            <div class="qm-count" id="qmCount">0 <span>/ 11</span></div>
+          </div>
+          <div class="qm-track">
+            <div class="qm-fill" id="qmFill" style="width:0;"></div>
+            <div class="qm-threshold"></div>
+          </div>
+        </div>
+        <div class="quorum-result pending" id="quorumResult">AWAITING CONSENSUS...</div>
+        <button class="quorum-reset" onclick="resetQuorum()">RESET QUORUM</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== S9: FINALITY ========== -->
+<section id="s9" class="stage-section">
+<div class="w">
+  <div class="stage-layout fi">
+    <div>
+      <div class="stage-badge">
+        <div class="stage-badge-num">STAGE 09 / 09</div>
+        <div class="stage-badge-cat">Chain Layer</div>
+      </div>
+      <div class="sec-title-sm">CHAIN<br><em>FINALITY</em></div>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">Once the quorum approves the block, it is added to the Beldex blockchain. Three things happen immediately: the key image is recorded (preventing double-spends), the receiver can detect their new output, and the chain checkpoint system begins locking the transaction in permanently.</p>
+      <div class="stage-detail-grid">
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Key image recording</strong> is the double-spend prevention mechanism. The same output can never be spent twice on the network.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>The receiver scans</strong> the new block using their private view key and detects the stealth output addressed to them.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>10-block confirmation</strong> is the practical irreversibility threshold. After 10 blocks (~5 minutes), reorgs that could affect the transaction are essentially impossible.</div>
+        </div>
+        <div class="sdg-row">
+          <div class="sdg-dot"></div>
+          <div class="sdg-text"><strong>Checkpoint blocks</strong> are committed every 4 blocks by quorum consensus. They permanently lock all prior history against any rollback attack.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vis-panel">
+        <div class="vp-title">Block Confirmation Timeline</div>
+        <div class="finality-timeline" id="finalityTimeline"><!-- built by JS --></div>
+        <button class="p2p-btn" id="finalityBtn" onclick="animateFinality()" style="margin-top:1rem;border-color:var(--gr);color:var(--gr);">CONFIRM BLOCKS</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ========== FOOTER STRIP ========== -->
+<section id="sfoot">
+<div class="w">
+  <div class="fi" style="text-align:center;margin-bottom:2.5rem;">
+    <div class="sec-label">Summary</div>
+    <div class="sec-title" style="font-size:2rem;">ALL 9 STAGES.<br><em>ZERO DATA LEAKED.</em></div>
+  </div>
+  <div class="strip-grid fi">
+    <div class="strip-cell">
+      <div class="strip-num">9</div>
+      <div class="strip-lbl">Stages Total</div>
+      <div class="strip-sub">From wallet scan to immutable block</div>
+    </div>
+    <div class="strip-cell">
+      <div class="strip-num">11</div>
+      <div class="strip-lbl">Ring Size</div>
+      <div class="strip-sub">1 real + 10 decoys per input</div>
+    </div>
+    <div class="strip-cell">
+      <div class="strip-num">417B</div>
+      <div class="strip-lbl">Proof Size</div>
+      <div class="strip-sub">Bulletproofs+ per transaction</div>
+    </div>
+    <div class="strip-cell">
+      <div class="strip-num">~5m</div>
+      <div class="strip-lbl">Irreversible</div>
+      <div class="strip-sub">After 10 confirmed blocks</div>
+    </div>
+  </div>
+  <div class="footer-note">BELDEX PRIVACY PROTOCOL &nbsp;/&nbsp; TRANSACTION ARCHITECTURE GUIDE &nbsp;/&nbsp; CRYPTONOTE + POS CONSENSUS</div>
+</div>
+</section>
+
+<script>
+/* ============ UTILS ============ */
+var hexC='0123456789abcdef';
+function rndHex(n){var s='';for(var i=0;i<n;i++)s+=hexC[Math.floor(Math.random()*16)];return s;}
+function goSec(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+
+/* ============ NAV DOTS ============ */
+var secs=['s0','sov','s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+var dots=document.querySelectorAll('.nd');
+function updateNav(){
+  var mid=window.scrollY+window.innerHeight/2;
+  var best=0;
+  secs.forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(!el)return;
+    if(el.offsetTop<=mid)best=i;
+  });
+  dots.forEach(function(d,i){d.classList.toggle('on',i===best);});
+  /* pipeline strip highlight */
+  var stageMap={s1:0,s2:1,s3:2,s4:3,s5:4,s6:5,s7:6,s8:7,s9:8};
+  var activePipe=stageMap[secs[best]];
+  document.querySelectorAll('.pipe-node').forEach(function(n,i){
+    n.classList.toggle('active-pipe',i===activePipe);
+  });
+}
+window.addEventListener('scroll',updateNav,{passive:true});
+updateNav();
+
+/* ============ FADE IN ============ */
+var fiObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');}});
+},{threshold:.08});
+document.querySelectorAll('.fi').forEach(function(el){fiObs.observe(el);});
+
+/* ============ S1: BLOCK SCAN ============ */
+var scanData=[];
+var scanTimer=null;
+var scanIdx=0;
+
+function buildScanUI(){
+  var wrap=document.getElementById('scanBlocks');
+  if(!wrap)return;
+  scanData=[];
+  for(var b=0;b<6;b++){
+    var h=4939000+b*120+Math.floor(Math.random()*50);
+    var outs=[];
+    var mineIdx=b===2?Math.floor(Math.random()*8):(-1);
+    for(var j=0;j<8;j++)outs.push({mine:j===mineIdx,state:'unscanned'});
+    scanData.push({height:h,outs:outs,status:'pending'});
+  }
+  renderScanBlocks();
+}
+
+function renderScanBlocks(){
+  var wrap=document.getElementById('scanBlocks');
+  if(!wrap)return;
+  var html='';
+  scanData.forEach(function(blk,bi){
+    var statusTxt='';var statusCls='';
+    if(blk.status==='scanning'){statusTxt='SCANNING...';statusCls='';}
+    else if(blk.status==='found'){statusTxt='OWNED OUTPUT';statusCls='found';}
+    else if(blk.status==='clear'){statusTxt='NONE FOUND';statusCls='clear';}
+    var mineCls=blk.status==='found'?'mine':'';
+    html+='<div class="scan-block '+mineCls+'" id="sb_'+bi+'">';
+    html+='<div class="sb-height">#'+blk.height+'</div>';
+    html+='<div class="sb-outputs">';
+    blk.outs.forEach(function(o,oi){
+      var cls='sb-out';
+      if(o.state==='owned')cls+=' owned';
+      else if(o.state==='scanning')cls+=' scanning';
+      html+='<div class="'+cls+'" id="so_'+bi+'_'+oi+'"></div>';
+    });
+    html+='</div>';
+    html+='<div class="sb-status '+statusCls+'">'+statusTxt+'</div>';
+    html+='</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+function startScan(){
+  clearInterval(scanTimer);
+  buildScanUI();
+  var bi=0,oi=0;
+  var checked=0,found=0,blks=0;
+  document.getElementById('scanChecked').textContent='0';
+  document.getElementById('scanFound').textContent='0';
+  document.getElementById('scanBlks').textContent='0';
+  function step(){
+    if(bi>=scanData.length){clearInterval(scanTimer);document.getElementById('scanStartBtn').textContent='RESCAN';return;}
+    var blk=scanData[bi];
+    blk.status='scanning';
+    if(oi===0)blks++;
+    blk.outs[oi].state='scanning';
+    renderScanBlocks();
+    setTimeout(function(){
+      if(blk.outs[oi].mine){
+        blk.outs[oi].state='owned';
+        found++;
+        blk.status='found';
+      } else {
+        blk.outs[oi].state='scanned';
+        if(oi===blk.outs.length-1&&blk.status==='scanning')blk.status='clear';
+      }
+      checked++;
+      document.getElementById('scanChecked').textContent=checked;
+      document.getElementById('scanFound').textContent=found;
+      document.getElementById('scanBlks').textContent=blks;
+      renderScanBlocks();
+      oi++;
+      if(oi>=blk.outs.length){oi=0;bi++;}
+    },140);
+  }
+  scanTimer=setInterval(step,180);
+}
+buildScanUI();
+
+/* ============ S2: RING ASSEMBLY ============ */
+var ringOutputs=[];
+var ringDecoys=0,ringReal=0;
+
+function buildRingOutputs(){
+  ringOutputs=[];
+  for(var i=0;i<11;i++){
+    ringOutputs.push({idx:i,hash:rndHex(8)+'...'+rndHex(4),state:'unset'});
+  }
+  ringDecoys=0;ringReal=0;
+  document.getElementById('ringAssembled').classList.remove('show');
+  renderRing();
+}
+
+function renderRing(){
+  var grid=document.getElementById('ringGrid');
+  var html='';
+  ringOutputs.forEach(function(o,i){
+    var cls='ring-out '+o.state;
+    var lbl=o.state==='decoy'?'DECOY':o.state==='real'?'REAL SPEND':'CLICK TO ASSIGN';
+    html+='<div class="'+cls+'" onclick="assignRingOut('+i+')">';
+    html+='<div class="ro-idx">OUT #'+(100000+i*37829+Math.floor(i*7))+'</div>';
+    html+='<div class="ro-hash">'+o.hash+'</div>';
+    html+='<div class="ro-label">'+lbl+'</div>';
+    html+='</div>';
+  });
+  grid.innerHTML=html;
+  var dc=ringOutputs.filter(function(o){return o.state==='decoy';}).length;
+  var rc=ringOutputs.filter(function(o){return o.state==='real';}).length;
+  document.getElementById('ringDecoyCount').textContent=dc;
+  document.getElementById('ringRealCount').textContent=rc;
+  if(dc===10&&rc===1){
+    document.getElementById('keyImageVal').textContent=rndHex(16)+'...';
+    document.getElementById('ringAssembled').classList.add('show');
+  }
+}
+
+function assignRingOut(idx){
+  var o=ringOutputs[idx];
+  var dc=ringOutputs.filter(function(x){return x.state==='decoy';}).length;
+  var rc=ringOutputs.filter(function(x){return x.state==='real';}).length;
+  if(o.state==='unset'){
+    if(rc===0)o.state='real';
+    else if(dc<10)o.state='decoy';
+  } else {
+    o.state='unset';
+  }
+  renderRing();
+}
+
+function resetRing(){buildRingOutputs();}
+function shuffleRing(){buildRingOutputs();}
+buildRingOutputs();
+
+/* ============ S3: TX ANATOMY HIGHLIGHT ============ */
+var lastHighlight=null;
+function highlightTxField(id){
+  if(lastHighlight){document.getElementById(lastHighlight).classList.remove('highlight');}
+  document.getElementById(id).classList.add('highlight');
+  lastHighlight=id;
+}
+function clearHighlight(){if(lastHighlight){document.getElementById(lastHighlight).classList.remove('highlight');lastHighlight=null;}}
+
+/* ============ S5: BP BAR ANIMATION ============ */
+function animateBPBars(){
+  setTimeout(function(){document.getElementById('bar0').style.width='100%';},200);
+  setTimeout(function(){document.getElementById('bar1').style.width='11%;'},600);
+  setTimeout(function(){document.getElementById('bar2').style.width='6.8%';},1000);
+}
+var bpObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){animateBPBars();bpObs.disconnect();}});
+},{threshold:.3});
+var bpSec=document.getElementById('s5');
+if(bpSec)bpObs.observe(bpSec);
+
+/* ============ S7: P2P BROADCAST ============ */
+var p2pNodes=[];
+var p2pState='idle';
+
+function buildP2PGrid(){
+  p2pNodes=[];
+  var icons=['&#128736;','&#128736;','&#128736;','&#128736;','&#128736;',
+             '&#128736;','&#128736;','&#128736;','&#128736;','&#128736;',
+             '&#128736;','&#128736;','&#128736;','&#128736;','&#128736;'];
+  for(var i=0;i<15;i++)p2pNodes.push({state:i===7?'sender':'idle',icon:icons[i]});
+  renderP2P();
+}
+
+function renderP2P(){
+  var grid=document.getElementById('p2pGrid');
+  var html='';
+  p2pNodes.forEach(function(n,i){
+    var lbl=n.state==='sender'?'SENDER':n.state==='received'?'RECEIVED':n.state==='verifying'?'VERIFYING':n.state==='confirmed'?'VALID':'WAITING';
+    html+='<div class="p2p-node '+n.state+'" id="pn_'+i+'">';
+    html+='<div class="p2p-node-icon">'+n.icon+'</div>';
+    html+='<div>NODE-'+String(i+1).padStart(2,'0')+'</div>';
+    html+='<div>'+lbl+'</div>';
+    html+='</div>';
+  });
+  grid.innerHTML=html;
+}
+
+function startBroadcast(){
+  if(p2pState==='running')return;
+  p2pState='running';
+  /* Reset non-sender nodes */
+  p2pNodes.forEach(function(n,i){if(i!==7)n.state='idle';});
+  renderP2P();
+  document.getElementById('p2pStatus').textContent='Broadcasting to peer nodes...';
+  var schedule=[
+    {idx:[6,8],delay:400,state:'received'},
+    {idx:[5,9,3,11],delay:900,state:'received'},
+    {idx:[4,10,2,12],delay:1400,state:'verifying'},
+    {idx:[0,1,13,14],delay:1900,state:'verifying'},
+    {idx:[6,8,5,9],delay:2200,state:'confirmed'},
+    {idx:[3,11,4,10,2,12],delay:2700,state:'confirmed'},
+    {idx:[0,1,13,14],delay:3200,state:'confirmed'},
+  ];
+  schedule.forEach(function(s){
+    setTimeout(function(){
+      s.idx.forEach(function(i){p2pNodes[i].state=s.state;});
+      renderP2P();
+    },s.delay);
+  });
+  setTimeout(function(){
+    document.getElementById('p2pStatus').textContent='Transaction in mempool. 15 nodes confirmed receipt.';
+    document.getElementById('p2pBtn').textContent='BROADCAST AGAIN';
+    p2pState='done';
+  },3500);
+}
+buildP2PGrid();
+
+/* ============ S8: QUORUM ============ */
+var quorumVotes=[];
+
+function buildQuorum(){
+  var grid=document.getElementById('quorumGrid');
+  quorumVotes=[];
+  var html='';
+  for(var i=0;i<12;i++){
+    var isBuilder=i===0;
+    quorumVotes.push({voted:false,builder:isBuilder});
+    html+='<div class="qn '+(isBuilder?'builder':'')+'" id="qn_'+i+'" onclick="voteQuorum('+i+')">';
+    html+='<div class="qn-icon">'+(isBuilder?'&#9654;':'&#128274;')+'</div>';
+    html+='<div class="qn-label">MN-'+String(i+1).padStart(2,'0')+'</div>';
+    html+='<div class="qn-role">'+(isBuilder?'Block Producer':'Validator')+'</div>';
+    html+='</div>';
+  }
+  grid.innerHTML=html;
+  updateQuorumMeter();
+}
+
+function voteQuorum(i){
+  if(quorumVotes[i].builder)return;
+  quorumVotes[i].voted=!quorumVotes[i].voted;
+  var el=document.getElementById('qn_'+i);
+  if(quorumVotes[i].voted){
+    el.className='qn voted';
+    el.querySelector('.qn-icon').textContent='&#10003;';
+  } else {
+    el.className='qn';
+    el.querySelector('.qn-icon').textContent='&#128274;';
+  }
+  updateQuorumMeter();
+}
+
+function updateQuorumMeter(){
+  var count=quorumVotes.filter(function(v){return v.voted;}).length;
+  document.getElementById('qmCount').innerHTML=count+' <span>/ 11</span>';
+  var pct=Math.round(count/11*100);
+  var fill=document.getElementById('qmFill');
+  fill.style.width=pct+'%';
+  fill.style.background=count>=7?'var(--gr)':count>=4?'var(--am)':'var(--vi)';
+  var res=document.getElementById('quorumResult');
+  res.classList.add('show');
+  if(count>=7){res.className='quorum-result show approved';res.textContent='BLOCK APPROVED: '+count+'/11 SIGNATURES';}
+  else{res.className='quorum-result show pending';res.textContent='PENDING: '+count+'/11 (need 7 to approve)';}
+}
+
+function resetQuorum(){buildQuorum();}
+buildQuorum();
+
+/* ============ S9: FINALITY TIMELINE ============ */
+var finalityBlocks=[
+  {num:'BLOCK +1',title:'Transaction Included',desc:'Your transaction is packed into this block. The quorum approves it. Block is broadcast to the network.',icon:'&#128230;'},
+  {num:'BLOCK +2',title:'First Confirmation',desc:'A second block builds on top. The chain is extending. Your transaction is one level deep.',icon:'&#9745;'},
+  {num:'BLOCK +4',title:'Checkpoint',desc:'Every 4 blocks, the quorum commits a checkpoint. All history before this point is cryptographically locked.',icon:'&#128274;'},
+  {num:'BLOCK +8',title:'Practically Final',desc:'Eight blocks deep. The computational cost to reorganize the chain here is extremely high.',icon:'&#128737;'},
+  {num:'BLOCK +10',title:'Irreversible',desc:'Industry standard confirmation depth. Your transaction is now permanently embedded in the Beldex blockchain.',icon:'&#9734;'},
+];
+var finalityStep=-1;
+var finalityTimer=null;
+
+function buildFinalityTimeline(){
+  var wrap=document.getElementById('finalityTimeline');
+  var html='';
+  finalityBlocks.forEach(function(b,i){
+    html+='<div class="ft-row">';
+    html+='<div class="ft-left"><div class="ft-dot" id="ftd_'+i+'"></div><div class="ft-line" id="ftl_'+i+'"></div></div>';
+    html+='<div class="ft-right"><div class="ft-block-num">'+b.num+' &nbsp; '+b.icon+'</div><div class="ft-block-title">'+b.title+'</div><div class="ft-block-desc">'+b.desc+'</div></div>';
+    html+='</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+function animateFinality(){
+  clearInterval(finalityTimer);finalityStep=-1;
+  /* Reset */
+  finalityBlocks.forEach(function(b,i){
+    var d=document.getElementById('ftd_'+i);
+    var l=document.getElementById('ftl_'+i);
+    if(d){d.className='ft-dot';}
+    if(l){l.className='ft-line';}
+  });
+  document.getElementById('finalityBtn').textContent='CONFIRMING...';
+  finalityTimer=setInterval(function(){
+    if(finalityStep>=0){
+      var prev=document.getElementById('ftd_'+finalityStep);
+      var prevl=document.getElementById('ftl_'+finalityStep);
+      if(prev)prev.className='ft-dot lit';
+      if(prevl)prevl.className='ft-line lit';
+    }
+    finalityStep++;
+    if(finalityStep<finalityBlocks.length){
+      var cur=document.getElementById('ftd_'+finalityStep);
+      if(cur)cur.className='ft-dot current';
+    } else {
+      clearInterval(finalityTimer);
+      document.getElementById('finalityBtn').textContent='REPLAY';
+    }
+  },800);
+}
+buildFinalityTimeline();
+</script>
+</body>
+</html>

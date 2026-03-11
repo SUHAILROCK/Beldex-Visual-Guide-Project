@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beldex Signal Log  -  20 Hardfork Protocol History</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,700;0,900;1,700&family=Instrument+Serif:ital@0;1&family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   ROOT
+═══════════════════════════════════════ */
+:root{
+  --bg:#020509;
+  --dp:#060d14;
+  --pn:#09121d;
+  --ln:#111e2d;
+  --dim:#162130;
+  --mid:#4a6a80;
+  --muted:#243040;
+  --tx:#dde8f0;
+  --era-r:0;--era-g:200;--era-b:120;
+  --era:rgba(var(--era-r),var(--era-g),var(--era-b),1);
+  --era3:rgba(var(--era-r),var(--era-g),var(--era-b),.3);
+  --era1:rgba(var(--era-r),var(--era-g),var(--era-b),.1);
+  --fa:'Barlow Condensed',sans-serif;
+  --fb:'Instrument Serif',serif;
+  --fc:'Fira Code',monospace;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--tx);
+  font-family:var(--fc);
+  overflow-x:hidden;
+  transition:background .8s;
+}
+
+/* grain overlay */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px;
+}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+#hero{
+  position:relative;
+  height:100vh;min-height:680px;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:1fr auto;
+}
+#sigCanvas{
+  position:absolute;inset:0;width:100%;height:100%;
+}
+.hero-content{
+  position:relative;z-index:5;
+  align-self:end;
+  padding:0 5vw 0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+  align-items:end;
+  padding-bottom:3rem;
+}
+.hero-label{
+  font-family:var(--fc);font-size:.55rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--era);margin-bottom:1rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.hero-label::before{
+  content:'';width:24px;height:1px;background:var(--era);
+}
+.hero-title{
+  font-family:var(--fa);font-weight:900;
+  font-size:clamp(5rem,13vw,16rem);
+  line-height:.84;letter-spacing:-.02em;
+  color:#fff;
+}
+.hero-title .t1{
+  display:block;font-style:italic;font-weight:300;
+  font-size:.28em;letter-spacing:.05em;color:rgba(255,255,255,.4);
+  margin-bottom:.1em;
+}
+.hero-title .t2{display:block;}
+.hero-title .t3{
+  display:block;
+  background:linear-gradient(90deg,var(--era),rgba(255,255,255,.8));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  font-size:.5em;letter-spacing:.02em;
+}
+.hero-right{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--ln);
+  border:1px solid var(--ln);
+  align-self:end;
+}
+.hstat{
+  background:var(--bg);padding:1.2rem 1.5rem;
+}
+.hstat-v{
+  font-family:var(--fa);font-weight:900;
+  font-size:2.8rem;line-height:1;
+  color:var(--era);
+}
+.hstat-k{
+  font-family:var(--fc);font-size:.5rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--mid);margin-top:.15rem;
+}
+.hero-ticker{
+  position:absolute;bottom:0;left:0;right:0;z-index:6;
+  background:rgba(2,5,9,.9);backdrop-filter:blur(8px);
+  border-top:1px solid var(--ln);
+  overflow:hidden;height:30px;
+  display:flex;align-items:center;
+}
+.ticker-inner{
+  display:flex;gap:3rem;
+  animation:tickerMove 30s linear infinite;
+  white-space:nowrap;
+  font-family:var(--fc);font-size:.5rem;letter-spacing:.08em;
+  color:var(--mid);
+}
+.ticker-inner span{color:var(--era);}
+@keyframes tickerMove{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+
+/* ═══════════════════════════════════════
+   STICKY SIGNAL BAR
+═══════════════════════════════════════ */
+#sigBar{
+  position:sticky;top:0;z-index:900;
+  background:rgba(2,5,9,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--ln);
+  height:36px;
+  display:flex;align-items:center;
+  gap:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+#sigBar::-webkit-scrollbar{display:none;}
+.sb-era{
+  display:flex;align-items:center;gap:.6rem;
+  padding:0 1.2rem;height:100%;
+  border-right:1px solid var(--ln);
+  cursor:pointer;flex-shrink:0;
+  font-family:var(--fc);font-size:.5rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+  transition:color .2s;
+}
+.sb-era:hover{color:var(--tx);}
+.sb-era-dot{
+  width:5px;height:5px;border-radius:50%;
+}
+.sb-era.e1 .sb-era-dot{background:#22c55e;}
+.sb-era.e2 .sb-era-dot{background:#ef4444;}
+.sb-era.e3 .sb-era-dot{background:#06b6d4;}
+.sb-forks{
+  display:flex;align-items:center;gap:0;
+  flex:1;padding:0 1rem;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.sb-hf{
+  font-family:var(--fc);font-size:.48rem;letter-spacing:.06em;
+  color:var(--muted);padding:0 .5rem;height:100%;
+  display:flex;align-items:center;
+  cursor:pointer;transition:color .15s;
+  border-right:1px solid rgba(255,255,255,.03);
+  flex-shrink:0;
+}
+.sb-hf:hover,.sb-hf.on{color:var(--era);}
+.sb-hf.named{font-weight:600;}
+.sb-now{
+  margin-left:auto;
+  font-family:var(--fc);font-size:.48rem;
+  color:var(--mid);padding:0 1.2rem;
+  white-space:nowrap;flex-shrink:0;
+  letter-spacing:.06em;
+}
+
+/* ═══════════════════════════════════════
+   OVERVIEW BAND
+═══════════════════════════════════════ */
+#overview{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:1px;background:var(--ln);
+  border-top:1px solid var(--ln);
+}
+.ov{
+  background:var(--dp);
+  padding:2rem 2.5rem;
+  position:relative;overflow:hidden;
+}
+.ov::after{
+  content:'';position:absolute;
+  left:0;top:0;width:100%;height:2px;
+  background:var(--era);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .6s .2s;
+}
+.ov.in::after{transform:scaleX(1);}
+.ov-n{
+  font-family:var(--fa);font-weight:900;
+  font-size:clamp(2rem,3.5vw,4rem);
+  line-height:1;color:var(--era);
+  margin-bottom:.2rem;
+}
+.ov-k{
+  font-family:var(--fc);font-size:.52rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--mid);
+}
+.ov-d{font-family:var(--fc);font-size:.6rem;color:var(--muted);margin-top:.3rem;}
+
+/* ═══════════════════════════════════════
+   ERA 1  -  OSCILLOSCOPE / CRT
+═══════════════════════════════════════ */
+#era1{
+  position:relative;
+  background:#030a04;
+  overflow:hidden;
+}
+.osc-lines{
+  position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent 0px,transparent 2px,
+    rgba(0,255,80,.03) 2px,rgba(0,255,80,.03) 4px
+  );
+}
+.osc-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 85% 65% at 50% 50%,transparent 40%,rgba(0,0,0,.55) 100%);
+}
+.era1-inner{position:relative;z-index:2;padding:4rem 5vw;}
+.era1-head{
+  margin-bottom:2.5rem;
+}
+.era1-prompt{
+  font-family:var(--fc);font-size:.58rem;
+  color:#22c55e;opacity:.6;letter-spacing:.08em;
+  margin-bottom:.4rem;
+}
+.era1-title{
+  font-family:var(--fa);font-weight:900;font-style:italic;
+  font-size:clamp(3rem,7vw,8rem);
+  line-height:.88;color:#22c55e;
+  text-shadow:0 0 40px rgba(34,197,94,.3);
+}
+.era1-desc{
+  font-family:var(--fc);font-size:.72rem;
+  color:#15803d;line-height:1.8;
+  padding:1rem 1.5rem;
+  border-left:2px solid #15803d;
+  margin:1.5rem 0 2.5rem;
+  max-width:650px;
+}
+/* log entries */
+.log-entry{
+  border-bottom:1px solid #0a1a0a;
+  transition:background .15s;
+  cursor:pointer;
+}
+.log-entry:hover,.log-entry.open{background:rgba(34,197,94,.03);}
+.le-head{
+  display:grid;
+  grid-template-columns:100px 220px 1fr 28px;
+  gap:1rem;align-items:center;
+  padding:.85rem 0;
+}
+.le-id{
+  font-family:var(--fc);font-size:.58rem;
+  color:#22c55e;font-weight:600;letter-spacing:.06em;
+}
+.le-name{
+  font-family:var(--fa);font-weight:700;font-size:1rem;
+  color:#4ade80;
+}
+.le-brief{
+  font-family:var(--fc);font-size:.65rem;
+  color:#15803d;line-height:1.5;
+}
+.le-arrow{
+  font-family:var(--fc);font-size:.5rem;color:#22c55e;
+  transition:transform .25s;text-align:center;
+}
+.log-entry.open .le-arrow{transform:rotate(90deg);}
+.le-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1);
+  padding:0;
+}
+.log-entry.open .le-body{
+  max-height:800px;
+  padding-bottom:1.5rem;
+}
+.le-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:#0a1a0a;
+  margin-top:1rem;
+}
+.lc{
+  background:#030a04;padding:.9rem 1rem;
+}
+.lc-k{
+  font-family:var(--fc);font-size:.48rem;letter-spacing:.1em;
+  text-transform:uppercase;color:#15803d;margin-bottom:.3rem;
+}
+.lc-v{
+  font-family:var(--fc);font-size:.72rem;color:#4ade80;
+  line-height:1.6;
+}
+.le-changes{
+  list-style:none;margin-top:1rem;
+  display:flex;flex-direction:column;gap:.35rem;
+}
+.le-changes li{
+  display:flex;gap:.6rem;align-items:flex-start;
+  font-family:var(--fc);font-size:.7rem;color:#166534;
+  line-height:1.6;
+}
+.le-changes li::before{
+  content:'+';color:#22c55e;flex-shrink:0;font-weight:600;
+}
+.le-changes b{color:#4ade80;font-weight:600;}
+.le-tags{display:flex;gap:.3rem;margin-top:.8rem;flex-wrap:wrap;}
+.le-tag{
+  font-family:var(--fc);font-size:.44rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.14rem .4rem;
+  background:rgba(34,197,94,.08);
+  border:1px solid rgba(34,197,94,.2);
+  color:#22c55e;
+}
+
+/* ═══════════════════════════════════════
+   ERA 2 PRE / TRANSITION CARDS
+═══════════════════════════════════════ */
+#era2pre{
+  background:var(--bg);
+  border-top:1px solid var(--ln);
+}
+.e2-header{
+  padding:3rem 5vw 0;
+  display:grid;grid-template-columns:auto 1fr;
+  gap:3rem;align-items:end;
+  margin-bottom:0;
+}
+.e2h-num{
+  font-family:var(--fa);font-weight:900;
+  font-size:clamp(5rem,12vw,14rem);
+  line-height:.85;opacity:.07;
+  letter-spacing:-.04em;color:var(--tx);
+}
+.e2h-era{
+  font-family:var(--fc);font-size:.55rem;letter-spacing:.25em;
+  text-transform:uppercase;color:#ef4444;margin-bottom:.4rem;
+}
+.e2h-title{
+  font-family:var(--fa);font-weight:900;font-style:italic;
+  font-size:clamp(2.5rem,6vw,6rem);
+  line-height:.9;color:var(--tx);
+}
+.e2h-sub{
+  font-family:var(--fb);font-style:italic;
+  font-size:1rem;color:var(--mid);
+  margin-top:.5rem;max-width:500px;line-height:1.7;
+}
+.hf-row-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--ln);
+  margin-top:2rem;
+  border-top:1px solid var(--ln);
+}
+.hfr{
+  background:var(--bg);padding:1.8rem 2rem;
+  cursor:pointer;transition:background .15s;
+  border-bottom:3px solid transparent;
+}
+.hfr:hover,.hfr.open{background:var(--dp);}
+.hfr.open{border-bottom-color:#ef4444;}
+.hfr-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:.6rem;
+}
+.hfr-num{
+  font-family:var(--fa);font-weight:900;
+  font-size:3rem;line-height:1;
+  color:#ef4444;opacity:.2;letter-spacing:-.02em;
+}
+.hfr-badge{
+  font-family:var(--fc);font-size:.46rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:#ef4444;
+  border:1px solid rgba(239,68,68,.3);
+  padding:.15rem .4rem;
+  height:fit-content;
+}
+.hfr-name{
+  font-family:var(--fb);font-weight:700;font-size:1.05rem;
+  color:var(--tx);margin-bottom:.2rem;
+}
+.hfr-date{
+  font-family:var(--fc);font-size:.52rem;color:var(--muted);
+}
+.hfr-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s ease;
+  padding:0;
+}
+.hfr.open .hfr-body{max-height:600px;padding-top:.8rem;margin-top:.8rem;border-top:1px solid var(--ln);}
+.hfr-desc{
+  font-family:var(--fc);font-size:.72rem;color:var(--mid);
+  line-height:1.7;margin-bottom:.8rem;
+}
+.hfr-list{
+  list-style:none;display:flex;flex-direction:column;gap:.3rem;
+}
+.hfr-list li{
+  display:flex;gap:.5rem;align-items:flex-start;
+  font-family:var(--fc);font-size:.68rem;color:var(--mid);line-height:1.6;
+}
+.hfr-list li::before{
+  content:'';width:4px;height:4px;border-radius:50%;
+  background:#ef4444;flex-shrink:0;margin-top:.45rem;
+}
+.hfr-list b{color:var(--tx);font-weight:600;}
+
+/* ═══════════════════════════════════════
+   BUCEPHALUS  -  SEISMIC / NEWSPAPER
+═══════════════════════════════════════ */
+#bucephalus{
+  background:#faf6ee;
+  color:#111;
+  border-top:4px solid #111;
+  overflow:hidden;
+  position:relative;
+}
+.buc-noise{
+  position:absolute;inset:0;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:300px;
+}
+.buc-inner{
+  position:relative;z-index:1;
+  max-width:1300px;margin:0 auto;
+  padding:2.5rem 5vw 3.5rem;
+}
+.buc-masthead{
+  border-top:3px solid #111;
+  border-bottom:1px solid #111;
+  text-align:center;
+  padding:.4rem;
+  margin-bottom:.4rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-style:italic;
+  font-size:.65rem;letter-spacing:.35em;
+  text-transform:uppercase;color:#8b0000;
+}
+.buc-dateline{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  border-bottom:3px double #111;
+  padding-bottom:.5rem;margin-bottom:1.2rem;
+  font-family:var(--fc);font-size:.5rem;color:#444;letter-spacing:.06em;
+}
+.buc-dateline-center{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;}
+.buc-kicker{
+  text-align:center;
+  font-family:var(--fc);font-size:.6rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#8b0000;
+  margin-bottom:.4rem;
+}
+.buc-headline{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:900;text-align:center;
+  line-height:.88;letter-spacing:-.02em;
+  margin-bottom:.5rem;
+}
+.buc-hl1{display:block;font-size:clamp(1.2rem,3.5vw,3.5rem);font-style:italic;color:#555;}
+.buc-hl2{display:block;font-size:clamp(5rem,16vw,18rem);color:#111;}
+.buc-hl3{display:block;font-size:clamp(1.5rem,4.5vw,5rem);font-style:italic;color:#8b0000;}
+.buc-deck{
+  text-align:center;
+  font-family:'Instrument Serif',serif;font-size:1.05rem;font-style:italic;
+  color:#444;border-top:1px solid #ccc;border-bottom:1px solid #ccc;
+  padding:.5rem 0;margin-bottom:1.5rem;max-width:700px;margin-left:auto;margin-right:auto;
+}
+.buc-columns{
+  display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;
+  gap:1.5rem;
+  border-top:1px solid #ccc;
+  padding-top:1.2rem;
+  margin-bottom:1.5rem;
+}
+.buc-col-div{background:#ddd;}
+.bc-hl{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:1rem;line-height:1.15;
+  border-bottom:1px solid #ccc;padding-bottom:.3rem;margin-bottom:.5rem;
+  color:#111;
+}
+.bc-body{
+  font-family:'Instrument Serif',serif;font-size:.82rem;
+  color:#222;line-height:1.9;text-align:justify;
+}
+.bc-body b{font-weight:700;font-style:normal;}
+.buc-statsband{
+  border-top:2px solid #111;border-bottom:2px solid #111;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:0;margin-bottom:1.5rem;
+}
+.bss{
+  text-align:center;padding:.8rem;
+  border-right:1px solid #ccc;
+}
+.bss:last-child{border-right:none;}
+.bss-v{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:clamp(1.5rem,2.5vw,3rem);color:#8b0000;line-height:1;
+}
+.bss-k{
+  font-family:var(--fc);font-size:.48rem;letter-spacing:.1em;
+  text-transform:uppercase;color:#666;
+}
+.buc-vitals{
+  background:#111;color:#faf6ee;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:#111;
+}
+.bv{background:#111;padding:.9rem 1.2rem;}
+.bv-k{
+  font-family:var(--fc);font-size:.46rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#555;margin-bottom:.15rem;
+}
+.bv-v{
+  font-family:var(--fc);font-size:.8rem;
+  font-weight:600;color:#ef4444;
+}
+
+/* ═══════════════════════════════════════
+   BERN  -  DEEP BANK / MIDNIGHT
+═══════════════════════════════════════ */
+#bern{
+  background:#050e1a;
+  border-top:1px solid #0c1e32;
+  overflow:hidden;
+  position:relative;
+}
+.bern-halftone{
+  position:absolute;right:0;top:0;width:50%;height:100%;
+  pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 80% at 100% 50%,
+      rgba(6,182,212,.04) 0%,transparent 65%
+    );
+}
+.bern-inner{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:5fr 4fr;
+  min-height:620px;
+  border-bottom:1px solid #0c1e32;
+}
+.bern-left{
+  padding:4rem 3.5rem 4rem 5vw;
+  border-right:1px solid #0c1e32;
+}
+.bern-right{
+  padding:4rem 5vw 4rem 3rem;
+  background:rgba(6,182,212,.02);
+}
+.bern-classification{
+  font-family:var(--fc);font-size:.52rem;letter-spacing:.28em;
+  text-transform:uppercase;color:#0e7490;
+  display:flex;align-items:center;gap:.8rem;margin-bottom:2rem;
+}
+.bern-classification::before,.bern-classification::after{
+  content:'';height:1px;background:#0e7490;
+}
+.bern-classification::before{width:28px;}
+.bern-classification::after{flex:1;}
+.bern-hfid{
+  font-family:var(--fc);font-size:.58rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#0891b2;margin-bottom:.25rem;
+}
+.bern-name{
+  font-family:var(--fa);font-weight:900;font-style:italic;
+  font-size:clamp(5rem,11vw,12rem);
+  line-height:.84;letter-spacing:-.02em;
+  color:#fff;margin-bottom:.6rem;
+}
+.bern-tagline{
+  font-family:var(--fb);font-style:italic;font-size:1rem;
+  color:var(--mid);line-height:1.7;margin-bottom:2rem;
+  max-width:380px;
+}
+.bern-cert{
+  border:1px solid #0c2035;
+  margin-bottom:1.5rem;
+}
+.bcert-header{
+  background:#06b6d4;
+  padding:.4rem 1rem;
+  font-family:var(--fc);font-size:.48rem;letter-spacing:.16em;
+  text-transform:uppercase;color:#000;font-weight:600;
+}
+.bcert-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:.55rem 1rem;border-bottom:1px solid #0c2035;
+}
+.bcert-row:last-child{border-bottom:none;}
+.bcr-k{font-family:var(--fc);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.bcr-v{font-family:var(--fc);font-size:.75rem;font-weight:600;color:#06b6d4;}
+/* burn chart */
+.burn-chart{margin-top:1.2rem;}
+.bch-label{
+  font-family:var(--fc);font-size:.5rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;
+}
+.bch-row{display:flex;align-items:center;gap:1rem;margin-bottom:.5rem;}
+.bch-name{font-family:var(--fc);font-size:.56rem;color:var(--mid);min-width:95px;}
+.bch-track{
+  flex:1;height:30px;background:var(--dim);
+  position:relative;overflow:hidden;
+}
+.bch-fill{
+  height:100%;position:absolute;left:0;top:0;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 1.4s cubic-bezier(.19,1,.22,1) .3s;
+  display:flex;align-items:center;padding-left:.5rem;
+}
+#bern.in .bch-fill{transform:scaleX(1);}
+.bch-fill-v{
+  font-family:var(--fa);font-weight:900;
+  font-size:1rem;color:rgba(255,255,255,.6);
+}
+.bch-num{
+  font-family:var(--fc);font-size:.6rem;font-weight:600;
+  min-width:55px;text-align:right;
+}
+/* bern changes */
+.bern-changes-title{
+  font-family:var(--fc);font-size:.55rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#0891b2;
+  margin-bottom:.8rem;
+  padding-bottom:.5rem;border-bottom:1px solid #0c2035;
+}
+.bern-change{
+  padding:.85rem 0;border-bottom:1px solid #081624;
+  display:flex;gap:.75rem;
+}
+.bern-change:last-child{border-bottom:none;}
+.bcd{width:5px;height:5px;border-radius:50%;background:#06b6d4;flex-shrink:0;margin-top:.42rem;}
+.bct{font-family:var(--fc);font-weight:600;font-size:.78rem;color:var(--tx);margin-bottom:.2rem;}
+.bcd-text{font-family:var(--fc);font-size:.72rem;color:var(--mid);line-height:1.65;}
+
+/* ═══════════════════════════════════════
+   HERMES  -  SIGNAL / VELOCITY
+═══════════════════════════════════════ */
+#hermes{
+  position:relative;
+  background:#06030e;
+  border-top:1px solid #12072a;
+  overflow:hidden;
+}
+#hermesCanvas{
+  position:absolute;inset:0;width:100%;height:100%;
+}
+.hermes-inner{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:600px;
+}
+.hermes-left{
+  padding:4rem 3.5rem 4rem 5vw;
+  border-right:1px solid rgba(124,58,237,.12);
+}
+.hermes-right{padding:4rem 5vw 4rem 3rem;}
+.hermes-hfid{
+  font-family:var(--fc);font-size:.58rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#7c3aed;margin-bottom:.25rem;
+}
+.hermes-name{
+  font-family:var(--fa);font-weight:900;font-style:italic;
+  font-size:clamp(5rem,11vw,12rem);
+  line-height:.84;letter-spacing:-.02em;
+  color:#fff;margin-bottom:.6rem;
+}
+.hermes-tagline{
+  font-family:var(--fb);font-style:italic;
+  font-size:1rem;color:#6b7280;line-height:1.7;
+  margin-bottom:2rem;max-width:380px;
+}
+.hermes-cert{border:1px solid #12072a;margin-bottom:0;}
+.hermes-cert-header{
+  background:#7c3aed;padding:.4rem 1rem;
+  font-family:var(--fc);font-size:.48rem;letter-spacing:.16em;
+  text-transform:uppercase;color:#fff;font-weight:600;
+}
+.hcert-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:.55rem 1rem;border-bottom:1px solid #0d062a;
+}
+.hcert-row:last-child{border-bottom:none;}
+.hcr-k{font-family:var(--fc);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.hcr-v{font-family:var(--fc);font-size:.75rem;font-weight:600;color:#7c3aed;}
+.hermes-changes-title{
+  font-family:var(--fc);font-size:.55rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#7c3aed;
+  margin-bottom:.8rem;
+  padding-bottom:.5rem;border-bottom:1px solid #12072a;
+}
+.hermes-change{
+  padding:.85rem 0;border-bottom:1px solid #06030e;
+  display:flex;gap:.75rem;
+}
+.hermes-change:last-child{border-bottom:none;}
+.hcd{width:5px;height:5px;border-radius:50%;background:#7c3aed;flex-shrink:0;margin-top:.42rem;}
+.hct{font-family:var(--fc);font-weight:600;font-size:.78rem;color:var(--tx);margin-bottom:.2rem;}
+.hcd-text{font-family:var(--fc);font-size:.72rem;color:var(--mid);line-height:1.65;}
+
+/* ═══════════════════════════════════════
+   OBSCURA  -  DARKROOM AMBER
+═══════════════════════════════════════ */
+#obscura{
+  position:relative;
+  background:#0a0600;
+  border-top:2px solid #1c1000;
+  overflow:hidden;
+}
+.obscura-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 70% at 12% 50%,
+      rgba(245,158,11,.06) 0%,transparent 65%);
+}
+.obscura-inner{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:620px;
+}
+.obscura-left{
+  padding:4rem 3.5rem 4rem 5vw;
+  border-right:1px solid #1c1000;
+}
+.obscura-right{
+  padding:4rem 5vw 4rem 3rem;
+  background:rgba(245,158,11,.015);
+}
+.obscura-hfid{
+  font-family:var(--fc);font-size:.58rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#b45309;margin-bottom:.25rem;
+}
+.obscura-name{
+  font-family:var(--fa);font-weight:900;font-style:italic;
+  font-size:clamp(5rem,11vw,12rem);
+  line-height:.84;letter-spacing:-.02em;
+  color:#fff;margin-bottom:.6rem;
+}
+.obscura-tagline{
+  font-family:var(--fb);font-style:italic;
+  font-size:1rem;color:#78716c;line-height:1.7;
+  margin-bottom:2rem;max-width:380px;
+}
+.obscura-cert{border:1px solid #1c1000;margin-bottom:1.5rem;}
+.obscura-cert-header{
+  background:#f59e0b;padding:.4rem 1rem;
+  font-family:var(--fc);font-size:.48rem;letter-spacing:.16em;
+  text-transform:uppercase;color:#000;font-weight:600;
+}
+.ocert-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:.55rem 1rem;border-bottom:1px solid #140c00;
+}
+.ocert-row:last-child{border-bottom:none;}
+.ocr-k{font-family:var(--fc);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:#4a3820;}
+.ocr-v{font-family:var(--fc);font-size:.75rem;font-weight:600;color:#f59e0b;}
+/* proof compression chart */
+.proof-chart{margin-top:1.2rem;}
+.pc-label{
+  font-family:var(--fc);font-size:.5rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#4a3820;margin-bottom:.8rem;
+}
+.pc-row{display:flex;align-items:center;gap:1rem;margin-bottom:.6rem;}
+.pc-name{font-family:var(--fc);font-size:.56rem;color:#78716c;min-width:120px;}
+.pc-bar-wrap{flex:1;height:32px;background:var(--dim);position:relative;overflow:hidden;}
+.pc-bar{
+  height:100%;position:absolute;left:0;top:0;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 1.5s cubic-bezier(.19,1,.22,1);
+  display:flex;align-items:center;padding-left:.5rem;
+}
+#obscura.in .pc-bar{transform:scaleX(1);}
+.pc-bar-v{
+  font-family:var(--fa);font-weight:900;
+  font-size:.95rem;color:rgba(0,0,0,.5);white-space:nowrap;
+}
+.pc-pct{font-family:var(--fc);font-size:.6rem;font-weight:600;min-width:50px;text-align:right;}
+/* obscura changes */
+.obscura-changes-title{
+  font-family:var(--fc);font-size:.55rem;letter-spacing:.2em;
+  text-transform:uppercase;color:#b45309;
+  margin-bottom:.8rem;
+  padding-bottom:.5rem;border-bottom:1px solid #1c1000;
+}
+.obscura-change{
+  padding:.85rem 0;border-bottom:1px solid #0a0600;
+  display:flex;gap:.75rem;
+}
+.obscura-change:last-child{border-bottom:none;}
+.ocd{width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;margin-top:.42rem;}
+.oct{font-family:var(--fc);font-weight:600;font-size:.78rem;color:var(--tx);margin-bottom:.2rem;}
+.ocd-text{font-family:var(--fc);font-size:.72rem;color:#78716c;line-height:1.65;}
+
+/* ═══════════════════════════════════════
+   COMPLETE LEDGER TABLE
+═══════════════════════════════════════ */
+#ledger{
+  padding:5rem 5vw;
+  border-top:1px solid var(--ln);
+  background:var(--dp);
+}
+.ldg-head{
+  display:flex;align-items:flex-end;gap:2.5rem;
+  margin-bottom:2.5rem;
+}
+.ldg-bnum{
+  font-family:var(--fa);font-weight:900;
+  font-size:clamp(5rem,11vw,12rem);
+  line-height:.85;opacity:.06;letter-spacing:-.03em;
+  color:var(--tx);
+}
+.ldg-title{
+  font-family:var(--fb);font-weight:700;font-style:italic;
+  font-size:clamp(2rem,4.5vw,4.5rem);color:var(--tx);
+}
+.ldg-sub{
+  font-family:var(--fc);font-size:.58rem;
+  color:var(--mid);letter-spacing:.08em;margin-top:.2rem;
+}
+.tbl-wrap{overflow-x:auto;}
+table.lt{
+  width:100%;border-collapse:collapse;
+  font-family:var(--fc);
+}
+.lt th{
+  font-size:.5rem;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);
+  padding:.7rem 1rem;text-align:left;
+  background:var(--pn);border-bottom:1px solid var(--ln);
+  white-space:nowrap;
+}
+.lt td{
+  padding:.75rem 1rem;border-bottom:1px solid var(--dim);
+  font-size:.7rem;vertical-align:middle;transition:background .15s;
+}
+.lt tr:hover td{background:rgba(255,255,255,.012);}
+/* era-colored rows */
+.lt tr.era1 td:first-child{border-left:2px solid #22c55e;}
+.lt tr.era2 td:first-child{border-left:2px solid #ef4444;}
+.lt tr.era3 td:first-child{border-left:2px solid #06b6d4;}
+.lt tr.named td{background:rgba(255,255,255,.008);}
+.l-id{font-weight:700;font-size:.62rem;letter-spacing:.04em;}
+.l-name{
+  font-family:var(--fb);font-style:italic;
+  font-size:.95rem;font-weight:700;color:var(--tx);
+}
+.l-date{color:var(--mid);font-size:.6rem;}
+.l-height{color:var(--muted);font-size:.58rem;font-weight:600;}
+.l-desc{color:var(--mid);max-width:280px;font-size:.7rem;line-height:1.55;}
+.l-pill{
+  display:inline-flex;align-items:center;
+  font-family:var(--fc);font-size:.44rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.15rem .42rem;border-radius:2px;
+  margin-right:.2rem;margin-bottom:.2rem;
+}
+.lp-prv{background:rgba(34,197,94,.1);color:#22c55e;}
+.lp-con{background:rgba(239,68,68,.1);color:#ef4444;}
+.lp-id {background:rgba(6,182,212,.1);color:#06b6d4;}
+.lp-sc {background:rgba(124,58,237,.1);color:#7c3aed;}
+
+/* ═══════════════════════════════════════
+   BOTTOM STATS
+═══════════════════════════════════════ */
+#bottomStats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--ln);border-top:1px solid var(--ln);
+}
+.bs{background:var(--bg);padding:2.5rem 2.5rem;}
+.bs-v{
+  font-family:var(--fa);font-weight:900;
+  font-size:clamp(2.2rem,4vw,4.5rem);
+  line-height:1;margin-bottom:.2rem;
+}
+.bs-k{
+  font-family:var(--fc);font-size:.52rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mid);
+}
+.bs-d{
+  font-family:var(--fb);font-style:italic;
+  font-size:.85rem;color:var(--muted);margin-top:.3rem;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer{
+  padding:1.2rem 5vw;border-top:1px solid var(--ln);
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--fc);font-size:.5rem;color:var(--muted);letter-spacing:.08em;
+}
+
+/* ═══════════════════════════════════════
+   REVEAL
+═══════════════════════════════════════ */
+.rv{opacity:0;transform:translateY(22px);}
+.rv.in{animation:fU .52s ease forwards;}
+@keyframes fU{to{opacity:1;transform:none;}}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:900px){
+  .hero-content{grid-template-columns:1fr;}
+  #overview{grid-template-columns:1fr 1fr;}
+  .hf-row-grid{grid-template-columns:1fr;}
+  .bern-inner,.hermes-inner,.obscura-inner{grid-template-columns:1fr;}
+  .bern-left,.bern-right,.hermes-left,.hermes-right,.obscura-left,.obscura-right{padding:2.5rem 5vw;}
+  .buc-columns{grid-template-columns:1fr;}
+  .buc-col-div{display:none;}
+  .buc-statsband{grid-template-columns:1fr 1fr;}
+  .buc-vitals{grid-template-columns:1fr 1fr;}
+  #bottomStats{grid-template-columns:1fr 1fr;}
+  .le-head{grid-template-columns:80px 1fr 28px;}
+  .le-brief{display:none;}
+  .le-grid{grid-template-columns:1fr 1fr;}
+  .e2-header{grid-template-columns:1fr;}
+  .e2h-num{font-size:5rem;}
+  .ldg-head{flex-direction:column;gap:.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero">
+  <canvas id="sigCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-label">Protocol Signal Log</div>
+      <h1 class="hero-title">
+        <span class="t1">The Beldex Protocol</span>
+        <span class="t2">20 HARD<br>FORKS</span>
+        <span class="t3">2018 &nbsp;→&nbsp; 2025</span>
+      </h1>
+    </div>
+    <div class="hero-right">
+      <div class="hstat"><div class="hstat-v">20</div><div class="hstat-k">Total Hardforks</div></div>
+      <div class="hstat"><div class="hstat-v">4</div><div class="hstat-k">Named Upgrades</div></div>
+      <div class="hstat"><div class="hstat-v">93%</div><div class="hstat-k">Proof Reduction</div></div>
+      <div class="hstat"><div class="hstat-v">7 yrs</div><div class="hstat-k">Evolution</div></div>
+    </div>
+  </div>
+  <div class="hero-ticker">
+    <div class="ticker-inner" id="ticker">
+      <span>HF1-3</span> Genesis &nbsp;/&nbsp; 2018 &nbsp;&nbsp;
+      <span>HF4</span> Ring Expansion &nbsp;/&nbsp; 2019 &nbsp;&nbsp;
+      <span>HF5</span> Masternodes &nbsp;/&nbsp; 2019 &nbsp;&nbsp;
+      <span>HF6-7</span> Bulletproofs v1 &nbsp;/&nbsp; 2019-20 &nbsp;&nbsp;
+      <span>HF8</span> Emission Tune &nbsp;/&nbsp; 2020 &nbsp;&nbsp;
+      <span>HF9</span> Network Hardening &nbsp;/&nbsp; 2020 &nbsp;&nbsp;
+      <span>HF10-12</span> Pre-PoS Prep &nbsp;/&nbsp; 2020-21 &nbsp;&nbsp;
+      <span>HF13</span> Batch Governance &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF14</span> Checkpoints &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF15</span> Flash TX + dApps &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF16</span> Final PoW &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF17 BUCEPHALUS</span> PoS Transition &nbsp;/&nbsp; Block 742,421 &nbsp;/&nbsp; Dec 2021 &nbsp;&nbsp;
+      <span>HF18 BERN</span> BNS + Fee Burn &nbsp;/&nbsp; Block 2,986,890 &nbsp;/&nbsp; Feb 2024 &nbsp;&nbsp;
+      <span>HF19 HERMES</span> ETH Bridge + MN Cap &nbsp;/&nbsp; Block 3,546,545 &nbsp;/&nbsp; Sep 2024 &nbsp;&nbsp;
+      <span>HF20 OBSCURA</span> Bulletproofs++ &nbsp;/&nbsp; Block 4,939,540 &nbsp;/&nbsp; Dec 2025 &nbsp;&nbsp;
+      <!-- duplicate for seamless loop -->
+      <span>HF1-3</span> Genesis &nbsp;/&nbsp; 2018 &nbsp;&nbsp;
+      <span>HF4</span> Ring Expansion &nbsp;/&nbsp; 2019 &nbsp;&nbsp;
+      <span>HF5</span> Masternodes &nbsp;/&nbsp; 2019 &nbsp;&nbsp;
+      <span>HF6-7</span> Bulletproofs v1 &nbsp;/&nbsp; 2019-20 &nbsp;&nbsp;
+      <span>HF8</span> Emission Tune &nbsp;/&nbsp; 2020 &nbsp;&nbsp;
+      <span>HF9</span> Network Hardening &nbsp;/&nbsp; 2020 &nbsp;&nbsp;
+      <span>HF10-12</span> Pre-PoS Prep &nbsp;/&nbsp; 2020-21 &nbsp;&nbsp;
+      <span>HF13</span> Batch Governance &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF14</span> Checkpoints &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF15</span> Flash TX + dApps &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF16</span> Final PoW &nbsp;/&nbsp; 2021 &nbsp;&nbsp;
+      <span>HF17 BUCEPHALUS</span> PoS Transition &nbsp;/&nbsp; Block 742,421 &nbsp;/&nbsp; Dec 2021 &nbsp;&nbsp;
+      <span>HF18 BERN</span> BNS + Fee Burn &nbsp;/&nbsp; Block 2,986,890 &nbsp;/&nbsp; Feb 2024 &nbsp;&nbsp;
+      <span>HF19 HERMES</span> ETH Bridge + MN Cap &nbsp;/&nbsp; Block 3,546,545 &nbsp;/&nbsp; Sep 2024 &nbsp;&nbsp;
+      <span>HF20 OBSCURA</span> Bulletproofs++ &nbsp;/&nbsp; Block 4,939,540 &nbsp;/&nbsp; Dec 2025 &nbsp;&nbsp;
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SIGNAL BAR ═══════════ -->
+<div id="sigBar">
+  <div class="sb-era e1" onclick="document.getElementById('era1').scrollIntoView({behavior:'smooth'})"><div class="sb-era-dot"></div>Foundation</div>
+  <div class="sb-era e2" onclick="document.getElementById('era2pre').scrollIntoView({behavior:'smooth'})"><div class="sb-era-dot"></div>Awakening</div>
+  <div class="sb-era e3" onclick="document.getElementById('bern').scrollIntoView({behavior:'smooth'})"><div class="sb-era-dot"></div>Ecosystem</div>
+  <div class="sb-forks" id="sbForks">
+    <div class="sb-hf e1" data-t="era1">HF1-3</div>
+    <div class="sb-hf e1" data-t="era1">HF4</div>
+    <div class="sb-hf e1" data-t="era1">HF5</div>
+    <div class="sb-hf e1" data-t="era1">HF6-7</div>
+    <div class="sb-hf e1" data-t="era1">HF8</div>
+    <div class="sb-hf e1" data-t="era1">HF9</div>
+    <div class="sb-hf e2" data-t="era2pre">HF10-12</div>
+    <div class="sb-hf e2" data-t="era2pre">HF13</div>
+    <div class="sb-hf e2" data-t="era2pre">HF14</div>
+    <div class="sb-hf e2" data-t="era2pre">HF15</div>
+    <div class="sb-hf e2" data-t="era2pre">HF16</div>
+    <div class="sb-hf e2 named" data-t="bucephalus">HF17 BUCEPHALUS</div>
+    <div class="sb-hf e3 named" data-t="bern">HF18 BERN</div>
+    <div class="sb-hf e3 named" data-t="hermes">HF19 HERMES</div>
+    <div class="sb-hf e3 named" data-t="obscura">HF20 OBSCURA</div>
+  </div>
+  <div class="sb-now" id="sbNow">Era 1  -  Foundation</div>
+</div>
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<div id="overview">
+  <div class="ov rv"><div class="ov-n">20</div><div class="ov-k">Total Hardforks</div><div class="ov-d">HF1 through HF20 / 2018 to 2025</div></div>
+  <div class="ov rv"><div class="ov-n">93%</div><div class="ov-k">Proof Size Reduction</div><div class="ov-d">Borromean 6.1 KB to Bulletproofs++ 417 B</div></div>
+  <div class="ov rv"><div class="ov-n">4x</div><div class="ov-k">Block Speed Increase</div><div class="ov-d">120 second to 30 second blocks</div></div>
+  <div class="ov rv"><div class="ov-n">5x</div><div class="ov-k">Block Reward Growth</div><div class="ov-d">2 BDX per block to 10 BDX per block</div></div>
+  <div class="ov rv"><div class="ov-n">1.5M</div><div class="ov-k">BDX Burned Day 1</div><div class="ov-d">First 24 hours after Bern launched</div></div>
+</div>
+
+<!-- ═══════════ ERA 1: OSCILLOSCOPE / CRT ═══════════ -->
+<section id="era1">
+  <div class="osc-lines"></div>
+  <div class="osc-vignette"></div>
+  <div class="era1-inner">
+    <div class="era1-head">
+      <div class="era1-prompt">root@beldex:~$ tail -f /var/log/protocol/era1.log</div>
+      <div class="era1-title">FOUNDATION<br>ERA</div>
+    </div>
+    <div class="era1-desc">
+      &gt; Period: 2018 to 2020 &nbsp;&nbsp;/&nbsp;&nbsp; Hardforks HF1 through HF9<br>
+      &gt; Consensus model: Proof of Work &nbsp;/&nbsp; CryptoNight-Heavy algorithm<br>
+      &gt; Privacy: mandatory from genesis  -  ring signatures, stealth addresses, RingCT enforced on every transaction<br>
+      &gt; Nine hardforks tighten the anonymity set, activate masternodes, and replace heavyweight Borromean range proofs with Bulletproofs
+    </div>
+
+    <!-- HF 1-3 -->
+    <div class="log-entry rv" onclick="this.classList.toggle('open')">
+      <div class="le-head">
+        <div class="le-id">HF1  -  HF3</div>
+        <div class="le-name">Genesis Configuration</div>
+        <div class="le-brief">CryptoNote base layer. Ring sigs, stealth addresses, RingCT enforced from block one. Three early forks calibrate emission and block timing.</div>
+        <div class="le-arrow">&#9654;</div>
+      </div>
+      <div class="le-body">
+        <div class="le-grid">
+          <div class="lc"><div class="lc-k">Date</div><div class="lc-v">2018</div></div>
+          <div class="lc"><div class="lc-k">Consensus</div><div class="lc-v">CryptoNight-Heavy PoW</div></div>
+          <div class="lc"><div class="lc-k">Base Protocol</div><div class="lc-v">CryptoNote (Monero fork)</div></div>
+        </div>
+        <ul class="le-changes">
+          <li><b>Ring Signatures mandatory</b>  -  Every transaction input is mixed with decoy outputs. Sender identity is hidden by default. No transparent mode exists.</li>
+          <li><b>Stealth Addresses</b>  -  The sender generates a one-time address per payment using ECDH. The recipient's real address never appears on-chain.</li>
+          <li><b>RingCT enforced on all transactions</b>  -  Transaction amounts hidden using Pedersen commitments where C = xG + aH. No amount is visible to external observers.</li>
+          <li><b>Key images I = x*Hp(P)</b>  -  Each spend produces a unique key image that prevents double-spending without revealing what was spent.</li>
+          <li><b>Emission curve calibrated</b>  -  Block reward decay schedule set for long-term supply sustainability.</li>
+          <li><b>HF1 through HF3</b>  -  Three rapid stabilization forks in the first weeks tune emission and network parameters.</li>
+        </ul>
+        <div class="le-tags"><span class="le-tag">Privacy</span><span class="le-tag">RingCT</span><span class="le-tag">Ring Sig</span><span class="le-tag">Genesis</span></div>
+      </div>
+    </div>
+
+    <!-- HF4 -->
+    <div class="log-entry rv" onclick="this.classList.toggle('open')">
+      <div class="le-head">
+        <div class="le-id">HF4</div>
+        <div class="le-name">Ring Size Expansion</div>
+        <div class="le-brief">Minimum ring size increased. Larger anonymity set per input. Statistical tracing attacks become exponentially harder.</div>
+        <div class="le-arrow">&#9654;</div>
+      </div>
+      <div class="le-body">
+        <div class="le-grid">
+          <div class="lc"><div class="lc-k">Date</div><div class="lc-v">2019</div></div>
+          <div class="lc"><div class="lc-k">Change Type</div><div class="lc-v">Privacy Hardening</div></div>
+          <div class="lc"><div class="lc-k">Effect</div><div class="lc-v">Larger anonymity set</div></div>
+        </div>
+        <ul class="le-changes">
+          <li><b>Minimum ring size increased</b>  -  More decoy outputs are required per real input in every transaction. The anonymity set grows exponentially.</li>
+          <li><b>EAE attack resistance improved</b>  -  Even-after-even timing analysis becomes statistically negligible. Tracing probability drops toward theoretical noise floor.</li>
+          <li><b>Mandatory wallet enforcement</b>  -  Wallet software is required to submit the new minimum ring size. Smaller rings are rejected at the protocol level.</li>
+          <li><b>No opt-out</b>  -  Unlike optional privacy in some chains, the ring size increase applies to every transaction without exception.</li>
+        </ul>
+        <div class="le-tags"><span class="le-tag">Privacy</span><span class="le-tag">Ring Size</span><span class="le-tag">Anonymity</span></div>
+      </div>
+    </div>
+
+    <!-- HF5 -->
+    <div class="log-entry rv" onclick="this.classList.toggle('open')">
+      <div class="le-head">
+        <div class="le-id">HF5</div>
+        <div class="le-name">Masternodes Activated</div>
+        <div class="le-brief">Masternodes launch as a second layer alongside PoW miners. 10,000 BDX collateral required. Reward queue introduced.</div>
+        <div class="le-arrow">&#9654;</div>
+      </div>
+      <div class="le-body">
+        <div class="le-grid">
+          <div class="lc"><div class="lc-k">Date</div><div class="lc-v">2019</div></div>
+          <div class="lc"><div class="lc-k">Collateral</div><div class="lc-v">10,000 BDX locked</div></div>
+          <div class="lc"><div class="lc-k">Model</div><div class="lc-v">Hybrid PoW + MN</div></div>
+        </div>
+        <ul class="le-changes">
+          <li><b>10,000 BDX collateral required</b>  -  Operators lock BDX to register a masternode. Staked coins are returned on deregistration.</li>
+          <li><b>Hybrid model active</b>  -  PoW miners build blocks. Masternodes validate them and share the block reward. Both layers operate simultaneously.</li>
+          <li><b>Reward queue system</b>  -  Masternodes receive rewards in round-robin order. A node that just received a reward moves to the back of the queue. Ensures fair distribution across all operators.</li>
+          <li><b>Deregistration logic</b>  -  Masternodes that go offline or misbehave are deregistered. Staked BDX is returned but queue position is lost.</li>
+          <li><b>Foundation for PoS transition</b>  -  The masternode layer built here will eventually replace mining entirely in Bucephalus (HF17).</li>
+        </ul>
+        <div class="le-tags"><span class="le-tag">Consensus</span><span class="le-tag">Masternodes</span><span class="le-tag">Governance</span></div>
+      </div>
+    </div>
+
+    <!-- HF6-7 -->
+    <div class="log-entry rv" onclick="this.classList.toggle('open')">
+      <div class="le-head">
+        <div class="le-id">HF6  -  HF7</div>
+        <div class="le-name">Bulletproofs Version 1</div>
+        <div class="le-brief">Borromean range proofs replaced. Transaction size drops 89%. Proof size shrinks from 6,176 bytes to 675 bytes per 2-output transaction.</div>
+        <div class="le-arrow">&#9654;</div>
+      </div>
+      <div class="le-body">
+        <div class="le-grid">
+          <div class="lc"><div class="lc-k">Period</div><div class="lc-v">2019 to 2020</div></div>
+          <div class="lc"><div class="lc-k">Proof Reduction</div><div class="lc-v">6,176 B to 675 B</div></div>
+          <div class="lc"><div class="lc-k">Size Reduction</div><div class="lc-v">89% smaller</div></div>
+        </div>
+        <ul class="le-changes">
+          <li><b>Borromean range proofs retired</b>  -  Old proofs scaled linearly. A 2-output transaction required approximately 6.1 KB of range proof data alone.</li>
+          <li><b>Bulletproofs activated</b>  -  New logarithmic-scaling proofs reduce a 2-output transaction proof to 675 bytes. An 89% size reduction in one upgrade.</li>
+          <li><b>Batch verification enabled</b>  -  Multiple Bulletproofs can be verified together in a single pass. Masternode validation throughput increases significantly.</li>
+          <li><b>Transaction fees drop</b>  -  Smaller transactions cost less. Privacy on Beldex becomes cheaper to use at every volume level.</li>
+          <li><b>Same security guarantees</b>  -  Bulletproofs maintain full zero-knowledge range proof security. No trusted setup required.</li>
+        </ul>
+        <div class="le-tags"><span class="le-tag">Privacy</span><span class="le-tag">Bulletproofs</span><span class="le-tag">Scaling</span><span class="le-tag">Proof Size</span></div>
+      </div>
+    </div>
+
+    <!-- HF8 -->
+    <div class="log-entry rv" onclick="this.classList.toggle('open')">
+      <div class="le-head">
+        <div class="le-id">HF8</div>
+        <div class="le-name">Emission Recalibration</div>
+        <div class="le-brief">CryptoNight-Heavy parameters adjusted against ASICs. Emission schedule recalibrated. Fee structure updated.</div>
+        <div class="le-arrow">&#9654;</div>
+      </div>
+      <div class="le-body">
+        <div class="le-grid">
+          <div class="lc"><div class="lc-k">Date</div><div class="lc-v">2020</div></div>
+          <div class="lc"><div class="lc-k">Focus</div><div class="lc-v">Mining economics</div></div>
+          <div class="lc"><div class="lc-k">Goal</div><div class="lc-v">Anti-ASIC + sustainability</div></div>
+        </div>
+        <ul class="le-changes">
+          <li><b>CryptoNight-Heavy tuned</b>  -  Algorithm parameters adjusted to raise the cost barrier for ASIC hardware manufacturers. GPU and CPU miners remain competitive.</li>
+          <li><b>Block reward curve updated</b>  -  Emission schedule recalibrated for long-term supply management and controlled inflation.</li>
+          <li><b>Transaction fee structure reviewed</b>  -  Fees adjusted to better reflect actual network computational cost.</li>
+        </ul>
+        <div class="le-tags"><span class="le-tag">Consensus</span><span class="le-tag">Anti-ASIC</span><span class="le-tag">Emission</span></div>
+      </div>
+    </div>
+
+    <!-- HF9 -->
+    <div class="log-entry rv" onclick="this.classList.toggle('open')">
+      <div class="le-head">
+        <div class="le-id">HF9</div>
+        <div class="le-name">Protocol Hardening</div>
+        <div class="le-brief">Security edge cases patched. Masternode deregistration reliability improved. Pre-PoS code paths introduced in the daemon.</div>
+        <div class="le-arrow">&#9654;</div>
+      </div>
+      <div class="le-body">
+        <div class="le-grid">
+          <div class="lc"><div class="lc-k">Date</div><div class="lc-v">2020</div></div>
+          <div class="lc"><div class="lc-k">Focus</div><div class="lc-v">Security and stability</div></div>
+          <div class="lc"><div class="lc-k">Preview</div><div class="lc-v">PoS code stubs added</div></div>
+        </div>
+        <ul class="le-changes">
+          <li><b>Security patches applied</b>  -  Edge cases in the P2P layer and transaction validation stack addressed. Attack surface reduced.</li>
+          <li><b>MN deregistration refined</b>  -  False positive deregistrations from network jitter are reduced. Operators benefit from improved stability.</li>
+          <li><b>Pre-PoS stubs added</b>  -  Daemon codebase receives placeholder code paths for the Proof of Stake consensus engine being developed in parallel.</li>
+          <li><b>Protocol stabilized</b>  -  HF9 closes the Foundation era. The protocol is stable enough to begin the larger architectural transformation planned for 2021.</li>
+        </ul>
+        <div class="le-tags"><span class="le-tag">Security</span><span class="le-tag">Consensus</span><span class="le-tag">PoS Prep</span></div>
+      </div>
+    </div>
+
+  </div><!-- /era1-inner -->
+</section>
+
+<!-- ═══════════ ERA 2 PRE-REVOLUTION ═══════════ -->
+<section id="era2pre">
+  <div class="e2-header rv">
+    <div class="e2h-num">02</div>
+    <div class="e2h-text">
+      <div class="e2h-era">Awakening Era &nbsp; 2020-2021</div>
+      <h2 class="e2h-title">Building Toward<br>Revolution</h2>
+      <p class="e2h-sub">Five hardforks prepare the network for Proof of Stake. Checkpoints seal the chain against reorganization. Flash instant transactions activate. The dApp node layer boots up. Everything culminates at block 742,421.</p>
+    </div>
+  </div>
+
+  <div class="hf-row-grid">
+
+    <div class="hfr rv" onclick="this.classList.toggle('open')">
+      <div class="hfr-top"><div class="hfr-num">10-12</div><div class="hfr-badge">Awakening</div></div>
+      <div class="hfr-name">Pre-PoS Refinements</div>
+      <div class="hfr-date">2020 to 2021</div>
+      <div class="hfr-body">
+        <div class="hfr-desc">Three rapid hardforks prepare the architecture for Proof of Stake. The masternode reward system is hardened. The dApp infrastructure is tested on testnet before mainnet activation.</div>
+        <ul class="hfr-list">
+          <li><b>Batched governance outputs</b> replace per-block payments. Thousands of tiny UTXOs are eliminated from the set. Node sync time improves measurably.</li>
+          <li><b>Masternode reward queue formalized</b> across all client implementations. Consensus on queue state is reached deterministically by all nodes.</li>
+          <li><b>Storage server integration</b> tested on testnet. BChat message routing infrastructure is embedded in masternode software for the first time.</li>
+          <li><b>BelNet service node routing</b> begins integration testing. The decentralized VPN layer is being built into the masternode network.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hfr rv" onclick="this.classList.toggle('open')">
+      <div class="hfr-top"><div class="hfr-num">13</div><div class="hfr-badge">Awakening</div></div>
+      <div class="hfr-name">Batched Governance</div>
+      <div class="hfr-date">2021</div>
+      <div class="hfr-body">
+        <div class="hfr-desc">Governance reward payments are fully batched. Instead of per-block outputs, governance funds accumulate over many blocks and are distributed in one transaction. The UTXO set growth rate slows significantly.</div>
+        <ul class="hfr-list">
+          <li><b>Periodic batch payouts</b> replace constant small governance outputs. A large batch every N blocks instead of a small one every block.</li>
+          <li><b>UTXO set growth reduced</b>. Fewer outputs means faster full node sync and smaller storage requirements for all node operators.</li>
+          <li><b>Chain overhead reduced</b>. Less governance data per block leaves more space available for user transactions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hfr rv" onclick="this.classList.toggle('open')">
+      <div class="hfr-top"><div class="hfr-num">14</div><div class="hfr-badge">Awakening</div></div>
+      <div class="hfr-name">Checkpoint Enforcement</div>
+      <div class="hfr-date">2021</div>
+      <div class="hfr-body">
+        <div class="hfr-desc">Masternodes begin signing checkpoint hashes at regular intervals. Once a block depth passes the threshold, reorganization becomes impossible. Finality is now mathematically guaranteed, not probabilistic.</div>
+        <ul class="hfr-list">
+          <li><b>Checkpoint hashes co-signed</b> by masternode quorum every few blocks. The signed checkpoint is embedded in subsequent block data.</li>
+          <li><b>51% attack prevention</b>. A miner with majority hash power cannot reorganize the chain past a signed checkpoint boundary. The attack window is permanently bounded.</li>
+          <li><b>Exchange finality improved</b>. Deposits can be safely confirmed after checkpoint confirmation rather than waiting for long reorg-safe depths.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hfr rv" onclick="this.classList.toggle('open')">
+      <div class="hfr-top"><div class="hfr-num">15</div><div class="hfr-badge">Awakening</div></div>
+      <div class="hfr-name">Flash Transactions + dApps</div>
+      <div class="hfr-date">2021</div>
+      <div class="hfr-body">
+        <div class="hfr-desc">Flash instant transactions activate on mainnet. Sub-2-second confirmation via masternode quorum consensus. The dApp infrastructure node layer comes online.</div>
+        <ul class="hfr-list">
+          <li><b>Flash transaction lock</b>. A quorum of masternodes co-signs a transaction instantly. Merchants can accept BDX with under 2-second confirmation.</li>
+          <li><b>Beldex Storage Server fully integrated</b>. Masternode operators run message routing for BChat. Privacy messaging is routed through the node network.</li>
+          <li><b>BelNet dVPN active</b>. IP-level traffic routing through masternodes is live on mainnet. The decentralized VPN layer begins serving real users.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hfr rv" onclick="this.classList.toggle('open')">
+      <div class="hfr-top"><div class="hfr-num">16</div><div class="hfr-badge">Awakening</div></div>
+      <div class="hfr-name">Final PoW Upgrade</div>
+      <div class="hfr-date">2021</div>
+      <div class="hfr-body">
+        <div class="hfr-desc">The last hardfork under mining. The Proof of Stake consensus engine is finalized in the daemon code. This is the last block produced under the original Proof of Work model before Bucephalus fires at block 742,421.</div>
+        <ul class="hfr-list">
+          <li><b>PoS consensus paths locked</b>. Quorum selection logic, block template signing, and validator coordination code finalized and embedded in the daemon.</li>
+          <li><b>Last mined blocks</b>. After HF16, the next scheduled fork (HF17 Bucephalus) will permanently retire the CryptoNight-Heavy mining algorithm.</li>
+          <li><b>Mandatory operator upgrade</b>. All masternode operators must run the updated daemon before block 742,421 or face automatic deregistration when PoS activates.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ BUCEPHALUS: NEWSPAPER ═══════════ -->
+<section id="bucephalus">
+  <div class="buc-noise"></div>
+  <div class="buc-inner">
+    <div class="buc-masthead">The Beldex Protocol Record &nbsp;&bull;&nbsp; Chain-Breaking Edition &nbsp;&bull;&nbsp; Special Issue</div>
+    <div class="buc-dateline">
+      <span>Protocol Mutation Log / HF17</span>
+      <span class="buc-dateline-center">DECEMBER 10, 2021 &nbsp;&bull;&nbsp; BLOCK 742,421</span>
+      <span style="text-align:right">Beldex v3.x / Hardfork 17 of 20</span>
+    </div>
+    <div class="buc-kicker rv">Named upgrade &nbsp;/&nbsp; Hardfork 17 &nbsp;/&nbsp; Block 742,421 &nbsp;/&nbsp; December 10, 2021</div>
+    <div class="buc-headline rv">
+      <span class="buc-hl1">The Mining Era Is Over</span>
+      <span class="buc-hl2">BUCEPHALUS</span>
+      <span class="buc-hl3">Proof of Stake Begins</span>
+    </div>
+    <div class="buc-deck rv">Named after Alexander the Great's legendary war horse  -  the single most transformative upgrade in seven years of Beldex protocol history.</div>
+    <div class="buc-statsband rv">
+      <div class="bss"><div class="bss-v">742,421</div><div class="bss-k">Block Height</div></div>
+      <div class="bss"><div class="bss-v">Dec 10, 2021</div><div class="bss-k">Fork Date</div></div>
+      <div class="bss"><div class="bss-v">30 sec</div><div class="bss-k">New Block Time</div></div>
+      <div class="bss"><div class="bss-v">10 BDX</div><div class="bss-k">Block Reward</div></div>
+      <div class="bss"><div class="bss-v">+212.5%</div><div class="bss-k">MN Income Gain</div></div>
+    </div>
+    <div class="buc-columns rv">
+      <div class="buc-col">
+        <div class="bc-hl">Miners Removed. Masternodes Rule.</div>
+        <div class="bc-body">
+          The Bucephalus hardfork, activated at block 742,421 on December 10, 2021, is the single most consequential upgrade in Beldex history. With one block, the CryptoNight-Heavy mining algorithm was permanently disabled. Miners, who had secured the network since the 2018 genesis, ceded control entirely to the masternode network.<br><br>
+          The minimum stake of <b>10,000 BDX</b> to operate a masternode remains unchanged. However, the role of masternodes expanded from validation support to full block production. The Proof of Work code path is removed from the daemon codebase and never returns.
+        </div>
+      </div>
+      <div class="buc-col-div"></div>
+      <div class="buc-col">
+        <div class="bc-hl">Four Times Faster. Five Times Richer.</div>
+        <div class="bc-body">
+          Block time dropped from <b>120 seconds to 30 seconds</b>. The network now produces 2,880 blocks per day versus 720 under Proof of Work. Each block pays <b>10 BDX</b> versus the old 2 BDX reward  -  a five-fold increase in per-block output.<br><br>
+          Masternode operators receive 6.25 BDX per block, representing 62.5% of the total reward. Governance receives 37.5%. For operators, passive income increased by <b>212.5%</b> relative to the old model. The economics of running Beldex infrastructure changed permanently.
+        </div>
+      </div>
+      <div class="buc-col-div"></div>
+      <div class="buc-col">
+        <div class="bc-hl">12-Node Quorum. 7 of 11 Threshold.</div>
+        <div class="bc-body">
+          Bucephalus introduced a deterministic Proof of Stake quorum model. A seed derived from the previous block hash selects <b>12 masternodes</b> per round  -  one block producer and eleven validators. The producer assembles the transaction template. Validators sign with Ed25519 keys. <b>Seven of eleven signatures</b> are required for finality.<br><br>
+          This quorum model builds on HF14's checkpoint system. Every block has immediate near-finality. Double-spend attacks against confirmed transactions are no longer economically viable even with majority stake.
+        </div>
+      </div>
+    </div>
+    <div class="buc-vitals rv">
+      <div class="bv"><div class="bv-k">Consensus Model</div><div class="bv-v">Full Proof of Stake  -  PoW Retired</div></div>
+      <div class="bv"><div class="bv-k">Quorum Composition</div><div class="bv-v">12 nodes: 1 producer + 11 validators</div></div>
+      <div class="bv"><div class="bv-k">Signature Threshold</div><div class="bv-v">7 of 11 validators required (63.6%)</div></div>
+      <div class="bv"><div class="bv-k">Energy Reduction</div><div class="bv-v">Approx. -95% vs Proof of Work</div></div>
+      <div class="bv"><div class="bv-k">Flash Transactions</div><div class="bv-v">Sub-2-second lock confirmation</div></div>
+      <div class="bv"><div class="bv-k">Daemon Version</div><div class="bv-v">Beldex v3.x</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ BERN: SWISS VAULT DOCUMENT ═══════════ -->
+<section id="bern">
+  <div class="bern-halftone"></div>
+  <div class="bern-inner">
+    <div class="bern-left rv">
+      <div class="bern-classification">Hardfork 18 &nbsp; Protocol Document &nbsp; Feb 2024</div>
+      <div class="bern-hfid">Hardfork 18 &nbsp;/&nbsp; Block 2,986,890 &nbsp;/&nbsp; February 2024</div>
+      <div class="bern-name">BERN</div>
+      <div class="bern-tagline">Named after Switzerland's capital  -  the world's benchmark for financial privacy. Private on-chain identity arrives with the Beldex Name System.</div>
+      <div class="bern-cert">
+        <div class="bcert-header">Upgrade Certification Record</div>
+        <div class="bcert-row"><span class="bcr-k">Block Height</span><span class="bcr-v">2,986,890</span></div>
+        <div class="bcert-row"><span class="bcr-k">Date</span><span class="bcr-v">February 2024</span></div>
+        <div class="bcert-row"><span class="bcr-k">Daemon Version</span><span class="bcr-v">Beldex v5.0</span></div>
+        <div class="bcert-row"><span class="bcr-k">Key Feature</span><span class="bcr-v">Beldex Name System (BNS) live</span></div>
+        <div class="bcert-row"><span class="bcr-k">Tokenomics Shift</span><span class="bcr-v">Inflationary to Deflationary</span></div>
+        <div class="bcert-row"><span class="bcr-k">BDX Burned (first 24h)</span><span class="bcr-v">1,500,000 BDX</span></div>
+        <div class="bcert-row"><span class="bcr-k">BNS Names (first 24h)</span><span class="bcr-v">850 + registered</span></div>
+        <div class="bcert-row"><span class="bcr-k">BelNet 1-Year Burn</span><span class="bcr-v">650 BDX</span></div>
+        <div class="bcert-row"><span class="bcr-k">BelNet 10-Year Burn</span><span class="bcr-v">4,000 BDX</span></div>
+      </div>
+      <div class="burn-chart">
+        <div class="bch-label">Supply vs Burn  -  First 24 Hours After Bern</div>
+        <div class="bch-row">
+          <div class="bch-name">Minted that day</div>
+          <div class="bch-track">
+            <div class="bch-fill" style="width:100%;background:rgba(239,68,68,.4);">
+              <div class="bch-fill-v">28,800</div>
+            </div>
+          </div>
+          <div class="bch-num" style="color:#ef4444;">28,800</div>
+        </div>
+        <div class="bch-row">
+          <div class="bch-name">Burned that day</div>
+          <div class="bch-track">
+            <div class="bch-fill" style="width:100%;background:rgba(6,182,212,.55);">
+              <div class="bch-fill-v">1,500,000</div>
+            </div>
+          </div>
+          <div class="bch-num" style="color:#06b6d4;">1.5M</div>
+        </div>
+      </div>
+    </div>
+    <div class="bern-right rv">
+      <div class="bern-changes-title">Changes in Hardfork 18  -  Bern</div>
+      <div class="bern-change">
+        <div class="bcd"></div>
+        <div>
+          <div class="bct">Beldex Name System (BNS) live on mainnet</div>
+          <div class="bcd-text">Users register human-readable .bdx names directly on-chain. "yourname.bdx" replaces a 97-character wallet address. BChat names are linked to messaging identities. Wallet names are non-expiring with a one-time fee. Each registration is an on-chain transaction  -  no centralized server holds the records.</div>
+        </div>
+      </div>
+      <div class="bern-change">
+        <div class="bcd"></div>
+        <div>
+          <div class="bct">Fee burning  -  tokenomics flips deflationary</div>
+          <div class="bcd-text">All BNS registration fees are permanently destroyed on-chain. Within the first 24 hours, 1,500,000 BDX were burned while only 28,800 were minted. The supply trajectory reversed from inflationary to deflationary. The more BNS is used, the more deflationary the token becomes over time.</div>
+        </div>
+      </div>
+      <div class="bern-change">
+        <div class="bcd"></div>
+        <div>
+          <div class="bct">BelNet domain hosting enabled on-chain</div>
+          <div class="bcd-text">BelNet .bdx namespaces are now registrable for 1, 2, 5, or 10 year periods. Burn requirements: 650 / 1,000 / 2,000 / 4,000 BDX. Private websites and services can be hosted over the dVPN network. Decentralized censorship-resistant web hosting is possible via BelNet for the first time.</div>
+        </div>
+      </div>
+      <div class="bern-change">
+        <div class="bcd"></div>
+        <div>
+          <div class="bct">BNS encryption scheme upgraded</div>
+          <div class="bcd-text">Record encryption in BNS updated to a faster, more resource-efficient cryptographic scheme. Existing name holders can upgrade via the bns_update_mapping wallet command on a per-name basis. Improved security and measurably lower verification overhead for masternodes processing BNS lookups.</div>
+        </div>
+      </div>
+      <div class="bern-change">
+        <div class="bcd"></div>
+        <div>
+          <div class="bct">Masternode time synchronization</div>
+          <div class="bcd-text">Masternodes periodically broadcast timestamp data to network peers. Operators can now diagnose clock drift without relying on external monitoring tools. Clock consistency across the global masternode network is improved, reducing block timing variance in quorum participation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HERMES: SIGNAL VELOCITY ═══════════ -->
+<section id="hermes">
+  <canvas id="hermesCanvas"></canvas>
+  <div class="hermes-inner">
+    <div class="hermes-left rv">
+      <div class="hermes-hfid">Hardfork 19 &nbsp;/&nbsp; Block 3,546,545 &nbsp;/&nbsp; September 2024</div>
+      <div class="hermes-name">HERMES</div>
+      <div class="hermes-tagline">Named after the god of speed and communication. Cross-chain bridges open. Decentralization is hardened. The Ethereum ecosystem connects to Beldex.</div>
+      <div class="hermes-cert">
+        <div class="hermes-cert-header">Upgrade Certification Record</div>
+        <div class="hcert-row"><span class="hcr-k">Block Height</span><span class="hcr-v">3,546,545</span></div>
+        <div class="hcert-row"><span class="hcr-k">Date</span><span class="hcr-v">September 2024</span></div>
+        <div class="hcert-row"><span class="hcr-k">Daemon Version</span><span class="hcr-v">Beldex v6.x</span></div>
+        <div class="hcert-row"><span class="hcr-k">MN Limit Per VPS</span><span class="hcr-v">Max 3 (was max 10)</span></div>
+        <div class="hcert-row"><span class="hcr-k">ETH Integration</span><span class="hcr-v">BNS stores ETH + ENS addresses</span></div>
+        <div class="hcert-row"><span class="hcr-k">Security Fixes</span><span class="hcr-v">Critical vulnerabilities patched</span></div>
+        <div class="hcert-row"><span class="hcr-k">Platform Fixes</span><span class="hcr-v">macOS Sonoma restored</span></div>
+        <div class="hcert-row"><span class="hcr-k">Bridge Foundation</span><span class="hcr-v">LayerZero OFT cross-chain prep</span></div>
+      </div>
+    </div>
+    <div class="hermes-right rv">
+      <div class="hermes-changes-title">Changes in Hardfork 19  -  Hermes</div>
+      <div class="hermes-change">
+        <div class="hcd"></div>
+        <div>
+          <div class="hct">Ethereum address and ENS integration in BNS</div>
+          <div class="hcd-text">BNS now stores Ethereum wallet addresses and ENS domain names alongside BDX identities. A user can link their ETH address directly to "yourname.bdx". This enables seamless cross-chain transactions and interoperability with the EVM ecosystem. It also lays the technical foundation for the LayerZero OFT bridge deployed in December 2025  -  allowing BDX to move between Ethereum, BNB Smart Chain, Solana, Base, and Arbitrum at a 1:1 ratio.</div>
+        </div>
+      </div>
+      <div class="hermes-change">
+        <div class="hcd"></div>
+        <div>
+          <div class="hct">Multi-masternode limit: 3 per VPS machine</div>
+          <div class="hcd-text">Previously operators ran up to 10 masternodes per server. Hermes caps this at 3. This prevents centralization of network validation power in a small number of machines. Each masternode now has more dedicated CPU and RAM, improving the quality of BChat message routing and BelNet dVPN service delivery for end users.</div>
+        </div>
+      </div>
+      <div class="hermes-change">
+        <div class="hcd"></div>
+        <div>
+          <div class="hct">Critical security vulnerabilities patched</div>
+          <div class="hcd-text">Multiple security issues identified in a post-Bern protocol audit are fully addressed before any exploitation occurred. Network resilience is improved and the attack surface is measurably reduced. Specific vulnerability details are withheld per standard responsible disclosure practice to protect networks running older versions during the transition window.</div>
+        </div>
+      </div>
+      <div class="hermes-change">
+        <div class="hcd"></div>
+        <div>
+          <div class="hct">macOS Sonoma compatibility restored</div>
+          <div class="hcd-text">The Beldex daemon and wallet applications broken by Apple's macOS Sonoma toolchain update are fully fixed. The build system is updated for the new compiler environment. Mac-based masternode operators and desktop wallet users get consistent, stable operation restored across all major operating systems.</div>
+        </div>
+      </div>
+      <div class="hermes-change">
+        <div class="hcd"></div>
+        <div>
+          <div class="hct">Network stability and P2P improvements</div>
+          <div class="hcd-text">Underlying P2P layer improvements reduce latency between masternodes. Quorum communication timing is optimized. Block propagation speed is improved. These changes collectively reduce the occurrence of missed quorum participation events that could lead to masternode decommission warnings for otherwise healthy nodes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ OBSCURA: DARKROOM AMBER ═══════════ -->
+<section id="obscura">
+  <div class="obscura-glow"></div>
+  <div class="obscura-inner">
+    <div class="obscura-left rv">
+      <div class="obscura-hfid">Hardfork 20 &nbsp;/&nbsp; Block 4,939,540 &nbsp;/&nbsp; December 7, 2025</div>
+      <div class="obscura-name">OBSCURA</div>
+      <div class="obscura-tagline">The proof system evolves once more. Bulletproofs++ reduces range proofs by 38% further. Seven years of cryptographic improvement reach their current peak.</div>
+      <div class="obscura-cert">
+        <div class="obscura-cert-header">Upgrade Certification Record  -  HF20 (Latest)</div>
+        <div class="ocert-row"><span class="ocr-k">Block Height</span><span class="ocr-v">4,939,540</span></div>
+        <div class="ocert-row"><span class="ocr-k">Date</span><span class="ocr-v">December 7, 2025</span></div>
+        <div class="ocert-row"><span class="ocr-k">Daemon Version</span><span class="ocr-v">Beldex v7.x</span></div>
+        <div class="ocert-row"><span class="ocr-k">Proof System</span><span class="ocr-v">Bulletproofs++ (NIZK)</span></div>
+        <div class="ocert-row"><span class="ocr-k">Proof Reduction vs BP</span><span class="ocr-v">~38% smaller</span></div>
+        <div class="ocert-row"><span class="ocr-k">Proof vs Borromean</span><span class="ocr-v">~93% smaller total</span></div>
+        <div class="ocert-row"><span class="ocr-k">Block Size</span><span class="ocr-v">300 to 600 KB dynamic range</span></div>
+        <div class="ocert-row"><span class="ocr-k">Trusted Setup</span><span class="ocr-v">None required</span></div>
+      </div>
+      <div class="proof-chart">
+        <div class="pc-label">Range Proof Size Evolution  -  2018 to 2025</div>
+        <div class="pc-row">
+          <div class="pc-name">Borromean (2018)</div>
+          <div class="pc-bar-wrap">
+            <div class="pc-bar" style="width:100%;background:rgba(220,38,38,.5);">
+              <span class="pc-bar-v">6,176 bytes</span>
+            </div>
+          </div>
+          <div class="pc-pct" style="color:#ef4444;">6.1 KB</div>
+        </div>
+        <div class="pc-row">
+          <div class="pc-name">Bulletproofs (2019)</div>
+          <div class="pc-bar-wrap">
+            <div class="pc-bar" style="width:10.9%;background:rgba(217,119,6,.65);transition-delay:.3s">
+              <span class="pc-bar-v" style="font-size:.75rem;">675</span>
+            </div>
+          </div>
+          <div class="pc-pct" style="color:#d97706;">675 B</div>
+        </div>
+        <div class="pc-row">
+          <div class="pc-name">Bulletproofs++ (2025)</div>
+          <div class="pc-bar-wrap">
+            <div class="pc-bar" style="width:6.75%;background:rgba(245,158,11,.75);transition-delay:.6s">
+              <span class="pc-bar-v" style="font-size:.65rem;">~417</span>
+            </div>
+          </div>
+          <div class="pc-pct" style="color:#f59e0b;">~417 B</div>
+        </div>
+      </div>
+    </div>
+    <div class="obscura-right rv">
+      <div class="obscura-changes-title">Changes in Hardfork 20  -  Obscura</div>
+      <div class="obscura-change">
+        <div class="ocd"></div>
+        <div>
+          <div class="oct">Bulletproofs++ range proofs activated</div>
+          <div class="ocd-text">The most advanced non-interactive zero-knowledge range proof system replaces standard Bulletproofs. Proof size for a 2-output transaction drops from approximately 675 bytes to around 417 bytes. A 38% reduction in proof data per transaction. No trusted setup is required. Full Pedersen commitment amount privacy is maintained throughout.</div>
+        </div>
+      </div>
+      <div class="obscura-change">
+        <div class="ocd"></div>
+        <div>
+          <div class="oct">Higher transaction throughput per block</div>
+          <div class="ocd-text">Beldex blocks are dynamically sized between 300 and 600 KB. Cryptographic range proofs are the dominant contributor to transaction data size in a fully private chain. Smaller proofs mean more transactions fit per block without requiring a block size increase. The network handles higher volume without hitting capacity limits.</div>
+        </div>
+      </div>
+      <div class="obscura-change">
+        <div class="ocd"></div>
+        <div>
+          <div class="oct">Masternode verification overhead cut</div>
+          <div class="ocd-text">Lighter proofs require less CPU computation and memory per validated block. Masternode hardware requirements decrease. The barrier to running a masternode falls. Network decentralization benefits as more operators can participate economically  -  strengthening the BChat and BelNet service layer that runs on masternode infrastructure.</div>
+        </div>
+      </div>
+      <div class="obscura-change">
+        <div class="ocd"></div>
+        <div>
+          <div class="oct">Long-term chain weight problem addressed</div>
+          <div class="ocd-text">In private blockchains, cryptographic proof data drives the majority of chain size growth  -  far more than transaction amounts or addresses ever do. Obscura addresses this at the source. As Beldex adoption grows, proof data volume grows much more slowly than under prior proof systems. Full node sync times remain manageable at scale.</div>
+        </div>
+      </div>
+      <div class="obscura-change">
+        <div class="ocd"></div>
+        <div>
+          <div class="oct">Foundation for BeldexAI sidechain</div>
+          <div class="ocd-text">Efficiency improvements in Obscura prepare the base chain for the planned BeldexAI sidechain  -  a decentralized, privacy-focused platform for AI model training and inference. The additional transaction volume expected from AI computation workloads requires the proof efficiency that Obscura delivers before the sidechain launch is economically viable.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ COMPLETE LEDGER ═══════════ -->
+<section id="ledger">
+  <div class="ldg-head rv">
+    <div class="ldg-bnum">20</div>
+    <div>
+      <div class="ldg-title">Complete Hardfork Ledger</div>
+      <div class="ldg-sub">All 20 upgrades &nbsp;&bull;&nbsp; Every block height &nbsp;&bull;&nbsp; 2018 through 2025</div>
+    </div>
+  </div>
+  <div class="tbl-wrap rv">
+    <table class="lt">
+      <thead>
+        <tr>
+          <th>HF</th><th>Name</th><th>Era</th><th>Date</th><th>Block Height</th><th>Summary</th><th>Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="era1"><td class="l-id" style="color:#22c55e">HF1-3</td><td class="l-name">Genesis Configuration</td><td style="font-size:.58rem;color:#22c55e">Foundation</td><td class="l-date">2018</td><td class="l-height">Block 1+</td><td class="l-desc">CryptoNote launch as Monero fork. Ring signatures, RingCT, stealth addresses enforced by default from genesis. No transparent mode.</td><td><span class="l-pill lp-prv">Privacy</span></td></tr>
+        <tr class="era1"><td class="l-id" style="color:#22c55e">HF4</td><td class="l-name">Ring Size Expansion</td><td style="font-size:.58rem;color:#22c55e">Foundation</td><td class="l-date">2019</td><td class="l-height">-</td><td class="l-desc">Minimum ring size increased. Larger anonymity set per input. EAE tracing attacks become statistically negligible.</td><td><span class="l-pill lp-prv">Privacy</span></td></tr>
+        <tr class="era1"><td class="l-id" style="color:#22c55e">HF5</td><td class="l-name">Masternodes Activated</td><td style="font-size:.58rem;color:#22c55e">Foundation</td><td class="l-date">2019</td><td class="l-height">-</td><td class="l-desc">Masternodes launched. 10,000 BDX collateral. Hybrid PoW+MN model. Reward queue ensures fair distribution.</td><td><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era1"><td class="l-id" style="color:#22c55e">HF6-7</td><td class="l-name">Bulletproofs v1</td><td style="font-size:.58rem;color:#22c55e">Foundation</td><td class="l-date">2019-20</td><td class="l-height">-</td><td class="l-desc">Borromean proofs replaced. 89% size reduction  -  6,176 bytes to 675 bytes per 2-output TX. Batch verification enabled.</td><td><span class="l-pill lp-prv">Privacy</span><span class="l-pill lp-sc">Scaling</span></td></tr>
+        <tr class="era1"><td class="l-id" style="color:#22c55e">HF8</td><td class="l-name">Emission Recalibration</td><td style="font-size:.58rem;color:#22c55e">Foundation</td><td class="l-date">2020</td><td class="l-height">-</td><td class="l-desc">CryptoNight-Heavy tuned against ASICs. Block reward emission recalibrated. Fee structure updated.</td><td><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era1"><td class="l-id" style="color:#22c55e">HF9</td><td class="l-name">Network Hardening</td><td style="font-size:.58rem;color:#22c55e">Foundation</td><td class="l-date">2020</td><td class="l-height">-</td><td class="l-desc">Security patches. MN deregistration reliability improved. Pre-PoS code path stubs added. Foundation era closes.</td><td><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era2"><td class="l-id" style="color:#ef4444">HF10-12</td><td class="l-name">Pre-PoS Refinements</td><td style="font-size:.58rem;color:#ef4444">Awakening</td><td class="l-date">2020-21</td><td class="l-height">-</td><td class="l-desc">Governance outputs batched. MN reward queue formalized. Storage server + BelNet tested on testnet.</td><td><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era2"><td class="l-id" style="color:#ef4444">HF13</td><td class="l-name">Batched Governance</td><td style="font-size:.58rem;color:#ef4444">Awakening</td><td class="l-date">2021</td><td class="l-height">-</td><td class="l-desc">Governance rewards fully batched. Thousands of per-block UTXOs eliminated. Node sync time improved.</td><td><span class="l-pill lp-con">Consensus</span><span class="l-pill lp-sc">Scaling</span></td></tr>
+        <tr class="era2"><td class="l-id" style="color:#ef4444">HF14</td><td class="l-name">Checkpoint Enforcement</td><td style="font-size:.58rem;color:#ef4444">Awakening</td><td class="l-date">2021</td><td class="l-height">-</td><td class="l-desc">MN quorum co-signs checkpoint hashes. Anti-reorg protection active. 51% attack window permanently bounded.</td><td><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era2"><td class="l-id" style="color:#ef4444">HF15</td><td class="l-name">Flash TX + dApps Layer</td><td style="font-size:.58rem;color:#ef4444">Awakening</td><td class="l-date">2021</td><td class="l-height">-</td><td class="l-desc">Flash instant transactions live. Sub-2-second confirmation. Storage server + BelNet dVPN active on mainnet.</td><td><span class="l-pill lp-sc">Scaling</span></td></tr>
+        <tr class="era2"><td class="l-id" style="color:#ef4444">HF16</td><td class="l-name">Final PoW Upgrade</td><td style="font-size:.58rem;color:#ef4444">Awakening</td><td class="l-date">2021</td><td class="l-height">-</td><td class="l-desc">Last hardfork under mining. PoS consensus engine locked in daemon. All operators required to upgrade before block 742,421.</td><td><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era2 named" style="background:rgba(239,68,68,.04)"><td class="l-id" style="color:#ef4444">HF17</td><td class="l-name" style="color:#ef4444">BUCEPHALUS</td><td style="font-size:.58rem;color:#ef4444">Awakening</td><td class="l-date">Dec 10, 2021</td><td class="l-height">742,421</td><td class="l-desc">PoW retired. Full Proof of Stake with 12-node quorum. Block time 120s to 30s. Reward 2 to 10 BDX. MN income +212.5%.</td><td><span class="l-pill lp-con">Consensus</span><span class="l-pill lp-sc">Scaling</span></td></tr>
+        <tr class="era3 named" style="background:rgba(6,182,212,.03)"><td class="l-id" style="color:#06b6d4">HF18</td><td class="l-name" style="color:#06b6d4">BERN</td><td style="font-size:.58rem;color:#06b6d4">Ecosystem</td><td class="l-date">Feb 2024</td><td class="l-height">2,986,890</td><td class="l-desc">BNS live. .bdx human-readable names. Fee burning active. 1.5M BDX burned in first 24 hours. Tokenomics turns deflationary.</td><td><span class="l-pill lp-id">Identity</span></td></tr>
+        <tr class="era3 named" style="background:rgba(124,58,237,.03)"><td class="l-id" style="color:#7c3aed">HF19</td><td class="l-name" style="color:#7c3aed">HERMES</td><td style="font-size:.58rem;color:#06b6d4">Ecosystem</td><td class="l-date">Sep 2024</td><td class="l-height">3,546,545</td><td class="l-desc">ETH address + ENS in BNS. Multi-MN limit 3 per VPS. Critical security patches. macOS Sonoma restored.</td><td><span class="l-pill lp-id">Identity</span><span class="l-pill lp-con">Consensus</span></td></tr>
+        <tr class="era3 named" style="background:rgba(245,158,11,.03)"><td class="l-id" style="color:#f59e0b">HF20</td><td class="l-name" style="color:#f59e0b">OBSCURA</td><td style="font-size:.58rem;color:#06b6d4">Ecosystem</td><td class="l-date">Dec 7, 2025</td><td class="l-height">4,939,540</td><td class="l-desc">Bulletproofs++ live. Range proofs 38% smaller vs standard BP. 93% smaller vs original Borromean. Sustainable scaling foundation.</td><td><span class="l-pill lp-prv">Privacy</span><span class="l-pill lp-sc">Scaling</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ BOTTOM STATS ═══════════ -->
+<div id="bottomStats">
+  <div class="bs rv"><div class="bs-v" style="color:#ef4444">BUCEPHALUS</div><div class="bs-k">Most Transformative Fork</div><div class="bs-d">Block 742,421. Dec 10, 2021. Every core metric reshaped in a single upgrade.</div></div>
+  <div class="bs rv"><div class="bs-v" style="color:#06b6d4">4,939,540</div><div class="bs-k">Highest Block Height</div><div class="bs-d">Obscura HF20. December 7, 2025. The current and most technically advanced fork.</div></div>
+  <div class="bs rv"><div class="bs-v" style="color:#22c55e">1.5M BDX</div><div class="bs-k">Burned in Day 1 Post-Bern</div><div class="bs-d">850 + BNS names registered. Supply model reversed from inflationary to deflationary.</div></div>
+  <div class="bs rv"><div class="bs-v" style="color:#f59e0b">2018-2025</div><div class="bs-k">Seven Years of Evolution</div><div class="bs-d">PoW genesis to Bulletproofs++. Privacy by default from block one to block five million.</div></div>
+</div>
+
+<footer>
+  <span>beldex-hardforks.html &nbsp; &bull; &nbsp; beldex-guide-project.vercel.app</span>
+  <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:.6rem;color:var(--muted)">Signal Log  -  Protocol History</span>
+</footer>
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════ -->
+<script>
+/* ── Hero seismograph canvas ── */
+(function(){
+  var c=document.getElementById('sigCanvas');
+  var ctx=c.getContext('2d');
+  var t=0,W,H;
+  var spikes=[];
+
+  /* define all 20 HF spike data */
+  var hfData=[
+    {h:.25,named:false,color:'34,197,94'},
+    {h:.22,named:false,color:'34,197,94'},
+    {h:.2,named:false,color:'34,197,94'},
+    {h:.3,named:false,color:'34,197,94'},
+    {h:.42,named:false,color:'34,197,94'},
+    {h:.28,named:false,color:'34,197,94'},
+    {h:.3,named:false,color:'34,197,94'},
+    {h:.22,named:false,color:'34,197,94'},
+    {h:.25,named:false,color:'34,197,94'},
+    {h:.28,named:false,color:'239,68,68'},
+    {h:.3,named:false,color:'239,68,68'},
+    {h:.25,named:false,color:'239,68,68'},
+    {h:.32,named:false,color:'239,68,68'},
+    {h:.38,named:false,color:'239,68,68'},
+    {h:.35,named:false,color:'239,68,68'},
+    {h:.4,named:false,color:'239,68,68'},
+    {h:.95,named:true,color:'239,68,68'},   /* BUCEPHALUS */
+    {h:.6,named:true,color:'6,182,212'},    /* BERN */
+    {h:.55,named:true,color:'124,58,237'},  /* HERMES */
+    {h:.7,named:true,color:'245,158,11'},   /* OBSCURA */
+  ];
+
+  function resize(){
+    W=c.width=c.parentElement.clientWidth;
+    H=c.height=c.parentElement.clientHeight||window.innerHeight;
+    buildSpikes();
+  }
+
+  function buildSpikes(){
+    spikes=[];
+    var pad=W*.08;
+    var usable=W-pad*2;
+    var spacing=usable/21;
+    for(var i=0;i<20;i++){
+      spikes.push({
+        x:pad+(i+1)*spacing,
+        h:hfData[i].h,
+        named:hfData[i].named,
+        color:hfData[i].color,
+        phase:i*.22
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    /* deep background glow */
+    var bg=ctx.createRadialGradient(W*.5,H*.45,0,W*.5,H*.45,W*.7);
+    bg.addColorStop(0,'rgba(2,10,20,.7)');
+    bg.addColorStop(1,'rgba(2,5,9,.95)');
+    ctx.fillStyle=bg;
+    ctx.fillRect(0,0,W,H);
+
+    /* horizontal baseline */
+    var baseY=H*.58;
+    var baseG=ctx.createLinearGradient(0,0,W,0);
+    baseG.addColorStop(0,'rgba(34,197,94,0)');
+    baseG.addColorStop(.3,'rgba(34,197,94,.25)');
+    baseG.addColorStop(.6,'rgba(239,68,68,.25)');
+    baseG.addColorStop(1,'rgba(6,182,212,0)');
+    ctx.beginPath();
+    ctx.moveTo(0,baseY);ctx.lineTo(W,baseY);
+    ctx.strokeStyle=baseG;ctx.lineWidth=1;ctx.stroke();
+
+    /* era dividers */
+    if(spikes.length>16){
+      var e2x=spikes[9].x-20;
+      var e3x=spikes[16].x-20;
+      [[e2x,'239,68,68'],[e3x,'6,182,212']].forEach(function(p){
+        ctx.beginPath();
+        ctx.moveTo(p[0],H*.15);ctx.lineTo(p[0],H*.9);
+        ctx.strokeStyle='rgba('+p[1]+',.15)';
+        ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.stroke();
+        ctx.setLineDash([]);
+      });
+    }
+
+    /* draw spikes */
+    spikes.forEach(function(sp,i){
+      var spikeH=sp.h*H*.6;
+      var wobble=sp.named?0:Math.sin(t*.8+sp.phase)*H*.015;
+      var top=baseY-spikeH+wobble;
+      var pulse=.5+Math.sin(t*1.5+sp.phase)*.2;
+      var alpha=sp.named?.9:.4+pulse*.2;
+
+      /* glow for named */
+      if(sp.named){
+        var gr=ctx.createRadialGradient(sp.x,top,0,sp.x,top,80);
+        gr.addColorStop(0,'rgba('+sp.color+',.18)');
+        gr.addColorStop(1,'rgba('+sp.color+',0)');
+        ctx.fillStyle=gr;
+        ctx.beginPath();ctx.arc(sp.x,top,80,0,Math.PI*2);ctx.fill();
+      }
+
+      /* spike line */
+      ctx.beginPath();
+      ctx.moveTo(sp.x,baseY);ctx.lineTo(sp.x,top);
+      ctx.strokeStyle='rgba('+sp.color+','+alpha+')';
+      ctx.lineWidth=sp.named?2:1;ctx.stroke();
+
+      /* spike cap */
+      ctx.beginPath();
+      ctx.arc(sp.x,top,sp.named?5:2.5,0,Math.PI*2);
+      ctx.fillStyle='rgba('+sp.color+','+(sp.named?.9:.6)+')';
+      ctx.fill();
+
+      /* HF label */
+      ctx.textAlign='center';
+      if(sp.named){
+        ctx.font='700 11px "Fira Code"';
+        ctx.fillStyle='rgba('+sp.color+',.8)';
+        ctx.fillText('HF'+(i+1),sp.x,top-14);
+      } else if(i%3===0){
+        ctx.font='400 9px "Fira Code"';
+        ctx.fillStyle='rgba(255,255,255,.2)';
+        ctx.fillText(i+1,sp.x,baseY+16);
+      }
+    });
+
+    /* era labels */
+    if(spikes.length>0){
+      ctx.textAlign='center';ctx.font='700 9px "Barlow Condensed"';
+      ctx.letterSpacing='0.2em';
+      ctx.fillStyle='rgba(34,197,94,.25)';
+      ctx.fillText('FOUNDATION ERA  -  HF1 TO HF9',spikes[4].x,H*.9);
+      ctx.fillStyle='rgba(239,68,68,.25)';
+      ctx.fillText('AWAKENING ERA  -  HF10 TO HF17',spikes[12].x,H*.9);
+      ctx.fillStyle='rgba(6,182,212,.25)';
+      ctx.fillText('ECOSYSTEM ERA  -  HF18 TO HF20',spikes[18].x,H*.9);
+    }
+
+    /* scan line */
+    var scanX=W*.08+((t*25)%(W*.84));
+    var scanG=ctx.createLinearGradient(scanX-20,0,scanX+20,0);
+    scanG.addColorStop(0,'rgba(255,255,255,0)');
+    scanG.addColorStop(.5,'rgba(255,255,255,.025)');
+    scanG.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=scanG;ctx.fillRect(scanX-20,0,40,H);
+
+    t+=.012;
+    requestAnimationFrame(draw);
+  }
+  resize();
+  window.addEventListener('resize',resize,{passive:true});
+  draw();
+})();
+
+/* ── Hermes particle canvas ── */
+(function(){
+  var c=document.getElementById('hermesCanvas');
+  var ctx=c.getContext('2d');
+  var pts=[],t=0;
+
+  function resize(){
+    c.width=c.parentElement.clientWidth;
+    c.height=c.parentElement.clientHeight||600;
+    if(pts.length===0){
+      for(var i=0;i<65;i++){
+        pts.push({
+          x:Math.random()*c.width,y:Math.random()*c.height,
+          vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,
+          r:.8+Math.random()*1.5
+        });
+      }
+    }
+  }
+
+  function draw(){
+    var W=c.width,H=c.height;
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+    });
+    for(var a=0;a<pts.length;a++){
+      for(var b=a+1;b<pts.length;b++){
+        var dx=pts[a].x-pts[b].x,dy=pts[a].y-pts[b].y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<130){
+          ctx.beginPath();ctx.moveTo(pts[a].x,pts[a].y);ctx.lineTo(pts[b].x,pts[b].y);
+          ctx.strokeStyle='rgba(124,58,237,'+(0.09*(1-dist/130))+')';
+          ctx.lineWidth=.6;ctx.stroke();
+        }
+      }
+    }
+    pts.forEach(function(p){
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(124,58,237,.28)';ctx.fill();
+    });
+    t+=.01;
+    requestAnimationFrame(draw);
+  }
+  resize();
+  window.addEventListener('resize',resize,{passive:true});
+  draw();
+})();
+
+/* ── Dynamic era CSS accent color ── */
+var sections=[
+  {id:'era1',r:34,g:197,b:94,label:'Era 1  -  Foundation'},
+  {id:'era2pre',r:239,g:68,b:68,label:'Era 2  -  Awakening'},
+  {id:'bucephalus',r:239,g:68,b:68,label:'HF17  -  Bucephalus'},
+  {id:'bern',r:6,g:182,b:212,label:'HF18  -  Bern'},
+  {id:'hermes',r:124,g:58,b:237,label:'HF19  -  Hermes'},
+  {id:'obscura',r:245,g:158,b:11,label:'HF20  -  Obscura'},
+  {id:'ledger',r:0,g:180,b:150,label:'Complete Ledger'}
+];
+var root=document.documentElement;
+var sbNow=document.getElementById('sbNow');
+
+window.addEventListener('scroll',function(){
+  var sy=window.scrollY+window.innerHeight*.35;
+  var active=sections[0];
+  sections.forEach(function(s){
+    var el=document.getElementById(s.id);
+    if(el&&sy>=el.offsetTop) active=s;
+  });
+  root.style.setProperty('--era-r',active.r);
+  root.style.setProperty('--era-g',active.g);
+  root.style.setProperty('--era-b',active.b);
+  if(sbNow) sbNow.textContent=active.label;
+},{passive:true});
+
+/* ── Intersection observers ── */
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e,i){
+    if(e.isIntersecting) setTimeout(function(){e.target.classList.add('in');},i*55);
+  });
+},{threshold:.05});
+document.querySelectorAll('.rv,.ov').forEach(function(el){io.observe(el);});
+
+/* bars trigger */
+var bio=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in');});
+},{threshold:.15});
+['bern','obscura'].forEach(function(id){
+  var el=document.getElementById(id);if(el)bio.observe(el);
+});
+
+/* ── Era 2 card toggles ── */
+document.querySelectorAll('.hfr').forEach(function(card){
+  card.addEventListener('click',function(){
+    var open=this.classList.contains('open');
+    document.querySelectorAll('.hfr').forEach(function(c){c.classList.remove('open');});
+    if(!open) this.classList.add('open');
+  });
+});
+
+/* ── Signal bar HF clicks ── */
+document.querySelectorAll('.sb-hf').forEach(function(el){
+  el.addEventListener('click',function(){
+    var tgt=document.getElementById(this.dataset.t);
+    if(tgt) tgt.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
