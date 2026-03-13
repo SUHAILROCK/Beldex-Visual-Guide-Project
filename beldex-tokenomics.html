@@ -39,8 +39,8 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 /* ── Header ── */
 .hdr { background: var(--bg-card); padding: 14px 16px 12px; border-bottom: 2px solid var(--border-card); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; transition: all 0.3s; }
 .hdr-center { flex: 1; text-align: center; }
-.hdr-center h1 { font-size: 19px; font-weight: 900; line-height: 1.2; background: linear-gradient(135deg, #00e0be, #9b5de5); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 10px rgba(0,224,190,0.2); letter-spacing: 0.5px; }
-.hdr-center p { font-size: 9px; color: var(--text-sub); margin-top: 4px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
+.hdr-center h1 { font-size: 22px; font-weight: 900; line-height: 1.2; background: linear-gradient(135deg, #00e0be, #9b5de5); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 10px rgba(0,224,190,0.2); letter-spacing: 0.5px; }
+.hdr-center p { font-size: 10px; color: var(--text-sub); margin-top: 4px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
 [data-theme="light"] .hdr-center h1 { background: linear-gradient(135deg, #009982, #7a3bbb); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none; }
 
 /* ── Hamburger button ── */
@@ -57,9 +57,9 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .drawer { position: fixed; left: 0; top: 0; bottom: 0; width: min(300px, 88vw); background: var(--bg-panel); z-index: 201; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border-card); display: flex; flex-direction: column; overflow: hidden; }
 .drawer.open { transform: translateX(0); }
 .drawer-head { padding: 16px 16px 12px; border-bottom: 1px solid var(--border-card); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.drawer-head-title { font-size: 13px; font-weight: 900; color: var(--text-title); }
-.drawer-head-sub { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
-.drawer-close { width: 32px; height: 32px; background: var(--border-card); border: none; border-radius: 8px; cursor: pointer; color: #3a9a90; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.drawer-head-title { font-size: 15px; font-weight: 900; color: var(--text-title); }
+.drawer-head-sub { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+.drawer-close { width: 32px; height: 32px; background: var(--border-card); border: none; border-radius: 8px; cursor: pointer; color: #3a9a90; font-size: 19px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .drawer-close:hover { background: var(--bg-hover); color: #00e0be; }
 
 /* ── Wallets Modal ── */
@@ -68,10 +68,10 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .wm-box { background: var(--bg-panel); border: 1px solid var(--border-card); border-radius: 16px; width: 100%; max-width: 580px; max-height: 85vh; display: flex; flex-direction: column; transform: translateY(24px) scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
 .wm-overlay.open .wm-box { transform: translateY(0) scale(1); opacity: 1; }
 .wm-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--border-card); display: flex; align-items: center; justify-content: space-between; }
-.wm-title { font-size: 16px; font-weight: 900; color: var(--text-title); }
-.wm-sub { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
+.wm-title { font-size: 19px; font-weight: 900; color: var(--text-title); }
+.wm-sub { font-size: 13px; color: var(--text-sub); margin-top: 3px; }
 .wm-body { padding: 16px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-.wallets-hdr-btn { display: flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #9b5de522, #00e0be22); border: 1px solid #9b5de533; color: var(--text-title); font-size: 11px; font-weight: 800; padding: 0 12px; height: 34px; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.4px; }
+.wallets-hdr-btn { display: flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #9b5de522, #00e0be22); border: 1px solid #9b5de533; color: var(--text-title); font-size: 13px; font-weight: 800; padding: 0 12px; height: 34px; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.4px; }
 .wallets-hdr-btn:hover { background: linear-gradient(135deg, #9b5de544, #00e0be44); border-color: #9b5de566; }
 
 .drawer-list { overflow-y: auto; flex: 1; padding: 8px 8px 20px; }
@@ -80,41 +80,41 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .drawer-item.active { border-color: var(--ic); background: var(--ibg); }
 .drawer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .drawer-info { flex: 1; min-width: 0; }
-.drawer-pill { font-size: 10px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.5px; }
+.drawer-pill { font-size: 12px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.5px; }
 .drawer-item.active .drawer-pill { color: var(--ic); }
-.drawer-title { font-size: 12px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+.drawer-title { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 .drawer-item.active .drawer-title { color: var(--text-title); }
-.drawer-pct { font-size: 11px; font-weight: 900; flex-shrink: 0; }
+.drawer-pct { font-size: 13px; font-weight: 900; flex-shrink: 0; }
 
 /* ── Return Button ── */
-.return-btn { display: flex; align-items: center; gap: 5px; background: var(--border-card); border: 1px solid transparent; color: var(--text-title); font-size: 11px; font-weight: 800; padding: 0 12px; height: 36px; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.4px; text-decoration: none; flex-shrink: 0; }
+.return-btn { display: flex; align-items: center; gap: 5px; background: var(--border-card); border: 1px solid transparent; color: var(--text-title); font-size: 13px; font-weight: 800; padding: 0 12px; height: 36px; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.4px; text-decoration: none; flex-shrink: 0; }
 .return-btn:hover { background: linear-gradient(135deg, #00e0be22, #9b5de522); border-color: #00e0be44; }
-.return-btn .return-arrow { font-size: 14px; transition: transform 0.2s; }
+.return-btn .return-arrow { font-size: 17px; transition: transform 0.2s; }
 .return-btn:hover .return-arrow { transform: translateX(-2px); }
 
 /* ── Controls ── */
 .controls-grp { display: flex; align-items: center; gap: 8px; }
-.icon-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--border-card); border: none; color: var(--text-title); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background 0.2s; flex-shrink: 0; }
+.icon-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--border-card); border: none; color: var(--text-title); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition: background 0.2s; flex-shrink: 0; }
 .icon-btn:hover { background: var(--bg-hover); }
 
 .num-toggle { display: flex; align-items: center; background: var(--border-card); border-radius: 20px; padding: 3px; gap: 0; border: 1px solid var(--bg-hover); position: relative; cursor: pointer; }
-.num-toggle-opt { padding: 5px 8px; border-radius: 16px; font-size: 10px; font-weight: 800; letter-spacing: 0.3px; color: var(--text-sub); transition: all 0.25s; white-space: nowrap; z-index: 1; position: relative; user-select: none; flex: 1; text-align: center; }
+.num-toggle-opt { padding: 5px 8px; border-radius: 16px; font-size: 12px; font-weight: 800; letter-spacing: 0.3px; color: var(--text-sub); transition: all 0.25s; white-space: nowrap; z-index: 1; position: relative; user-select: none; flex: 1; text-align: center; }
 [data-theme="light"] .num-toggle-opt.active { color: #fff; }
 
 .num-toggle-slider { position: absolute; top: 3px; bottom: 3px; border-radius: 16px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s; z-index: 0; width: calc(50% - 3px); }
 .num-toggle.indian .num-toggle-slider { transform: translateX(100%); background: #ff9933; }
 .num-toggle.intl .num-toggle-slider { transform: translateX(0); background: #00e0be; }
 .step-bar { background: var(--bg-card); border-bottom: 1px solid var(--border-card); padding: 9px 14px; display: flex; align-items: center; gap: 10px; transition: background 0.3s; }
-.step-bar-label { font-size: 10px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.6px; white-space: nowrap; }
+.step-bar-label { font-size: 12px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.6px; white-space: nowrap; }
 .step-bar-track { flex: 1; background: var(--border-card); border-radius: 99px; height: 5px; overflow: hidden; }
 .step-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
 .step-title-wrap { display: flex; align-items: center; gap: 6px; }
-.step-bar-count { font-size: 10px; font-weight: 900; color: var(--text-sub); white-space: nowrap; }
-.share-btn { background: none; border: none; font-size: 12px; cursor: pointer; opacity: 0.6; transition: all 0.2s; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
-.share-btn:hover { opacity: 1; background: var(--border-card); }
+.step-bar-count { font-size: 12px; font-weight: 900; color: var(--text-sub); white-space: nowrap; }
+.share-btn { background: none; border: none; font-size: 14px; color: var(--text-sub); cursor: pointer; opacity: 0.6; transition: all 0.2s; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+.share-btn:hover { opacity: 1; color: var(--text-title); background: var(--border-card); }
 .share-btn.copied { color: #00e0be; opacity: 1; }
 
-.sys-badge { display: inline-block; font-size: 9px; font-weight: 800; letter-spacing: 0.6px; padding: 1px 6px; border-radius: 5px; margin-left: 6px; vertical-align: middle; }
+.sys-badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.6px; padding: 1px 6px; border-radius: 5px; margin-left: 6px; vertical-align: middle; }
 
 .wrap{padding:14px 14px 0;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 @media (min-width: 900px) {
@@ -123,51 +123,51 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   .wrap > .col-right { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 76px; }
 }
 .title-card { border-radius: 14px; padding: 18px 18px 14px; border: 2px solid transparent; transition: background 0.3s, border-color 0.3s; }
-.title-card h2 { font-size: 22px; font-weight: 900; color: var(--text-title); margin-bottom: 3px; }
-.release-badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; }
-.meta-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-bottom: 14px; }
+.title-card h2 { font-size: 26px; font-weight: 900; color: var(--text-title); margin-bottom: 3px; }
+.release-badge { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; }
+.meta-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 15px; margin-bottom: 14px; }
 .lbl { color: var(--text-sub); } .gold { color: #f0a500; font-weight: 700; } .teal { color: #00e0be; font-weight: 700; }
 .analogy { background: var(--bg-inset); border-radius: 10px; padding: 13px 15px; margin-bottom: 14px; border-left: 4px solid var(--ac); border: 1px solid var(--border-card); border-left-width: 4px; }
-.analogy .tag { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--ac); margin-bottom: 5px; }
-.analogy p { font-size: 13px; color: var(--text-main); line-height: 1.7; }
-.slabel { font-size: 11px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.8px; margin-bottom: 7px; }
+.analogy .tag { font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--ac); margin-bottom: 5px; }
+.analogy p { font-size: 15px; color: var(--text-main); line-height: 1.7; }
+.slabel { font-size: 13px; font-weight: 800; color: var(--text-sub); letter-spacing: 0.8px; margin-bottom: 7px; }
 .changes { display: flex; flex-direction: column; gap: 6px; }
 .ci { display: flex; align-items: flex-start; gap: 9px; background: var(--bg-inset); border-radius: 8px; padding: 8px 11px; border: 1px solid var(--border-card); transition: all 0.2s; }
-.ci-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-.ci-text { font-size: 13px; color: var(--text-main); line-height: 1.5; }
+.ci-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.ci-text { font-size: 15px; color: var(--text-main); line-height: 1.5; }
 .src-btn { display: flex; align-items: center; justify-content: space-between; border-radius: 10px; padding: 10px 14px; text-decoration: none; margin-top: 8px; border: 1px solid var(--border-card); transition: all 0.2s; }
 .src-btn:hover { background: var(--bg-hover) !important; }
-.src-btn .st { font-size: 13px; color: var(--text-title); font-weight: 600; }
-.src-btn .sd { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-.src-btn .arr { font-size: 17px; }
+.src-btn .st { font-size: 15px; color: var(--text-title); font-weight: 600; }
+.src-btn .sd { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+.src-btn .arr { font-size: 20px; }
 
 /* ── Cards ── */
 .card { background: var(--bg-card); border-radius: 14px; padding: 16px 18px; border: 1px solid var(--border-card); transition: background 0.3s, border-color 0.3s; }
-.ct { font-size: 13px; font-weight: 800; color: var(--text-title); margin-bottom: 3px; }
-.cs { font-size: 12px; color: var(--text-sub); margin-bottom: 12px; }
+.ct { font-size: 15px; font-weight: 800; color: var(--text-title); margin-bottom: 3px; }
+.cs { font-size: 14px; color: var(--text-sub); margin-bottom: 12px; }
 .bar-stack { display: flex; border-radius: 7px; overflow: hidden; height: 26px; margin-bottom: 11px; }
-.seg { display: flex; align-items: center; justify-content: center; transition: width 0.5s ease; font-size: 10px; font-weight: 800; }
+.seg { display: flex; align-items: center; justify-content: center; transition: width 0.5s ease; font-size: 12px; font-weight: 800; }
 .legend { display: flex; flex-direction: column; gap: 5px; }
 .lr { display: flex; align-items: center; justify-content: space-between; }
 .ll { display: flex; align-items: center; gap: 7px; }
 .dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
-.ln { font-size: 12px; color: var(--text-main); }
-.lv { font-size: 12px; font-weight: 700; }
+.ln { font-size: 14px; color: var(--text-main); }
+.lv { font-size: 14px; font-weight: 700; }
 .circ-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.big-pct { font-size: 42px; font-weight: 900; line-height: 1; }
-.circ-sub { font-size: 12px; color: var(--text-sub); line-height: 1.6; }
+.big-pct { font-size: 50px; font-weight: 900; line-height: 1; }
+.circ-sub { font-size: 14px; color: var(--text-sub); line-height: 1.6; }
 .prog-track { background: var(--border-card); border-radius: 99px; height: 15px; overflow: hidden; margin-bottom: 5px; }
 .prog-fill { height: 100%; border-radius: 99px; display: flex; align-items: center; justify-content: flex-end; padding-right: 5px; transition: width 0.6s ease; }
-.prog-fill span { font-size: 9px; font-weight: 900; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.prog-fill span { font-size: 10px; font-weight: 900; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 .mini-bars { display: flex; gap: 3px; margin-top: 14px; align-items: flex-end; }
 .mc { flex: 1; cursor: pointer; text-align: center; }
 .mb { border-radius: 4px 4px 0 0; transition: all 0.3s; margin-bottom: 3px; }
-.my { font-size: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mini-hint { font-size: 10px; color: var(--text-sub); text-align: center; margin-top: 3px; }
+.my { font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-hint { font-size: 12px; color: var(--text-sub); text-align: center; margin-top: 3px; }
 
 /* ── Nav & Tabs ── */
 .nav { display: flex; gap: 8px; }
-.nav-btn { flex: 1; padding: 11px; border-radius: 11px; border: 1px solid var(--border-card); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(--btn-text); }
+.nav-btn { flex: 1; padding: 11px; border-radius: 11px; border: 1px solid var(--border-card); font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(--btn-text); }
 .nav-btn:disabled { cursor: default; background: var(--bg-inset) !important; color: var(--text-sub) !important; opacity: 0.6; border-color: var(--border-card) !important; }
 .prev-btn { background: var(--bg-card); }
 .prev-btn:hover:not(:disabled) { background: var(--bg-hover); }
@@ -175,11 +175,11 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .srcs { display: flex; flex-direction: column; gap: 5px; }
 .srow { display: flex; justify-content: space-between; align-items: center; background: var(--bg-inset); border-radius: 7px; padding: 8px 12px; text-decoration: none; border: 1px solid var(--border-card); transition: background 0.2s; }
 .srow:hover { background: var(--bg-hover); }
-.srow span { font-size: 12px; color: var(--text-main); }
-.srow .a { color: var(--text-sub); font-size: 15px; }
+.srow span { font-size: 14px; color: var(--text-main); }
+.srow .a { color: var(--text-sub); font-size: 18px; }
 
 .ftabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.ftab { flex: 1; padding: 9px 6px; border-radius: 10px; border: 1px solid var(--border-card); background: var(--bg-inset); color: var(--text-sub); font-size: 12px; font-weight: 800; cursor: pointer; letter-spacing: 0.4px; transition: all 0.2s; text-align: center; }
+.ftab { flex: 1; padding: 9px 6px; border-radius: 10px; border: 1px solid var(--border-card); background: var(--bg-inset); color: var(--text-sub); font-size: 14px; font-weight: 800; cursor: pointer; letter-spacing: 0.4px; transition: all 0.2s; text-align: center; }
 .ftab.on { color: #fff; }
 .fpanel { display: none; }
 .fpanel.on { display: block; }
@@ -191,34 +191,34 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .pl-row { display: flex; align-items: center; justify-content: space-between; }
 .pl-left { display: flex; align-items: center; gap: 8px; }
 .pl-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-.pl-name { font-size: 12px; color: var(--text-main); }
-.pl-pct { font-size: 13px; font-weight: 800; }
-.pie-center { font-size: 11px; fill: var(--text-sub); text-anchor: middle; font-family: 'Segoe UI', sans-serif; }
-.pie-center-big { font-size: 16px; fill: var(--text-title); font-weight: 900; text-anchor: middle; font-family: 'Segoe UI', sans-serif; }
+.pl-name { font-size: 14px; color: var(--text-main); }
+.pl-pct { font-size: 15px; font-weight: 800; }
+.pie-center { font-size: 13px; fill: var(--text-sub); text-anchor: middle; font-family: 'Segoe UI', sans-serif; }
+.pie-center-big { font-size: 19px; fill: var(--text-title); font-weight: 900; text-anchor: middle; font-family: 'Segoe UI', sans-serif; }
 
 
 /* Wallet addresses */
 .wal-card { background: var(--bg-inset); border-radius: 12px; padding: 14px; margin-bottom: 8px; border: 1px solid var(--border-card); }
 .wal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 5px; }
-.wal-name { font-size: 13px; font-weight: 900; color: var(--text-title); }
-.wal-bal { font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 8px; display: inline-block; }
+.wal-name { font-size: 15px; font-weight: 900; color: var(--text-title); }
+.wal-bal { font-size: 14px; font-weight: 800; padding: 3px 9px; border-radius: 8px; display: inline-block; }
 .wal-row { margin-bottom: 7px; }
-.wal-label { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; color: var(--text-sub); margin-bottom: 3px; }
+.wal-label { font-size: 12px; font-weight: 800; letter-spacing: 0.8px; color: var(--text-sub); margin-bottom: 3px; }
 .wal-field { display: flex; align-items: center; gap: 7px; background: var(--bg-card); border-radius: 8px; padding: 7px 10px; border: 1px solid var(--border-card); }
-.wal-text { font-size: 10px; color: var(--text-sub); font-family: monospace; flex: 1; word-break: break-all; line-height: 1.5; }
-.copy-btn { background: var(--bg-hover); border: none; border-radius: 6px; padding: 5px 9px; font-size: 10px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s; flex-shrink: 0; }
+.wal-text { font-size: 12px; color: var(--text-sub); font-family: monospace; flex: 1; word-break: break-all; line-height: 1.5; }
+.copy-btn { background: var(--bg-hover); border: none; border-radius: 6px; padding: 5px 9px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s; flex-shrink: 0; }
 .copy-btn:hover { filter: brightness(1.2); }
 .copy-btn.copied { background: #00e0be22; color: #00e0be !important; }
-.wal-empty { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--text-sub); }
+.wal-empty { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: var(--text-sub); }
 
 /* Verify steps */
 .vstep { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
-.vstep-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+.vstep-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
 .vstep-body { flex: 1; }
-.vstep-title { font-size: 13px; font-weight: 800; color: var(--text-title); margin-bottom: 3px; }
-.vstep-desc { font-size: 12px; color: var(--text-main); line-height: 1.65; }
-.vstep-code { background: var(--bg-inset); border-radius: 7px; padding: 7px 10px; margin-top: 5px; font-family: monospace; font-size: 11px; color: #00e0be; word-break: break-all; border: 1px solid var(--border-card); }
-.method-badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.7px; padding: 2px 8px; border-radius: 6px; margin-bottom: 10px; }
+.vstep-title { font-size: 15px; font-weight: 800; color: var(--text-title); margin-bottom: 3px; }
+.vstep-desc { font-size: 14px; color: var(--text-main); line-height: 1.65; }
+.vstep-code { background: var(--bg-inset); border-radius: 7px; padding: 7px 10px; margin-top: 5px; font-family: monospace; font-size: 13px; color: #00e0be; word-break: break-all; border: 1px solid var(--border-card); }
+.method-badge { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.7px; padding: 2px 8px; border-radius: 6px; margin-bottom: 10px; }
 
 
 /* ── Animations & Polish ── */
@@ -263,6 +263,50 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   </div>
 </div>
 
+<!-- Sources Modal -->
+<div class="wm-overlay" id="sm-overlay" onclick="if(event.target===this) closeSourcesModal()">
+  <div class="wm-box">
+    <div class="wm-head">
+      <div>
+        <div class="wm-title">📚 All Official Sources</div>
+        <div class="wm-sub">Every number in this dashboard comes directly from one of these posts</div>
+      </div>
+      <button class="drawer-close" onclick="closeSourcesModal()">✕</button>
+    </div>
+    <div class="wm-body">
+      <div class="srcs" id="sm-body">
+        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b" target="_blank"><span>Beldex Tokenomics — Jan 2022 (Initial POS allocation)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldex.io/blog/beldex-tokenomics-update/" target="_blank"><span>Tokenomics Update Q1–Q3 2022 — Official Blog</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-update-2d2e40c2e6e9" target="_blank"><span>Tokenomics Update Q1–Q3 2022 — Medium</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank"><span>Q4 2022 Scheduled Release — Jan 2023</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldex.io/blog/tokenomics-update-dwf-labs-token-sale-release/" target="_blank"><span>DWF Labs Token Sale — Mar 2023 (697M BDX · $25M · 2yr vesting)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-2023-fbad56b3d97a" target="_blank"><span>Q3 2023 Scheduled Release — Oct 2023</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-december-2023-e62cc314564e" target="_blank"><span>Q4 2023 Scheduled Release — Jan 2024 (Team Unlock!)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-march-2024-989f2145f2b1" target="_blank"><span>Q1 2024 Scheduled Release — Apr 2024 (Release 9, Circ 64.89%)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-update-for-q3-september-2024-3dc1ba38c999" target="_blank"><span>Q3 2024 Scheduled Release — Nov 2024</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-december-2024/" target="_blank"><span>Q4 2024 Scheduled Release — Dec 2024</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-march-31-2025/" target="_blank"><span>Q1 2025 Scheduled Release — Mar 2025 (Release 13, Circ 74.34%)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-q2-2025-d2c314bacc00" target="_blank"><span>Q2 2025 Scheduled Release — Aug 2025 (Release 14, Team = 0)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-30-2025-d56467691f32" target="_blank"><span>Q3 2025 Scheduled Release — Oct 2025 (Release 15, Circ 77.64%)</span><span class="a">↗</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Verify Modal -->
+<div class="wm-overlay" id="vm-overlay" onclick="if(event.target===this) closeVerifyModal()">
+  <div class="wm-box">
+    <div class="wm-head">
+      <div>
+        <div class="wm-title">🔍 How to Verify Wallets</div>
+        <div class="wm-sub">Step-by-step guide using the CLI wallet</div>
+      </div>
+      <button class="drawer-close" onclick="closeVerifyModal()">✕</button>
+    </div>
+    <div class="wm-body" id="vm-body"></div>
+  </div>
+</div>
+
 <!-- Header -->
 <div class="hdr">
   <a href="index.html" class="return-btn" title="Return to Beldex Visual Guide">
@@ -273,11 +317,13 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
     <div class="ham-line"></div>
     <div class="ham-line"></div>
   </button>
+  <button class="icon-btn" onclick="openSourcesModal()" title="View official sources" style="margin-left: 5px;">📚</button>
   <div class="hdr-center">
     <h1>Beldex (BDX) Token History</h1>
     <p>Official sources · tap ☰ to navigate all steps</p>
   </div>
   <div class="controls-grp">
+    <button class="wallets-hdr-btn" onclick="openVerifyModal()" title="Learn how to verify balances">🔍 How to Verify</button>
     <button class="wallets-hdr-btn" onclick="openAllWallets()" title="View all official wallet addresses">🔑 All Wallets</button>
     <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">☀️</button>
     <div class="num-toggle-wrap">
@@ -305,25 +351,6 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 <div class="wrap">
   <div class="col-left">
     <div id="tc" class="title-card"></div>
-    <div class="card" style="margin-bottom: 24px">
-      <div class="ct">📚 All Official Sources</div>
-      <div class="cs">Every number in this dashboard comes directly from one of these posts</div>
-      <div class="srcs">
-        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b" target="_blank"><span>Beldex Tokenomics — Jan 2022 (Initial POS allocation)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/beldex-tokenomics-update/" target="_blank"><span>Tokenomics Update Q1–Q3 2022 — Official Blog</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-update-2d2e40c2e6e9" target="_blank"><span>Tokenomics Update Q1–Q3 2022 — Medium</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank"><span>Q4 2022 Scheduled Release — Jan 2023</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/tokenomics-update-dwf-labs-token-sale-release/" target="_blank"><span>DWF Labs Token Sale — Mar 2023 (697M BDX · $25M · 2yr vesting)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-2023-fbad56b3d97a" target="_blank"><span>Q3 2023 Scheduled Release — Oct 2023</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-december-2023-e62cc314564e" target="_blank"><span>Q4 2023 Scheduled Release — Jan 2024 (Team Unlock!)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-march-2024-989f2145f2b1" target="_blank"><span>Q1 2024 Scheduled Release — Apr 2024 (Release 9, Circ 64.89%)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-update-for-q3-september-2024-3dc1ba38c999" target="_blank"><span>Q3 2024 Scheduled Release — Nov 2024</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-december-2024/" target="_blank"><span>Q4 2024 Scheduled Release — Dec 2024</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-march-31-2025/" target="_blank"><span>Q1 2025 Scheduled Release — Mar 2025 (Release 13, Circ 74.34%)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-q2-2025-d2c314bacc00" target="_blank"><span>Q2 2025 Scheduled Release — Aug 2025 (Release 14, Team = 0)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-30-2025-d56467691f32" target="_blank"><span>Q3 2025 Scheduled Release — Oct 2025 (Release 15, Circ 77.64%)</span><span class="a">↗</span></a>
-      </div>
-    </div>
   </div>
   <div class="col-right">
     <div class="nav">
@@ -814,7 +841,7 @@ function render(){
   // System badge
   const sysBadge = numSys === 'indian'
     ? `<span class="sys-badge" style="background:#ff993322;color:#ff9933">₹ Indian</span>`
-    : `<span class="sys-badge" style="background:#00e0be22;color:#00e0be">🌍 Intl</span>`;
+    : `<span class="sys-badge" style="background:#00e0be22;color:#00e0be">$ doller</span>`;
 
   const changesHtml = applyNumFmt(
     s.changes.map(c=>`<div class="ci"><span class="ci-icon">${c.i}</span><span class="ci-text">${c.t}</span></div>`).join('')
@@ -987,12 +1014,12 @@ function buildWallets(idx) {
   if (!bals) return `
     <div style="padding:4px 0">
       <div style="background:#160d00;border-radius:12px;padding:14px;border:1px solid #f0a50033;margin-bottom:10px">
-        <div style="font-size:12px;font-weight:900;color:#f0a500;margin-bottom:6px">⛏️ 2018 PoW Era — Different Wallet Structure</div>
-        <div style="font-size:12px;color:#8a9890;line-height:1.7">In 2018, Beldex launched with a total supply of <b style="color:#fff">~2.4 Billion BDX</b>. There were no separate named lock wallets like Ecosystem, Team, or Marketing — coins were distributed directly through public &amp; private sales, with the remaining ~35% vesting linearly over 3 years.<br><br>The named designated wallets (Ecosystem, Seed &amp; VC, Team, Marketing) were only created at the <b style="color:#9b5de5">Dec 10 2021 Bucephalus POS Hardfork</b>, when the total supply was expanded to 9.9 Billion BDX and a full allocation structure was established.</div>
+        <div style="font-size: 14px;font-weight:900;color:#f0a500;margin-bottom:6px">⛏️ 2018 PoW Era — Different Wallet Structure</div>
+        <div style="font-size: 14px;color:#8a9890;line-height:1.7">In 2018, Beldex launched with a total supply of <b style="color:#fff">~2.4 Billion BDX</b>. There were no separate named lock wallets like Ecosystem, Team, or Marketing — coins were distributed directly through public &amp; private sales, with the remaining ~35% vesting linearly over 3 years.<br><br>The named designated wallets (Ecosystem, Seed &amp; VC, Team, Marketing) were only created at the <b style="color:#9b5de5">Dec 10 2021 Bucephalus POS Hardfork</b>, when the total supply was expanded to 9.9 Billion BDX and a full allocation structure was established.</div>
       </div>
       <div style="background:#08131f;border-radius:10px;padding:11px 13px;border:1px solid #0b1f35">
-        <div style="font-size:11px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">👉 TO SEE WALLET ADDRESSES</div>
-        <div style="font-size:12px;color:#5a8880">Navigate to the <b style="color:#9b5de5">Dec 2021</b> step onwards — all four designated wallets with their addresses, view keys, and balances are available from that step forward.</div>
+        <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">👉 TO SEE WALLET ADDRESSES</div>
+        <div style="font-size: 14px;color:#5a8880">Navigate to the <b style="color:#9b5de5">Dec 2021</b> step onwards — all four designated wallets with their addresses, view keys, and balances are available from that step forward.</div>
       </div>
     </div>`;
   const keys = ['eco','svc','team','mkt'];
@@ -1060,16 +1087,38 @@ function closeAllWallets() {
   document.getElementById('wm-overlay').classList.remove('open');
 }
 
+// ── Verify Modal ──────────────────────────────────────────────────────────────
+function openVerifyModal() {
+  document.getElementById('vm-overlay').classList.add('open');
+  const body = document.getElementById('vm-body');
+  if (!body.innerHTML.trim()) {
+    body.innerHTML = buildVerify();
+  }
+}
+
+function closeVerifyModal() {
+  document.getElementById('vm-overlay').classList.remove('open');
+}
+
+// ── Sources Modal ─────────────────────────────────────────────────────────────
+function openSourcesModal() {
+  document.getElementById('sm-overlay').classList.add('open');
+}
+
+function closeSourcesModal() {
+  document.getElementById('sm-overlay').classList.remove('open');
+}
+
 // ── Verify guide ──────────────────────────────────────────────────────────────
 function buildVerify() {
   return `
     <div style="background:#04090f;border-radius:10px;padding:11px 13px;margin-bottom:14px;border-left:4px solid #ff4f4f">
-      <div style="font-size:11px;font-weight:800;color:#ff4f4f;letter-spacing:.8px;margin-bottom:4px">🔒 WHY NOT A BLOCK EXPLORER?</div>
-      <div style="font-size:12px;color:#7a9a96;line-height:1.65">Beldex uses CryptoNote privacy technology — wallet balances are <b style="color:#fff">encrypted on-chain</b> and invisible to public block explorers. The only way to verify a wallet's balance is using its <b style="color:#f0a500">View Key</b>, which can only be used inside the official CLI wallet. This is by design — it's what makes BDX private.</div>
+      <div style="font-size: 13px;font-weight:800;color:#ff4f4f;letter-spacing:.8px;margin-bottom:4px">🔒 WHY NOT A BLOCK EXPLORER?</div>
+      <div style="font-size: 14px;color:#7a9a96;line-height:1.65">Beldex uses CryptoNote privacy technology — wallet balances are <b style="color:#fff">encrypted on-chain</b> and invisible to public block explorers. The only way to verify a wallet's balance is using its <b style="color:#f0a500">View Key</b>, which can only be used inside the official CLI wallet. This is by design — it's what makes BDX private.</div>
     </div>
 
     <div class="method-badge" style="background:#9b5de522;color:#9b5de5">CLI WALLET — THE ONLY VERIFICATION METHOD</div>
-    <div style="font-size:12px;color:#5a8880;margin-bottom:14px">This is the official method from <a href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank" style="color:#9b5de5">Beldex's Dec 2022 release post</a>. You need a <b style="color:#fff">Linux system</b> to run the CLI wallet.</div>
+    <div style="font-size: 14px;color:#5a8880;margin-bottom:14px">This is the official method from <a href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank" style="color:#9b5de5">Beldex's Dec 2022 release post</a>. You need a <b style="color:#fff">Linux system</b> to run the CLI wallet.</div>
 
     <div class="vstep">
       <div class="vstep-num" style="background:#9b5de522;color:#9b5de5">1</div>
@@ -1103,8 +1152,8 @@ function buildVerify() {
         <div class="vstep-title">Enter the wallet address and view key when prompted</div>
         <div class="vstep-desc">The CLI will ask you 3 things in order:</div>
         <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px">
-          <div class="vstep-code">Standard address: <span style="color:#fff">← paste the wallet address from the 🏦 Wallets tab</span></div>
-          <div class="vstep-code">Secret view key: <span style="color:#fff">← paste the view key from the 🏦 Wallets tab</span></div>
+          <div class="vstep-code">Standard address: <span style="color:#fff">← paste the wallet address from the 🔑 All Wallets menu</span></div>
+          <div class="vstep-code">Secret view key: <span style="color:#fff">← paste the view key from the 🔑 All Wallets menu</span></div>
           <div class="vstep-code">Password: <span style="color:#aaa">← press Enter to leave blank (or type any password)</span></div>
         </div>
         <div class="vstep-desc" style="margin-top:6px">⚠️ The view key lets you <b style="color:#fff">read-only</b> — it cannot move or spend any coins. It is completely safe to use.</div>
@@ -1139,8 +1188,8 @@ function buildVerify() {
     </div>
 
     <div style="background:#04090f;border-radius:10px;padding:11px 13px;margin-top:4px;border:1px solid #0b2030">
-      <div style="font-size:11px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">📚 FULL DOCUMENTATION</div>
-      <div style="font-size:12px;color:#5a8880">For a detailed step-by-step guide with screenshots on restoring a CLI wallet from keys, see the official Beldex docs:</div>
+      <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">📚 FULL DOCUMENTATION</div>
+      <div style="font-size: 14px;color:#5a8880">For a detailed step-by-step guide with screenshots on restoring a CLI wallet from keys, see the official Beldex docs:</div>
       <div class="vstep-code" style="margin-top:6px">https://docs.beldex.io/wallets/guides/cli-restoring-wallet-from-keys</div>
     </div>`;
 }
@@ -1149,16 +1198,12 @@ function buildVerify() {
 function renderFC() {
   triggerAnim('fc');
   const s = steps[active];
-  let tabs = ['📊 Pie Chart','🏦 Wallets','🔍 How to Verify'];
-  if (active === 0) {
-    tabs = ['📊 Pie Chart','🏦 Wallets'];
-    if (activeTab === 2) activeTab = 0;
-  }
+  let tabs = ['📊 Pie Chart','🏦 Wallets'];
+  if (activeTab > 1) activeTab = 0;
   const tabHtml = tabs.map((t,i)=>`<button class="ftab${i===activeTab?' on':''}" style="${i===activeTab?`background:${s.color};`:''}\" onclick="setTab(${i})">${t}</button>`).join('');
   let panelHtml;
   if(activeTab===0) panelHtml = buildDonut(s.wallets, fmtTotalShort(s));
-  else if(activeTab===1) panelHtml = buildWallets(active);
-  else panelHtml = buildVerify();
+  else panelHtml = buildWallets(active);
   document.getElementById('fc').innerHTML = `
     <div class="ct">🔎 Explore the Allocation</div>
     <div class="cs" style="margin-bottom:12px">${tabs.length} ways to dig deeper into the numbers</div>
