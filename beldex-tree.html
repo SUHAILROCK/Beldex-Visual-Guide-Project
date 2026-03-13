@@ -14,7 +14,7 @@
 body{background:#080d18;color:#e2e8f0;font-family:'Sora',sans-serif;min-height:100vh;padding:48px 24px 100px;}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(56,189,126,0.07) 1px,transparent 1px),radial-gradient(rgba(99,102,241,0.05) 1px,transparent 1px);background-size:30px 30px,50px 50px;background-position:0 0,25px 25px;pointer-events:none;z-index:0;}
 
-.page{position:relative;z-index:1;max-width:1400px;margin:0 auto;}
+.page{position:relative;z-index:1;width:max-content;min-width:100%;margin:0 auto;}
 #treeSvg{position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible;}
 .tree-content{position:relative;z-index:2;}
 
@@ -30,7 +30,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .node-box{border-radius:16px;padding:16px 24px;text-align:center;position:relative;overflow:visible;transition:box-shadow .3s ease,border-color .3s ease,transform .3s cubic-bezier(.4,0,.2,1);will-change:transform,box-shadow;}
 
 /* ROOT */
-.node-root{background:linear-gradient(135deg,#0d2418,#122c20,#0f2a1e);border:2px solid #38bd7e;box-shadow:0 0 60px rgba(56,189,126,0.12),0 0 120px rgba(56,189,126,0.06),inset 0 1px 0 rgba(255,255,255,0.06);padding:26px 56px;margin-bottom:50px;}
+.node-root{background:linear-gradient(135deg,#0d2418,#122c20,#0f2a1e);border:2px solid #38bd7e;box-shadow:0 0 60px rgba(56,189,126,0.12),0 0 120px rgba(56,189,126,0.06),inset 0 1px 0 rgba(255,255,255,0.06);padding:40px 56px;margin-bottom:50px;}
 .node-root:hover{transform:translateY(-5px);box-shadow:0 0 80px rgba(56,189,126,0.22),0 0 160px rgba(56,189,126,0.1),inset 0 1px 0 rgba(255,255,255,0.08);}
 .node-root .n-title{font-family:'IBM Plex Mono',monospace;font-size:1.45rem;font-weight:700;color:#38bd7e;letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,126,0.4);}
 .node-root .n-desc{font-size:.9rem;color:#94a3b8;margin-top:6px;}
@@ -50,6 +50,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .pillar-group.pillar-4 .node-pillar{border-top-color:#22d3ee;} .pillar-group.pillar-4 .node-pillar::before{background:radial-gradient(ellipse at 50% 0%,#22d3ee,transparent 70%);} .pillar-group.pillar-4 .node-pillar .n-title{color:#67e8f9;} .pillar-group.pillar-4 .node-pillar:hover{border-color:rgba(34,211,238,0.55);border-top-color:#22d3ee;box-shadow:0 12px 40px -8px rgba(34,211,238,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
 .pillar-group.pillar-5 .node-pillar{border-top-color:#fbbf24;} .pillar-group.pillar-5 .node-pillar::before{background:radial-gradient(ellipse at 50% 0%,#fbbf24,transparent 70%);} .pillar-group.pillar-5 .node-pillar .n-title{color:#fde68a;} .pillar-group.pillar-5 .node-pillar:hover{border-color:rgba(251,191,36,0.55);border-top-color:#fbbf24;box-shadow:0 12px 40px -8px rgba(251,191,36,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
 .pillar-group.pillar-6 .node-pillar{border-top-color:#fb923c;} .pillar-group.pillar-6 .node-pillar::before{background:radial-gradient(ellipse at 50% 0%,#fb923c,transparent 70%);} .pillar-group.pillar-6 .node-pillar .n-title{color:#fed7aa;} .pillar-group.pillar-6 .node-pillar:hover{border-color:rgba(251,146,60,0.55);border-top-color:#fb923c;box-shadow:0 12px 40px -8px rgba(251,146,60,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-7 .node-pillar{border-top-color:#ec4899;} .pillar-group.pillar-7 .node-pillar::before{background:radial-gradient(ellipse at 50% 0%,#ec4899,transparent 70%);} .pillar-group.pillar-7 .node-pillar .n-title{color:#f9a8d4;} .pillar-group.pillar-7 .node-pillar:hover{border-color:rgba(236,72,153,0.55);border-top-color:#ec4899;box-shadow:0 12px 40px -8px rgba(236,72,153,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-8 .node-pillar{border-top-color:#10b981;} .pillar-group.pillar-8 .node-pillar::before{background:radial-gradient(ellipse at 50% 0%,#10b981,transparent 70%);} .pillar-group.pillar-8 .node-pillar .n-title{color:#6ee7b7;} .pillar-group.pillar-8 .node-pillar:hover{border-color:rgba(16,185,129,0.55);border-top-color:#10b981;box-shadow:0 12px 40px -8px rgba(16,185,129,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
 
 /* COMPONENT */
 .node-comp{background:linear-gradient(145deg,rgba(16,22,36,0.97),rgba(11,17,28,0.99));border:1px solid rgba(255,255,255,0.09);padding:12px 14px;border-radius:12px;min-width:110px;box-shadow:0 2px 14px -4px rgba(0,0,0,0.35);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
@@ -66,7 +68,8 @@ a.node-link:hover .node-comp::after{opacity:1;right:10px;}
 .pillar-group.pillar-4 .node-comp:hover{border-color:rgba(34,211,238,0.38);box-shadow:0 10px 30px -6px rgba(34,211,238,0.18);}
 .pillar-group.pillar-5 .node-comp:hover{border-color:rgba(251,191,36,0.38);box-shadow:0 10px 30px -6px rgba(251,191,36,0.18);}
 .pillar-group.pillar-6 .node-comp:hover{border-color:rgba(251,146,60,0.38);box-shadow:0 10px 30px -6px rgba(251,146,60,0.18);}
-
+.pillar-group.pillar-7 .node-comp:hover{border-color:rgba(236,72,153,0.38);box-shadow:0 10px 30px -6px rgba(236,72,153,0.18);}
+.pillar-group.pillar-8 .node-comp:hover{border-color:rgba(16,185,129,0.38);box-shadow:0 10px 30px -6px rgba(16,185,129,0.18);}
 
 /* STATUS */
 .status{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:1.2px;padding:3px 9px;border-radius:6px;display:inline-block;margin-top:6px;}
@@ -76,8 +79,8 @@ a.node-link:hover .node-comp::after{opacity:1;right:10px;}
 
 /* LAYOUT */
 .tree-level{display:flex;flex-direction:column;align-items:center;}
-.pillars-row{display:grid;grid-template-columns:repeat(6,1fr);gap:28px;width:100%;align-items:start;padding:0 16px;}
-.pillar-group{display:flex;flex-direction:column;align-items:center;gap:0;padding:0 14px;}
+.pillars-row{display:flex;flex-wrap:nowrap;gap:24px;width:100%;align-items:flex-start;padding:0 16px 20px;max-width:none;}
+.pillar-group{display:flex;flex-direction:column;align-items:center;gap:0;padding:0;flex-shrink:0;width:220px;}
 .pillar-group .node-pillar{margin-bottom:40px;width:100%;}
 .children-row{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:44px;width:100%;}
 .children-row .node-comp{width:100%;}
@@ -122,8 +125,8 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 .anim-legend{animation:fadeIn .5s ease both;}
 
 /* RESPONSIVE */
-@media(max-width:1200px){.pillars-row{grid-template-columns:repeat(3,1fr);gap:24px;}.page{max-width:960px;}}
-@media(max-width:768px){.pillars-row{grid-template-columns:1fr;gap:28px;}.header h1{font-size:1.5rem;}body{padding:24px 12px 60px;}.node-pillar{min-width:auto;width:100%;}}
+@media(max-width:1400px){.page{padding-bottom:120px;}}
+@media(max-width:600px){.header h1{font-size:1.5rem;}body{padding:24px 12px 60px;}}
 @media(prefers-reduced-motion:reduce){.node-box{transition:none;}.node-box:hover,.node-pillar:hover,.node-comp:hover{transform:none;}.anim-header,.anim-root,.anim-level,.anim-pillar,.anim-comp,.anim-legend{animation:none!important;opacity:1!important;}body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-ready) .level-tag,body:not(.anim-ready) .node-pillar,body:not(.anim-ready) .node-comp,body:not(.anim-ready) .legend{opacity:1!important;}}
 
 /* LIGHT THEME */
@@ -145,12 +148,16 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 [data-theme="light"] .pillar-group.pillar-4 .node-pillar .n-title{color:#0891b2;}
 [data-theme="light"] .pillar-group.pillar-5 .node-pillar .n-title{color:#b45309;}
 [data-theme="light"] .pillar-group.pillar-6 .node-pillar .n-title{color:#c2410c;}
+[data-theme="light"] .pillar-group.pillar-7 .node-pillar .n-title{color:#db2777;}
+[data-theme="light"] .pillar-group.pillar-8 .node-pillar .n-title{color:#059669;}
 [data-theme="light"] .pillar-group.pillar-1 .node-pillar:hover{box-shadow:0 10px 32px rgba(13,147,115,0.2);}
 [data-theme="light"] .pillar-group.pillar-2 .node-pillar:hover{box-shadow:0 10px 32px rgba(124,58,237,0.18);}
 [data-theme="light"] .pillar-group.pillar-3 .node-pillar:hover{box-shadow:0 10px 32px rgba(29,78,216,0.18);}
 [data-theme="light"] .pillar-group.pillar-4 .node-pillar:hover{box-shadow:0 10px 32px rgba(8,145,178,0.18);}
 [data-theme="light"] .pillar-group.pillar-5 .node-pillar:hover{box-shadow:0 10px 32px rgba(180,83,9,0.18);}
 [data-theme="light"] .pillar-group.pillar-6 .node-pillar:hover{box-shadow:0 10px 32px rgba(194,65,12,0.18);}
+[data-theme="light"] .pillar-group.pillar-7 .node-pillar:hover{box-shadow:0 10px 32px rgba(219,39,119,0.18);}
+[data-theme="light"] .pillar-group.pillar-8 .node-pillar:hover{box-shadow:0 10px 32px rgba(5,150,105,0.18);}
 [data-theme="light"] .node-comp{background:#ffffff;border-color:rgba(0,0,0,0.07);box-shadow:0 2px 10px rgba(0,0,0,0.05);}
 [data-theme="light"] .node-comp .n-title{color:#1e293b;}
 [data-theme="light"] .node-comp .n-desc{color:#64748b;}
@@ -176,12 +183,12 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 
   <div class="tree-level">
 
-    <div class="node-box node-root" data-tip="The complete Beldex privacy blockchain ecosystem — confidential transactions, private communications, and decentralized services">
+    <div class="node-box node-root" data-tip="The complete Beldex privacy blockchain ecosystem with confidential transactions, private communications, and decentralized services">
       <div class="n-title">BELDEX ECOSYSTEM</div>
       <div class="n-desc">Confidential Transactions &amp; Communications &middot; Monero Fork &middot; Conceptualized 2018</div>
     </div>
 
-    <div class="level-tag"><span class="lt-dot" aria-hidden="true"></span>Level 1 — Six Core Pillars</div>
+    <!-- <div class="level-tag"><span class="lt-dot" aria-hidden="true"></span>Level 1 — Eight Core Pillars</div> -->
 
     <div class="pillars-row">
 
@@ -265,6 +272,24 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
         </div>
       </div>
 
+      <!-- PILLAR 7: Research Lab -->
+      <div class="pillar-group pillar-7">
+        <div class="node-box node-pillar" data-tip="Research initiatives driving the future of privacy technology on Beldex"><div class="n-emoji">🔬</div><div class="n-title">Research Lab</div><div class="n-desc">Cryptography &amp; R&amp;D</div></div>
+        <div class="children-row">
+          <div class="node-box node-comp" data-tip="Exploring zero-knowledge proofs and advanced privacy tech"><div class="n-title">ZK Proofs</div><div class="n-desc">Privacy research</div></div>
+          <div class="node-box node-comp" data-tip="Next-generation network scalability solutions"><div class="n-title">Scalability</div><div class="n-desc">Performance</div></div>
+        </div>
+      </div>
+
+      <!-- PILLAR 8: Ecosystem Partner -->
+      <div class="pillar-group pillar-8">
+        <div class="node-box node-pillar" data-tip="Strategic partnerships and integrations within the Beldex ecosystem"><div class="n-emoji">🤝</div><div class="n-title">Ecosystem Partner</div><div class="n-desc">Integrations &amp; Alliances</div></div>
+        <div class="children-row">
+          <div class="node-box node-comp" data-tip="Decentralized storage solutions integrated with Beldex"><div class="n-title">Storage Partners</div><div class="n-desc">Data availability</div></div>
+          <div class="node-box node-comp" data-tip="Hardware wallets and security integrations"><div class="n-title">Hardware Sec</div><div class="n-desc">Hardware wallets</div></div>
+        </div>
+      </div>
+
     </div><!-- /.pillars-row -->
 
     <div class="legend">
@@ -309,8 +334,8 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 
   // ── SVG CONNECTOR SYSTEM ──
   var NS = 'http://www.w3.org/2000/svg';
-  var pillarColorsDark = ['#38bd7e','#8b5cf6','#3b82f6','#22d3ee','#fbbf24','#fb923c'];
-  var pillarColorsLight = ['#0d9373','#7c3aed','#1d4ed8','#0891b2','#b45309','#c2410c'];
+  var pillarColorsDark = ['#38bd7e','#8b5cf6','#3b82f6','#22d3ee','#fbbf24','#fb923c','#ec4899','#10b981'];
+  var pillarColorsLight = ['#0d9373','#7c3aed','#1d4ed8','#0891b2','#b45309','#c2410c','#db2777','#059669'];
 
   function getColors() {
     return document.documentElement.getAttribute('data-theme') === 'light' ? pillarColorsLight : pillarColorsDark;
