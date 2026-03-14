@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beldex Partners : The Alliance Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS : INTELLIGENCE NETWORK THEME
+═══════════════════════════════════════════ */
+:root {
+  --ink:   #040810;
+  --ink2:  #060b14;
+  --ink3:  #080f18;
+  --line:  #0d1a2e;
+  --line2: #112237;
+  --tx:    #d8e8f5;
+  --mid:   #5e8aab;
+  --dim:   #1c3352;
+
+  /* Sector colors : each category gets one */
+  --gold:  #f5a623;  /* CEX */
+  --pur:   #a855f7;  /* DEX */
+  --cy:    #06c5c2;  /* Swap */
+  --em:    #22c55e;  /* Masternode */
+  --sky:   #38bdf8;  /* Hardware/Wallet */
+  --or:    #f97316;  /* Ecommerce/Payment */
+  --ro:    #fb7185;  /* Technical */
+  --li:    #a3e635;  /* Audit */
+  --te:    #2dd4bf;  /* R&D */
+  --yr:    #eab308;  /* Backed By */
+  --bl:    #60a5fa;  /* Data */
+  --sl:    #94a3b8;  /* Media */
+  --wh:    #e2e8f0;  /* Alliance */
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--ink);
+  color:var(--tx);
+  font-family:'DM Sans',sans-serif;
+  font-size:1rem;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* Grid texture overlay */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(6,197,194,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,197,194,.025) 1px, transparent 1px);
+  background-size:48px 48px;
+}
+
+/* ═══════════════════
+   LAYOUT
+═══════════════════ */
+.w  { max-width:1200px; margin:0 auto; padding:0 2.25rem; position:relative; z-index:2; }
+.wn { max-width:900px;  margin:0 auto; padding:0 2.25rem; position:relative; z-index:2; }
+
+/* ═══════════════════
+   TYPOGRAPHY
+═══════════════════ */
+.bb   { font-family:'Bebas Neue',sans-serif; }
+.mono { font-family:'Space Mono',monospace; }
+h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,9vw,8rem); line-height:.9; letter-spacing:.02em; }
+h2 { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.5rem,5vw,4rem); line-height:.95; letter-spacing:.02em; }
+
+/* ═══════════════════
+   SCROLL REVEAL
+═══════════════════ */
+.sr { opacity:0; transform:translateY(28px); transition:opacity .65s ease,transform .65s ease; }
+.sr.vis { opacity:1; transform:none; }
+.sr.d1 { transition-delay:.1s; }
+.sr.d2 { transition-delay:.2s; }
+.sr.d3 { transition-delay:.3s; }
+
+/* ═══════════════════
+   NAV
+═══════════════════ */
+#topnav {
+  position:fixed; top:0; left:0; right:0; z-index:800;
+  background:rgba(4,8,16,.9);
+  border-bottom:1px solid var(--line2);
+  backdrop-filter:blur(12px);
+}
+.nav-inner {
+  display:flex; align-items:center; gap:0;
+  overflow-x:auto; scrollbar-width:none;
+  max-width:1200px; margin:0 auto;
+}
+.nav-inner::-webkit-scrollbar { display:none; }
+.nav-pill {
+  display:flex; align-items:center; gap:.5rem;
+  padding:.65rem 1.1rem;
+  border-right:1px solid var(--line);
+  cursor:pointer; flex-shrink:0;
+  text-decoration:none;
+  transition:background .2s;
+  font-size:.72rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase;
+  color:var(--mid);
+}
+.nav-pill:hover { background:rgba(255,255,255,.03); color:var(--tx); }
+.nav-pill .np-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+
+/* ═══════════════════════════════════
+   HERO
+═══════════════════════════════════ */
+#hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  justify-content:center; align-items:flex-start;
+  position:relative; overflow:hidden; padding:5rem 0 0;
+}
+.hero-bg-canvas { position:absolute; inset:0; z-index:0; }
+.hero-glow {
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 55% at 55% 40%, rgba(6,197,194,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 15% 80%, rgba(245,166,35,.04) 0%, transparent 50%);
+}
+.hero-content { position:relative; z-index:2; }
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:.65rem;
+  font-family:'Space Mono',monospace; font-size:.7rem;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--cy);
+  margin-bottom:1.5rem;
+}
+.hero-eyebrow-line { width:30px; height:1px; background:var(--cy); }
+.hero-h1-pre { color:var(--mid); }
+.hero-h1-main { color:var(--tx); }
+.hero-h1-accent { color:var(--cy); }
+.hero-tagline {
+  font-size:1.1rem; color:var(--mid); line-height:1.8;
+  max-width:580px; margin:1.5rem 0 2.5rem;
+}
+.hero-tags {
+  display:flex; flex-wrap:wrap; gap:.6rem;
+}
+.hero-tag-pill {
+  font-family:'Space Mono',monospace; font-size:.6rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:.35rem .8rem; border:1px solid; border-radius:0;
+}
+
+/* hero stats strip */
+.hero-stats {
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:repeat(5,1fr);
+  border-top:1px solid var(--line2);
+  border-bottom:1px solid var(--line2);
+  background:rgba(6,11,20,.7);
+  margin-top:3.5rem;
+}
+.hs-item { padding:1.5rem 1.75rem; border-right:1px solid var(--line2); }
+.hs-item:last-child { border-right:none; }
+.hs-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.75rem; line-height:1;
+}
+.hs-lbl {
+  font-family:'Space Mono',monospace; font-size:.58rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--mid); margin-top:.2rem;
+}
+
+/* ═══════════════════════════════════
+   SECTION SHELL
+═══════════════════════════════════ */
+.sec {
+  padding:5.5rem 0;
+  border-top:1px solid var(--line);
+  position:relative;
+}
+.sec-alt { background:var(--ink2); }
+.sec-alt2 { background:var(--ink3); }
+
+/* Sector label : the unforgettable element */
+.sector-label {
+  position:absolute; top:2.8rem; right:2.5rem;
+  font-family:'Bebas Neue',sans-serif; font-size:4.5rem;
+  letter-spacing:.12em; opacity:.04; pointer-events:none;
+  line-height:1; user-select:none;
+  color:var(--tx);
+}
+/* Section header */
+.sec-head { margin-bottom:3rem; }
+.sec-eyebrow {
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-family:'Space Mono',monospace; font-size:.65rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  margin-bottom:.75rem;
+}
+.sec-eyebrow .seb { font-size:.6rem; opacity:.6; }
+.sec-title { line-height:.9; }
+.sec-desc {
+  font-size:1rem; color:var(--mid); line-height:1.8;
+  max-width:680px; margin-top:.85rem;
+}
+/* Colored left border accent */
+.sec-accent-bar {
+  position:absolute; left:0; top:0; bottom:0;
+  width:3px;
+}
+
+/* ═══════════════════════════════════
+   PARTNER CARD GRID
+═══════════════════════════════════ */
+.pg { display:grid; gap:1px; background:var(--line); border:1px solid var(--line); }
+.pg-2 { grid-template-columns:repeat(2,1fr); }
+.pg-3 { grid-template-columns:repeat(3,1fr); }
+.pg-4 { grid-template-columns:repeat(4,1fr); }
+.pg-5 { grid-template-columns:repeat(5,1fr); }
+.pg-6 { grid-template-columns:repeat(6,1fr); }
+
+/* Individual partner card */
+.pc {
+  background:var(--ink);
+  padding:1.4rem 1.5rem;
+  display:flex; flex-direction:column; gap:.5rem;
+  position:relative; overflow:hidden;
+  transition:background .2s;
+  text-decoration:none;
+}
+.sec-alt  .pc { background:var(--ink2); }
+.sec-alt2 .pc { background:var(--ink3); }
+
+.pc::before {
+  content:''; position:absolute; top:0; left:0; right:0;
+  height:2px; transform:scaleX(0); transform-origin:left;
+  transition:transform .3s ease;
+}
+.pc:hover { background:rgba(255,255,255,.025); }
+.pc:hover::before { transform:scaleX(1); }
+
+.pc-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.45rem; line-height:1; letter-spacing:.04em;
+  color:var(--tx);
+}
+.pc-tag {
+  font-family:'Space Mono',monospace; font-size:.52rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:.18rem .55rem; border:1px solid; display:inline-block;
+  width:fit-content;
+}
+.pc-desc {
+  font-size:.82rem; color:var(--mid); line-height:1.6;
+  flex:1;
+}
+.pc-links {
+  display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.35rem;
+}
+.pc-link {
+  font-family:'Space Mono',monospace; font-size:.55rem;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:.28rem .65rem; border:1px solid; border-radius:0;
+  text-decoration:none; transition:all .2s; display:inline-block;
+}
+.pc-visit {
+  font-family:'Space Mono',monospace; font-size:.55rem;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--mid); text-decoration:none;
+  margin-top:.3rem; display:inline-block;
+  transition:color .2s;
+}
+.pc:hover .pc-visit { color:var(--tx); }
+
+/* ═══════════════════════════════════
+   MEDIA GRID (compact)
+═══════════════════════════════════ */
+.media-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+.mc {
+  background:var(--ink2); padding:1.2rem 1.35rem;
+  text-decoration:none; display:block;
+  transition:background .2s; position:relative;
+}
+.mc:hover { background:rgba(148,163,184,.05); }
+.mc-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.15rem; letter-spacing:.04em; color:var(--tx);
+  margin-bottom:.25rem;
+}
+.mc-desc { font-size:.78rem; color:var(--mid); line-height:1.5; }
+.mc::after {
+  content:'→'; position:absolute; bottom:.8rem; right:1rem;
+  font-size:.65rem; color:var(--dim); transition:color .2s;
+}
+.mc:hover::after { color:var(--sl); }
+
+/* ═══════════════════════════════════
+   BACKED BY SECTION (Special)
+═══════════════════════════════════ */
+.backer-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:2rem; }
+.backer-card {
+  background:var(--ink2); border:1px solid var(--line2);
+  padding:2rem 1.75rem; position:relative;
+  border-top:3px solid var(--yr);
+}
+.backer-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.9rem; letter-spacing:.04em; color:var(--tx);
+  margin-bottom:.4rem;
+}
+.backer-role {
+  font-family:'Space Mono',monospace; font-size:.58rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--yr); margin-bottom:.75rem;
+}
+.backer-desc { font-size:.88rem; color:var(--mid); line-height:1.7; }
+.backer-highlight {
+  margin-top:1rem; padding:.65rem .85rem;
+  background:rgba(234,179,8,.06); border-left:2px solid var(--yr);
+  font-size:.82rem; color:var(--tx); line-height:1.55;
+}
+
+/* ═══════════════════════════════════
+   BUILDING TOGETHER : SPECIAL SECTION
+═══════════════════════════════════ */
+.alliance-wrap {
+  background:linear-gradient(135deg, rgba(6,197,194,.08) 0%, rgba(4,8,16,0) 50%);
+  border:1px solid rgba(6,197,194,.2); padding:2.5rem 2.75rem;
+  display:grid; grid-template-columns:1fr auto;
+  gap:2rem; align-items:center;
+  margin-top:2rem;
+}
+.alliance-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.5rem; letter-spacing:.04em; color:var(--cy);
+}
+.alliance-desc { font-size:.95rem; color:var(--mid); line-height:1.8; margin-top:.5rem; }
+.alliance-link {
+  font-family:'Space Mono',monospace; font-size:.65rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:.75rem 1.5rem; border:1px solid var(--cy); color:var(--cy);
+  text-decoration:none; display:block; white-space:nowrap;
+  transition:all .2s;
+}
+.alliance-link:hover { background:rgba(6,197,194,.1); }
+
+/* ═══════════════════════════════════
+   FOOTER
+═══════════════════════════════════ */
+#foot {
+  background:var(--ink3); border-top:1px solid var(--line2);
+  padding:4rem 0 2rem;
+}
+.foot-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+.foot-stat { background:var(--ink2); padding:1.75rem 1.5rem; text-align:center; }
+.foot-stat-n {
+  font-family:'Bebas Neue',sans-serif; font-size:3rem; line-height:1;
+}
+.foot-stat-l {
+  font-family:'Space Mono',monospace; font-size:.58rem;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--mid); margin-top:.3rem;
+}
+.foot-copy {
+  text-align:center; font-family:'Space Mono',monospace;
+  font-size:.6rem; letter-spacing:.12em; color:var(--dim);
+  margin-top:2rem; text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════
+   SECTION-SPECIFIC THEME COLORS
+═══════════════════════════════════ */
+/* Applied via JS or data attrs for the ::before hover line and tags */
+.t-gold  { --tc:var(--gold); }
+.t-pur   { --tc:var(--pur);  }
+.t-cy    { --tc:var(--cy);   }
+.t-em    { --tc:var(--em);   }
+.t-sky   { --tc:var(--sky);  }
+.t-or    { --tc:var(--or);   }
+.t-ro    { --tc:var(--ro);   }
+.t-li    { --tc:var(--li);   }
+.t-te    { --tc:var(--te);   }
+.t-yr    { --tc:var(--yr);   }
+.t-bl    { --tc:var(--bl);   }
+.t-sl    { --tc:var(--sl);   }
+.t-wh    { --tc:var(--wh);   }
+
+.pc.t-gold::before { background:var(--gold); }
+.pc.t-pur::before  { background:var(--pur); }
+.pc.t-cy::before   { background:var(--cy); }
+.pc.t-em::before   { background:var(--em); }
+.pc.t-sky::before  { background:var(--sky); }
+.pc.t-or::before   { background:var(--or); }
+.pc.t-ro::before   { background:var(--ro); }
+.pc.t-li::before   { background:var(--li); }
+.pc.t-te::before   { background:var(--te); }
+.pc.t-yr::before   { background:var(--yr); }
+.pc.t-bl::before   { background:var(--bl); }
+.pc.t-sl::before   { background:var(--sl); }
+.pc.t-wh::before   { background:var(--wh); }
+
+/* Tags */
+.pc-tag.t-gold { color:var(--gold); border-color:rgba(245,166,35,.3); background:rgba(245,166,35,.05); }
+.pc-tag.t-pur  { color:var(--pur);  border-color:rgba(168,85,247,.3);  background:rgba(168,85,247,.05); }
+.pc-tag.t-cy   { color:var(--cy);   border-color:rgba(6,197,194,.3);   background:rgba(6,197,194,.05); }
+.pc-tag.t-em   { color:var(--em);   border-color:rgba(34,197,94,.3);   background:rgba(34,197,94,.05); }
+.pc-tag.t-sky  { color:var(--sky);  border-color:rgba(56,189,248,.3);  background:rgba(56,189,248,.05); }
+.pc-tag.t-or   { color:var(--or);   border-color:rgba(249,115,22,.3);  background:rgba(249,115,22,.05); }
+.pc-tag.t-ro   { color:var(--ro);   border-color:rgba(251,113,133,.3); background:rgba(251,113,133,.05); }
+.pc-tag.t-li   { color:var(--li);   border-color:rgba(163,230,53,.3);  background:rgba(163,230,53,.05); }
+.pc-tag.t-te   { color:var(--te);   border-color:rgba(45,212,191,.3);  background:rgba(45,212,191,.05); }
+.pc-tag.t-yr   { color:var(--yr);   border-color:rgba(234,179,8,.3);   background:rgba(234,179,8,.05); }
+.pc-tag.t-bl   { color:var(--bl);   border-color:rgba(96,165,250,.3);  background:rgba(96,165,250,.05); }
+.pc-tag.t-sl   { color:var(--sl);   border-color:rgba(148,163,184,.3); background:rgba(148,163,184,.05); }
+.pc-tag.t-wh   { color:var(--wh);   border-color:rgba(226,232,240,.3); background:rgba(226,232,240,.04); }
+
+/* Pill links */
+.pl-gold { color:var(--gold); border-color:rgba(245,166,35,.3); }
+.pl-gold:hover { background:rgba(245,166,35,.1); }
+.pl-pur  { color:var(--pur);  border-color:rgba(168,85,247,.3);  }
+.pl-pur:hover  { background:rgba(168,85,247,.1); }
+.pl-cy   { color:var(--cy);   border-color:rgba(6,197,194,.3); }
+.pl-cy:hover   { background:rgba(6,197,194,.1); }
+.pl-em   { color:var(--em);   border-color:rgba(34,197,94,.3); }
+.pl-em:hover   { background:rgba(34,197,94,.1); }
+.pl-sky  { color:var(--sky);  border-color:rgba(56,189,248,.3); }
+.pl-sky:hover  { background:rgba(56,189,248,.1); }
+
+/* Nav dot colors */
+.d-gold { background:var(--gold); }
+.d-pur  { background:var(--pur); }
+.d-cy   { background:var(--cy); }
+.d-em   { background:var(--em); }
+.d-sky  { background:var(--sky); }
+.d-or   { background:var(--or); }
+.d-ro   { background:var(--ro); }
+.d-li   { background:var(--li); }
+.d-te   { background:var(--te); }
+.d-yr   { background:var(--yr); }
+.d-bl   { background:var(--bl); }
+.d-sl   { background:var(--sl); }
+.d-wh   { background:var(--wh); }
+
+/* Accent bars */
+.ab-gold { background:var(--gold); }
+.ab-pur  { background:var(--pur);  }
+.ab-cy   { background:var(--cy);   }
+.ab-em   { background:var(--em);   }
+.ab-sky  { background:var(--sky);  }
+.ab-or   { background:var(--or);   }
+.ab-ro   { background:var(--ro);   }
+.ab-li   { background:var(--li);   }
+.ab-te   { background:var(--te);   }
+.ab-yr   { background:var(--yr);   }
+.ab-bl   { background:var(--bl);   }
+.ab-sl   { background:var(--sl);   }
+.ab-wh   { background:var(--wh);   }
+
+/* Eyebrow colors */
+.ec-gold { color:var(--gold); }
+.ec-pur  { color:var(--pur); }
+.ec-cy   { color:var(--cy); }
+.ec-em   { color:var(--em); }
+.ec-sky  { color:var(--sky); }
+.ec-or   { color:var(--or); }
+.ec-ro   { color:var(--ro); }
+.ec-li   { color:var(--li); }
+.ec-te   { color:var(--te); }
+.ec-yr   { color:var(--yr); }
+.ec-bl   { color:var(--bl); }
+.ec-sl   { color:var(--sl); }
+.ec-wh   { color:var(--wh); }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media (max-width:1050px) {
+  .pg-6 { grid-template-columns:repeat(3,1fr); }
+  .pg-5 { grid-template-columns:repeat(3,1fr); }
+  .pg-4 { grid-template-columns:repeat(2,1fr); }
+  .media-grid { grid-template-columns:repeat(3,1fr); }
+  .hero-stats { grid-template-columns:repeat(3,1fr); }
+  .foot-grid { grid-template-columns:repeat(3,1fr); }
+}
+@media (max-width:720px) {
+  .pg-3,.pg-4,.pg-5,.pg-6 { grid-template-columns:repeat(2,1fr); }
+  .pg-2 { grid-template-columns:1fr; }
+  .backer-grid { grid-template-columns:1fr; }
+  .media-grid { grid-template-columns:repeat(2,1fr); }
+  .hero-stats { grid-template-columns:repeat(2,1fr); }
+  .alliance-wrap { grid-template-columns:1fr; }
+  .foot-grid { grid-template-columns:repeat(2,1fr); }
+  .w,.wn { padding:0 1.25rem; }
+  .sector-label { display:none; }
+}
+@media (max-width:480px) {
+  .pg-3,.pg-4,.pg-5,.pg-6 { grid-template-columns:1fr; }
+  .media-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     TOP NAV
+══════════════════════════════════════════════ -->
+<nav id="topnav">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#hero"><span class="np-dot" style="background:var(--cy)"></span>Home</a>
+    <a class="nav-pill" href="#cex"><span class="np-dot d-gold"></span>Exchanges</a>
+    <a class="nav-pill" href="#dex"><span class="np-dot d-pur"></span>DEX</a>
+    <a class="nav-pill" href="#swap"><span class="np-dot d-cy"></span>Swap</a>
+    <a class="nav-pill" href="#masternode"><span class="np-dot d-em"></span>Masternode</a>
+    <a class="nav-pill" href="#hardware"><span class="np-dot d-sky"></span>Wallets</a>
+    <a class="nav-pill" href="#ecom"><span class="np-dot d-or"></span>Commerce</a>
+    <a class="nav-pill" href="#tech"><span class="np-dot d-ro"></span>Technical</a>
+    <a class="nav-pill" href="#audit"><span class="np-dot d-li"></span>Audit</a>
+    <a class="nav-pill" href="#rnd"><span class="np-dot d-te"></span>R&amp;D</a>
+    <a class="nav-pill" href="#backed"><span class="np-dot d-yr"></span>Backed By</a>
+    <a class="nav-pill" href="#data"><span class="np-dot d-bl"></span>Data</a>
+    <a class="nav-pill" href="#media"><span class="np-dot d-sl"></span>Media</a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+<section id="hero">
+  <canvas class="hero-bg-canvas" id="netCanvas"></canvas>
+  <div class="hero-glow"></div>
+  <div class="w">
+    <div class="hero-content sr">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        Beldex Privacy Protocol / Global Alliance Network
+      </div>
+      <h1>
+        <div class="hero-h1-pre">OUR</div>
+        <div class="hero-h1-main">PARTNERS</div>
+        <div class="hero-h1-accent">NETWORK</div>
+      </h1>
+      <p class="hero-tagline">
+        From major exchanges to decentralized protocols, from security auditors to global media : Beldex is backed by a deep and growing network of partners who believe in confidential finance and private digital communication.
+      </p>
+      <div class="hero-tags">
+        <div class="hero-tag-pill" style="color:var(--gold);border-color:rgba(245,166,35,.3);">18 Exchange Partners</div>
+        <div class="hero-tag-pill" style="color:var(--pur);border-color:rgba(168,85,247,.3);">5 DEX Partners</div>
+        <div class="hero-tag-pill" style="color:var(--cy);border-color:rgba(6,197,194,.3);">12 Swap Partners</div>
+        <div class="hero-tag-pill" style="color:var(--em);border-color:rgba(34,197,94,.3);">4 Masternode Hosts</div>
+        <div class="hero-tag-pill" style="color:var(--li);border-color:rgba(163,230,53,.3);">2 Audit Firms</div>
+        <div class="hero-tag-pill" style="color:var(--bl);border-color:rgba(96,165,250,.3);">13 Data Providers</div>
+        <div class="hero-tag-pill" style="color:var(--sl);border-color:rgba(148,163,184,.3);">30+ Media Outlets</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats sr d1">
+    <div class="hs-item"><div class="hs-num" style="color:var(--gold);">18</div><div class="hs-lbl">CEX Listings</div></div>
+    <div class="hs-item"><div class="hs-num" style="color:var(--pur);">5</div><div class="hs-lbl">DEX Pools</div></div>
+    <div class="hs-item"><div class="hs-num" style="color:var(--cy);">12</div><div class="hs-lbl">Swap Services</div></div>
+    <div class="hs-item"><div class="hs-num" style="color:var(--em);">4</div><div class="hs-lbl">Node Hosts</div></div>
+    <div class="hs-item"><div class="hs-num" style="color:var(--sl);">30+</div><div class="hs-lbl">Media Outlets</div></div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     01 : EXCHANGE PARTNERS (CEX)
+══════════════════════════════════════════════ -->
+<section id="cex" class="sec">
+  <div class="sec-accent-bar ab-gold"></div>
+  <div class="sector-label">EXCHANGES</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-gold"><span class="seb">01 /</span> Centralized Exchanges</div>
+      <h2>Exchange Partners</h2>
+      <p class="sec-desc">These are the centralized trading platforms where BDX is listed. You can buy, sell, and trade BDX on spot markets and in some cases with futures/derivatives. Each exchange provides liquidity and price discovery for BDX globally.</p>
+    </div>
+
+    <div class="pg pg-3 sr d1">
+
+      <!-- KuCoin -->
+      <div class="pc t-gold">
+        <div class="pc-name">KuCoin</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">One of the largest global crypto exchanges with over 20 million users. Offers BDX on both spot and perpetual futures markets with deep liquidity.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://www.kucoin.com/trade/BDX-USDT" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://www.kucoin.com/trade/futures/BDXUSDTM" target="_blank">Futures</a>
+        </div>
+      </div>
+
+      <!-- MEXC -->
+      <div class="pc t-gold">
+        <div class="pc-name">MEXC</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">High-performance global exchange known for listing new tokens early. BDX is available for spot trading and linear futures contracts.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://www.mexc.com/exchange/BDX_USDT" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://www.mexc.com/en-GB/futures/BDX_USDT?type=linear_swap" target="_blank">Futures</a>
+        </div>
+      </div>
+
+      <!-- Kraken -->
+      <div class="pc t-gold">
+        <div class="pc-name">Kraken</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">One of the most trusted and regulated exchanges in the world, founded in 2011. BDX is available for both spot and perpetual futures trading.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://pro.kraken.com/app/trade/bdx-usd" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://pro.kraken.com/app/trade/futures-bdx-usd-perp" target="_blank">Futures</a>
+        </div>
+      </div>
+
+      <!-- BingX -->
+      <div class="pc t-gold">
+        <div class="pc-name">BingX</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">A fast-growing social trading and derivatives exchange offering copy trading features. BDX is tradeable on both spot and perpetual contracts.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://bingx.com/en/spot/BDXUSDT" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://bingx.com/en/perpetual/BDX-USDT" target="_blank">Futures</a>
+        </div>
+      </div>
+
+      <!-- WEEX -->
+      <div class="pc t-gold">
+        <div class="pc-name">WEEX</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">A rapidly expanding derivatives-focused exchange known for fast execution and competitive fees. BDX is listed on both spot and futures.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://www.weex.io/spot/BDX-USDT" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://www.weex.com/futures/BDX-USDT" target="_blank">Futures</a>
+        </div>
+      </div>
+
+      <!-- BloFin -->
+      <div class="pc t-gold">
+        <div class="pc-name">BloFin</div>
+        <div class="pc-tag t-gold">Spot</div>
+        <div class="pc-desc">A professional trading platform with a focus on derivatives and structured products. BDX spot market available with competitive spreads.</div>
+        <a class="pc-visit" href="https://blofin.com/spot/en/BDX-USDT" target="_blank">Visit BloFin →</a>
+      </div>
+
+      <!-- AscendEX -->
+      <div class="pc t-gold">
+        <div class="pc-name">AscendEX</div>
+        <div class="pc-tag t-gold">Spot</div>
+        <div class="pc-desc">A global digital asset trading platform with a wide token listing policy and staking capabilities. BDX is listed in the USDT spot market.</div>
+        <a class="pc-visit" href="https://ascendex.com/en/cashtrade-spottrading/usdt/bdx" target="_blank">Visit AscendEX →</a>
+      </div>
+
+      <!-- CoinEx -->
+      <div class="pc t-gold">
+        <div class="pc-name">CoinEx</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">A global cryptocurrency exchange supporting hundreds of trading pairs with strong focus on altcoin markets. BDX is available on spot and futures.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://www.coinex.com/en/exchange/bdx-usdt" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://www.coinex.com/en/futures/bdx-usdt" target="_blank">Futures</a>
+        </div>
+      </div>
+
+      <!-- GroveX -->
+      <div class="pc t-gold">
+        <div class="pc-name">GroveX</div>
+        <div class="pc-tag t-gold">Spot : AUD</div>
+        <div class="pc-desc">An Australian crypto exchange offering BDX trading against the Australian Dollar. Provides regional access for Australian BDX holders.</div>
+        <a class="pc-visit" href="https://www.grovex.io/en_US/trade/BDX_AUD" target="_blank">Visit GroveX →</a>
+      </div>
+
+      <!-- Coins.ph -->
+      <div class="pc t-gold">
+        <div class="pc-name">Coins.ph</div>
+        <div class="pc-tag t-gold">Spot : PHP</div>
+        <div class="pc-desc">A leading Philippine crypto super-app and e-wallet serving millions of users. BDX is priced in Philippine Peso, enabling local access across Southeast Asia.</div>
+        <a class="pc-visit" href="https://www.coins.ph/en-ph/prices/BDX/PHP" target="_blank">Visit Coins.ph →</a>
+      </div>
+
+      <!-- Pionex -->
+      <div class="pc t-gold">
+        <div class="pc-name">Pionex</div>
+        <div class="pc-tag t-gold">Spot + Bot Trading</div>
+        <div class="pc-desc">An exchange built natively with 16 free trading bots. BDX is available for manual and automated bot trading against USDC pairs.</div>
+        <a class="pc-visit" href="https://www.pionex.com/en/trade/BDX_USDC/Manual" target="_blank">Visit Pionex →</a>
+      </div>
+
+      <!-- Pionex US -->
+      <div class="pc t-gold">
+        <div class="pc-name">Pionex US</div>
+        <div class="pc-tag t-gold">Spot : US</div>
+        <div class="pc-desc">The US-regulated version of Pionex, bringing automated trading bots to American users. BDX is available for manual and bot trading against USD.</div>
+        <a class="pc-visit" href="https://www.pionex.us/en-US/trade/BDX_USD/Manual" target="_blank">Visit Pionex US →</a>
+      </div>
+
+      <!-- Webot -->
+      <div class="pc t-gold">
+        <div class="pc-name">Webot</div>
+        <div class="pc-tag t-gold">Spot : USD</div>
+        <div class="pc-desc">A trading automation platform offering BDX/USD spot markets with algorithmic trading support and grid bot strategies.</div>
+        <a class="pc-visit" href="https://www.webot.com/us/en-US/trade/BDX_USD/Manual" target="_blank">Visit Webot →</a>
+      </div>
+
+      <!-- Gate.io -->
+      <div class="pc t-gold">
+        <div class="pc-name">Gate.io</div>
+        <div class="pc-tag t-gold">Spot</div>
+        <div class="pc-desc">A top-10 global exchange by volume supporting thousands of trading pairs. Gate.io lists BDX in the USDT spot market with consistent liquidity.</div>
+        <a class="pc-visit" href="https://www.gate.io/trade/BDX_USDT" target="_blank">Visit Gate.io →</a>
+      </div>
+
+      <!-- KCEX -->
+      <div class="pc t-gold">
+        <div class="pc-name">KCEX</div>
+        <div class="pc-tag t-gold">Futures</div>
+        <div class="pc-desc">A derivatives-focused exchange offering BDX perpetual futures contracts. Designed for traders who want leveraged exposure to BDX price movements.</div>
+        <a class="pc-visit" href="https://www.kcex.com/futures/exchange/BDX_USDT" target="_blank">Visit KCEX →</a>
+      </div>
+
+      <!-- NonKYC -->
+      <div class="pc t-gold">
+        <div class="pc-name">NonKYC</div>
+        <div class="pc-tag t-gold">Spot : No KYC</div>
+        <div class="pc-desc">A privacy-first exchange that requires no identity verification to trade. Perfectly aligned with Beldex values : trade BDX anonymously in a USDT market.</div>
+        <a class="pc-visit" href="https://nonkyc.io/market/BDX_USDT" target="_blank">Visit NonKYC →</a>
+      </div>
+
+      <!-- P2B -->
+      <div class="pc t-gold">
+        <div class="pc-name">P2B</div>
+        <div class="pc-tag t-gold">Spot</div>
+        <div class="pc-desc">A professional exchange and listing platform with a broad selection of altcoin markets. BDX is traded against USDT with active market support.</div>
+        <a class="pc-visit" href="https://p2pb2b.com/trade/BDX_USDT/" target="_blank">Visit P2B →</a>
+      </div>
+
+      <!-- CoinUp -->
+      <div class="pc t-gold">
+        <div class="pc-name">CoinUp</div>
+        <div class="pc-tag t-gold">Spot + Futures</div>
+        <div class="pc-desc">A global crypto trading platform with both spot and perpetual futures markets. BDX is available for both traditional and derivatives trading.</div>
+        <div class="pc-links">
+          <a class="pc-link pl-gold" href="https://www.coinup.io/en_US/trade/BDX_USDT" target="_blank">Spot</a>
+          <a class="pc-link pl-gold" href="https://futures.coinup.io/en_US/trade/E-BDX-USDT" target="_blank">Futures</a>
+        </div>
+      </div>
+
+    </div><!-- end pg -->
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     02 : DEX PARTNERS
+══════════════════════════════════════════════ -->
+<section id="dex" class="sec sec-alt">
+  <div class="sec-accent-bar ab-pur"></div>
+  <div class="sector-label">DEX</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-pur"><span class="seb">02 /</span> Decentralized Exchanges</div>
+      <h2>DEX Partners</h2>
+      <p class="sec-desc">Decentralized exchanges allow on-chain trading of BDX without any intermediary or account registration. BDX is available as a wrapped or bridged token on multiple chains : BNB Chain, Ethereum, Solana, and Base : accessible through these leading DEX protocols.</p>
+    </div>
+    <div class="pg pg-3 sr d1">
+
+      <div class="pc t-pur">
+        <div class="pc-name">PancakeSwap</div>
+        <div class="pc-tag t-pur">BNB Chain AMM</div>
+        <div class="pc-desc">The largest DEX on BNB Chain by volume. Swap BDX (BEP-20) against any token using automated market making liquidity pools.</div>
+        <a class="pc-visit" href="https://pancakeswap.finance/swap?outputCurrency=0x6ad12E761b438beA3EA09F6C6266556Bb24C2181" target="_blank">Trade on PancakeSwap →</a>
+      </div>
+
+      <div class="pc t-pur">
+        <div class="pc-name">Uniswap</div>
+        <div class="pc-tag t-pur">Ethereum DEX</div>
+        <div class="pc-desc">The most widely used DEX on Ethereum. Provides liquidity for BDX (ERC-20) on the world's largest decentralized trading platform.</div>
+        <a class="pc-visit" href="https://app.uniswap.org/explore/pools/ethereum/0x41e9f7Cf65Fe0c3c71A077E49023bA3C4f4F65B3" target="_blank">Trade on Uniswap →</a>
+      </div>
+
+      <div class="pc t-pur">
+        <div class="pc-name">Jupiter</div>
+        <div class="pc-tag t-pur">Solana Aggregator</div>
+        <div class="pc-desc">The leading liquidity aggregator on Solana. Routes BDX swaps across all Solana DEX pools to find the best price for each trade.</div>
+        <a class="pc-visit" href="https://jup.ag/tokens/CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d" target="_blank">Trade on Jupiter →</a>
+      </div>
+
+      <div class="pc t-pur">
+        <div class="pc-name">Raydium</div>
+        <div class="pc-tag t-pur">Solana AMM</div>
+        <div class="pc-desc">Solana's primary automated market maker and liquidity protocol. Provides on-chain BDX liquidity pools on the high-speed Solana network.</div>
+        <a class="pc-visit" href="https://raydium.io/liquidity-pools/?token=CP4w2B3og2TaFUpye1kr8pdeJwwahtESKppZnffN9n9d" target="_blank">Trade on Raydium →</a>
+      </div>
+
+      <div class="pc t-pur">
+        <div class="pc-name">Aerodrome</div>
+        <div class="pc-tag t-pur">Base Chain DEX</div>
+        <div class="pc-desc">The central liquidity hub on Base : Coinbase's Layer 2 network. Enables BDX trading with low gas fees on the fast-growing Base ecosystem.</div>
+        <a class="pc-visit" href="https://aerodrome.finance/swap?outputCurrency=0x6ad12e761b438bea3ea09f6c6266556bb24c2181&from=0x4200000000000000000000000000000000000006&to=0x6ad12e761b438bea3ea09f6c6266556bb24c2181&chain0=8453&chain1=8453" target="_blank">Trade on Aerodrome →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     03 : SWAP PARTNERS
+══════════════════════════════════════════════ -->
+<section id="swap" class="sec">
+  <div class="sec-accent-bar ab-cy"></div>
+  <div class="sector-label">SWAP</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-cy"><span class="seb">03 /</span> Instant Swap Services</div>
+      <h2>Swap Partners</h2>
+      <p class="sec-desc">Instant crypto swap services let you exchange BDX for any other cryptocurrency in seconds : with no account, no KYC, and no waiting. These services aggregate rates across multiple exchanges to give you the best conversion rate for BDX.</p>
+    </div>
+    <div class="pg pg-4 sr d1">
+
+      <div class="pc t-cy">
+        <div class="pc-name">Trocador</div>
+        <div class="pc-tag t-cy">Privacy Swap</div>
+        <div class="pc-desc">A privacy-preserving swap aggregator that specifically supports privacy coins. Does not log user data or require identity verification.</div>
+        <a class="pc-visit" href="https://www.beldex.io/swap#trocadorswap" target="_blank">Swap via Trocador →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">CypherGoat</div>
+        <div class="pc-tag t-cy">Non-Custodial</div>
+        <div class="pc-desc">A non-custodial exchange service with no registration required. Offers competitive rates for BDX swaps while maintaining user privacy.</div>
+        <a class="pc-visit" href="https://cyphergoat.com/?ref=beldex" target="_blank">Swap via CypherGoat →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">PegasusSwap</div>
+        <div class="pc-tag t-cy">Instant Swap</div>
+        <div class="pc-desc">A fast instant swap service supporting BDX conversions. No account required : enter your receive address and complete the swap in minutes.</div>
+        <a class="pc-visit" href="https://beldex.io/swap#pegasusswap" target="_blank">Swap via PegasusSwap →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">Houdini Swap</div>
+        <div class="pc-tag t-cy">Anonymous Swap</div>
+        <div class="pc-desc">An anonymous crypto exchange service that routes swaps through privacy-preserving methods. No registration. No trace.</div>
+        <a class="pc-visit" href="https://beldex.io/swap#houdini" target="_blank">Swap via Houdini →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">SwapSpace</div>
+        <div class="pc-tag t-cy">Multi-Exchange</div>
+        <div class="pc-desc">A multi-exchange aggregator comparing rates from dozens of swap providers. Finds the best BDX rate across the entire market at any given moment.</div>
+        <a class="pc-visit" href="https://beldex.io/swap#swapspace" target="_blank">Swap via SwapSpace →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">Exolix</div>
+        <div class="pc-tag t-cy">Unlimited Amounts</div>
+        <div class="pc-desc">An unlimited crypto exchange with no minimum or maximum swap amounts. Supports BDX with fixed and floating rate options for predictable swaps.</div>
+        <a class="pc-visit" href="https://beldex.io/swap#exolix" target="_blank">Swap via Exolix →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">Changelly</div>
+        <div class="pc-tag t-cy">Trusted Swap</div>
+        <div class="pc-desc">One of the most established instant swap services in the industry. Supports BDX with fast exchanges and reliable processing since 2015.</div>
+        <a class="pc-visit" href="https://www.beldex.io/swap#changelly" target="_blank">Swap via Changelly →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">SimpleSwap</div>
+        <div class="pc-tag t-cy">No Account Swap</div>
+        <div class="pc-desc">A simple, clean swap interface that requires no account creation. Exchange BDX for 700+ cryptocurrencies instantly with floating or fixed rates.</div>
+        <a class="pc-visit" href="https://www.beldex.io/swap#SimpleSwap" target="_blank">Swap via SimpleSwap →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">XChange.me</div>
+        <div class="pc-tag t-cy">Anonymous Exchange</div>
+        <div class="pc-desc">A fully anonymous crypto exchange platform with no registration, no logs, and no tracking. Trade BDX privately with competitive exchange rates.</div>
+        <a class="pc-visit" href="https://xchange.me/exchange/estimate?from_amount=0.01&from_currency=btc&to_currency=bdx&fee_currency" target="_blank">Swap via XChange.me →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">LetsExchange</div>
+        <div class="pc-tag t-cy">Wide Support</div>
+        <div class="pc-desc">Supports over 4,400 cryptocurrencies for instant swaps. LetsExchange offers BDX conversions across a wide range of trading pairs with competitive rates.</div>
+        <a class="pc-visit" href="https://www.beldex.io/swap#letsExchange" target="_blank">Swap via LetsExchange →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">StealthSwap</div>
+        <div class="pc-tag t-cy">Privacy-First</div>
+        <div class="pc-desc">A privacy-first swap service designed for users who value transaction confidentiality. Swap BDX without revealing your identity or wallet history.</div>
+        <a class="pc-visit" href="https://www.beldex.io/swap#stealthswap" target="_blank">Swap via StealthSwap →</a>
+      </div>
+
+      <div class="pc t-cy">
+        <div class="pc-name">QuickEx</div>
+        <div class="pc-tag t-cy">Fast No-KYC</div>
+        <div class="pc-desc">A no-KYC fast exchange service supporting BDX with competitive rates. Designed for users who want quick conversions without account verification.</div>
+        <a class="pc-visit" href="https://www.beldex.io/swap#quickex" target="_blank">Swap via QuickEx →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     04 : MASTERNODE PARTNERS
+══════════════════════════════════════════════ -->
+<section id="masternode" class="sec sec-alt">
+  <div class="sec-accent-bar ab-em"></div>
+  <div class="sector-label">NODES</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-em"><span class="seb">04 /</span> Infrastructure</div>
+      <h2>Masternode Partners</h2>
+      <p class="sec-desc">Beldex masternodes require 10,000 BDX locked as collateral and a server running 24/7. These hosting partners simplify the process : they provide managed infrastructure, one-click deployment, and ongoing monitoring so anyone can run a masternode without deep technical expertise.</p>
+    </div>
+    <div class="pg pg-2 sr d1">
+
+      <div class="pc t-em">
+        <div class="pc-name">NodeHub</div>
+        <div class="pc-tag t-em">One-Click Deploy</div>
+        <div class="pc-desc">A multi-coin masternode hosting platform with one-click deployment. NodeHub handles server setup, updates, and monitoring automatically : just provide your BDX collateral and deploy.</div>
+        <a class="pc-visit" href="https://nodehub.io/dashboard/deploy?coin=beldex" target="_blank">Deploy on NodeHub →</a>
+      </div>
+
+      <div class="pc t-em">
+        <div class="pc-name">Higlan</div>
+        <div class="pc-tag t-em">Managed Hosting</div>
+        <div class="pc-desc">A dedicated masternode hosting provider with a strong track record for uptime and reliability. Higlan provides managed BDX masternodes with professional monitoring and support.</div>
+        <a class="pc-visit" href="https://higlan.com/nodes/bdx" target="_blank">Deploy on Higlan →</a>
+      </div>
+
+      <div class="pc t-em">
+        <div class="pc-name">Pecunia Platform</div>
+        <div class="pc-tag t-em">Multi-Coin Platform</div>
+        <div class="pc-desc">A multi-coin masternode management platform with detailed ROI statistics and node performance tracking. Provides portfolio management tools for masternode investors.</div>
+        <a class="pc-visit" href="https://pecuniaplatform.io/coin-stats/beldex" target="_blank">View on Pecunia →</a>
+      </div>
+
+      <div class="pc t-em">
+        <div class="pc-name">GetBlock</div>
+        <div class="pc-tag t-em">Node API Access</div>
+        <div class="pc-desc">A blockchain node provider offering shared and dedicated BDX node access via API. Developers and exchanges use GetBlock to connect to the Beldex network without running their own node.</div>
+        <a class="pc-visit" href="https://getblock.io/nodes/bdx/" target="_blank">Connect via GetBlock →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     05 : HARDWARE WALLET + WALLET PARTNER
+══════════════════════════════════════════════ -->
+<section id="hardware" class="sec">
+  <div class="sec-accent-bar ab-sky"></div>
+  <div class="sector-label">WALLETS</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-sky"><span class="seb">05 /</span> Storage and Security</div>
+      <h2>Wallet Partners</h2>
+      <p class="sec-desc">Secure storage is essential for any cryptocurrency. These wallet partners allow BDX holders to store their coins safely : whether in a physical hardware device for maximum offline security or in a multi-asset software wallet for convenient daily use.</p>
+    </div>
+    <div class="pg pg-2 sr d1">
+
+      <div class="pc t-sky">
+        <div class="pc-name">Tangem</div>
+        <div class="pc-tag t-sky">Hardware Wallet</div>
+        <div class="pc-desc">A card-format hardware wallet using NFC technology. Tangem stores your BDX private keys on a tamper-proof chip : no seed phrase to lose, no computer to compromise. The most portable cold storage solution in the market.</div>
+        <a class="pc-visit" href="https://tangem.com/invite/MONEDA" target="_blank">Get Tangem →</a>
+      </div>
+
+      <div class="pc t-sky">
+        <div class="pc-name">Zelcore</div>
+        <div class="pc-tag t-sky">Software Wallet</div>
+        <div class="pc-desc">A multi-asset, multi-chain software wallet supporting BDX alongside hundreds of other cryptocurrencies. Zelcore provides a clean interface for managing your BDX balance, sending transactions, and connecting to DApps.</div>
+        <a class="pc-visit" href="https://zelcore.io" target="_blank">Get Zelcore →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     06 : ECOMMERCE + PAYMENT
+══════════════════════════════════════════════ -->
+<section id="ecom" class="sec sec-alt">
+  <div class="sec-accent-bar ab-or"></div>
+  <div class="sector-label">COMMERCE</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-or"><span class="seb">06 /</span> Spending and Payments</div>
+      <h2>Commerce Partners</h2>
+      <p class="sec-desc">Beldex is not just tradeable : it is spendable. These partners bridge the gap between cryptocurrency and real-world commerce, allowing BDX to be used for online shopping, bill payments, gift cards, and merchant transactions globally.</p>
+    </div>
+    <div class="pg pg-3 sr d1">
+
+      <div class="pc t-or">
+        <div class="pc-name">UQUID</div>
+        <div class="pc-tag t-or">Ecommerce</div>
+        <div class="pc-desc">A global crypto-powered shopping platform with over 300 million products. UQUID allows users to spend BDX on electronics, clothing, gift cards, and utility bills across 130+ countries.</div>
+        <a class="pc-visit" href="https://shop.uquid.com/" target="_blank">Shop with BDX →</a>
+      </div>
+
+      <div class="pc t-or">
+        <div class="pc-name">ShopInBit</div>
+        <div class="pc-tag t-or">Ecommerce</div>
+        <div class="pc-desc">An online store that accepts cryptocurrency for real products. ShopInBit enables BDX holders to purchase everyday goods and technology products using their BDX balance.</div>
+        <a class="pc-visit" href="https://shopinbit.com/" target="_blank">Shop with BDX →</a>
+      </div>
+
+      <div class="pc t-or">
+        <div class="pc-name">BTCPay Server</div>
+        <div class="pc-tag t-or">Payment Infrastructure</div>
+        <div class="pc-desc">A self-hosted, open-source payment processor that lets merchants accept cryptocurrency without any third-party custodian. BTCPay Server integration enables BDX to be accepted as a payment method by online and physical businesses globally.</div>
+        <a class="pc-visit" href="https://btcpayserver.org" target="_blank">Learn BTCPay →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     07 : TECHNICAL PARTNERS
+══════════════════════════════════════════════ -->
+<section id="tech" class="sec">
+  <div class="sec-accent-bar ab-ro"></div>
+  <div class="sector-label">BUILDERS</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-ro"><span class="seb">07 /</span> Infrastructure and Development</div>
+      <h2>Technical Partners</h2>
+      <p class="sec-desc">Technical partnerships form the engineering backbone of the Beldex ecosystem. These organizations collaborate with Beldex on tooling, protocol infrastructure, privacy technology, and distributed computing : contributing expertise that accelerates the development of confidential applications.</p>
+    </div>
+    <div class="pg pg-2 sr d1">
+
+      <div class="pc t-ro">
+        <div class="pc-name">GhostWare</div>
+        <div class="pc-tag t-ro">Privacy Technology</div>
+        <div class="pc-desc">A privacy technology development partner working on tools and infrastructure that integrate with the Beldex ecosystem. GhostWare contributes to building privacy-preserving software solutions for the network.</div>
+      </div>
+
+      <div class="pc t-ro">
+        <div class="pc-name">Shadow (SHDW)</div>
+        <div class="pc-tag t-ro">Decentralized Storage</div>
+        <div class="pc-desc">A decentralized storage and compute network. The Shadow ecosystem partnership brings distributed storage infrastructure capabilities to the Beldex protocol, enabling decentralized data handling for private applications.</div>
+      </div>
+
+      <div class="pc t-ro">
+        <div class="pc-name">Stormrae</div>
+        <div class="pc-tag t-ro">Blockchain Infrastructure</div>
+        <div class="pc-desc">A blockchain infrastructure and development partner providing engineering support and tooling for Beldex protocol components. Contributes to network stability and developer experience improvements.</div>
+      </div>
+
+      <div class="pc t-ro">
+        <div class="pc-name">Union Build</div>
+        <div class="pc-tag t-ro">Web3 Development</div>
+        <div class="pc-desc">A Web3 development and tooling partner supporting the construction of decentralized applications within the Beldex ecosystem. Union Build brings full-stack DApp development expertise to the confidential Web3 space.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     08 : AUDIT PARTNERS
+══════════════════════════════════════════════ -->
+<section id="audit" class="sec sec-alt2">
+  <div class="sec-accent-bar ab-li"></div>
+  <div class="sector-label">AUDIT</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-li"><span class="seb">08 /</span> Security and Trust</div>
+      <h2>Audited By</h2>
+      <p class="sec-desc">Independent security audits are a non-negotiable requirement for any serious blockchain project. Beldex smart contracts and protocol code have been reviewed by leading blockchain security firms. These audits verify that the code behaves as intended and is resistant to known attack vectors.</p>
+    </div>
+    <div class="pg pg-2 sr d1">
+
+      <div class="pc t-li">
+        <div class="pc-name">CertiK</div>
+        <div class="pc-tag t-li">Formal Verification</div>
+        <div class="pc-desc">One of the world's top blockchain security companies, known for rigorous formal verification and penetration testing. CertiK has audited Beldex smart contracts and maintains an ongoing security monitoring profile for the project.</div>
+        <a class="pc-visit" href="https://www.certik.com/projects/beldex" target="_blank">View CertiK Audit →</a>
+      </div>
+
+      <div class="pc t-li">
+        <div class="pc-name">QuillAudits</div>
+        <div class="pc-tag t-li">Smart Contract Audit</div>
+        <div class="pc-desc">A professional smart contract audit and security platform with a verified leaderboard of audited projects. QuillAudits independently reviewed and certified Beldex protocol code for security vulnerabilities.</div>
+        <a class="pc-visit" href="https://www.quillaudits.com/leaderboard/beldex" target="_blank">View QuillAudits Profile →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     09 : R&D PARTNER
+══════════════════════════════════════════════ -->
+<section id="rnd" class="sec">
+  <div class="sec-accent-bar ab-te"></div>
+  <div class="sector-label">RESEARCH</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-te"><span class="seb">09 /</span> Research and Development</div>
+      <h2>R&amp;D Partner</h2>
+      <p class="sec-desc">Pushing the frontier of privacy technology requires dedicated research partnerships. Beldex collaborates with cryptographic research institutions to advance the mathematical foundations of its privacy protocols : working on zero-knowledge proofs, ring signatures, and scalability research.</p>
+    </div>
+    <div class="sr d1">
+      <div class="pc t-te" style="max-width:640px;">
+        <div class="pc-name">Geometry Labs</div>
+        <div class="pc-tag t-te">Cryptography Research</div>
+        <div class="pc-desc">A specialized cryptography and decentralized protocol research firm focused on zero-knowledge proofs, MPC, and privacy-preserving technologies. Geometry Labs collaborates directly with Beldex on advanced protocol research : helping design the mathematical foundations that power BeldexAI, BChat, and the broader Beldex privacy ecosystem. Their work directly influences the protocol-level privacy guarantees of the Beldex chain.</div>
+        <a class="pc-visit" href="https://geometrylabs.io/" target="_blank">Visit Geometry Labs →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     10 : BACKED BY
+══════════════════════════════════════════════ -->
+<section id="backed" class="sec sec-alt">
+  <div class="sec-accent-bar ab-yr"></div>
+  <div class="sector-label">INVESTORS</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-yr"><span class="seb">10 /</span> Institutional Support</div>
+      <h2>Backed By</h2>
+      <p class="sec-desc">Beldex has attracted institutional backing from some of the most respected names in blockchain venture capital and market making. These investors provide not just capital but strategic guidance, market access, and credibility that accelerates ecosystem growth.</p>
+    </div>
+    <div class="backer-grid sr d1">
+
+      <div class="backer-card">
+        <div class="backer-name">DWF Labs</div>
+        <div class="backer-role">Web3 Investor and Market Maker</div>
+        <div class="backer-desc">One of the largest and most active Web3 investment firms and market makers globally. DWF Labs provides liquidity, strategic advisory, and ecosystem development support for Beldex.</div>
+        <div class="backer-highlight">$25 million investment secured in February 2023, marking one of the largest privacy-sector investments that year.</div>
+      </div>
+
+      <div class="backer-card">
+        <div class="backer-name">BlockAlpha</div>
+        <div class="backer-role">Crypto Investment Firm</div>
+        <div class="backer-desc">A blockchain-focused investment and advisory firm supporting early and growth-stage Web3 projects. BlockAlpha contributes strategic guidance and network access to help Beldex expand its ecosystem partnerships.</div>
+      </div>
+
+      <div class="backer-card">
+        <div class="backer-name">Bitgert Ventures</div>
+        <div class="backer-role">Blockchain Venture Capital</div>
+        <div class="backer-desc">The venture capital arm of the Bitgert blockchain ecosystem. Bitgert Ventures backs promising blockchain infrastructure and privacy technology projects, providing both financial support and cross-ecosystem collaboration opportunities.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     11 : DATA PROVIDERS
+══════════════════════════════════════════════ -->
+<section id="data" class="sec">
+  <div class="sec-accent-bar ab-bl"></div>
+  <div class="sector-label">DATA</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-bl"><span class="seb">11 /</span> Market Intelligence</div>
+      <h2>Data Providers</h2>
+      <p class="sec-desc">Data providers track BDX price, volume, market cap, on-chain activity, and ecosystem metrics in real time. Inclusion on these platforms increases BDX visibility, improves price discovery, and makes it easier for investors worldwide to research and monitor Beldex.</p>
+    </div>
+    <div class="pg pg-4 sr d1">
+
+      <div class="pc t-bl"><div class="pc-name">CoinMarketCap</div><div class="pc-tag t-bl">Market Data</div><div class="pc-desc">The world's most referenced cryptocurrency data platform. Tracks BDX price, volume, market cap, and historical data for millions of daily users.</div><a class="pc-visit" href="https://coinmarketcap.com/currencies/beldex" target="_blank">View on CMC →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CoinGecko</div><div class="pc-tag t-bl">Market Data</div><div class="pc-desc">A comprehensive cryptocurrency data aggregator tracking over 10,000 coins. CoinGecko provides BDX price, market cap, developer activity, and community data.</div><a class="pc-visit" href="https://www.coingecko.com/en/coins/beldex" target="_blank">View on CoinGecko →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CMC.io</div><div class="pc-tag t-bl">Market Data</div><div class="pc-desc">A cryptocurrency market data platform providing BDX price tracking, exchange listings, and market cap rankings in an accessible format.</div><a class="pc-visit" href="https://cmc.io/coins/beldex" target="_blank">View on CMC.io →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CoinCodex</div><div class="pc-tag t-bl">Price Tracking</div><div class="pc-desc">A cryptocurrency price prediction and tracking platform that follows BDX market performance and provides price analysis tools for investors.</div><a class="pc-visit" href="https://coincodex.com/crypto/beldex/" target="_blank">View on CoinCodex →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CryptoCompare</div><div class="pc-tag t-bl">Institutional Data</div><div class="pc-desc">A professional-grade cryptocurrency data provider used by institutional investors. Tracks BDX across all exchange listings with standardized market data.</div><a class="pc-visit" href="https://www.cryptocompare.com/coins/bdx/overview" target="_blank">View on CryptoCompare →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">Coinbase</div><div class="pc-tag t-bl">Price Reference</div><div class="pc-desc">Coinbase's public price page tracks BDX market data and provides a trusted reference point for BDX price information accessible to mainstream audiences.</div><a class="pc-visit" href="https://www.coinbase.com/price/beldex" target="_blank">View on Coinbase →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CoinPaprika</div><div class="pc-tag t-bl">Market Analysis</div><div class="pc-desc">A crypto research platform with detailed coin profiles. Provides BDX market data alongside team information, technology overview, and exchange listings.</div><a class="pc-visit" href="https://coinpaprika.com/coin/bdx-beldex/" target="_blank">View on CoinPaprika →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CoinRanking</div><div class="pc-tag t-bl">Rankings</div><div class="pc-desc">A crypto ranking and data platform that lists BDX with live price data, market cap ranking, supply information, and historical price charts.</div><a class="pc-visit" href="https://coinranking.com/coin/baUiyrBz7GtA+beldex-bdx" target="_blank">View on CoinRanking →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">Crypto.com</div><div class="pc-tag t-bl">Market Data</div><div class="pc-desc">Crypto.com's price tracking section provides BDX price data and market information to the platform's 80+ million users worldwide.</div><a class="pc-visit" href="https://crypto.com/price/beldex" target="_blank">View on Crypto.com →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">Binance</div><div class="pc-tag t-bl">Price Reference</div><div class="pc-desc">Binance's public price page tracks BDX market data, providing high-visibility reference pricing information to one of the world's largest trading audiences.</div><a class="pc-visit" href="https://www.binance.com/en-GB/price/beldex" target="_blank">View on Binance →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">Magic Square</div><div class="pc-tag t-bl">App Discovery</div><div class="pc-desc">A Web3 app discovery platform. BChat : Beldex's private messaging application : is listed on Magic Square for discovery by the broader Web3 community.</div><a class="pc-visit" href="https://magic.store/app/bchat" target="_blank">View BChat on Magic Square →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">DappRadar</div><div class="pc-tag t-bl">DApp Analytics</div><div class="pc-desc">The leading DApp analytics and discovery platform. BChat is listed on DappRadar, giving it exposure to users actively searching for new decentralized applications.</div><a class="pc-visit" href="https://dappradar.com/other/other/bchat-messenger" target="_blank">View on DappRadar →</a></div>
+
+      <div class="pc t-bl"><div class="pc-name">CryptWerk</div><div class="pc-tag t-bl">Merchant Directory</div><div class="pc-desc">A cryptocurrency merchant and service directory helping users find businesses that accept BDX. Increases real-world BDX adoption by connecting spenders with accepting merchants.</div><a class="pc-visit" href="https://cryptwerk.com/pay-with/bdx/" target="_blank">View on CryptWerk →</a></div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     12 : BUILDING TOGETHER
+══════════════════════════════════════════════ -->
+<section id="alliance" class="sec sec-alt2">
+  <div class="sec-accent-bar ab-wh"></div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-wh"><span class="seb">12 /</span> Ecosystem Initiative</div>
+      <h2>Building Together With</h2>
+      <p class="sec-desc">Beldex co-founded the Confidential Token initiative : a cross-chain standard for privacy-preserving tokenization. This alliance brings together projects committed to building a confidential financial layer for Web3.</p>
+    </div>
+    <div class="alliance-wrap sr d1">
+      <div>
+        <div class="alliance-name">Confidential Token</div>
+        <div class="alliance-desc">The Confidential Token standard is a shared initiative between Beldex and allied privacy-focused projects. It aims to establish an interoperable framework for confidential tokens across multiple blockchains : enabling any token to inherit privacy properties through a unified standard. Beldex is an active co-builder of this coalition, contributing protocol design and research to shape the future of on-chain privacy.</div>
+      </div>
+      <a class="alliance-link" href="https://www.confidentialtoken.org/" target="_blank">Visit ConfidentialToken.org</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     13 : MEDIA
+══════════════════════════════════════════════ -->
+<section id="media" class="sec">
+  <div class="sec-accent-bar ab-sl"></div>
+  <div class="sector-label">MEDIA</div>
+  <div class="w">
+    <div class="sec-head sr">
+      <div class="sec-eyebrow ec-sl"><span class="seb">13 /</span> Press and Publications</div>
+      <h2>In The Media</h2>
+      <p class="sec-desc">Beldex has been covered by over 30 major cryptocurrency and financial media publications worldwide. Coverage spans investment milestones, technology innovations, DApp launches, and market analysis : reflecting growing mainstream recognition of the Beldex privacy ecosystem.</p>
+    </div>
+    <div class="media-grid sr d1">
+
+      <a class="mc" href="https://www.coindesk.com/business/2023/02/23/dwf-labs-invests-25m-in-privacy-tech-startup-beldex/" target="_blank">
+        <div class="mc-name">CoinDesk</div>
+        <div class="mc-desc">DWF Labs invests $25M in Beldex privacy technology</div>
+      </a>
+      <a class="mc" href="https://www.forbesindia.com/article/brand-connect/how-blockchain-is-disrupting-social-communication/77673/1" target="_blank">
+        <div class="mc-name">Forbes India</div>
+        <div class="mc-desc">How blockchain is disrupting social communication</div>
+      </a>
+      <a class="mc" href="https://cointelegraph.com/press-releases/bucephalus-reigning-privacy-in-crypto/amp" target="_blank">
+        <div class="mc-name">CoinTelegraph</div>
+        <div class="mc-desc">Bucephalus hard fork: privacy in crypto</div>
+      </a>
+      <a class="mc" href="https://www.bloomberg.com/press-releases/2021-11-30/beldex-pos-chain-launches-with-bucephalus-hard-fork" target="_blank">
+        <div class="mc-name">Bloomberg</div>
+        <div class="mc-desc">Beldex PoS chain launches with Bucephalus hard fork</div>
+      </a>
+      <a class="mc" href="https://finance.yahoo.com/news/beldex-pos-chain-launches-bucephalus-084400944.html" target="_blank">
+        <div class="mc-name">Yahoo Finance</div>
+        <div class="mc-desc">Beldex PoS chain launches with Bucephalus hard fork</div>
+      </a>
+      <a class="mc" href="https://www.marketwatch.com/press-release/beldex-raises-25m-from-web3-investor-dwf-labs-2023-02-23" target="_blank">
+        <div class="mc-name">MarketWatch</div>
+        <div class="mc-desc">Beldex raises $25M from DWF Labs</div>
+      </a>
+      <a class="mc" href="https://hackernoon.com/can-blockchains-overcome-the-scalability-trilemma" target="_blank">
+        <div class="mc-name">HackerNoon</div>
+        <div class="mc-desc">Can blockchains overcome the scalability trilemma?</div>
+      </a>
+      <a class="mc" href="https://ambcrypto.com/building-a-privacy-based-ecosystem-with-beldex/" target="_blank">
+        <div class="mc-name">AMBCrypto</div>
+        <div class="mc-desc">Building a privacy-based ecosystem with Beldex</div>
+      </a>
+      <a class="mc" href="https://www.newsbtc.com/sponsored/privacy-network-beldex-awaits-a-game-changing-update-bdx-set-for-the-moon/" target="_blank">
+        <div class="mc-name">NewsBTC</div>
+        <div class="mc-desc">Privacy network Beldex awaits a game-changing update</div>
+      </a>
+      <a class="mc" href="https://www.banklesstimes.com/news/2022/06/27/free-speech-advocate-beldex-launches-first-truly-private-chat-app/" target="_blank">
+        <div class="mc-name">Bankless Times</div>
+        <div class="mc-desc">Beldex launches first truly private chat app</div>
+      </a>
+      <a class="mc" href="https://beincrypto.com/beldex-on-chain-scalability-bucephalus-pos-upgrade/" target="_blank">
+        <div class="mc-name">BeInCrypto</div>
+        <div class="mc-desc">Beldex on-chain scalability Bucephalus PoS upgrade</div>
+      </a>
+      <a class="mc" href="https://u.today/beldex-blockchain-migrates-to-proof-of-stake-releases-first-privacy-dapps-ecosystem" target="_blank">
+        <div class="mc-name">U.Today</div>
+        <div class="mc-desc">Beldex migrates to PoS and releases first privacy DApps</div>
+      </a>
+      <a class="mc" href="https://www.benzinga.com/pressreleases/21/11/24350619/beldex-pos-chain-launches-with-bucephalus-hard-fork" target="_blank">
+        <div class="mc-name">Benzinga</div>
+        <div class="mc-desc">Beldex PoS chain launches with Bucephalus hard fork</div>
+      </a>
+      <a class="mc" href="https://www.coinspeaker.com/earn-passive-income-masternodes/" target="_blank">
+        <div class="mc-name">CoinSpeaker</div>
+        <div class="mc-desc">Earn passive income with Beldex masternodes</div>
+      </a>
+      <a class="mc" href="https://www.analyticsinsight.net/what-determines-the-price-of-a-cryptocurrency/" target="_blank">
+        <div class="mc-name">Analytics Insight</div>
+        <div class="mc-desc">What determines the price of a cryptocurrency?</div>
+      </a>
+      <a class="mc" href="https://coinpedia.org/price-analysis/beldex-price-prediction-to-1/" target="_blank">
+        <div class="mc-name">CoinPedia</div>
+        <div class="mc-desc">Beldex price prediction and analysis</div>
+      </a>
+      <a class="mc" href="https://bitcoinafrica.io/2021/09/30/why-africans-need-to-consider-beldex/" target="_blank">
+        <div class="mc-name">Bitcoin Africa</div>
+        <div class="mc-desc">Why Africans need to consider Beldex</div>
+      </a>
+      <a class="mc" href="https://blockgeeks.com/dapps-the-future-of-blockchain/" target="_blank">
+        <div class="mc-name">BlockGeeks</div>
+        <div class="mc-desc">DApps: the future of blockchain</div>
+      </a>
+      <a class="mc" href="https://cryptonews.com/news/why-beldex-is-the-best-privacy-coin.htm" target="_blank">
+        <div class="mc-name">CryptoNews</div>
+        <div class="mc-desc">Why Beldex is the best privacy coin</div>
+      </a>
+      <a class="mc" href="https://cryptopotato.com/beldex-solving-privacy-issues-in-the-crypto-space/" target="_blank">
+        <div class="mc-name">CryptoPotato</div>
+        <div class="mc-desc">Beldex solving privacy issues in crypto</div>
+      </a>
+      <a class="mc" href="https://uk.investing.com/news/cryptocurrency-news/beldex-and-geometry-labs-collaborate-to-address-blockchain-privacy-issues-2748583" target="_blank">
+        <div class="mc-name">Investing.com</div>
+        <div class="mc-desc">Beldex and Geometry Labs collaborate on privacy</div>
+      </a>
+      <a class="mc" href="https://www.financialexpress.com/blockchain/beldex-labs-collaborates-with-decentralised-platform-geometry-labs-over-beldex-blockchain/2663739/" target="_blank">
+        <div class="mc-name">Financial Express</div>
+        <div class="mc-desc">Beldex collaborates with Geometry Labs</div>
+      </a>
+      <a class="mc" href="https://economictimes.indiatimes.com/markets/cryptocurrency/beldex-partners-with-geometry-labs-to-scale-up-blockchain/articleshow/94159510.cms" target="_blank">
+        <div class="mc-name">Economic Times</div>
+        <div class="mc-desc">Beldex partners with Geometry Labs to scale blockchain</div>
+      </a>
+      <a class="mc" href="https://cryptonews.net/news/finance/20593433/" target="_blank">
+        <div class="mc-name">CryptoNews.net</div>
+        <div class="mc-desc">Beldex ecosystem and finance coverage</div>
+      </a>
+      <a class="mc" href="https://coinjournal.net/news/beldex-and-geometry-labs-enter-privacy-enhancing-partnership/" target="_blank">
+        <div class="mc-name">CoinJournal</div>
+        <div class="mc-desc">Beldex and Geometry Labs privacy-enhancing partnership</div>
+      </a>
+      <a class="mc" href="https://www.livemint.com/news/world/privacypreserving-tech-can-help-prevent-hacks-in-web3-beldex-blockchain-chairman-11664276654999.html" target="_blank">
+        <div class="mc-name">LiveMint</div>
+        <div class="mc-desc">Privacy-preserving tech can help prevent Web3 hacks</div>
+      </a>
+      <a class="mc" href="https://crypto.ru/beldex-bdx/" target="_blank">
+        <div class="mc-name">Crypto.ru</div>
+        <div class="mc-desc">Beldex BDX overview and analysis</div>
+      </a>
+      <a class="mc" href="https://www.thecoinrepublic.com/2023/02/23/beldex-raises-25-m-from-web3-investor-dwf-labs/" target="_blank">
+        <div class="mc-name">The Coin Republic</div>
+        <div class="mc-desc">Beldex raises $25M from DWF Labs</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════ -->
+<section id="foot">
+  <div class="w">
+    <div style="text-align:center;margin-bottom:2.5rem;" class="sr">
+      <div style="font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem;">Network Summary</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);">The Full <span style="color:var(--cy);">Alliance</span></h2>
+    </div>
+    <div class="foot-grid sr d1">
+      <div class="foot-stat"><div class="foot-stat-n" style="color:var(--gold);">18</div><div class="foot-stat-l">CEX Listings</div></div>
+      <div class="foot-stat"><div class="foot-stat-n" style="color:var(--pur);">5</div><div class="foot-stat-l">DEX Pools</div></div>
+      <div class="foot-stat"><div class="foot-stat-n" style="color:var(--cy);">12</div><div class="foot-stat-l">Swap Services</div></div>
+      <div class="foot-stat"><div class="foot-stat-n" style="color:var(--em);">4</div><div class="foot-stat-l">Node Hosts</div></div>
+      <div class="foot-stat"><div class="foot-stat-n" style="color:var(--sl);">30+</div><div class="foot-stat-l">Media Outlets</div></div>
+    </div>
+    <div class="foot-copy">Beldex Privacy Protocol &nbsp;/&nbsp; Partners Network &nbsp;/&nbsp; beldex.io/partners</div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════
+     JS
+══════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* Scroll reveal */
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.sr').forEach(function(el) { observer.observe(el); });
+
+/* Network canvas hero */
+(function() {
+  var canvas = document.getElementById('netCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var nodes = [];
+  var NODE_COUNT = 55;
+  var W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = document.getElementById('hero').offsetHeight || window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  /* Create nodes */
+  for (var i = 0; i < NODE_COUNT; i++) {
+    nodes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: 1.5 + Math.random() * 2.5,
+      phase: Math.random() * Math.PI * 2,
+      bright: Math.random() > 0.8
+    });
+  }
+
+  var COLORS = ['rgba(6,197,194,', 'rgba(245,166,35,', 'rgba(96,165,250,', 'rgba(168,85,247,'];
+  var t = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* Move nodes */
+    nodes.forEach(function(n) {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+
+    /* Draw edges */
+    var THRESH = 160;
+    for (var i = 0; i < nodes.length; i++) {
+      for (var j = i + 1; j < nodes.length; j++) {
+        var dx = nodes[i].x - nodes[j].x;
+        var dy = nodes[i].y - nodes[j].y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < THRESH) {
+          var alpha = (1 - dist / THRESH) * 0.09;
+          ctx.strokeStyle = 'rgba(6,197,194,' + alpha + ')';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* Draw nodes */
+    nodes.forEach(function(n, i) {
+      var pulse = Math.sin(t * 0.03 + n.phase) * 0.3 + 0.7;
+      var col = COLORS[i % COLORS.length];
+      ctx.fillStyle = col + (n.bright ? 0.55 * pulse : 0.18 * pulse) + ')';
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
