@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VRF Consensus: How Beldex Picks Block Producers</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────────────── */
+:root {
+  --bg: #020b05;
+  --bg2: #040e07;
+  --bg3: #06110a;
+  --border: #0d2214;
+  --border2: #143320;
+  --green: #00d66e;
+  --green2: #00b85e;
+  --green-glow: rgba(0,214,110,.12);
+  --green-faint: rgba(0,214,110,.06);
+  --gold: #f0b429;
+  --gold-faint: rgba(240,180,41,.08);
+  --cyan: #06d6d0;
+  --red: #ff6060;
+  --purple: #b57bf5;
+  --text: #e0eed8;
+  --text-mid: #7aaa88;
+  --text-dim: #334f3b;
+  --text-dark: #1a3325;
+}
+
+/* ─────────────────────────────────────────────────
+   RESET + BASE
+───────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* subtle dot grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(circle, rgba(0,150,60,.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ─────────────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────────────── */
+.container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+.container-narrow { max-width: 780px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+.section { padding: 5rem 0; border-top: 1px solid var(--border); }
+.section-alt { background: var(--bg2); }
+
+/* ─────────────────────────────────────────────────
+   TYPOGRAPHY
+───────────────────────────────────────────────── */
+.eyebrow {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--green);
+  font-family: 'Fira Code', monospace;
+  margin-bottom: .75rem;
+}
+.eyebrow::before { content: '→ '; opacity: .5; }
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+}
+h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.accent { color: var(--green); }
+.gold { color: var(--gold); }
+.cyan { color: var(--cyan); }
+.body-lead {
+  font-size: 1.15rem;
+  color: var(--text-mid);
+  line-height: 1.8;
+  max-width: 650px;
+}
+p { color: var(--text-mid); line-height: 1.8; }
+strong { color: var(--text); font-weight: 600; }
+.mono { font-family: 'Fira Code', monospace; }
+
+/* ─────────────────────────────────────────────────
+   FADE IN
+───────────────────────────────────────────────── */
+.fade { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.fade.in { opacity: 1; transform: none; }
+.fade-d1 { transition-delay: .1s; }
+.fade-d2 { transition-delay: .2s; }
+.fade-d3 { transition-delay: .3s; }
+
+/* ─────────────────────────────────────────────────
+   NAV DOTS
+───────────────────────────────────────────────── */
+#navdots {
+  position: fixed;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dark);
+  cursor: pointer;
+  transition: all .25s;
+  border: 1px solid var(--border2);
+}
+.dot:hover, .dot.active {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  transform: scale(1.4);
+}
+
+/* ─────────────────────────────────────────────────
+   HERO
+───────────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 4rem 0 0;
+  overflow: hidden;
+}
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 5%, rgba(0,214,110,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 90% 80%, rgba(240,180,41,.05) 0%, transparent 50%);
+}
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 4rem;
+  align-items: center;
+}
+.hero-tag {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+.hero-tag-line { width: 32px; height: 1px; background: var(--green); }
+.hero-tag-text { font-family: 'Fira Code', monospace; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--green); }
+.hero-h1 { margin-bottom: 1.25rem; }
+.hero-desc {
+  font-size: 1.1rem;
+  color: var(--text-mid);
+  line-height: 1.8;
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+}
+.stat-item { border-left: 2px solid var(--green); padding-left: .85rem; }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+}
+.stat-label {
+  font-size: .78rem;
+  color: var(--text-mid);
+  margin-top: .2rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* Hero orb */
+.hero-orb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#heroCanvas { display: block; border-radius: 50%; }
+
+/* Steps bar */
+.steps-bar {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  margin-top: 3.5rem;
+}
+.steps-inner {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.steps-inner::-webkit-scrollbar { display: none; }
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .95rem 1.6rem;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.step-pill:last-child { border-right: none; }
+.step-pill:hover { background: var(--green-faint); }
+.step-pill.active { background: var(--green-faint); }
+.step-pill-num {
+  font-family: 'Fira Code', monospace;
+  font-size: .65rem;
+  color: var(--green);
+  flex-shrink: 0;
+}
+.step-pill-text {
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+.step-pill.active .step-pill-text { color: var(--green); }
+
+/* ─────────────────────────────────────────────────
+   ANALOGY SECTION
+───────────────────────────────────────────────── */
+.analogy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 2.5rem;
+}
+.analogy-card {
+  background: var(--bg3);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.analogy-icon { font-size: 2rem; }
+.analogy-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.analogy-desc { font-size: .9rem; color: var(--text-mid); line-height: 1.7; }
+.analogy-card.highlight { border-left: 3px solid var(--green); }
+.analogy-card.highlight .analogy-title { color: var(--green); }
+.analogy-card.problem { border-left: 3px solid var(--red); }
+.analogy-card.problem .analogy-title { color: var(--red); }
+
+/* comparison table */
+.compare-block {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.compare-col { background: var(--bg3); }
+.compare-head {
+  padding: .9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.compare-head.bad { color: var(--red); }
+.compare-head.good { color: var(--green); }
+.compare-row {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  padding: .85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: .9rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+.compare-row:last-child { border-bottom: none; }
+.compare-icon { flex-shrink: 0; margin-top: .15rem; }
+
+/* ─────────────────────────────────────────────────
+   HOW IT WORKS: 3 STEPS
+───────────────────────────────────────────────── */
+.steps-timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-row {
+  display: flex;
+  gap: 1.75rem;
+  align-items: stretch;
+}
+.timeline-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 52px;
+  flex-shrink: 0;
+}
+.timeline-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  background: rgba(0,214,110,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--green);
+  flex-shrink: 0;
+  z-index: 2;
+}
+.timeline-line {
+  flex: 1;
+  width: 2px;
+  background: var(--border2);
+  margin: .35rem 0;
+}
+.timeline-content { flex: 1; padding-bottom: 2.25rem; }
+.timeline-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.timeline-desc { font-size: .95rem; color: var(--text-mid); line-height: 1.8; margin-bottom: 1rem; }
+.analogy-callout {
+  background: var(--green-faint);
+  border-left: 3px solid var(--green);
+  padding: .85rem 1.1rem;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: .9rem;
+}
+.analogy-callout-label {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: .25rem;
+}
+.analogy-callout-text { font-size: .9rem; color: var(--text); line-height: 1.65; }
+.code-block {
+  background: #020e05;
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--green);
+  padding: 1rem 1.1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: .75rem;
+  line-height: 1.85;
+  overflow-x: auto;
+  color: var(--text-mid);
+}
+.ck { color: #b57bf5; }
+.cf { color: var(--cyan); }
+.cs { color: var(--gold); }
+.cc { color: var(--text-dark); }
+.cv { color: var(--green); }
+.co { color: var(--red); }
+
+/* ─────────────────────────────────────────────────
+   SIMULATION (RACE)
+───────────────────────────────────────────────── */
+.sim-box {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+}
+.sim-header {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border2);
+  padding: .9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.sim-header-title {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green);
+  flex: 1;
+  min-width: 180px;
+}
+.sim-seed-label {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  color: var(--text-mid);
+}
+.sim-seed-val {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  color: var(--green);
+}
+.sim-body { padding: 1.4rem 1.5rem; }
+.sim-controls {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.sim-label {
+  font-size: .82rem;
+  color: var(--text-mid);
+  font-weight: 500;
+}
+.sim-input {
+  font-family: 'Fira Code', monospace;
+  font-size: .8rem;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: .5rem .85rem;
+  flex: 1;
+  min-width: 140px;
+  max-width: 240px;
+  outline: none;
+  transition: border-color .2s;
+}
+.sim-input:focus { border-color: var(--green); }
+.btn {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .55rem 1.25rem;
+  cursor: pointer;
+  border: 1px solid;
+  background: transparent;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-green { border-color: var(--green); color: var(--green); }
+.btn-green:hover { background: rgba(0,214,110,.1); }
+.btn-green:disabled { opacity: .4; cursor: not-allowed; }
+.btn-muted { border-color: var(--border2); color: var(--text-mid); }
+.btn-muted:hover { background: rgba(255,255,255,.03); }
+
+/* masternode rows */
+.mn-header-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 80px;
+  gap: .75rem;
+  padding: .4rem .6rem;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-family: 'Fira Code', monospace;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: .35rem;
+}
+.mn-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 80px;
+  gap: .75rem;
+  align-items: center;
+  padding: .55rem .6rem;
+  border: 1px solid transparent;
+  margin-bottom: .25rem;
+  transition: all .35s ease;
+}
+.mn-row.winner {
+  border-color: rgba(0,214,110,.4);
+  background: rgba(0,214,110,.05);
+}
+.mn-row.validator {
+  border-color: rgba(240,180,41,.25);
+  background: rgba(240,180,41,.03);
+}
+.mn-row.unsel { opacity: .3; }
+.mn-id {
+  font-family: 'Fira Code', monospace;
+  font-size: .78rem;
+  color: var(--text-mid);
+}
+.mn-row.winner .mn-id { color: var(--green); }
+.mn-row.validator .mn-id { color: var(--gold); }
+.mn-bar-wrap {
+  height: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.mn-bar {
+  height: 100%;
+  width: 0;
+  transition: width .9s cubic-bezier(.4,0,.2,1);
+  background: var(--text-dark);
+}
+.mn-row.winner .mn-bar { background: var(--green); }
+.mn-row.validator .mn-bar { background: var(--gold); }
+.mn-score {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  color: var(--text-dim);
+  text-align: right;
+}
+.mn-row.winner .mn-score { color: var(--green); }
+.mn-row.validator .mn-score { color: var(--gold); }
+.mn-role {
+  font-family: 'Fira Code', monospace;
+  font-size: .68rem;
+  text-align: right;
+  color: transparent;
+}
+.mn-row.winner .mn-role { color: var(--green); }
+.mn-row.validator .mn-role { color: var(--gold); }
+
+.sim-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-top: .85rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .82rem;
+  color: var(--text-mid);
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────
+   QUORUM SECTION
+───────────────────────────────────────────────── */
+.quorum-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.quorum-canvas-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  padding: 1rem;
+}
+#quorumCanvas { display: block; width: 100%; }
+.quorum-facts { display: flex; flex-direction: column; gap: .75rem; margin-top: 1.25rem; }
+.fact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: .85rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+}
+.fact-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 54px;
+  color: var(--green);
+}
+.fact-text { font-size: .9rem; color: var(--text-mid); line-height: 1.65; }
+.fact-text strong { color: var(--text); }
+
+/* ─────────────────────────────────────────────────
+   VERIFY DEMO
+───────────────────────────────────────────────── */
+.verify-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.verify-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 1.4rem;
+}
+.verify-card-title {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+  padding-bottom: .65rem;
+  border-bottom: 1px solid var(--border);
+}
+.field-block { margin-bottom: .85rem; }
+.field-label {
+  font-family: 'Fira Code', monospace;
+  font-size: .68rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-bottom: .3rem;
+}
+.field-value {
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: .5rem .75rem;
+  word-break: break-all;
+  line-height: 1.65;
+  color: var(--text);
+  min-height: 2.5rem;
+}
+.verify-steps {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: .9rem 1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: .72rem;
+  line-height: 1.9;
+  margin-bottom: 1rem;
+  min-height: 120px;
+}
+.verify-step-line { color: var(--text-mid); }
+.verify-step-line.done { color: var(--green); }
+.verify-step-line.fail { color: var(--red); }
+.verify-result {
+  padding: .9rem 1.1rem;
+  border: 2px solid;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-align: center;
+  display: none;
+  margin-bottom: .85rem;
+}
+.verify-result.valid { border-color: var(--green); color: var(--green); background: var(--green-faint); display: block; }
+.verify-result.invalid { border-color: var(--red); color: var(--red); background: rgba(255,96,96,.05); display: block; }
+.verify-btns { display: flex; gap: .65rem; flex-wrap: wrap; }
+
+/* ─────────────────────────────────────────────────
+   SECURITY CARDS
+───────────────────────────────────────────────── */
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 2.25rem;
+}
+.sec-card {
+  background: var(--bg3);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  border-top: 3px solid transparent;
+}
+.sec-card-icon { font-size: 1.75rem; }
+.sec-card-num {
+  font-family: 'Fira Code', monospace;
+  font-size: .65rem;
+  letter-spacing: .14em;
+  color: var(--text-dim);
+}
+.sec-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.sec-card-plain {
+  font-size: .85rem;
+  color: var(--text);
+  font-weight: 500;
+  font-style: italic;
+}
+.sec-card-desc { font-size: .88rem; color: var(--text-mid); line-height: 1.7; }
+.c1 { border-top-color: var(--green); }
+.c1 .sec-card-title { color: var(--green); }
+.c2 { border-top-color: var(--gold); }
+.c2 .sec-card-title { color: var(--gold); }
+.c3 { border-top-color: var(--cyan); }
+.c3 .sec-card-title { color: var(--cyan); }
+.c4 { border-top-color: var(--purple); }
+.c4 .sec-card-title { color: var(--purple); }
+.c5 { border-top-color: var(--red); }
+.c5 .sec-card-title { color: var(--red); }
+.c6 { border-top-color: var(--green); }
+.c6 .sec-card-title { color: var(--green); }
+
+/* ─────────────────────────────────────────────────
+   CYCLE ANIMATION
+───────────────────────────────────────────────── */
+.cycle-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  padding: .5rem;
+}
+#cycleCanvas { display: block; width: 100%; }
+.cycle-controls {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .9rem;
+  flex-wrap: wrap;
+}
+.cycle-status {
+  font-family: 'Fira Code', monospace;
+  font-size: .75rem;
+  color: var(--green);
+  letter-spacing: .08em;
+}
+.phase-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 1.25rem;
+}
+.phase-chip {
+  background: var(--bg3);
+  padding: .85rem 1rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+.phase-chip:hover { background: rgba(0,214,110,.04); }
+.phase-chip.active-phase { background: rgba(0,214,110,.07); }
+.phase-chip-num {
+  font-family: 'Fira Code', monospace;
+  font-size: .65rem;
+  color: var(--text-dim);
+  margin-bottom: .25rem;
+}
+.phase-chip-title {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  line-height: 1.3;
+}
+.phase-chip.active-phase .phase-chip-title { color: var(--green); }
+
+/* ─────────────────────────────────────────────────
+   FOOTER STATS
+───────────────────────────────────────────────── */
+.footer-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.footer-stat {
+  background: var(--bg2);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.footer-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+}
+.footer-stat-label {
+  font-family: 'Fira Code', monospace;
+  font-size: .68rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-top: .4rem;
+}
+.footer-stat-sub { font-size: .8rem; color: var(--text-dim); margin-top: .2rem; }
+.footer-note {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  font-family: 'Fira Code', monospace;
+  font-size: .7rem;
+  color: var(--text-dark);
+  letter-spacing: .1em;
+}
+
+/* ─────────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-orb { display: none; }
+  .quorum-layout { grid-template-columns: 1fr; }
+  .verify-grid { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: 1fr; }
+  .footer-stats { grid-template-columns: 1fr 1fr; }
+  .phase-info-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .container, .container-narrow { padding: 0 1.25rem; }
+  .hero-stats { gap: 1.25rem; }
+  .footer-stats { grid-template-columns: 1fr 1fr; }
+  .analogy-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav id="navdots" aria-label="Page sections">
+  <div class="dot active" title="Overview" onclick="scrollTo('hero')"></div>
+  <div class="dot" title="The Concept" onclick="scrollTo('concept')"></div>
+  <div class="dot" title="How It Works" onclick="scrollTo('how')"></div>
+  <div class="dot" title="Live Demo" onclick="scrollTo('demo')"></div>
+  <div class="dot" title="Quorum" onclick="scrollTo('quorum')"></div>
+  <div class="dot" title="Verify" onclick="scrollTo('verify')"></div>
+  <div class="dot" title="Security" onclick="scrollTo('security')"></div>
+  <div class="dot" title="Full Cycle" onclick="scrollTo('cycle')"></div>
+</nav>
+
+<!-- ===================================================
+     HERO
+=================================================== -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-layout">
+      <div class="fade">
+        <div class="hero-tag">
+          <div class="hero-tag-line"></div>
+          <div class="hero-tag-text">Beldex Blockchain / How Consensus Works</div>
+        </div>
+        <h1 class="hero-h1">
+          <span class="accent">VRF</span><br>
+          Consensus<br>
+          Explained
+        </h1>
+        <p class="hero-desc">
+          Every 30 seconds, Beldex must answer one question: <strong>which node gets to build the next block?</strong> The answer must be fair, random, and impossible to fake. This is how VRF makes that happen.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">12</div>
+            <div class="stat-label">Nodes per round</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">30s</div>
+            <div class="stat-label">Block time</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">0%</div>
+            <div class="stat-label">Bias possible</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-orb fade fade-d2">
+        <canvas id="heroCanvas" width="380" height="380"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps-bar">
+    <div class="steps-inner">
+      <div class="step-pill active" onclick="scrollTo('concept')">
+        <div class="step-pill-num">01</div>
+        <div class="step-pill-text">The Concept</div>
+      </div>
+      <div class="step-pill" onclick="scrollTo('how')">
+        <div class="step-pill-num">02</div>
+        <div class="step-pill-text">How VRF Works</div>
+      </div>
+      <div class="step-pill" onclick="scrollTo('demo')">
+        <div class="step-pill-num">03</div>
+        <div class="step-pill-text">Live Simulation</div>
+      </div>
+      <div class="step-pill" onclick="scrollTo('quorum')">
+        <div class="step-pill-num">04</div>
+        <div class="step-pill-text">The Quorum</div>
+      </div>
+      <div class="step-pill" onclick="scrollTo('verify')">
+        <div class="step-pill-num">05</div>
+        <div class="step-pill-text">Proof Verification</div>
+      </div>
+      <div class="step-pill" onclick="scrollTo('security')">
+        <div class="step-pill-num">06</div>
+        <div class="step-pill-text">Security</div>
+      </div>
+      <div class="step-pill" onclick="scrollTo('cycle')">
+        <div class="step-pill-num">07</div>
+        <div class="step-pill-text">Full Round Cycle</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===================================================
+     01 / THE CONCEPT
+=================================================== -->
+<section id="concept" class="section section-alt">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 01</div>
+    <h2>What Problem<br>Does <span class="accent">VRF Solve?</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1.5rem;">
+    <p class="body-lead">
+      Before we talk about VRF, we need to understand why picking a block producer is so hard. It sounds simple, but it opens the door to cheating if done wrong.
+    </p>
+  </div>
+
+  <div class="analogy-grid fade fade-d2">
+    <div class="analogy-card problem">
+      <div class="analogy-icon">🎯</div>
+      <div class="analogy-title">Problem 1: Predictable Selection</div>
+      <div class="analogy-desc">
+        If everyone knows who will produce the next block before it happens, attackers can flood that node with traffic and shut it down. The network grinds to a halt.
+        <br><br>
+        <strong>Analogy:</strong> Imagine if the lottery winner was announced two hours before the draw. Criminals could target that person in advance.
+      </div>
+    </div>
+    <div class="analogy-card problem">
+      <div class="analogy-icon">🎲</div>
+      <div class="analogy-title">Problem 2: Manipulated Randomness</div>
+      <div class="analogy-desc">
+        If the random source can be influenced, a powerful node operator can keep re-rolling until a favorable result comes up. The selection is no longer fair.
+        <br><br>
+        <strong>Analogy:</strong> A loaded dice in a board game always lands on 6. The randomness is fake.
+      </div>
+    </div>
+    <div class="analogy-card problem">
+      <div class="analogy-icon">🤷</div>
+      <div class="analogy-title">Problem 3: Unverifiable Claims</div>
+      <div class="analogy-desc">
+        If a node claims "I was randomly selected," other nodes need a way to confirm that. Without proof, dishonest nodes can lie about their selection.
+        <br><br>
+        <strong>Analogy:</strong> Saying "I won the lottery" without showing the ticket. Nobody can confirm or deny it.
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-block fade fade-d3" style="margin-top:2rem;">
+    <div class="compare-col">
+      <div class="compare-head bad">Without VRF: Vulnerable</div>
+      <div class="compare-row">
+        <div class="compare-icon">✗</div>
+        <div>Next producer is known in advance. Attackers can target them</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon">✗</div>
+        <div>Randomness can be gamed by powerful validators</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon">✗</div>
+        <div>Selection claims cannot be independently verified</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon">✗</div>
+        <div>Network requires trust in a central coordinator</div>
+      </div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-head good">With VRF: Protected</div>
+      <div class="compare-row">
+        <div class="compare-icon" style="color:var(--green);">✓</div>
+        <div>Producer is unknown until the moment the block is due</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon" style="color:var(--green);">✓</div>
+        <div>Each node produces exactly one valid result. No re-rolling</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon" style="color:var(--green);">✓</div>
+        <div>Every node can verify every score using only public data</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon" style="color:var(--green);">✓</div>
+        <div>Zero trust required. Math does all the verification</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     02 / HOW VRF WORKS
+=================================================== -->
+<section id="how" class="section">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 02</div>
+    <h2>How VRF <span class="accent">Actually Works</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1.25rem; margin-bottom:2.5rem;">
+    <p class="body-lead">
+      VRF stands for <strong>Verifiable Random Function</strong>. It takes two inputs and produces two outputs. The inputs are a public seed and a private key. The outputs are a random-looking number and a proof that the number is genuine.
+    </p>
+  </div>
+
+  <div class="steps-timeline fade fade-d2">
+
+    <!-- STEP 1 -->
+    <div class="timeline-row">
+      <div class="timeline-left">
+        <div class="timeline-num">1</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-title" style="color:var(--green);">Compute the Score</div>
+        <p class="timeline-desc">
+          When a new block needs to be added, every active masternode picks up two pieces of information: the hash of the previous block (public : everyone can see it) and their own private key (secret : only they know it). They feed both into the VRF function and get back a unique random number called their <strong>VRF score</strong> and a <strong>cryptographic proof</strong>.
+        </p>
+        <div class="analogy-callout">
+          <div class="analogy-callout-label">Simple Analogy</div>
+          <div class="analogy-callout-text">Think of it like everyone drawing a number from a hat, but the hat is sealed and the number drawn is determined by who you are (private key) and what round it is (block hash). Different person, different number. Same person, same number every time for that specific round.</div>
+        </div>
+        <div class="code-block">
+<span class="cc">// Every masternode runs this locally, privately</span>
+<span class="ck">function</span> <span class="cf">computeScore</span>(prevBlockHash, myPrivateKey) {
+  <span class="cc">// prevBlockHash is public, everyone sees the same seed</span>
+  <span class="cc">// myPrivateKey is secret, only I know mine</span>
+  score = <span class="cf">vrfFunction</span>(prevBlockHash, myPrivateKey)
+  proof = <span class="cf">generateProof</span>(myPrivateKey, score)
+  <span class="ck">return</span> { <span class="cv">score</span>, <span class="cv">proof</span> }  <span class="cc">// one unique pair per node per block</span>
+}
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="timeline-row">
+      <div class="timeline-left">
+        <div class="timeline-num">2</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-title" style="color:var(--gold);">Broadcast the Proof</div>
+        <p class="timeline-desc">
+          Each masternode broadcasts its score and proof to the entire Beldex network. The proof acts like a signed certificate : it says "this score was correctly computed using my private key" without actually revealing what that private key is. Nobody can fake this.
+        </p>
+        <div class="analogy-callout" style="border-left-color:var(--gold);background:var(--gold-faint);">
+          <div class="analogy-callout-label" style="color:var(--gold);">Simple Analogy</div>
+          <div class="analogy-callout-text">Like a sealed envelope with your score inside and a signature on the outside. Anyone can verify the signature is yours, but nobody can change the score inside without breaking the seal.</div>
+        </div>
+        <div class="code-block" style="border-left-color:var(--gold);">
+<span class="cc">// Broadcast to all nodes in the Beldex network</span>
+network.<span class="cf">broadcast</span>({
+  myPublicKey:  <span class="cs">"bdmn_1a9f3c..."</span>,   <span class="cc">// who am I</span>
+  vrfScore:     <span class="cv">myScore</span>,        <span class="cc">// my random number</span>
+  vrfProof:     <span class="cv">myProof</span>,        <span class="cc">// proof I computed it correctly</span>
+  blockSeed:    <span class="cs">"prev_block_hash"</span> <span class="cc">// which block this is for</span>
+})
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="timeline-row">
+      <div class="timeline-left">
+        <div class="timeline-num">3</div>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-title" style="color:var(--cyan);">Verify, Rank and Select</div>
+        <p class="timeline-desc">
+          Every node receives all the scores and proofs from the network. Using each masternode public key, they verify every single proof. No trusted middleman is needed. Then all verified scores are sorted from lowest to highest. The masternode with the <strong>lowest score</strong> wins : they become the block producer. The next 11 lowest scores become the <strong>quorum validators</strong>.
+        </p>
+        <div class="analogy-callout" style="border-left-color:var(--cyan);background:rgba(6,214,208,.06);">
+          <div class="analogy-callout-label" style="color:var(--cyan);">Simple Analogy</div>
+          <div class="analogy-callout-text">Imagine everyone drew a number and showed it publicly with proof it was genuine. The person who drew the lowest number builds the block. The next 11 people double-check the block to make sure it is valid.</div>
+        </div>
+        <div class="code-block" style="border-left-color:var(--cyan);">
+<span class="cc">// Every node independently runs this same logic</span>
+<span class="ck">let</span> verifiedScores = []
+<span class="ck">for</span> (<span class="ck">each</span> received broadcast) {
+  <span class="ck">if</span> (<span class="cf">verifyProof</span>(publicKey, blockSeed, score, proof)) {
+    verifiedScores.<span class="cf">push</span>({ node, score })
+  }
+}
+verifiedScores.<span class="cf">sort</span>((a, b) => a.score - b.score)
+<span class="cc">// Result is the same on every single node</span>
+blockProducer  = verifiedScores[<span class="cv">0</span>]   <span class="cc">// lowest wins</span>
+quorumMembers  = verifiedScores[<span class="cv">1</span>..<span class="cv">11</span>] <span class="cc">// next 11 validate</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     03 / LIVE SIMULATION
+=================================================== -->
+<section id="demo" class="section section-alt">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 03 / Interactive</div>
+    <h2>See It <span class="accent">Live</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1rem;margin-bottom:2rem;">
+    <p class="body-lead">
+      Try it yourself. Enter any text as the block seed (this represents the previous block hash), then click <strong>RUN VRF ROUND</strong> to simulate all masternodes computing their scores. Watch how the winner is selected fairly.
+    </p>
+  </div>
+
+  <div class="sim-box fade fade-d2">
+    <div class="sim-header">
+      <div class="sim-header-title">&#9679; VRF Selection Simulation / Block #<span id="simBlockNum">4,939,540</span></div>
+      <div class="sim-seed-label">Active seed:&nbsp;</div>
+      <div class="sim-seed-val" id="simSeedDisplay">click run to start</div>
+    </div>
+    <div class="sim-body">
+      <div class="sim-controls">
+        <div class="sim-label">Block seed input:</div>
+        <input class="sim-input" id="simSeedInput" value="beldex2024block" maxlength="20" spellcheck="false">
+        <button class="btn btn-green" id="simRunBtn" onclick="runSimulation()">Run VRF Round</button>
+        <button class="btn btn-muted" onclick="resetSimulation()">Reset</button>
+      </div>
+
+      <div class="mn-header-row" id="mnHeaderRow" style="display:none;">
+        <div>Node ID</div>
+        <div>VRF Score (bar)</div>
+        <div style="text-align:right;">Score Value</div>
+        <div style="text-align:right;">Role</div>
+      </div>
+
+      <div id="mnList">
+        <div style="padding:2rem 1rem;text-align:center;font-size:.9rem;color:var(--text-mid);">
+          Enter a seed above and click <strong style="color:var(--green);">Run VRF Round</strong> to start the simulation.
+        </div>
+      </div>
+
+      <div class="sim-legend" id="simLegend" style="display:none;">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--green);"></div>
+          Block Producer (lowest VRF score)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--gold);"></div>
+          Quorum Validators (next 11 lowest)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--text-dark);"></div>
+          Not selected this round
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explainer below simulation -->
+  <div class="fade fade-d3" style="margin-top:1.75rem;">
+    <div style="background:var(--bg3);border:1px solid var(--border2);padding:1.5rem;">
+      <div class="eyebrow" style="font-size:.7rem;">What you just saw</div>
+      <p style="margin-top:.5rem;">Each node computed a different score from the same seed. The scores look random but every node in the real Beldex network would compute the exact same list. This is what <strong>"verifiable"</strong> means : the results are independently reproducible and checkable by everyone.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     04 / THE QUORUM
+=================================================== -->
+<section id="quorum" class="section">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 04</div>
+    <h2>The <span class="accent">Quorum</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1rem;margin-bottom:2rem;">
+    <p class="body-lead">
+      Selecting a block producer is only half the job. A single node producing a block alone could make mistakes or act dishonestly. That is why Beldex uses a <strong>quorum</strong> : a committee of 12 nodes that work together every round.
+    </p>
+  </div>
+
+  <div class="quorum-layout fade fade-d2">
+    <div>
+      <div class="quorum-canvas-wrap">
+        <canvas id="quorumCanvas"></canvas>
+      </div>
+      <div style="text-align:center;margin-top:.75rem;">
+        <button class="btn btn-green" onclick="animateQuorum()">Animate Selection</button>
+      </div>
+    </div>
+    <div>
+      <div class="quorum-facts">
+        <div class="fact-row">
+          <div class="fact-num">1</div>
+          <div class="fact-text">
+            <strong>Block Producer:</strong> The masternode with the lowest VRF score. It collects pending transactions and assembles them into a block template. It then proposes this block to the validators.
+          </div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-num" style="color:var(--gold);">11</div>
+          <div class="fact-text">
+            <strong>Validators:</strong> The next 11 lowest scores. Each validator independently checks every transaction in the proposed block. They verify signatures, balances, and privacy proofs.
+          </div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-num" style="color:var(--cyan);">7</div>
+          <div class="fact-text">
+            <strong>Minimum Signatures Required:</strong> At least 7 of the 11 validators must sign the block before it is accepted. This is called a <em>supermajority</em>. Up to 4 validators can be offline or dishonest and the block still gets approved.
+          </div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-num" style="color:var(--purple);">0</div>
+          <div class="fact-text">
+            <strong>Overlap with Previous Quorum:</strong> Each quorum is freshly selected using the new block VRF scores. The committee changes every single block. No node can build influence over multiple consecutive rounds.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     05 / PROOF VERIFICATION
+=================================================== -->
+<section id="verify" class="section section-alt">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 05</div>
+    <h2>Proof <span class="accent">Verification</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1rem;margin-bottom:2rem;">
+    <p class="body-lead">
+      The proof is what makes VRF <em>verifiable</em>. Any node on the network, using only the masternode public key : can check that a VRF score was computed honestly. No authority, no trust, just math. Try it below.
+    </p>
+  </div>
+
+  <div class="verify-grid fade fade-d2">
+    <!-- Left: data fields -->
+    <div class="verify-card">
+      <div class="verify-card-title" style="color:var(--green);">Input Data (all public)</div>
+
+      <div class="field-block">
+        <div class="field-label">Masternode Public Key</div>
+        <div class="field-value" id="vf-pubkey">bdmn_1a9f3c2e8d71b4f06a5e9c3d2b8f17a4e6c9</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Block Seed (Previous Block Hash)</div>
+        <div class="field-value" id="vf-seed">3f8a9c2d1b7e4f06a5c8e2f9b4d7a1e3f6c9b2d5</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">Claimed VRF Score</div>
+        <div class="field-value" id="vf-score">00a3f9c2e8d71b4f06a5e9c3d2b8f17a4e6c9d3</div>
+      </div>
+      <div class="field-block">
+        <div class="field-label">VRF Proof (from broadcast)</div>
+        <div class="field-value" id="vf-proof">c9b2e8f1a4d7c3e9b6f2a8c1e4b7d3f9a6c2e8b5d1f7a3c9e6b2d8f4</div>
+      </div>
+    </div>
+
+    <!-- Right: verification engine -->
+    <div class="verify-card">
+      <div class="verify-card-title" style="color:var(--cyan);">Verification Engine Output</div>
+      <div class="verify-steps" id="verifySteps">
+        <div style="color:var(--text-dim);">Press a button below to run verification...</div>
+      </div>
+      <div class="verify-result" id="verifyResult"></div>
+      <div class="verify-btns">
+        <button class="btn btn-green" onclick="doVerify(true)">Verify Valid Proof</button>
+        <button class="btn" style="border-color:var(--red);color:var(--red);" onclick="doVerify(false)">Tamper and Verify</button>
+      </div>
+      <p style="margin-top:1rem;font-size:.82rem;">
+        The "Tamper" button changes the proof bytes to simulate a dishonest node. Watch how verification instantly rejects it.
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     06 / SECURITY
+=================================================== -->
+<section id="security" class="section">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 06</div>
+    <h2>Security <span class="accent">Guarantees</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1rem;">
+    <p class="body-lead">
+      VRF does not just provide randomness. It comes with formal mathematical guarantees that protect the entire network. Here is what each property means in plain terms.
+    </p>
+  </div>
+
+  <div class="security-grid fade fade-d2">
+    <div class="sec-card c1">
+      <div class="sec-card-icon">🎲</div>
+      <div class="sec-card-num">Property 01</div>
+      <div class="sec-card-title">Unpredictability</div>
+      <div class="sec-card-plain">"Nobody knows who wins until it happens."</div>
+      <div class="sec-card-desc">
+        Before a masternode publishes its score, nobody, not even the masternode itself : can know how the scores will rank. The result is computationally indistinguishable from random. Attackers cannot pre-target the incoming block producer.
+      </div>
+    </div>
+    <div class="sec-card c2">
+      <div class="sec-card-icon">🔒</div>
+      <div class="sec-card-num">Property 02</div>
+      <div class="sec-card-title">Uniqueness</div>
+      <div class="sec-card-plain">"One key, one score. No re-rolling."</div>
+      <div class="sec-card-desc">
+        For any given seed and private key, there is exactly one valid VRF output. A node cannot compute multiple valid scores and pick the best one. The function is one-to-one : one key always produces the same score for the same block.
+      </div>
+    </div>
+    <div class="sec-card c3">
+      <div class="sec-card-icon">✅</div>
+      <div class="sec-card-num">Property 03</div>
+      <div class="sec-card-title">Verifiability</div>
+      <div class="sec-card-plain">"Everyone can check everything."</div>
+      <div class="sec-card-desc">
+        Any node can verify any VRF score using only the public key. Verification is instant, requires no interaction with the prover, and always gives the same answer. There is no trusted authority and no need for anyone to take anyone's word for it.
+      </div>
+    </div>
+    <div class="sec-card c4">
+      <div class="sec-card-icon">🛡️</div>
+      <div class="sec-card-num">Property 04</div>
+      <div class="sec-card-title">Tamper-Proof</div>
+      <div class="sec-card-plain">"You cannot fake someone else's score."</div>
+      <div class="sec-card-desc">
+        An attacker cannot construct a fake VRF output that passes verification. Doing so would require breaking the elliptic curve cryptography that secures the entire internet. With current computing technology, this is not possible.
+      </div>
+    </div>
+    <div class="sec-card c5">
+      <div class="sec-card-icon">🚫</div>
+      <div class="sec-card-num">Property 05</div>
+      <div class="sec-card-title">DoS Resistance</div>
+      <div class="sec-card-plain">"Attackers have no target until it is too late."</div>
+      <div class="sec-card-desc">
+        The winning node is not revealed until the previous block is finalized. At that point, it is already time to build the next block. By the time an attacker tries to interfere, the block is already being built. The window for attack is essentially zero.
+      </div>
+    </div>
+    <div class="sec-card c6">
+      <div class="sec-card-icon">⚖️</div>
+      <div class="sec-card-num">Property 06</div>
+      <div class="sec-card-title">Equal Fairness</div>
+      <div class="sec-card-plain">"Every masternode has the same chance."</div>
+      <div class="sec-card-desc">
+        All masternodes lock the same collateral (10,000 BDX). The VRF output is uniformly distributed across all nodes over time. Over many blocks, each node wins approximately the same number of times : regardless of how long it has been running.
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     07 / FULL ROUND CYCLE
+=================================================== -->
+<section id="cycle" class="section section-alt">
+<div class="container">
+  <div class="fade">
+    <div class="eyebrow">Section 07</div>
+    <h2>The Complete <span class="accent">Round Cycle</span></h2>
+  </div>
+  <div class="fade fade-d1" style="margin-top:1rem;margin-bottom:2rem;">
+    <p class="body-lead">
+      Every 30 seconds, this eight-phase cycle repeats. Each phase feeds directly into the next. The whole process is automatic, trustless, and runs continuously on every participating node in the Beldex network.
+    </p>
+  </div>
+
+  <div class="cycle-wrap fade fade-d2">
+    <canvas id="cycleCanvas"></canvas>
+  </div>
+  <div class="cycle-controls fade fade-d2">
+    <button class="btn btn-green" id="cycleBtn" onclick="toggleCycle()">Play Animation</button>
+    <button class="btn btn-muted" onclick="resetCycle()">Reset</button>
+    <div class="cycle-status" id="cycleStatus">Press Play to watch the full VRF cycle</div>
+  </div>
+
+  <div class="phase-info-grid fade fade-d3" id="phaseChips"></div>
+</div>
+</section>
+
+
+<!-- ===================================================
+     FOOTER STATS
+=================================================== -->
+<section id="sfooter" style="padding:5rem 0 0;background:var(--bg2);border-top:1px solid var(--border);">
+<div class="container">
+  <div class="fade" style="text-align:center;margin-bottom:2.5rem;">
+    <div class="eyebrow">Summary</div>
+    <h2>Every Block.<br><span class="accent">Proven Fair.</span></h2>
+  </div>
+  <div class="footer-stats fade fade-d1">
+    <div class="footer-stat">
+      <div class="footer-stat-num">256</div>
+      <div class="footer-stat-label">VRF output bits</div>
+      <div class="footer-stat-sub">Score precision</div>
+    </div>
+    <div class="footer-stat">
+      <div class="footer-stat-num">12</div>
+      <div class="footer-stat-label">Nodes per round</div>
+      <div class="footer-stat-sub">1 producer + 11 validators</div>
+    </div>
+    <div class="footer-stat">
+      <div class="footer-stat-num">7/11</div>
+      <div class="footer-stat-label">Approval threshold</div>
+      <div class="footer-stat-sub">Byzantine fault tolerant</div>
+    </div>
+    <div class="footer-stat">
+      <div class="footer-stat-num">~30s</div>
+      <div class="footer-stat-label">Block time</div>
+      <div class="footer-stat-sub">Fresh quorum every block</div>
+    </div>
+  </div>
+  <div class="footer-note">BELDEX PRIVACY PROTOCOL &nbsp;/&nbsp; VRF CONSENSUS GUIDE &nbsp;/&nbsp; ECVRF-ED25519-SHA512 &nbsp;/&nbsp; BEGINNER EDITION</div>
+</div>
+</section>
+
+<!-- ===================================================
+     JAVASCRIPT
+=================================================== -->
+<script>
+'use strict';
+
+/* ─────────────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────────────── */
+function scrollTo(id) {
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+var HEX = '0123456789abcdef';
+function rh(n) { var s=''; for(var i=0;i<n;i++) s+=HEX[Math.floor(Math.random()*16)]; return s; }
+function clamp(v,lo,hi) { return Math.max(lo, Math.min(hi, v)); }
+
+/* ─────────────────────────────────────────────────
+   NAV DOTS + FADE
+───────────────────────────────────────────────── */
+var SECS = ['hero','concept','how','demo','quorum','verify','security','cycle'];
+var dots = document.querySelectorAll('.dot');
+
+function updateNav() {
+  var mid = window.scrollY + window.innerHeight * 0.45;
+  var best = 0;
+  for (var i = 0; i < SECS.length; i++) {
+    var el = document.getElementById(SECS[i]);
+    if (el && el.offsetTop <= mid) best = i;
+  }
+  dots.forEach(function(d, i) { d.classList.toggle('active', i === best); });
+  var pills = document.querySelectorAll('.step-pill');
+  pills.forEach(function(p, i) { p.classList.toggle('active', i === best - 1); });
+}
+
+var fadeEls = document.querySelectorAll('.fade');
+var fadeObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.06 });
+fadeEls.forEach(function(el) { fadeObs.observe(el); });
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+/* ─────────────────────────────────────────────────
+   HERO ORB
+───────────────────────────────────────────────── */
+(function() {
+  var c = document.getElementById('heroCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var W = 380, H = 380, CX = W/2, CY = H/2;
+  var particles = [];
+  for (var i = 0; i < 90; i++) {
+    var r = 55 + Math.random() * 115;
+    particles.push({
+      a: Math.random() * Math.PI * 2,
+      r: r,
+      spd: (Math.random() - .5) * 0.007 + (r < 90 ? 0.006 : 0.003),
+      sz: 1 + Math.random() * 2.5,
+      op: .15 + Math.random() * .65,
+      ph: Math.random() * Math.PI * 2
+    });
+  }
+  var t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    /* glow layers */
+    [150, 100, 55].forEach(function(r, i) {
+      var g = ctx.createRadialGradient(CX, CY, 0, CX, CY, r);
+      g.addColorStop(0, 'rgba(0,214,110,' + [.18,.1,.06][i] + ')');
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(CX, CY, r, 0, Math.PI*2); ctx.fill();
+    });
+    /* rotating orbit rings */
+    [65, 100, 140].forEach(function(r, i) {
+      ctx.save(); ctx.translate(CX, CY); ctx.rotate(t * [.004, -.003, .002][i]);
+      ctx.strokeStyle = 'rgba(0,180,70,' + [.18,.1,.07][i] + ')';
+      ctx.lineWidth = 1; ctx.setLineDash([5, 10]);
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+    });
+    /* particles */
+    particles.forEach(function(p) {
+      p.a += p.spd;
+      var px = CX + Math.cos(p.a) * p.r;
+      var py = CY + Math.sin(p.a) * p.r;
+      var pulse = Math.sin(t * .035 + p.ph) * .3 + .7;
+      ctx.globalAlpha = p.op * pulse;
+      ctx.fillStyle = '#00d66e';
+      ctx.beginPath(); ctx.arc(px, py, p.sz, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    /* center labels */
+    ctx.fillStyle = 'rgba(0,214,110,.85)';
+    ctx.font = 'bold 12px Syne, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('VRF ENGINE', CX, CY - 9);
+    ctx.fillStyle = 'rgba(0,180,70,.45)';
+    ctx.font = '9px Fira Code, monospace';
+    ctx.fillText('ECVRF-ED25519', CX, CY + 8);
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ─────────────────────────────────────────────────
+   SIMULATION (RACE)
+───────────────────────────────────────────────── */
+var SIM_NODES = 15;
+var simData = [];
+var simRan = false;
+
+function buildSimNodes() {
+  simData = [];
+  for (var i = 0; i < SIM_NODES; i++) {
+    simData.push({ id: 'MN-' + String(i+1).padStart(2,'0'), score: null });
+  }
+}
+buildSimNodes();
+
+function runSimulation() {
+  var seed = document.getElementById('simSeedInput').value.trim() || 'beldex';
+  document.getElementById('simSeedDisplay').textContent = seed.slice(0, 12) + (seed.length > 12 ? '...' : '');
+  document.getElementById('simBlockNum').textContent = (4939540 + Math.floor(Math.random() * 200)).toLocaleString();
+  document.getElementById('simRunBtn').disabled = true;
+
+  /* Compute scores : deterministic-ish from seed */
+  var scores = [];
+  for (var i = 0; i < SIM_NODES; i++) {
+    var h = 0;
+    for (var j = 0; j < seed.length; j++) h += seed.charCodeAt(j) * (j+1) * (i+1) * 37 + i * 1013;
+    scores.push((h % 16777216) + (i * 31337 + Math.floor(Math.random() * 8192)));
+  }
+  simData.forEach(function(m, i) { m.score = scores[i]; });
+
+  var sorted = simData.slice().sort(function(a, b) { return a.score - b.score; });
+  sorted.forEach(function(m, i) {
+    m.rank = i;
+    if (i === 0) m.role = 'PRODUCER';
+    else if (i <= 11) m.role = 'VALIDATOR';
+    else m.role = '';
+  });
+
+  /* Show header */
+  document.getElementById('mnHeaderRow').style.display = 'grid';
+  document.getElementById('simLegend').style.display = 'flex';
+
+  /* Render rows with staggered animation */
+  var listEl = document.getElementById('mnList');
+  var maxScore = Math.max.apply(null, sorted.map(function(m) { return m.score; }));
+  var html = '';
+  sorted.forEach(function(m, i) {
+    var cls = 'mn-row';
+    if (i === 0) cls += ' winner';
+    else if (i <= 11) cls += ' validator';
+    else cls += ' unsel';
+    var hexScore = '0x' + ('00000000' + m.score.toString(16)).slice(-6);
+    html += '<div class="' + cls + '" id="mn-' + i + '">';
+    html += '<div class="mn-id">' + m.id + '</div>';
+    html += '<div class="mn-bar-wrap"><div class="mn-bar" id="bar-' + i + '"></div></div>';
+    html += '<div class="mn-score">' + hexScore + '</div>';
+    html += '<div class="mn-role">' + m.role + '</div>';
+    html += '</div>';
+  });
+  listEl.innerHTML = html;
+
+  /* Animate bars one by one */
+  sorted.forEach(function(m, i) {
+    var w = Math.round((m.score / maxScore) * 100);
+    setTimeout(function() {
+      var bar = document.getElementById('bar-' + i);
+      if (bar) bar.style.width = w + '%';
+    }, i * 45 + 50);
+  });
+
+  setTimeout(function() {
+    document.getElementById('simRunBtn').disabled = false;
+    document.getElementById('simRunBtn').textContent = 'Run Again';
+    simRan = true;
+  }, SIM_NODES * 45 + 600);
+}
+
+function resetSimulation() {
+  buildSimNodes();
+  document.getElementById('mnList').innerHTML = '<div style="padding:2rem 1rem;text-align:center;font-size:.9rem;color:var(--text-mid);">Enter a seed above and click <strong style=\'color:var(--green);\'>Run VRF Round</strong> to start the simulation.</div>';
+  document.getElementById('mnHeaderRow').style.display = 'none';
+  document.getElementById('simLegend').style.display = 'none';
+  document.getElementById('simSeedInput').value = 'beldex2024block';
+  document.getElementById('simSeedDisplay').textContent = 'click run to start';
+  document.getElementById('simBlockNum').textContent = '4,939,540';
+  document.getElementById('simRunBtn').textContent = 'Run VRF Round';
+  document.getElementById('simRunBtn').disabled = false;
+  simRan = false;
+}
+
+/* ─────────────────────────────────────────────────
+   QUORUM CANVAS
+───────────────────────────────────────────────── */
+var qNodes = [];
+var qTimer = null;
+var qStep = 0;
+var TOTAL_Q = 20;
+
+function initQuorum() {
+  var c = document.getElementById('quorumCanvas');
+  if (!c) return;
+  /* Size canvas to its CSS width */
+  var w = c.parentElement.clientWidth - 32;
+  c.width = w;
+  c.height = Math.round(w * 0.72);
+  var CX = c.width / 2, CY = c.height / 2;
+  var R = Math.min(CX, CY) - 36;
+  qNodes = [];
+  var scores = [];
+  for (var i = 0; i < TOTAL_Q; i++) scores.push(Math.random());
+  scores.sort(function(a,b){return a-b;});
+  for (var i = 0; i < TOTAL_Q; i++) {
+    var ang = (i / TOTAL_Q) * Math.PI * 2 - Math.PI / 2;
+    var role = i === 0 ? 'producer' : (i <= 11 ? 'validator' : 'idle');
+    qNodes.push({
+      x: CX + Math.cos(ang) * R,
+      y: CY + Math.sin(ang) * R,
+      label: 'MN' + String(i+1).padStart(2,'0'),
+      role: role,
+      score: scores[i]
+    });
+  }
+  drawQuorum(0);
+}
+
+function drawQuorum(revealed) {
+  var c = document.getElementById('quorumCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var W = c.width, H = c.height;
+  var CX = W/2, CY = H/2;
+  ctx.clearRect(0, 0, W, H);
+  /* outer ring track */
+  ctx.strokeStyle = 'rgba(0,100,40,.2)'; ctx.lineWidth = 1; ctx.setLineDash([3,6]);
+  ctx.beginPath(); ctx.arc(CX, CY, Math.min(CX, CY) - 36, 0, Math.PI*2); ctx.stroke();
+  ctx.setLineDash([]);
+  /* center node */
+  var cg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 32);
+  cg.addColorStop(0, 'rgba(0,214,110,.18)'); cg.addColorStop(1, 'transparent');
+  ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(CX, CY, 32, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = 'rgba(0,214,110,.3)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(CX, CY, 28, 0, Math.PI*2); ctx.stroke();
+  ctx.fillStyle = 'rgba(0,200,90,.75)';
+  ctx.font = 'bold 9px Fira Code, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('QUORUM', CX, CY - 5);
+  ctx.fillStyle = 'rgba(0,160,60,.5)';
+  ctx.font = '7px Fira Code, monospace';
+  ctx.fillText('CENTER', CX, CY + 6);
+  /* nodes */
+  qNodes.forEach(function(n, i) {
+    var active = i < revealed;
+    var nr = n.role === 'producer' && active ? 13 : (n.role === 'validator' && active ? 9 : 7);
+    var fill, stroke, tc;
+    if (active && n.role === 'producer') {
+      fill = 'rgba(0,214,110,.18)'; stroke = 'rgba(0,214,110,.9)'; tc = '#00d66e';
+    } else if (active && n.role === 'validator') {
+      fill = 'rgba(240,180,41,.1)'; stroke = 'rgba(240,180,41,.6)'; tc = '#f0b429';
+    } else if (active) {
+      fill = 'rgba(14,30,18,.6)'; stroke = 'rgba(30,60,40,.4)'; tc = 'rgba(60,90,60,.4)';
+    } else {
+      fill = 'rgba(6,17,10,.8)'; stroke = 'rgba(13,34,20,.5)'; tc = 'rgba(26,51,32,.6)';
+    }
+    /* spoke line */
+    if (active && (n.role === 'producer' || n.role === 'validator')) {
+      ctx.strokeStyle = n.role === 'producer' ? 'rgba(0,214,110,.25)' : 'rgba(240,180,41,.15)';
+      ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+      ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(CX, CY); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.fillStyle = fill; ctx.strokeStyle = stroke; ctx.lineWidth = active ? 2 : 1;
+    ctx.beginPath(); ctx.arc(n.x, n.y, nr, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = tc;
+    ctx.font = '6px Fira Code, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(n.label, n.x, n.y + nr + 3);
+    if (active && n.role === 'producer') {
+      ctx.fillStyle = 'rgba(0,214,110,.85)';
+      ctx.font = 'bold 7px Fira Code, monospace'; ctx.textBaseline = 'bottom';
+      ctx.fillText('PRODUCER', n.x, n.y - nr - 2);
+    }
+  });
+}
+
+function animateQuorum() {
+  clearInterval(qTimer); qStep = 0; drawQuorum(0);
+  qTimer = setInterval(function() {
+    qStep++;
+    drawQuorum(qStep);
+    if (qStep >= TOTAL_Q) {
+      clearInterval(qTimer);
+      document.querySelector('[onclick="animateQuorum()"]').textContent = 'Replay Animation';
+    }
+  }, 110);
+}
+
+/* ─────────────────────────────────────────────────
+   VERIFY DEMO
+───────────────────────────────────────────────── */
+var originalProof = 'c9b2e8f1a4d7c3e9b6f2a8c1e4b7d3f9a6c2e8b5d1f7a3c9e6b2d8f4';
+
+function doVerify(valid) {
+  var stepsEl = document.getElementById('verifySteps');
+  var resultEl = document.getElementById('verifyResult');
+  resultEl.className = 'verify-result';
+  resultEl.textContent = '';
+
+  if (!valid) {
+    document.getElementById('vf-proof').textContent = rh(58);
+  } else {
+    document.getElementById('vf-proof').textContent = originalProof;
+  }
+
+  var steps = [
+    'step 1: reading public key bytes...',
+    'step 2: computing hash-to-curve from seed...',
+    'step 3: checking proof signature validity...',
+    'step 4: deriving output hash from proof...',
+    'step 5: comparing with claimed score...'
+  ];
+
+  stepsEl.innerHTML = '<div style="color:var(--text-mid);">Running verification...<br><br></div>';
+  var lines = [];
+  steps.forEach(function(s, i) {
+    setTimeout(function() {
+      var cls = (i === steps.length - 1) ? (valid ? 'done' : 'fail') : 'done';
+      lines.push('<div class="verify-step-line ' + cls + '">' + s + '</div>');
+      stepsEl.innerHTML = '<div style="color:var(--text-mid);">Running verification...<br></div>' + lines.join('');
+    }, (i + 1) * 340);
+  });
+
+  setTimeout(function() {
+    if (valid) {
+      resultEl.className = 'verify-result valid';
+      resultEl.textContent = 'Proof Valid: VRF Score Verified';
+    } else {
+      resultEl.className = 'verify-result invalid';
+      resultEl.textContent = 'Proof Invalid: Score Rejected';
+    }
+  }, steps.length * 340 + 200);
+}
+
+/* ─────────────────────────────────────────────────
+   CYCLE CANVAS
+───────────────────────────────────────────────── */
+var PHASES = [
+  { label: 'Block Finalized',  sub: 'Previous block confirmed & added to chain', color: '#00d66e', icon: '⛓' },
+  { label: 'Seed Extracted',   sub: 'Previous block hash becomes the VRF seed',  color: '#06d6d0', icon: '🔑' },
+  { label: 'VRF Computed',     sub: 'All masternodes compute their unique score', color: '#b57bf5', icon: '⚙' },
+  { label: 'Proofs Broadcast', sub: 'Scores and proofs sent to entire network',  color: '#f0b429', icon: '📡' },
+  { label: 'Verification',     sub: 'Every node checks every broadcast proof',   color: '#06d6d0', icon: '✓' },
+  { label: 'Quorum Assigned',  sub: '12 nodes selected by lowest VRF scores',   color: '#00d66e', icon: '👥' },
+  { label: 'Block Proposed',   sub: 'Producer assembles and proposes the block', color: '#f0b429', icon: '🧱' },
+  { label: '7/11 Approved',    sub: 'Validators sign, supermajority reached',   color: '#00d66e', icon: '✅' },
+];
+
+var cycleRunning = false, cycleT = 0;
+var FRAMES_PER_PHASE = 130;
+var TOTAL_FRAMES = PHASES.length * FRAMES_PER_PHASE;
+var cycleAF = null;
+
+/* Build phase chips */
+(function() {
+  var grid = document.getElementById('phaseChips');
+  if (!grid) return;
+  var html = '';
+  PHASES.forEach(function(p, i) {
+    html += '<div class="phase-chip" id="chip-' + i + '">';
+    html += '<div class="phase-chip-num">Phase ' + (i+1) + '</div>';
+    html += '<div class="phase-chip-title">' + p.icon + ' ' + p.label + '</div>';
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+})();
+
+function initCycleCanvas() {
+  var c = document.getElementById('cycleCanvas');
+  if (!c) return;
+  var w = c.parentElement.clientWidth - 10;
+  c.width = w;
+  c.height = Math.round(w * 0.42);
+  drawCycle();
+}
+
+function drawCycle() {
+  var c = document.getElementById('cycleCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var W = c.width, H = c.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#040e07'; ctx.fillRect(0, 0, W, H);
+
+  var phase = Math.floor(cycleT / FRAMES_PER_PHASE) % PHASES.length;
+  var prog = (cycleT % FRAMES_PER_PHASE) / FRAMES_PER_PHASE;
+  var p = PHASES[phase];
+  var CX = W/2, CY = H/2;
+  var R = Math.min(CX - 60, CY - 42);
+
+  /* track ring */
+  ctx.strokeStyle = 'rgba(0,80,30,.3)'; ctx.lineWidth = 2; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI*2); ctx.stroke();
+
+  /* progress arc */
+  var arcPct = cycleT / TOTAL_FRAMES;
+  ctx.strokeStyle = p.color; ctx.lineWidth = 3; ctx.globalAlpha = .35;
+  ctx.beginPath(); ctx.arc(CX, CY, R, -Math.PI/2, -Math.PI/2 + arcPct * Math.PI*2); ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  /* draw phase dots */
+  PHASES.forEach(function(ph, i) {
+    var ang = (i / PHASES.length) * Math.PI * 2 - Math.PI / 2;
+    var nx = CX + Math.cos(ang) * R;
+    var ny = CY + Math.sin(ang) * R;
+    var isCurrent = (i === phase);
+    var nr = isCurrent ? 14 : 8;
+    var pulse = isCurrent ? (Math.sin(cycleT * .12) * 3) : 0;
+    nr += pulse;
+
+    /* spoke */
+    ctx.strokeStyle = isCurrent ? ph.color : 'rgba(0,60,25,.4)';
+    ctx.lineWidth = isCurrent ? 1.5 : 1; ctx.setLineDash([4, 7]);
+    ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(nx, ny); ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* node */
+    ctx.fillStyle = isCurrent ? ph.color + '22' : 'rgba(6,17,10,.8)';
+    ctx.strokeStyle = isCurrent ? ph.color : 'rgba(0,60,25,.4)';
+    ctx.lineWidth = isCurrent ? 2 : 1;
+    ctx.beginPath(); ctx.arc(nx, ny, nr, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+    /* label */
+    var lx = CX + Math.cos(ang) * (R + 26);
+    var ly = CY + Math.sin(ang) * (R + 26);
+    ctx.fillStyle = isCurrent ? ph.color : 'rgba(0,80,30,.5)';
+    ctx.font = (isCurrent ? 'bold ' : '') + '8px Fira Code, monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var words = ph.label.split(' ');
+    words.forEach(function(w, wi) {
+      ctx.fillText(w, lx, ly + (wi - (words.length - 1) / 2) * 10);
+    });
+  });
+
+  /* Center info */
+  ctx.fillStyle = p.color;
+  ctx.font = 'bold 13px Syne, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(p.icon + ' ' + p.label, CX, CY - 10);
+  ctx.fillStyle = 'rgba(100,160,100,.6)'; ctx.font = '9px DM Sans, sans-serif';
+  ctx.fillText(p.sub, CX, CY + 8);
+  ctx.fillStyle = 'rgba(0,80,40,.6)'; ctx.font = '8px Fira Code, monospace';
+  ctx.fillText('Phase ' + (phase+1) + ' of ' + PHASES.length, CX, CY + 24);
+
+  /* phase bar bottom */
+  var bw = W - 80, bh = 4, bx = 40, by = H - 24;
+  ctx.fillStyle = 'rgba(0,50,20,.6)'; ctx.fillRect(bx, by, bw, bh);
+  ctx.fillStyle = p.color; ctx.fillRect(bx, by, bw * prog, bh);
+
+  /* update chips */
+  for (var i = 0; i < PHASES.length; i++) {
+    var chip = document.getElementById('chip-' + i);
+    if (chip) chip.classList.toggle('active-phase', i === phase);
+  }
+}
+
+function cycleTick() {
+  cycleT++;
+  if (cycleT >= TOTAL_FRAMES) cycleT = 0;
+  drawCycle();
+  if (cycleRunning) cycleAF = requestAnimationFrame(cycleTick);
+}
+
+function toggleCycle() {
+  cycleRunning = !cycleRunning;
+  document.getElementById('cycleBtn').textContent = cycleRunning ? 'Pause' : 'Play Animation';
+  if (cycleRunning) {
+    document.getElementById('cycleStatus').textContent = 'Cycle running, watch each phase light up';
+    cycleAF = requestAnimationFrame(cycleTick);
+  } else {
+    cancelAnimationFrame(cycleAF);
+    var ph = Math.floor(cycleT / FRAMES_PER_PHASE) % PHASES.length;
+    document.getElementById('cycleStatus').textContent = 'Paused at Phase ' + (ph + 1) + ': ' + PHASES[ph].label;
+  }
+}
+
+function resetCycle() {
+  cycleRunning = false;
+  cancelAnimationFrame(cycleAF);
+  cycleT = 0;
+  document.getElementById('cycleBtn').textContent = 'Play Animation';
+  document.getElementById('cycleStatus').textContent = 'Press Play to watch the full VRF cycle';
+  drawCycle();
+}
+
+/* ─────────────────────────────────────────────────
+   INIT ALL CANVASES ON LOAD
+───────────────────────────────────────────────── */
+window.addEventListener('load', function() {
+  initQuorum();
+  initCycleCanvas();
+});
+
+/* Re-init on resize */
+var resizeTimer;
+window.addEventListener('resize', function() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function() {
+    initQuorum();
+    initCycleCanvas();
+  }, 200);
+});
+</script>
+</body>
+</html>
