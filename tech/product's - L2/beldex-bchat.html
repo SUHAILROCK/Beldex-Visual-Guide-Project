@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BChat   Private Messaging, Explained Simply</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────── */
+:root {
+  --cream:   #FEFCF7;
+  --cream2:  #F5F1E8;
+  --cream3:  #EDE8DC;
+  --forest:  #2D6A4F;
+  --forest2: #1B4332;
+  --leaf:    #52B788;
+  --leaf2:   #74C69D;
+  --coral:   #E76F51;
+  --coral2:  #F4A261;
+  --sky:     #219EBC;
+  --ink:     #1C1917;
+  --ink2:    #3D3530;
+  --mid:     #7A6E65;
+  --rule:    #D9D1C4;
+  --rule2:   #C4B89A;
+  --white:   #FFFFFF;
+  --shadow:  rgba(28,25,23,.08);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────── */
+.w  { max-width: 1080px; margin: 0 auto; padding: 0 2rem; position:relative; z-index:2; }
+.wn { max-width: 740px;  margin: 0 auto; padding: 0 2rem; position:relative; z-index:2; }
+
+/* ─────────────────────────────────────────
+   TYPE
+───────────────────────────────────────── */
+.display { font-family: 'Fraunces', serif; }
+.mono    { font-family: 'JetBrains Mono', monospace; }
+
+h1 { font-family:'Fraunces',serif; font-size:clamp(3rem,7vw,5.5rem); font-weight:900; line-height:.95; letter-spacing:-.02em; }
+h2 { font-family:'Fraunces',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:700; line-height:1.05; letter-spacing:-.01em; }
+h3 { font-family:'Fraunces',serif; font-size:1.6rem; font-weight:700; }
+h4 { font-family:'Nunito',sans-serif; font-size:.8rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--mid); }
+
+.tag {
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace; font-size:.65rem; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:.22rem .75rem; border-radius:99px; border:1.5px solid;
+}
+.tag-forest { color:var(--forest); border-color:rgba(45,106,79,.3); background:rgba(45,106,79,.07); }
+.tag-coral  { color:var(--coral);  border-color:rgba(231,111,81,.3); background:rgba(231,111,81,.07); }
+.tag-sky    { color:var(--sky);    border-color:rgba(33,158,188,.3); background:rgba(33,158,188,.07); }
+
+/* ─────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────── */
+.sr { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+.sr.vis { opacity:1; transform:none; }
+.d1{transition-delay:.1s;} .d2{transition-delay:.2s;} .d3{transition-delay:.3s;} .d4{transition-delay:.4s;}
+
+/* ─────────────────────────────────────────
+   SECTION SHELLS
+───────────────────────────────────────── */
+.section { padding: 5.5rem 0; }
+.section + .section { border-top: 1px solid var(--rule); }
+.bg2 { background: var(--cream2); }
+.bg3 { background: var(--cream3); }
+.bg-forest { background: var(--forest2); color: var(--cream); }
+.bg-forest p,
+.bg-forest h4 { color: rgba(254,252,247,.6); }
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+#nav {
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  background:rgba(254,252,247,.92); border-bottom:1px solid var(--rule);
+  backdrop-filter: blur(14px);
+}
+.nav-bar {
+  max-width:1080px; margin:0 auto; padding:0 2rem;
+  height:56px; display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo {
+  font-family:'Fraunces',serif; font-size:1.3rem; font-weight:900;
+  color:var(--ink); text-decoration:none; letter-spacing:-.02em;
+}
+.nav-logo span { color:var(--forest); }
+.nav-links { display:flex; gap:.2rem; }
+.nav-link {
+  font-size:.85rem; font-weight:600; color:var(--mid);
+  text-decoration:none; padding:.35rem .75rem; border-radius:6px;
+  transition:all .18s; white-space:nowrap;
+}
+.nav-link:hover { color:var(--forest); background:rgba(45,106,79,.08); }
+.nav-cta {
+  font-size:.82rem; font-weight:700; text-decoration:none;
+  padding:.45rem 1.1rem; background:var(--forest); color:var(--white);
+  border-radius:8px; transition:background .18s;
+}
+.nav-cta:hover { background:var(--forest2); }
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+#hero {
+  padding: 7rem 0 5rem; min-height: 92vh;
+  display:flex; flex-direction:column; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.hero-deco {
+  position:absolute; top:-60px; right:-80px;
+  width: 420px; height:420px; border-radius:50%;
+  background: radial-gradient(circle, rgba(82,183,136,.18) 0%, transparent 70%);
+  pointer-events:none; z-index:0;
+}
+.hero-deco2 {
+  position:absolute; bottom:-40px; left:-60px;
+  width: 300px; height:300px; border-radius:50%;
+  background: radial-gradient(circle, rgba(231,111,81,.1) 0%, transparent 70%);
+  pointer-events:none; z-index:0;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 380px;
+  gap: 4rem; align-items: center; position:relative; z-index:1;
+}
+.hero-eyebrow { display:flex; align-items:center; gap:.75rem; margin-bottom:1.5rem; }
+.hero-line { width:28px; height:2px; background:var(--forest); border-radius:2px; }
+.hero-eyebrow-text { font-size:.8rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--forest); }
+.hero-h1 { margin-bottom:1.25rem; }
+.hero-h1 .em { color:var(--forest); }
+.hero-desc { font-size:1.15rem; color:var(--ink2); line-height:1.85; max-width:480px; margin-bottom:2.5rem; }
+.hero-buttons { display:flex; gap:.85rem; flex-wrap:wrap; margin-bottom:2.5rem; }
+.btn-primary {
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-weight:700; font-size:1rem;
+  padding:.75rem 1.75rem; background:var(--forest); color:var(--white);
+  border-radius:10px; text-decoration:none; border:none; cursor:pointer;
+  transition:all .2s;
+}
+.btn-primary:hover { background:var(--forest2); transform:translateY(-2px); }
+.btn-outline {
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-weight:700; font-size:1rem;
+  padding:.75rem 1.75rem; background:transparent; color:var(--forest);
+  border-radius:10px; text-decoration:none; border:2px solid rgba(45,106,79,.35);
+  transition:all .2s; cursor:pointer;
+}
+.btn-outline:hover { border-color:var(--forest); background:rgba(45,106,79,.06); }
+.hero-trust { display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
+.trust-item {
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.88rem; font-weight:600; color:var(--mid);
+}
+.trust-icon { font-size:1rem; }
+
+/* Phone in hero */
+.hero-phone {
+  background:var(--white); border-radius:36px;
+  border:1.5px solid var(--rule); overflow:hidden;
+  box-shadow: 0 24px 48px var(--shadow), 0 8px 16px rgba(0,0,0,.06);
+  position:relative;
+}
+.phone-notch {
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:80px; height:24px; background:var(--cream); border-radius:0 0 16px 16px; z-index:10;
+}
+.phone-status-bar {
+  height:48px; display:flex; align-items:flex-end; padding:0 18px 8px;
+  background:var(--forest2); color:rgba(255,255,255,.7);
+  font-size:.62rem; font-family:'JetBrains Mono',monospace; letter-spacing:.06em;
+}
+.phone-topbar {
+  background:var(--forest); padding:10px 16px 12px;
+  display:flex; align-items:center; gap:10px;
+}
+.phone-avatar {
+  width:34px; height:34px; border-radius:50%;
+  background:var(--leaf2); display:flex; align-items:center; justify-content:center;
+  font-size:.75rem; font-weight:700; color:var(--forest2); flex-shrink:0;
+}
+.phone-contact { flex:1; }
+.phone-contact-name { font-size:.82rem; font-weight:700; color:var(--white); }
+.phone-contact-sub { font-size:.62rem; color:rgba(255,255,255,.6); font-family:'JetBrains Mono',monospace; }
+.phone-body { padding:14px; display:flex; flex-direction:column; gap:8px; background:var(--cream2); min-height:260px; }
+.chat-bubble {
+  max-width:82%; padding:9px 13px 8px; border-radius:16px;
+  font-size:.82rem; line-height:1.5; font-weight:500;
+  animation: popIn .3s ease both;
+}
+@keyframes popIn { from{opacity:0;transform:scale(.9)translateY(4px);}to{opacity:1;transform:none;} }
+.bubble-in  { background:var(--white); border:1px solid var(--rule); color:var(--ink2); align-self:flex-start; border-bottom-left-radius:4px; }
+.bubble-out { background:var(--forest); color:var(--white); align-self:flex-end; border-bottom-right-radius:4px; }
+.bubble-time { font-size:.58rem; opacity:.55; display:block; margin-top:2px; font-family:'JetBrains Mono',monospace; }
+.chat-system { align-self:center; font-size:.65rem; font-family:'JetBrains Mono',monospace; color:var(--leaf); letter-spacing:.06em; text-align:center; }
+.phone-input-bar {
+  display:flex; gap:8px; align-items:center;
+  padding:10px 14px; background:var(--white); border-top:1px solid var(--rule);
+}
+.phone-input-pill {
+  flex:1; height:32px; background:var(--cream); border:1px solid var(--rule);
+  border-radius:16px; padding:0 12px; font-size:.75rem; color:var(--mid);
+  display:flex; align-items:center;
+}
+.phone-send-btn {
+  width:32px; height:32px; border-radius:50%;
+  background:var(--forest); display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+
+/* ─────────────────────────────────────────
+   SECTION 2   THE PROBLEM
+───────────────────────────────────────── */
+.problem-intro { max-width:640px; margin-bottom:3rem; }
+.apps-compare { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:12px; overflow:hidden; }
+.app-col { background:var(--cream); padding:1.75rem 1.5rem; }
+.app-col.highlighted { background:var(--white); }
+.app-logo { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; margin-bottom:.25rem; }
+.app-logo.good { color:var(--forest); }
+.app-type { font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); margin-bottom:1.25rem; }
+.app-item { display:flex; align-items:flex-start; gap:.6rem; margin-bottom:.65rem; font-size:.9rem; line-height:1.5; color:var(--ink2); font-weight:500; }
+.app-item .icon { flex-shrink:0; font-size:.9rem; }
+.app-item.bad  { color:var(--coral); }
+.app-item.good { color:var(--forest); font-weight:600; }
+
+/* ─────────────────────────────────────────
+   SECTION 3   YOUR BCHAT ID
+───────────────────────────────────────── */
+.id-explainer { display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:center; }
+.vs-block { display:flex; flex-direction:column; gap:.85rem; }
+.vs-card {
+  border-radius:12px; padding:1.25rem 1.4rem;
+  border:2px solid;
+}
+.vs-card.bad { border-color:rgba(231,111,81,.3); background:rgba(231,111,81,.05); }
+.vs-card.good { border-color:rgba(45,106,79,.3); background:rgba(45,106,79,.06); }
+.vs-label { font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; }
+.vs-label.bad { color:var(--coral); }
+.vs-label.good { color:var(--forest); }
+.vs-list { display:flex; flex-direction:column; gap:.35rem; }
+.vs-row { display:flex; align-items:center; gap:.6rem; font-size:.92rem; font-weight:500; color:var(--ink2); }
+.vs-row .ico { font-size:.85rem; flex-shrink:0; }
+
+/* ID card demo */
+.id-card-demo {
+  background:var(--white); border-radius:16px;
+  border:1.5px solid var(--rule); overflow:hidden;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.id-card-top {
+  background:var(--forest2); padding:1.25rem 1.5rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.id-card-avatar {
+  width:48px; height:48px; border-radius:50%; background:var(--leaf);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fraunces',serif; font-size:1.25rem; font-weight:700; color:var(--forest2);
+}
+.id-card-info { flex:1; }
+.id-card-name { font-size:.88rem; font-weight:700; color:var(--white); }
+.id-card-sub  { font-size:.65rem; color:rgba(255,255,255,.5); font-family:'JetBrains Mono',monospace; }
+.id-card-body { padding:1.25rem 1.5rem; }
+.id-field { margin-bottom:.85rem; }
+.id-field-label { font-size:.65rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--mid); margin-bottom:.3rem; }
+.id-field-value {
+  font-family:'JetBrains Mono',monospace; font-size:.7rem;
+  background:var(--cream); border:1px solid var(--rule);
+  padding:.5rem .75rem; border-radius:6px; color:var(--forest);
+  word-break:break-all; line-height:1.6;
+}
+.id-card-btn {
+  width:100%; margin-top:.5rem;
+  padding:.6rem; background:var(--forest); color:var(--white);
+  border:none; border-radius:8px; font-weight:700; font-size:.88rem;
+  font-family:'Nunito',sans-serif; cursor:pointer; transition:background .18s;
+}
+.id-card-btn:hover { background:var(--forest2); }
+.id-note { font-size:.78rem; color:var(--mid); text-align:center; margin-top:.55rem; line-height:1.55; }
+
+/* ─────────────────────────────────────────
+   SECTION 4   ENCRYPTION DEMO
+───────────────────────────────────────── */
+.enc-wrapper { display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:start; }
+.enc-explainer p { font-size:1.05rem; color:var(--ink2); line-height:1.8; }
+.enc-explainer p + p { margin-top:.9rem; }
+.enc-steps { display:flex; flex-direction:column; gap:.6rem; margin-top:1.5rem; }
+.enc-step { display:flex; align-items:flex-start; gap:.9rem; padding:.85rem 1rem; border-radius:10px; background:var(--white); border:1px solid var(--rule); }
+.enc-step-icon { font-size:1.35rem; flex-shrink:0; margin-top:.05rem; }
+.enc-step-text h5 { font-size:.92rem; font-weight:700; color:var(--ink); margin-bottom:.2rem; }
+.enc-step-text p { font-size:.85rem; color:var(--mid); line-height:1.5; }
+
+/* Encrypt interactive */
+.enc-demo-box {
+  background:var(--white); border-radius:16px;
+  border:1.5px solid var(--rule); overflow:hidden;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.enc-demo-header {
+  background:var(--cream2); border-bottom:1px solid var(--rule);
+  padding:.9rem 1.4rem; display:flex; align-items:center; gap:.5rem;
+}
+.enc-demo-dot { width:10px; height:10px; border-radius:50%; }
+.enc-demo-title { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); margin-left:.3rem; }
+.enc-demo-body { padding:1.4rem; }
+.enc-label { font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--mid); margin-bottom:.45rem; }
+.enc-input {
+  width:100%; background:var(--cream); border:1.5px solid var(--rule);
+  color:var(--ink); font-family:'Nunito',sans-serif; font-size:.95rem;
+  padding:.7rem .95rem; border-radius:8px; outline:none; resize:none;
+  transition:border-color .2s; line-height:1.5;
+}
+.enc-input:focus { border-color:var(--forest); }
+.enc-btn {
+  width:100%; margin-top:.75rem; padding:.65rem;
+  background:var(--forest); color:var(--white);
+  border:none; border-radius:8px; font-weight:700; font-size:.95rem;
+  font-family:'Nunito',sans-serif; cursor:pointer; transition:background .2s;
+}
+.enc-btn:hover { background:var(--forest2); }
+.enc-output-wrap { margin-top:1rem; }
+.enc-output {
+  background:var(--ink); color:var(--leaf2);
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  padding:.85rem 1rem; border-radius:8px; word-break:break-all;
+  line-height:1.75; min-height:72px; transition:opacity .3s;
+}
+.enc-reveal {
+  margin-top:.75rem; padding:.75rem 1rem;
+  background:rgba(45,106,79,.07); border:1.5px solid rgba(45,106,79,.25);
+  border-radius:8px; font-size:.88rem; color:var(--forest2); font-weight:600;
+  line-height:1.55; display:none;
+}
+.enc-reveal.show { display:block; }
+.enc-note { font-size:.78rem; color:var(--mid); margin-top:.6rem; line-height:1.55; }
+
+/* ─────────────────────────────────────────
+   SECTION 5   ONION ROUTING
+───────────────────────────────────────── */
+.onion-explainer-text { max-width:640px; margin-bottom:3rem; }
+.onion-explainer-text p { font-size:1.05rem; color:var(--ink2); line-height:1.8; }
+.onion-explainer-text p + p { margin-top:.85rem; }
+
+/* Step-through demo */
+.onion-demo {
+  background:var(--white); border-radius:20px;
+  border:1.5px solid var(--rule); overflow:hidden;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.onion-header {
+  background:var(--cream2); border-bottom:1px solid var(--rule);
+  padding:.9rem 1.5rem; display:flex; align-items:center; justify-content:space-between;
+}
+.onion-header-title { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); }
+.onion-step-count { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--forest); font-weight:600; }
+.onion-body { padding:2rem 2.25rem; }
+
+/* Path visual */
+.onion-path { display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; }
+.onion-node { display:flex; flex-direction:column; align-items:center; gap:.5rem; flex:1; }
+.onion-circle {
+  width:60px; height:60px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; border:2px solid var(--rule);
+  background:var(--cream); transition:all .4s ease;
+  position:relative;
+}
+.onion-circle.active { border-color:var(--forest); background:rgba(45,106,79,.1); transform:scale(1.12); }
+.onion-circle.done   { border-color:var(--leaf); background:rgba(82,183,136,.1); }
+.onion-node-label { font-size:.78rem; font-weight:700; color:var(--mid); text-align:center; line-height:1.3; }
+.onion-node-label.active { color:var(--forest); }
+.onion-arrow {
+  font-size:1.25rem; color:var(--rule2); flex-shrink:0;
+  transition:color .4s; margin:0 .25rem; padding-bottom:1.5rem;
+}
+.onion-arrow.active { color:var(--leaf); }
+
+.onion-info-box {
+  background:var(--cream2); border:1.5px solid var(--rule); border-radius:12px;
+  padding:1.25rem 1.4rem; margin-bottom:1.5rem; min-height:90px;
+  transition:all .3s;
+}
+.oib-step { font-size:.65rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--forest); margin-bottom:.4rem; }
+.oib-title { font-family:'Fraunces',serif; font-size:1.2rem; font-weight:700; color:var(--ink); margin-bottom:.35rem; }
+.oib-desc { font-size:.92rem; color:var(--ink2); line-height:1.65; }
+.oib-key-fact {
+  display:inline-flex; align-items:center; gap:.4rem;
+  font-size:.8rem; font-weight:700; color:var(--forest);
+  background:rgba(45,106,79,.08); padding:.3rem .8rem; border-radius:6px; margin-top:.5rem;
+}
+
+.onion-controls { display:flex; gap:.75rem; }
+.onion-btn {
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:.88rem;
+  padding:.6rem 1.25rem; border-radius:8px; cursor:pointer; transition:all .2s; border:none;
+}
+.onion-btn.primary { background:var(--forest); color:var(--white); }
+.onion-btn.primary:hover { background:var(--forest2); }
+.onion-btn.secondary { background:var(--cream2); color:var(--ink2); border:1.5px solid var(--rule); }
+.onion-btn.secondary:hover { border-color:var(--forest); color:var(--forest); }
+.onion-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+/* ─────────────────────────────────────────
+   SECTION 6   FEATURES
+───────────────────────────────────────── */
+.features-intro { max-width:580px; margin-bottom:3rem; }
+.features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
+.feature-card {
+  background:var(--white); border-radius:16px;
+  border:1.5px solid var(--rule); padding:1.75rem 1.5rem;
+  cursor:pointer; transition:all .22s; position:relative; overflow:hidden;
+}
+.feature-card:hover { border-color:var(--forest); box-shadow:0 8px 24px var(--shadow); transform:translateY(-3px); }
+.feature-card.open { border-color:var(--forest); }
+.feature-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--forest); transform:scaleX(0); transform-origin:left;
+  transition:transform .25s;
+}
+.feature-card:hover::before,
+.feature-card.open::before { transform:scaleX(1); }
+.fc-icon { font-size:2rem; margin-bottom:.75rem; }
+.fc-title { font-family:'Fraunces',serif; font-size:1.2rem; font-weight:700; color:var(--ink); margin-bottom:.35rem; }
+.fc-short { font-size:.92rem; color:var(--mid); line-height:1.55; }
+.fc-expand {
+  margin-top:1rem; padding-top:1rem; border-top:1px solid var(--rule);
+  font-size:.9rem; color:var(--ink2); line-height:1.7;
+  display:none;
+}
+.fc-expand.show { display:block; }
+.fc-expand strong { color:var(--forest); }
+.fc-toggle {
+  display:flex; align-items:center; gap:.4rem;
+  font-size:.78rem; font-weight:700; color:var(--forest); margin-top:1rem;
+}
+
+/* ─────────────────────────────────────────
+   SECTION 7   BNS NAMES
+───────────────────────────────────────── */
+.bns-layout { display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:center; }
+.bns-demo {
+  background:var(--white); border-radius:16px;
+  border:1.5px solid var(--rule); overflow:hidden;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.bns-demo-header { background:var(--forest); padding:1rem 1.4rem; }
+.bns-demo-title { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.6); margin-bottom:.25rem; }
+.bns-demo-name { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--white); }
+.bns-demo-body { padding:1.4rem; }
+.bns-arrow-row {
+  display:flex; align-items:center; gap:.85rem; margin-bottom:1rem;
+  padding:.85rem 1rem; background:var(--cream2); border-radius:8px; border:1px solid var(--rule);
+}
+.bns-ugly { font-family:'JetBrains Mono',monospace; font-size:.62rem; color:var(--mid); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bns-arrow-icon { color:var(--forest); font-size:1.1rem; flex-shrink:0; }
+.bns-clean { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--forest); flex-shrink:0; }
+.bns-input-row { display:flex; gap:.65rem; margin-top:.25rem; }
+.bns-input {
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+  flex:1; background:var(--cream); border:1.5px solid var(--rule);
+  padding:.55rem .85rem; border-radius:7px; color:var(--ink); outline:none;
+  transition:border-color .2s;
+}
+.bns-input:focus { border-color:var(--forest); }
+.bns-lookup-btn {
+  padding:.55rem 1.1rem; background:var(--forest); color:var(--white);
+  border:none; border-radius:7px; font-weight:700; font-size:.82rem;
+  font-family:'Nunito',sans-serif; cursor:pointer; transition:background .18s; white-space:nowrap;
+}
+.bns-lookup-btn:hover { background:var(--forest2); }
+.bns-result { margin-top:1rem; padding:.85rem 1rem; background:rgba(45,106,79,.06); border:1.5px solid rgba(45,106,79,.2); border-radius:8px; display:none; }
+.bns-result.show { display:block; }
+.bns-res-row { display:flex; gap:.65rem; align-items:flex-start; margin-bottom:.4rem; font-size:.82rem; }
+.bns-res-row:last-child { margin-bottom:0; }
+.bns-res-key { font-weight:700; color:var(--mid); font-size:.75rem; width:70px; flex-shrink:0; padding-top:.05rem; text-transform:uppercase; letter-spacing:.05em; }
+.bns-res-val { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--forest); word-break:break-all; line-height:1.5; }
+.verified-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:.65rem; font-weight:700; background:rgba(45,106,79,.1); color:var(--forest); padding:.18rem .55rem; border-radius:4px; margin-left:.35rem; }
+
+/* ─────────────────────────────────────────
+   SECTION 8   PAYMENT
+───────────────────────────────────────── */
+.pay-layout { display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:start; }
+.pay-points { display:flex; flex-direction:column; gap:.85rem; margin-top:1.75rem; }
+.pay-point { display:flex; gap:.85rem; align-items:flex-start; }
+.pay-point-icon { font-size:1.35rem; flex-shrink:0; margin-top:.05rem; }
+.pay-point-text h5 { font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:.2rem; }
+.pay-point-text p { font-size:.9rem; color:var(--mid); line-height:1.55; }
+.pay-demo-card {
+  background:var(--white); border-radius:16px;
+  border:1.5px solid var(--rule); overflow:hidden;
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.pdc-header { background:var(--forest2); padding:1.2rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+.pdc-title { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.55); }
+.pdc-live { font-family:'JetBrains Mono',monospace; font-size:.6rem; color:var(--leaf); letter-spacing:.1em; }
+.pdc-body { padding:1.5rem; }
+.pdc-field { margin-bottom:.9rem; }
+.pdc-label { display:block; font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--mid); margin-bottom:.35rem; }
+.pdc-input {
+  width:100%; background:var(--cream); border:1.5px solid var(--rule);
+  color:var(--ink); font-family:'Nunito',sans-serif; font-size:.95rem;
+  padding:.6rem .9rem; border-radius:7px; outline:none; transition:border-color .2s;
+}
+.pdc-input:focus { border-color:var(--forest); }
+.pdc-summary { background:rgba(45,106,79,.06); border:1.5px solid rgba(45,106,79,.18); border-radius:10px; padding:1.1rem 1.2rem; margin-bottom:1rem; }
+.pdc-row { display:flex; justify-content:space-between; align-items:center; font-size:.9rem; margin-bottom:.4rem; }
+.pdc-row:last-child { margin-bottom:0; font-weight:700; font-size:.95rem; border-top:1px solid rgba(45,106,79,.15); padding-top:.4rem; margin-top:.4rem; }
+.pdc-key { color:var(--mid); font-weight:500; }
+.pdc-val { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--forest); font-weight:700; }
+.pdc-send {
+  width:100%; padding:.7rem; background:var(--forest); color:var(--white);
+  border:none; border-radius:8px; font-weight:700; font-size:.95rem;
+  font-family:'Nunito',sans-serif; cursor:pointer; transition:background .2s;
+}
+.pdc-send:hover { background:var(--forest2); }
+.pdc-msg { text-align:center; font-size:.82rem; font-weight:600; color:var(--forest); margin-top:.6rem; min-height:1.2em; font-family:'JetBrains Mono',monospace; }
+
+/* ─────────────────────────────────────────
+   DOWNLOAD
+───────────────────────────────────────── */
+.download-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:.85rem; margin-top:2.5rem; }
+.dl-card {
+  background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.15);
+  border-radius:12px; padding:1.4rem 1rem; text-align:center;
+  text-decoration:none; color:var(--cream);
+  display:flex; flex-direction:column; align-items:center; gap:.55rem;
+  transition:all .22s;
+}
+.dl-card:hover { background:rgba(255,255,255,.14); border-color:var(--leaf); transform:translateY(-3px); }
+.dl-icon { font-size:2.2rem; }
+.dl-name { font-weight:700; font-size:.92rem; }
+.dl-store { font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(254,252,247,.4); }
+.dl-arrow { color:var(--leaf); font-size:.75rem; }
+
+/* ─────────────────────────────────────────
+   INFO CALLOUT
+───────────────────────────────────────── */
+.callout {
+  padding:1.25rem 1.5rem; border-radius:10px; border-left:4px solid;
+  margin:1.5rem 0;
+}
+.callout-forest { border-color:var(--forest); background:rgba(45,106,79,.07); }
+.callout-coral  { border-color:var(--coral);  background:rgba(231,111,81,.07); }
+.callout-head { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.35rem; }
+.callout-forest .callout-head { color:var(--forest); }
+.callout-coral  .callout-head { color:var(--coral); }
+.callout p { font-size:.92rem; color:var(--ink2); line-height:1.65; }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media(max-width:960px){
+  .hero-grid    { grid-template-columns:1fr; }
+  .hero-phone   { display:none; }
+  .apps-compare { grid-template-columns:1fr 1fr; }
+  .id-explainer { grid-template-columns:1fr; }
+  .enc-wrapper  { grid-template-columns:1fr; }
+  .bns-layout   { grid-template-columns:1fr; }
+  .pay-layout   { grid-template-columns:1fr; }
+  .features-grid{ grid-template-columns:1fr 1fr; }
+  .download-grid{ grid-template-columns:repeat(3,1fr); }
+}
+@media(max-width:640px){
+  .w,.wn { padding:0 1.25rem; }
+  .apps-compare { grid-template-columns:1fr; }
+  .features-grid{ grid-template-columns:1fr; }
+  .download-grid{ grid-template-columns:1fr 1fr; }
+  .nav-links    { display:none; }
+  .onion-path   { gap:0; }
+  .onion-circle { width:48px; height:48px; font-size:1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-bar">
+    <a class="nav-logo" href="#">B<span>Chat</span></a>
+    <div class="nav-links">
+      <a class="nav-link" href="#problem">The Problem</a>
+      <a class="nav-link" href="#identity">Your ID</a>
+      <a class="nav-link" href="#encryption">Encryption</a>
+      <a class="nav-link" href="#routing">Routing</a>
+      <a class="nav-link" href="#features">Features</a>
+    </div>
+    <a class="nav-cta" href="#download">Download</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     HERO
+══════════════════════════════════ -->
+<section id="hero" class="section">
+  <div class="hero-deco"></div>
+  <div class="hero-deco2"></div>
+  <div class="w">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow sr">
+          <div class="hero-line"></div>
+          <div class="hero-eyebrow-text">Beldex Ecosystem · Private Messenger</div>
+        </div>
+        <h1 class="hero-h1 sr d1">
+          Chat with anyone.<br>
+          <span class="em">Nobody else knows.</span>
+        </h1>
+        <p class="hero-desc sr d2">BChat is a free messaging app built on the Beldex blockchain. It does not know your name, phone number, or location. Your messages are encrypted and travel through multiple nodes so they cannot be traced.</p>
+        <div class="hero-buttons sr d3">
+          <a class="btn-primary" href="#download">Download Free</a>
+          <a class="btn-outline" href="#problem">How is this different?</a>
+        </div>
+        <div class="hero-trust sr d4">
+          <div class="trust-item"><span class="trust-icon">🔒</span> End-to-end encrypted</div>
+          <div class="trust-item"><span class="trust-icon">🚫</span> No phone number needed</div>
+          <div class="trust-item"><span class="trust-icon">🌐</span> No central server</div>
+        </div>
+      </div>
+
+      <div class="sr d2">
+        <div class="hero-phone">
+          <div class="phone-notch"></div>
+          <div class="phone-status-bar">
+            <span>Connected · 3 hops · Encrypted</span>
+          </div>
+          <div class="phone-topbar">
+            <div class="phone-avatar">A</div>
+            <div class="phone-contact">
+              <div class="phone-contact-name">alice.bdx</div>
+              <div class="phone-contact-sub">🔒 end-to-end encrypted</div>
+            </div>
+          </div>
+          <div class="phone-body" id="phoneChat">
+            <div class="chat-system">🔒 Messages encrypted &amp; routed privately</div>
+            <div class="chat-bubble bubble-in">Hey! Can you see this message?<span class="bubble-time">10:24</span></div>
+            <div class="chat-bubble bubble-out">Yes! And nobody else can 😄<span class="bubble-time">10:24</span></div>
+            <div class="chat-bubble bubble-in">No phone number needed. Amazing.<span class="bubble-time">10:25</span></div>
+            <div class="chat-bubble bubble-out">Exactly   just a BChat ID.<span class="bubble-time">10:25</span></div>
+            <div class="chat-system" style="margin-top:4px;">✓ 0 data stored on any server</div>
+          </div>
+          <div class="phone-input-bar">
+            <div class="phone-input-pill">Type a message...</div>
+            <div class="phone-send-btn">
+              <svg width="14" height="14" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     THE PROBLEM
+══════════════════════════════════ -->
+<section id="problem" class="section bg2">
+<div class="w">
+  <div class="problem-intro sr">
+    <h4>Section 01</h4>
+    <h2 style="margin:.5rem 0 1rem;">Normal apps treat your messages as their data.</h2>
+    <p style="font-size:1.1rem;color:var(--ink2);line-height:1.85;">Every time you send a message on WhatsApp or Telegram, that company stores information about you. Your phone number, your contacts, your location, and who you talk to   all of it becomes their data. BChat is designed so this never happens.</p>
+  </div>
+
+  <div class="apps-compare sr d1">
+    <div class="app-col">
+      <div class="app-logo" style="color:var(--coral);">WhatsApp</div>
+      <div class="app-type">What it collects</div>
+      <div class="app-item bad"><span class="icon">✕</span>Your phone number</div>
+      <div class="app-item bad"><span class="icon">✕</span>Your contact list</div>
+      <div class="app-item bad"><span class="icon">✕</span>Your location</div>
+      <div class="app-item bad"><span class="icon">✕</span>Device ID</div>
+      <div class="app-item bad"><span class="icon">✕</span>Data shared with Meta</div>
+      <div class="app-item bad"><span class="icon">✕</span>Backup messages on servers</div>
+    </div>
+    <div class="app-col">
+      <div class="app-logo" style="color:var(--coral2);">Telegram</div>
+      <div class="app-type">What it collects</div>
+      <div class="app-item bad"><span class="icon">✕</span>Your phone number</div>
+      <div class="app-item bad"><span class="icon">✕</span>Your IP address</div>
+      <div class="app-item bad"><span class="icon">✕</span>Messages on central servers</div>
+      <div class="app-item bad"><span class="icon">✕</span>Not E2E by default</div>
+      <div class="app-item" style="color:var(--mid);"><span class="icon">~</span>E2E only in "Secret Chats"</div>
+      <div class="app-item bad"><span class="icon">✕</span>Can share data with authorities</div>
+    </div>
+    <div class="app-col highlighted">
+      <div class="app-logo good">BChat</div>
+      <div class="app-type">What it collects</div>
+      <div class="app-item good"><span class="icon">✓</span>No phone number   ever</div>
+      <div class="app-item good"><span class="icon">✓</span>No contact list uploaded</div>
+      <div class="app-item good"><span class="icon">✓</span>No location tracked</div>
+      <div class="app-item good"><span class="icon">✓</span>No IP address logged</div>
+      <div class="app-item good"><span class="icon">✓</span>No central server to breach</div>
+      <div class="app-item good"><span class="icon">✓</span>Every message encrypted always</div>
+    </div>
+  </div>
+
+  <div class="callout callout-forest sr d2" style="margin-top:2rem;">
+    <div class="callout-head">Why this matters</div>
+    <p>If a messaging company's servers get hacked, attackers steal every user's data. BChat has no central server. There is no database of your messages or identity. Even if someone tried to attack BChat's infrastructure, there would be nothing to steal.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     YOUR BCHAT ID
+══════════════════════════════════ -->
+<section id="identity" class="section">
+<div class="w">
+  <div class="sr" style="margin-bottom:3rem;">
+    <h4>Section 02</h4>
+    <h2 style="margin:.5rem 0 1rem;">No phone number.<br>Just a BChat ID.</h2>
+    <p style="font-size:1.1rem;color:var(--ink2);line-height:1.85;max-width:580px;">When you create an account on BChat, the app generates a unique ID for you on the Beldex blockchain. You do not fill in any form. You just tap one button. That is it.</p>
+  </div>
+
+  <div class="id-explainer sr d1">
+    <div>
+      <div class="vs-block">
+        <div class="vs-card bad">
+          <div class="vs-label bad">Normal messenger signup needs</div>
+          <div class="vs-list">
+            <div class="vs-row"><span class="ico">✕</span> Your phone number</div>
+            <div class="vs-row"><span class="ico">✕</span> Verify with an SMS code</div>
+            <div class="vs-row"><span class="ico">✕</span> Your name or username</div>
+            <div class="vs-row"><span class="ico">✕</span> Email address</div>
+            <div class="vs-row"><span class="ico">✕</span> Your contacts (often automatic)</div>
+          </div>
+        </div>
+        <div class="vs-card good">
+          <div class="vs-label good">BChat signup needs</div>
+          <div class="vs-list">
+            <div class="vs-row"><span class="ico">✓</span> Tap "Create Account"</div>
+            <div class="vs-row"><span class="ico">✓</span> That is all</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-forest" style="margin-top:1.5rem;">
+        <div class="callout-head">Your Recovery Seed</div>
+        <p>When your account is created, BChat gives you a <strong>24-word recovery phrase</strong>. Write it down on paper and keep it safe. This is the only way to recover your account on a new device. BChat does not store it   nobody can help you if you lose it.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="id-card-demo">
+        <div class="id-card-top">
+          <div class="id-card-avatar" id="avatarLetter">S</div>
+          <div class="id-card-info">
+            <div class="id-card-name">Your BChat Account</div>
+            <div class="id-card-sub">Generated locally · Not stored on any server</div>
+          </div>
+        </div>
+        <div class="id-card-body">
+          <div class="id-field">
+            <div class="id-field-label">Your BChat ID (public   share this)</div>
+            <div class="id-field-value" id="previewId">Click the button below to generate...</div>
+          </div>
+          <div class="id-field">
+            <div class="id-field-label">Linked Beldex Wallet Address</div>
+            <div class="id-field-value" id="previewWallet">Your wallet is created automatically...</div>
+          </div>
+          <button class="id-card-btn" onclick="genId()">Generate a Sample ID</button>
+          <div class="id-note">Every tap creates a completely different ID. This simulates what happens on your device when you first open BChat.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     ENCRYPTION
+══════════════════════════════════ -->
+<section id="encryption" class="section bg2">
+<div class="w">
+  <div class="sr" style="margin-bottom:3rem;">
+    <h4>Section 03</h4>
+    <h2 style="margin:.5rem 0 1rem;">Your message is locked<br>before it leaves your phone.</h2>
+  </div>
+
+  <div class="enc-wrapper sr d1">
+    <div class="enc-explainer">
+      <p>End-to-end encryption means your message is scrambled on your device before it travels anywhere. It can only be unscrambled by the person you are sending it to   using a private key that only their device holds.</p>
+      <p style="margin-top:.9rem;">Think of it like a padlock. You lock your message with your friend's public key. Only your friend has the matching private key to open it. Anyone who intercepts the message in the middle sees only unreadable scrambled data.</p>
+
+      <div class="enc-steps">
+        <div class="enc-step">
+          <div class="enc-step-icon">✍️</div>
+          <div class="enc-step-text">
+            <h5>You type a message</h5>
+            <p>The text sits on your screen, readable only to you.</p>
+          </div>
+        </div>
+        <div class="enc-step">
+          <div class="enc-step-icon">🔐</div>
+          <div class="enc-step-text">
+            <h5>Your app locks it</h5>
+            <p>BChat encrypts the message using your friend's public key. It becomes unreadable scrambled data.</p>
+          </div>
+        </div>
+        <div class="enc-step">
+          <div class="enc-step-icon">📡</div>
+          <div class="enc-step-text">
+            <h5>It travels scrambled</h5>
+            <p>The encrypted message moves through the network. No node can read it.</p>
+          </div>
+        </div>
+        <div class="enc-step">
+          <div class="enc-step-icon">🔓</div>
+          <div class="enc-step-text">
+            <h5>Only your friend can open it</h5>
+            <p>Their private key   stored only on their phone   decrypts the message. Nobody else can.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="enc-demo-box">
+        <div class="enc-demo-header">
+          <div class="enc-demo-dot" style="background:#ff5f57;"></div>
+          <div class="enc-demo-dot" style="background:#febc2e;"></div>
+          <div class="enc-demo-dot" style="background:#28c840;"></div>
+          <div class="enc-demo-title">Try It   Encryption Demo</div>
+        </div>
+        <div class="enc-demo-body">
+          <div class="enc-label">Type a message</div>
+          <textarea class="enc-input" id="encInput" rows="2" placeholder="e.g. Hey, are you free tonight?"></textarea>
+          <button class="enc-btn" onclick="doEncrypt()">🔐 Encrypt This Message</button>
+
+          <div class="enc-output-wrap">
+            <div class="enc-label" style="margin-top:1rem;">What the network sees (unreadable)</div>
+            <div class="enc-output" id="encOut">Click the button above...</div>
+          </div>
+
+          <div class="enc-reveal" id="encReveal">
+            <strong style="color:var(--forest);">✓ What your friend sees after decrypting:</strong><br>
+            <span id="encRevealText" style="color:var(--ink2);font-size:.95rem;"></span>
+          </div>
+
+          <div class="enc-note">The locked version above is what travels through BChat's network. Even the servers routing your message cannot read it. Only your friend's private key can unlock it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     ONION ROUTING
+══════════════════════════════════ -->
+<section id="routing" class="section">
+<div class="w">
+  <div class="onion-explainer-text sr">
+    <h4>Section 04</h4>
+    <h2 style="margin:.5rem 0 1rem;">Your message travels<br>through 3 different nodes<br>so nobody can trace it.</h2>
+    <p>Encryption protects the <em>content</em> of your message. But what about <em>who sent it</em>? Normal apps know your IP address   which reveals where in the world you are. BChat hides this too by routing your message through a chain of nodes, like passing a sealed envelope through multiple messengers who each only know the next stop.</p>
+    <p>This is called <strong>onion routing</strong>. Each node only sees the step before it and the step after it. No single node ever sees the full picture.</p>
+  </div>
+
+  <div class="onion-demo sr d1">
+    <div class="onion-header">
+      <div class="onion-header-title">Step-By-Step Message Journey</div>
+      <div class="onion-step-count" id="onionStepCount">Step 0 of 5</div>
+    </div>
+    <div class="onion-body">
+      <!-- Path visual -->
+      <div class="onion-path">
+        <div class="onion-node">
+          <div class="onion-circle" id="onode0">📱</div>
+          <div class="onion-node-label" id="olabel0">You</div>
+        </div>
+        <div class="onion-arrow" id="oarrow0">→</div>
+        <div class="onion-node">
+          <div class="onion-circle" id="onode1">🔵</div>
+          <div class="onion-node-label" id="olabel1">Node 1</div>
+        </div>
+        <div class="onion-arrow" id="oarrow1">→</div>
+        <div class="onion-node">
+          <div class="onion-circle" id="onode2">🔵</div>
+          <div class="onion-node-label" id="olabel2">Node 2</div>
+        </div>
+        <div class="onion-arrow" id="oarrow2">→</div>
+        <div class="onion-node">
+          <div class="onion-circle" id="onode3">🔵</div>
+          <div class="onion-node-label" id="olabel3">Node 3</div>
+        </div>
+        <div class="onion-arrow" id="oarrow3">→</div>
+        <div class="onion-node">
+          <div class="onion-circle" id="onode4">👤</div>
+          <div class="onion-node-label" id="olabel4">Recipient</div>
+        </div>
+      </div>
+
+      <!-- Info box -->
+      <div class="onion-info-box" id="onionBox">
+        <div class="oib-step">Start here</div>
+        <div class="oib-title">Press Next Step to begin</div>
+        <div class="oib-desc">Watch how your message travels through 3 nodes before it reaches your friend   and why nobody along the way can see who sent it or what it says.</div>
+      </div>
+
+      <div class="onion-controls">
+        <button class="onion-btn primary" id="onionNext" onclick="onionNext()">Next Step →</button>
+        <button class="onion-btn secondary" onclick="onionReset()">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-forest sr d2" style="margin-top:2.5rem;">
+    <div class="callout-head">Why 3 nodes?</div>
+    <p>With 3 separate nodes, no single node knows both who sent the message and who received it. Node 1 knows you sent something but not where it goes. Node 3 knows where it is delivered but not who sent it. The middle node knows neither. This three-hop design is what makes BChat messages untraceable.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     FEATURES
+══════════════════════════════════ -->
+<section id="features" class="section bg2">
+<div class="w">
+  <div class="features-intro sr">
+    <h4>Section 05</h4>
+    <h2 style="margin:.5rem 0 1rem;">Everything BChat can do.</h2>
+    <p style="font-size:1.1rem;color:var(--ink2);line-height:1.85;">BChat is a complete messaging app   not just a basic encrypted chat. Tap any feature to learn more about it.</p>
+  </div>
+
+  <div class="features-grid sr d1">
+
+    <div class="feature-card" onclick="toggleFeature(this)">
+      <div class="fc-icon">💬</div>
+      <div class="fc-title">Private Messaging</div>
+      <div class="fc-short">One-to-one chats with full end-to-end encryption. Send text, images, files, and GIFs.</div>
+      <div class="fc-expand">
+        Every message is encrypted on your device before it leaves. The message travels through 3 Beldex masternodes before reaching your friend. <strong>No server ever stores your messages in readable form.</strong> You can send text, images, video, files, and GIFs. All attachments are encrypted too.
+      </div>
+      <div class="fc-toggle"><span id="toggle0">▼ Read more</span></div>
+    </div>
+
+    <div class="feature-card" onclick="toggleFeature(this)">
+      <div class="fc-icon">👥</div>
+      <div class="fc-title">Group Chats</div>
+      <div class="fc-short">Create private group conversations. All messages stay encrypted. Member identities stay confidential.</div>
+      <div class="fc-expand">
+        You can create group chats and add contacts. <strong>Group messages are also end-to-end encrypted.</strong> Only people you have already added as contacts can be added to a group. There are two types: Open Groups (visible to all) and Secret Groups (invite only, maximum privacy).
+      </div>
+      <div class="fc-toggle"><span>▼ Read more</span></div>
+    </div>
+
+    <div class="feature-card" onclick="toggleFeature(this)">
+      <div class="fc-icon">📞</div>
+      <div class="fc-title">Voice and Video Calls</div>
+      <div class="fc-short">Private calls directly between two devices. No phone number. No call records stored anywhere.</div>
+      <div class="fc-expand">
+        Voice and video calls connect directly between your device and your friend's device (peer-to-peer). <strong>The call audio and video are encrypted in transit.</strong> You cannot receive calls from someone unless you have already accepted their message request   this prevents unwanted calls. You can also disable calls entirely in settings.
+      </div>
+      <div class="fc-toggle"><span>▼ Read more</span></div>
+    </div>
+
+    <div class="feature-card" onclick="toggleFeature(this)">
+      <div class="fc-icon">💸</div>
+      <div class="fc-title">Pay As You Chat</div>
+      <div class="fc-short">Send BDX cryptocurrency directly inside a conversation. No separate wallet app needed.</div>
+      <div class="fc-expand">
+        Every BChat account has a built-in Beldex (BDX) wallet. You can send BDX to a friend without leaving the chat screen. <strong>The fee is always 0.003 BDX regardless of how much you send.</strong> Whether you send 1 BDX or 1,000 BDX, the cost is the same. Payments typically confirm within a couple of minutes. Transaction amounts and parties are shielded by Beldex's privacy technology.
+      </div>
+      <div class="fc-toggle"><span>▼ Read more</span></div>
+    </div>
+
+    <div class="feature-card" onclick="toggleFeature(this)">
+      <div class="fc-icon">🔤</div>
+      <div class="fc-title">BNS Names</div>
+      <div class="fc-short">Register a short, easy name like "alice.bdx" instead of sharing a 64-character ID.</div>
+      <div class="fc-expand">
+        A BChat ID is 64 characters long   hard to share and impossible to memorise. The <strong>Beldex Name System (BNS)</strong> lets you register a short name that links to your BChat ID. For example, "alice.bdx" is much easier to share. When someone searches your BNS name, BChat finds your full ID and wallet address automatically. Your name is registered on the Beldex blockchain   you own it.
+      </div>
+      <div class="fc-toggle"><span>▼ Read more</span></div>
+    </div>
+
+    <div class="feature-card" onclick="toggleFeature(this)">
+      <div class="fc-icon">📲</div>
+      <div class="fc-title">Offline Delivery</div>
+      <div class="fc-short">Messages wait safely for you when you are offline. Nothing is lost if you close the app.</div>
+      <div class="fc-expand">
+        If you are offline when someone sends you a message, the <strong>encrypted message is stored across multiple Beldex masternodes</strong> (called a swarm) until you come back online. These nodes hold only the encrypted ciphertext   they cannot read it. When you reconnect, your app retrieves and decrypts the messages. After delivery, the copies are deleted from the network.
+      </div>
+      <div class="fc-toggle"><span>▼ Read more</span></div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     BNS DEMO
+══════════════════════════════════ -->
+<section class="section">
+<div class="w">
+  <div class="bns-layout">
+    <div class="sr">
+      <h4>Section 06</h4>
+      <h2 style="margin:.5rem 0 1rem;">BNS Names:<br>make your ID<br>human-friendly.</h2>
+      <p style="font-size:1.05rem;color:var(--ink2);line-height:1.85;margin-bottom:1rem;">Your BChat ID looks like this: <span style="font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--forest);">bd3f9c2e8d71b4f06...</span>   impossible to remember.</p>
+      <p style="font-size:1.05rem;color:var(--ink2);line-height:1.85;margin-bottom:1.5rem;">With BNS, you register a short name on the Beldex blockchain. Now your friends can message you using just that name   like an email address but private and on-chain.</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem;">
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--forest);flex-shrink:0;margin-top:.6rem;"></div>
+          <p style="font-size:.95rem;color:var(--ink2);line-height:1.65;"><strong style="color:var(--ink);">One name, two uses.</strong> Your BNS name links to both your BChat ID (for messages) and your Beldex wallet (for payments). Friends can do both with one name.</p>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--forest);flex-shrink:0;margin-top:.6rem;"></div>
+          <p style="font-size:.95rem;color:var(--ink2);line-height:1.65;"><strong style="color:var(--ink);">You own it.</strong> BNS registrations are written to the Beldex blockchain. Nobody can take your name away or change where it points without your private key.</p>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--forest);flex-shrink:0;margin-top:.6rem;"></div>
+          <p style="font-size:.95rem;color:var(--ink2);line-height:1.65;"><strong style="color:var(--ink);">Verified badge.</strong> Linking a BNS name gives your profile a verified tick so contacts know they are talking to the right person.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sr d2">
+      <div class="bns-demo">
+        <div class="bns-demo-header">
+          <div class="bns-demo-title">BNS Lookup Simulation</div>
+          <div class="bns-demo-name">alice.bdx</div>
+        </div>
+        <div class="bns-demo-body">
+          <div style="font-size:.88rem;color:var(--mid);margin-bottom:1rem;line-height:1.6;">This is how the name-to-ID mapping looks. Enter any name and see what BChat resolves it to.</div>
+
+          <div class="bns-arrow-row">
+            <div class="bns-ugly" id="bnsUgly">bd3f9c2e8d71b4f06a5e9c3...</div>
+            <div class="bns-arrow-icon">→</div>
+            <div class="bns-clean" id="bnsClean">alice.bdx</div>
+          </div>
+
+          <div class="bns-input-row">
+            <input class="bns-input" id="bnsInput" value="alice.bdx" placeholder="Enter a BNS name...">
+            <button class="bns-lookup-btn" onclick="bnsLookup()">Look Up</button>
+          </div>
+
+          <div class="bns-result" id="bnsResultBox">
+            <div class="bns-res-row">
+              <div class="bns-res-key">Name</div>
+              <div class="bns-res-val" id="bnsResName"></div>
+            </div>
+            <div class="bns-res-row">
+              <div class="bns-res-key">BChat ID</div>
+              <div class="bns-res-val" id="bnsResChatId"></div>
+            </div>
+            <div class="bns-res-row">
+              <div class="bns-res-key">Wallet</div>
+              <div class="bns-res-val" id="bnsResWallet"></div>
+            </div>
+            <div class="bns-res-row">
+              <div class="bns-res-key">Status</div>
+              <div class="bns-res-val" id="bnsResStatus"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     PAY AS YOU CHAT
+══════════════════════════════════ -->
+<section class="section bg2">
+<div class="w">
+  <div class="pay-layout">
+    <div class="sr">
+      <h4>Section 07</h4>
+      <h2 style="margin:.5rem 0 1rem;">Send money as easily<br>as sending a message.</h2>
+      <p style="font-size:1.05rem;color:var(--ink2);line-height:1.85;margin-bottom:.5rem;">BChat has a full crypto wallet built in. You can send BDX (Beldex's cryptocurrency) directly inside a conversation. No separate app, no bank details, no waiting days.</p>
+      <div class="pay-points">
+        <div class="pay-point">
+          <div class="pay-point-icon">⚡</div>
+          <div class="pay-point-text">
+            <h5>Always the same fee</h5>
+            <p>The network fee is 0.003 BDX   the same whether you send 10 BDX or 10,000 BDX. No surprises.</p>
+          </div>
+        </div>
+        <div class="pay-point">
+          <div class="pay-point-icon">🕐</div>
+          <div class="pay-point-text">
+            <h5>Confirms in minutes</h5>
+            <p>Payments go through the Beldex network and typically confirm within a couple of minutes   any time, any day.</p>
+          </div>
+        </div>
+        <div class="pay-point">
+          <div class="pay-point-icon">🔒</div>
+          <div class="pay-point-text">
+            <h5>Private by design</h5>
+            <p>Transaction amounts and parties are shielded by Beldex's privacy technology. The same privacy that protects your messages protects your payments.</p>
+          </div>
+        </div>
+        <div class="pay-point">
+          <div class="pay-point-icon">🔤</div>
+          <div class="pay-point-text">
+            <h5>Use BNS names</h5>
+            <p>Pay a friend by typing their BNS name. No wallet address to copy and paste. No risk of typing the wrong address.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sr d2">
+      <div class="pay-demo-card">
+        <div class="pdc-header">
+          <div class="pdc-title">Payment Builder</div>
+          <div class="pdc-live">● Live preview</div>
+        </div>
+        <div class="pdc-body">
+          <div class="pdc-field">
+            <label class="pdc-label" for="pdcTo">Send to</label>
+            <input class="pdc-input" id="pdcTo" value="alice.bdx" placeholder="alice.bdx or BChat ID">
+          </div>
+          <div class="pdc-field">
+            <label class="pdc-label" for="pdcAmt">Amount (BDX)</label>
+            <input class="pdc-input" id="pdcAmt" type="number" value="50" min="0.001" step="1">
+          </div>
+          <div class="pdc-summary">
+            <div class="pdc-row"><span class="pdc-key">Sending to</span><span class="pdc-val" id="pdcSumTo">alice.bdx</span></div>
+            <div class="pdc-row"><span class="pdc-key">Amount</span><span class="pdc-val" id="pdcSumAmt">50 BDX</span></div>
+            <div class="pdc-row"><span class="pdc-key">Fee</span><span class="pdc-val">0.003 BDX (flat)</span></div>
+            <div class="pdc-row"><span class="pdc-key">Total</span><span class="pdc-val" id="pdcSumTotal">50.003 BDX</span></div>
+          </div>
+          <button class="pdc-send" onclick="doPayment()">Send Payment</button>
+          <div class="pdc-msg" id="pdcMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     DOWNLOAD
+══════════════════════════════════ -->
+<section id="download" class="section bg-forest">
+<div class="w">
+  <div class="sr" style="text-align:center;margin-bottom:.5rem;">
+    <h4 style="color:rgba(254,252,247,.5);">Download</h4>
+    <h2 style="color:var(--cream);margin:.5rem 0 1rem;">Get BChat free.<br>No sign-up required.</h2>
+    <p style="font-size:1.05rem;color:rgba(254,252,247,.6);max-width:500px;margin:0 auto 0;line-height:1.85;">Available on every major platform. Just download and tap Create Account. Your identity is generated in seconds.</p>
+  </div>
+
+  <div class="download-grid sr d1">
+    <a class="dl-card" href="https://play.google.com/store/apps/details?id=io.beldex.bchat" target="_blank">
+      <div class="dl-icon">🤖</div>
+      <div class="dl-name">Android</div>
+      <div class="dl-store">Google Play</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://apps.apple.com/us/app/bchat-messenger/id1626066143" target="_blank">
+      <div class="dl-icon">🍎</div>
+      <div class="dl-name">iOS</div>
+      <div class="dl-store">App Store</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://bchat.beldex.io/" target="_blank">
+      <div class="dl-icon">🪟</div>
+      <div class="dl-name">Windows</div>
+      <div class="dl-store">Desktop</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://bchat.beldex.io/" target="_blank">
+      <div class="dl-icon">🍏</div>
+      <div class="dl-name">macOS</div>
+      <div class="dl-store">Desktop</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://bchat.beldex.io/" target="_blank">
+      <div class="dl-icon">🐧</div>
+      <div class="dl-name">Linux</div>
+      <div class="dl-store">Desktop</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+  </div>
+
+  <div style="text-align:center;margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;" class="sr d2">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(254,252,247,.25);">BChat · Built on Beldex Blockchain · Open Source · Zero Data Collected</p>
+    <p style="font-size:.85rem;color:rgba(254,252,247,.3);margin-top:.5rem;">bchat.beldex.io · support@beldex.io · @bchat_official</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════ -->
+<script>
+'use strict';
+
+/* Scroll reveal */
+var obs = new IntersectionObserver(function(e) {
+  e.forEach(function(x) { if (x.isIntersecting) x.target.classList.add('vis'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.sr').forEach(function(el) { obs.observe(el); });
+
+/* Helpers */
+var HEX = '0123456789abcdef';
+function rh(n) { var s=''; for(var i=0;i<n;i++) s+=HEX[Math.floor(Math.random()*16)]; return s; }
+function lcg(seed) { var s=seed; return function(){ s=(s*1664525+1013904223)&0xffffffff; return Math.abs(s); }; }
+
+/* ─────── ID Generator ─────── */
+function genId() {
+  var id = 'bd' + rh(62);
+  var wallet = 'bx' + rh(94);
+  var letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random()*26)];
+  document.getElementById('previewId').textContent = id;
+  document.getElementById('previewWallet').textContent = wallet;
+  document.getElementById('avatarLetter').textContent = letter;
+}
+
+/* ─────── Encryption Demo ─────── */
+function doEncrypt() {
+  var raw = document.getElementById('encInput').value.trim();
+  var out = document.getElementById('encOut');
+  var reveal = document.getElementById('encReveal');
+  var revealText = document.getElementById('encRevealText');
+
+  if (!raw) { out.textContent = 'Please type a message first.'; return; }
+
+  /* Deterministic-ish per-call ciphertext */
+  var seed = Date.now() + raw.length * 37;
+  var r = lcg(seed);
+  var cipher = '=== ENCRYPTED ===\n';
+  var line = '';
+  var total = Math.max(96, raw.length * 7);
+  for (var i = 0; i < total; i++) {
+    line += HEX[r() % 16];
+    if (line.length === 48) { cipher += line + '\n'; line = ''; }
+  }
+  if (line) cipher += line;
+  cipher += '\n=== END ===';
+
+  out.style.opacity = '0';
+  setTimeout(function() {
+    out.textContent = cipher;
+    out.style.opacity = '1';
+    revealText.textContent = raw;
+    reveal.classList.add('show');
+  }, 180);
+}
+
+document.getElementById('encInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doEncrypt(); }
+});
+
+/* ─────── Onion Routing Step Demo ─────── */
+var onionStep = 0;
+var ONION_STEPS = [
+  {
+    step: 'Step 1 of 5',
+    title: 'Your message is encrypted',
+    desc: 'Before anything leaves your phone, BChat encrypts your message with your friend\'s public key. It is now unreadable scrambled data. Only your friend can decrypt it.',
+    fact: '🔒 Message locked on your device',
+    activeNodes: [0], activeArrows: []
+  },
+  {
+    step: 'Step 2 of 5',
+    title: 'You connect to Node 1',
+    desc: 'Your phone sends the encrypted message to the first Beldex masternode. This node can see your IP address (your network location). But it cannot read the message. It does not know the final destination.',
+    fact: '📍 Node 1 knows you sent something   nothing more',
+    activeNodes: [0,1], activeArrows: [0]
+  },
+  {
+    step: 'Step 3 of 5',
+    title: 'Node 1 passes it to Node 2',
+    desc: 'Node 1 removes its outer encryption layer and passes the message to Node 2. Node 2 only knows it came from Node 1. It does not know your IP address. It cannot read the message.',
+    fact: '🔄 No single node has the full picture',
+    activeNodes: [0,1,2], activeArrows: [0,1]
+  },
+  {
+    step: 'Step 4 of 5',
+    title: 'Node 2 passes it to Node 3',
+    desc: 'Node 2 passes to Node 3, the final relay. Node 3 knows the delivery destination (your friend\'s BChat ID) but it does not know your IP address. The message is still encrypted and unreadable.',
+    fact: '🎯 Node 3 delivers   but cannot trace back to you',
+    activeNodes: [0,1,2,3], activeArrows: [0,1,2]
+  },
+  {
+    step: 'Step 5 of 5',
+    title: 'Your friend receives and decrypts',
+    desc: 'The encrypted message arrives at your friend\'s device. Their private key   stored only on their phone   decrypts it. The message is readable only to them. Nobody else along the route ever saw the content.',
+    fact: '✓ Delivered privately. Untraceable. Only your friend read it.',
+    activeNodes: [0,1,2,3,4], activeArrows: [0,1,2,3]
+  }
+];
+
+function renderOnionStep(step) {
+  var data = ONION_STEPS[step];
+  /* Update info box */
+  document.getElementById('onionBox').innerHTML =
+    '<div class="oib-step">' + data.step + '</div>' +
+    '<div class="oib-title">' + data.title + '</div>' +
+    '<div class="oib-desc">' + data.desc + '</div>' +
+    '<div class="oib-key-fact">' + data.fact + '</div>';
+  document.getElementById('onionStepCount').textContent = data.step;
+
+  /* Update nodes */
+  for (var i = 0; i < 5; i++) {
+    var circle = document.getElementById('onode' + i);
+    var label  = document.getElementById('olabel' + i);
+    if (data.activeNodes.indexOf(i) > -1) {
+      circle.classList.add('active');
+      label.classList.add('active');
+    } else {
+      circle.classList.remove('active');
+      label.classList.remove('active');
+    }
+  }
+  /* Update arrows */
+  for (var j = 0; j < 4; j++) {
+    var arrow = document.getElementById('oarrow' + j);
+    if (data.activeArrows.indexOf(j) > -1) arrow.classList.add('active');
+    else arrow.classList.remove('active');
+  }
+
+  /* Update button */
+  var btn = document.getElementById('onionNext');
+  if (step >= ONION_STEPS.length - 1) {
+    btn.textContent = 'Done ✓';
+    btn.disabled = true;
+  } else {
+    btn.textContent = 'Next Step →';
+    btn.disabled = false;
+  }
+}
+
+function onionNext() {
+  if (onionStep < ONION_STEPS.length) {
+    renderOnionStep(onionStep);
+    onionStep++;
+  }
+}
+
+function onionReset() {
+  onionStep = 0;
+  /* Reset all nodes */
+  for (var i = 0; i < 5; i++) {
+    document.getElementById('onode' + i).classList.remove('active','done');
+    document.getElementById('olabel' + i).classList.remove('active');
+  }
+  for (var j = 0; j < 4; j++) {
+    document.getElementById('oarrow' + j).classList.remove('active');
+  }
+  document.getElementById('onionBox').innerHTML =
+    '<div class="oib-step">Start here</div>' +
+    '<div class="oib-title">Press Next Step to begin</div>' +
+    '<div class="oib-desc">Watch how your message travels through 3 nodes before it reaches your friend   and why nobody along the way can see who sent it or what it says.</div>';
+  document.getElementById('onionStepCount').textContent = 'Step 0 of 5';
+  document.getElementById('onionNext').disabled = false;
+  document.getElementById('onionNext').textContent = 'Next Step →';
+}
+
+/* ─────── Feature Cards ─────── */
+function toggleFeature(card) {
+  var expand = card.querySelector('.fc-expand');
+  var isOpen = card.classList.contains('open');
+  /* Close all */
+  document.querySelectorAll('.feature-card').forEach(function(c) {
+    c.classList.remove('open');
+    c.querySelector('.fc-expand').classList.remove('show');
+    var t = c.querySelector('.fc-toggle span');
+    if (t) t.textContent = '▼ Read more';
+  });
+  /* Open clicked if it was closed */
+  if (!isOpen) {
+    card.classList.add('open');
+    expand.classList.add('show');
+    var tog = card.querySelector('.fc-toggle span');
+    if (tog) tog.textContent = '▲ Show less';
+  }
+}
+
+/* ─────── BNS Lookup ─────── */
+function bnsLookup() {
+  var name = document.getElementById('bnsInput').value.trim().toLowerCase() || 'unknown.bdx';
+  var seed = 0;
+  for (var i = 0; i < name.length; i++) seed += name.charCodeAt(i) * (i+1) * 31;
+  var r = lcg(seed);
+  var genId = 'bd' + Array.from({length:62}, function(){ return HEX[r()%16]; }).join('');
+  var genWallet = 'bx' + Array.from({length:94}, function(){ return HEX[r()%16]; }).join('');
+
+  document.getElementById('bnsUgly').textContent = genId.slice(0,28) + '...';
+  document.getElementById('bnsClean').textContent = name;
+  document.getElementById('bnsResName').innerHTML = name + '<span class="verified-badge">✓ verified</span>';
+  document.getElementById('bnsResChatId').textContent = genId;
+  document.getElementById('bnsResWallet').textContent = genWallet;
+  document.getElementById('bnsResStatus').innerHTML = '<span style="color:var(--forest);">● Active on Beldex blockchain</span>';
+  document.getElementById('bnsResultBox').classList.add('show');
+}
+
+/* ─────── Payment demo ─────── */
+function updatePayPreview() {
+  var to  = document.getElementById('pdcTo').value || 'unknown';
+  var amt = parseFloat(document.getElementById('pdcAmt').value) || 0;
+  document.getElementById('pdcSumTo').textContent  = to;
+  document.getElementById('pdcSumAmt').textContent  = amt.toFixed(3) + ' BDX';
+  document.getElementById('pdcSumTotal').textContent = (amt + 0.003).toFixed(3) + ' BDX';
+}
+document.getElementById('pdcTo').addEventListener('input', updatePayPreview);
+document.getElementById('pdcAmt').addEventListener('input', updatePayPreview);
+
+function doPayment() {
+  var msg = document.getElementById('pdcMsg');
+  var hash = rh(16);
+  msg.textContent = '✓ Sent! TX: ' + hash + '...';
+  setTimeout(function() { msg.textContent = ''; }, 3500);
+}
+
+/* ─────── Nav scroll ─────── */
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('nav');
+  if (nav) nav.style.boxShadow = window.scrollY > 30 ? '0 2px 12px rgba(0,0,0,.06)' : 'none';
+}, { passive: true });
+</script>
+</body>
+</html>
