@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BChat Deep Dive   How Private Messaging Actually Works</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS   EDITORIAL LIGHT / AMBER
+═══════════════════════════════════════════ */
+:root {
+  --paper:   #F7F4EE;
+  --paper2:  #F0EDE6;
+  --paper3:  #E8E4DB;
+  --ink:     #1C1917;
+  --ink2:    #3D3530;
+  --ink3:    #6B5E56;
+  --rule:    #D4CCB8;
+  --rule2:   #C4B99A;
+  --amber:   #C8680A;
+  --amber2:  #E07C12;
+  --amber-pale: rgba(200,104,10,.08);
+  --teal:    #0B7A80;
+  --teal2:   #0E9A9F;
+  --teal-pale: rgba(11,122,128,.08);
+  --red:     #C0392B;
+  --red-pale: rgba(192,57,43,.08);
+  --green:   #1A7A4A;
+  --green-pale: rgba(26,122,74,.08);
+  --white:   #FFFFFF;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:1rem;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* Subtle paper texture */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* ── LAYOUT ─── */
+.w  { max-width:1200px; margin:0 auto; padding:0 2.5rem; position:relative; z-index:2; }
+.wn { max-width:800px;  margin:0 auto; padding:0 2.5rem; position:relative; z-index:2; }
+
+/* ── TYPE ─── */
+.serif { font-family:'Playfair Display',serif; }
+.mono  { font-family:'IBM Plex Mono',monospace; }
+
+h1 { font-family:'Playfair Display',serif; font-size:clamp(3rem,7vw,6.5rem); line-height:.92; font-weight:900; letter-spacing:-.02em; }
+h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.5rem); line-height:.96; font-weight:700; letter-spacing:-.01em; }
+h3 { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; line-height:1.15; }
+h4 { font-family:'IBM Plex Sans',sans-serif; font-size:1rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink2); }
+.lead { font-size:1.2rem; line-height:1.85; color:var(--ink2); }
+p { color:var(--ink2); line-height:1.8; }
+strong { color:var(--ink); font-weight:600; }
+.amber-text  { color:var(--amber); }
+.teal-text   { color:var(--teal); }
+.green-text  { color:var(--green); }
+.red-text    { color:var(--red); }
+
+/* ── SCROLL REVEAL ─── */
+.sr { opacity:0; transform:translateY(22px); transition:opacity .65s ease, transform .65s ease; }
+.sr.vis { opacity:1; transform:none; }
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}.d5{transition-delay:.4s;}
+
+/* ── SECTIONS ─── */
+.section { padding:6rem 0; border-top:1px solid var(--rule); position:relative; }
+.section-paper2 { background:var(--paper2); }
+.section-paper3 { background:var(--paper3); }
+.section-ink { background:var(--ink); color:var(--paper); }
+.section-teal { background:var(--teal); color:var(--white); }
+
+/* ── CHAPTER MARKER ─── */
+.chapter-mark {
+  display:flex; align-items:center; gap:1rem; margin-bottom:2rem;
+}
+.ch-num {
+  font-family:'IBM Plex Mono',monospace; font-size:.65rem;
+  letter-spacing:.2em; color:var(--amber); font-weight:500;
+  text-transform:uppercase; white-space:nowrap;
+}
+.ch-rule { flex:1; height:1px; background:var(--rule); }
+
+/* ── NAV ─── */
+#mainnav {
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  background:rgba(247,244,238,.94); border-bottom:1px solid var(--rule);
+  backdrop-filter:blur(12px);
+}
+.nav-inner {
+  max-width:1200px; margin:0 auto; padding:0 2.5rem;
+  height:54px; display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo {
+  font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--ink);
+  text-decoration:none;
+}
+.nav-logo span { color:var(--amber); }
+.nav-chapters {
+  display:flex; align-items:center; gap:.1rem;
+  overflow-x:auto; scrollbar-width:none;
+}
+.nav-chapters::-webkit-scrollbar { display:none; }
+.nch {
+  font-size:.72rem; font-weight:500; color:var(--ink3);
+  padding:.35rem .75rem; text-decoration:none;
+  border-radius:4px; white-space:nowrap;
+  transition:all .2s;
+}
+.nch:hover { color:var(--amber); background:var(--amber-pale); }
+.nch.act { color:var(--amber); font-weight:600; }
+.nav-dl {
+  font-family:'IBM Plex Mono',monospace; font-size:.65rem; letter-spacing:.1em;
+  text-transform:uppercase; padding:.45rem 1.1rem;
+  background:var(--ink); color:var(--paper); text-decoration:none;
+  border-radius:5px; transition:background .2s; white-space:nowrap;
+}
+.nav-dl:hover { background:var(--amber); }
+
+/* ── PROGRESS BAR ─── */
+#progress {
+  position:fixed; top:54px; left:0; right:0; height:2px; z-index:899;
+  background:var(--rule);
+}
+#progress-fill {
+  height:100%; width:0; background:var(--amber);
+  transition:width .1s linear;
+}
+
+/* ═══════════════════════════════════════════
+   HERO   EDITORIAL
+═══════════════════════════════════════════ */
+#hero {
+  padding:8rem 0 5rem; min-height:90vh;
+  display:flex; align-items:center;
+  position:relative; overflow:hidden;
+  border-bottom:2px solid var(--ink);
+}
+.hero-bg-text {
+  position:absolute; bottom:-2rem; right:-1rem;
+  font-family:'Playfair Display',serif; font-weight:900;
+  font-size:clamp(8rem,18vw,20rem); line-height:1; letter-spacing:-.04em;
+  color:transparent; -webkit-text-stroke:1px rgba(28,25,23,.06);
+  pointer-events:none; user-select:none; z-index:0;
+}
+.hero-layout {
+  display:grid; grid-template-columns:1fr 340px;
+  gap:5rem; align-items:start;
+}
+.hero-chapter {
+  font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+  letter-spacing:.24em; text-transform:uppercase; color:var(--amber);
+  margin-bottom:1.75rem; display:flex; align-items:center; gap:.75rem;
+}
+.hero-chapter::before { content:''; width:28px; height:1px; background:var(--amber); }
+.hero-h1 { margin-bottom:1.75rem; }
+.hero-h1 em { color:var(--amber); font-style:italic; }
+.hero-lead { font-size:1.1rem; color:var(--ink2); line-height:1.9; max-width:560px; margin-bottom:2.5rem; }
+.hero-index {
+  border-top:1px solid var(--rule); padding-top:1.5rem; margin-top:2rem;
+}
+.hi-label { font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:.85rem; }
+.hi-list { display:flex; flex-direction:column; gap:.25rem; }
+.hi-item {
+  display:flex; align-items:center; gap:.75rem;
+  font-size:.88rem; text-decoration:none; color:var(--ink2);
+  padding:.4rem 0; border-bottom:1px solid transparent;
+  transition:all .18s;
+}
+.hi-item:hover { color:var(--amber); padding-left:.4rem; }
+.hi-num { font-family:'IBM Plex Mono',monospace; font-size:.6rem; color:var(--amber); width:24px; flex-shrink:0; }
+
+/* Hero stat strip */
+.hero-right { position:sticky; top:80px; }
+.stat-block { border:1px solid var(--rule); background:var(--white); padding:1.5rem; border-radius:8px; margin-bottom:.85rem; }
+.sb-num { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; line-height:1; }
+.sb-label { font-size:.78rem; font-weight:500; color:var(--ink3); margin-top:.2rem; text-transform:uppercase; letter-spacing:.06em; }
+.sb-desc { font-size:.8rem; color:var(--ink3); margin-top:.5rem; line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   CH1   THE SURVEILLANCE PROBLEM
+═══════════════════════════════════════════ */
+.app-audit {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:var(--rule); border:1px solid var(--rule);
+  margin-top:2.5rem;
+}
+.aa-col { background:var(--paper); padding:1.5rem 1.3rem; }
+.aa-col.featured { background:var(--white); box-shadow:0 0 0 2px var(--teal); z-index:2; }
+.aa-app { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; margin-bottom:.2rem; }
+.aa-app.good { color:var(--teal); }
+.aa-sub { font-size:.72rem; color:var(--ink3); margin-bottom:1.1rem; letter-spacing:.04em; text-transform:uppercase; font-weight:500; }
+.aa-item { display:flex; align-items:flex-start; gap:.55rem; margin-bottom:.6rem; font-size:.83rem; line-height:1.5; }
+.aa-ico { flex-shrink:0; font-size:.75rem; width:16px; margin-top:.15rem; }
+.aa-text { color:var(--ink2); }
+.aa-text.bad  { color:var(--red); }
+.aa-text.good { color:var(--green); }
+
+/* Surveillance meter */
+.meter-block { margin:2.5rem 0; padding:1.75rem 2rem; background:var(--white); border:1px solid var(--rule); border-radius:8px; }
+.meter-title { font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:1.25rem; }
+.meter-row { display:flex; align-items:center; gap:1rem; margin-bottom:.75rem; }
+.meter-app { font-size:.85rem; font-weight:600; width:90px; flex-shrink:0; }
+.meter-bar-wrap { flex:1; height:14px; background:var(--paper2); border-radius:2px; overflow:hidden; }
+.meter-bar { height:100%; border-radius:2px; transition:width 1.2s cubic-bezier(.4,0,.2,1); width:0; }
+.meter-val { font-family:'IBM Plex Mono',monospace; font-size:.7rem; width:60px; text-align:right; flex-shrink:0; }
+
+/* ═══════════════════════════════════════════
+   CH2   ACCOUNT CREATION
+═══════════════════════════════════════════ */
+.creation-flow {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:0; position:relative; margin:2.5rem 0;
+}
+.creation-flow::before {
+  content:''; position:absolute;
+  top:28px; left:10%; right:10%; height:2px;
+  background:linear-gradient(90deg, var(--amber) 0%, var(--teal) 100%);
+  z-index:0;
+}
+.cf-step { display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 .5rem 1.5rem; position:relative; z-index:1; }
+.cf-circle {
+  width:56px; height:56px; border-radius:50%; background:var(--white);
+  border:2px solid var(--rule); display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; margin-bottom:.9rem; position:relative;
+  transition:border-color .3s, box-shadow .3s;
+}
+.cf-step:hover .cf-circle { border-color:var(--amber); box-shadow:0 0 0 4px var(--amber-pale); }
+.cf-n {
+  position:absolute; top:-4px; right:-4px; width:18px; height:18px;
+  background:var(--amber); color:var(--white);
+  border-radius:50%; font-size:.5rem; font-weight:700;
+  font-family:'IBM Plex Mono',monospace;
+  display:flex; align-items:center; justify-content:center;
+}
+.cf-title { font-size:.82rem; font-weight:600; color:var(--ink); margin-bottom:.3rem; }
+.cf-desc { font-size:.74rem; color:var(--ink3); line-height:1.5; }
+
+/* ID generator interactive */
+.id-generator {
+  background:var(--ink); color:var(--paper); padding:2rem 2.25rem;
+  border-radius:12px; margin:2rem 0;
+}
+.ig-label { font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink3); margin-bottom:.65rem; }
+.ig-id {
+  font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--amber);
+  word-break:break-all; line-height:1.8; background:rgba(255,255,255,.04);
+  padding:.75rem 1rem; border-radius:6px; border:1px solid rgba(255,255,255,.08);
+  margin-bottom:1rem;
+}
+.ig-seed { font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:rgba(247,244,238,.45); word-spacing:.3em; line-height:1.85; }
+.ig-wallet { font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--teal2); margin-top:.8rem; }
+.ig-btn {
+  margin-top:1.25rem; padding:.6rem 1.5rem; background:var(--amber); color:var(--white);
+  border:none; border-radius:6px; font-weight:600; font-size:.85rem;
+  font-family:'IBM Plex Sans',sans-serif; cursor:pointer; transition:background .2s;
+}
+.ig-btn:hover { background:var(--amber2); }
+.ig-note { font-size:.75rem; color:var(--ink3); margin-top:.7rem; }
+
+/* ═══════════════════════════════════════════
+   CH3   ENCRYPTION ENGINE
+═══════════════════════════════════════════ */
+.enc-layers {
+  display:flex; flex-direction:column; gap:.65rem; margin:2rem 0;
+}
+.enc-layer {
+  padding:1rem 1.25rem; border-radius:8px; border-left:4px solid;
+  display:grid; grid-template-columns:140px 1fr; gap:1rem; align-items:start;
+}
+.enc-layer.l1 { border-color:var(--amber); background:var(--amber-pale); }
+.enc-layer.l2 { border-color:var(--teal); background:var(--teal-pale); }
+.enc-layer.l3 { border-color:var(--green); background:var(--green-pale); }
+.enc-layer-name { font-weight:700; font-size:.92rem; color:var(--ink); }
+.enc-layer-tech { font-family:'IBM Plex Mono',monospace; font-size:.6rem; color:var(--ink3); margin-top:.15rem; letter-spacing:.08em; }
+.enc-layer-desc { font-size:.85rem; color:var(--ink2); line-height:1.6; }
+
+/* Ratchet visual */
+.ratchet-vis {
+  background:var(--paper3); border:1px solid var(--rule); border-radius:10px;
+  padding:1.75rem 2rem; margin:1.5rem 0;
+}
+.rv-title { font-family:'IBM Plex Mono',monospace; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink3); margin-bottom:1.2rem; }
+.rv-chain { display:flex; align-items:center; gap:0; flex-wrap:nowrap; overflow-x:auto; padding-bottom:.5rem; }
+.rv-msg {
+  display:flex; flex-direction:column; align-items:center; gap:.4rem; flex-shrink:0;
+}
+.rv-bubble {
+  padding:.4rem .75rem; border-radius:16px; font-size:.68rem; font-family:'IBM Plex Mono',monospace;
+  background:var(--white); border:1px solid var(--rule); white-space:nowrap;
+}
+.rv-key { font-size:.58rem; color:var(--ink3); font-family:'IBM Plex Mono',monospace; }
+.rv-arrow { color:var(--rule2); font-size:.9rem; flex-shrink:0; padding:0 .3rem; }
+
+/* Live encrypt demo */
+.live-enc { background:var(--white); border:1px solid var(--rule); border-radius:10px; overflow:hidden; margin:2rem 0; }
+.le-tabs { display:flex; border-bottom:1px solid var(--rule); }
+.le-tab {
+  padding:.65rem 1.25rem; font-size:.8rem; font-weight:600; cursor:pointer;
+  border-bottom:2px solid transparent; margin-bottom:-1px;
+  transition:all .2s; color:var(--ink3);
+}
+.le-tab.on { color:var(--amber); border-bottom-color:var(--amber); }
+.le-body { padding:1.5rem 1.75rem; }
+.le-input {
+  width:100%; background:var(--paper); border:1px solid var(--rule); color:var(--ink);
+  font-family:'IBM Plex Sans',sans-serif; font-size:.92rem; padding:.75rem 1rem;
+  border-radius:6px; outline:none; resize:vertical; min-height:64px;
+  transition:border-color .2s;
+}
+.le-input:focus { border-color:var(--amber); }
+.le-btn {
+  margin-top:.75rem; padding:.6rem 1.4rem; background:var(--amber); color:var(--white);
+  border:none; border-radius:6px; font-weight:600; font-size:.85rem; cursor:pointer;
+  font-family:'IBM Plex Sans',sans-serif; transition:background .2s;
+}
+.le-btn:hover { background:var(--amber2); }
+.le-output {
+  margin-top:1rem; background:var(--ink); color:var(--amber);
+  font-family:'IBM Plex Mono',monospace; font-size:.68rem; padding:1rem 1.1rem;
+  border-radius:6px; word-break:break-all; line-height:1.8; min-height:60px;
+  transition:opacity .3s;
+}
+.le-note { font-size:.78rem; color:var(--ink3); margin-top:.6rem; line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   CH4   ONION ROUTING
+═══════════════════════════════════════════ */
+.onion-explainer { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; margin:2.5rem 0; }
+.oe-layers {
+  display:flex; flex-direction:column; gap:.5rem;
+}
+.oe-layer {
+  padding:1rem 1.2rem; border-radius:8px; display:flex; align-items:center; gap:1rem;
+  transition:all .3s; cursor:default;
+}
+.oe-layer.active { transform:scale(1.02); }
+.oe-layer-num { font-family:'IBM Plex Mono',monospace; font-size:.65rem; font-weight:700; width:20px; flex-shrink:0; }
+.oe-layer-title { font-size:.88rem; font-weight:600; flex:1; }
+.oe-layer-detail { font-size:.76rem; color:var(--ink3); flex:2; line-height:1.45; }
+.oe-layer.k0 { background:rgba(200,104,10,.12); border:1px solid rgba(200,104,10,.3); }
+.oe-layer.k0 .oe-layer-num { color:var(--amber); }
+.oe-layer.k1 { background:rgba(11,122,128,.08); border:1px solid rgba(11,122,128,.2); }
+.oe-layer.k1 .oe-layer-num { color:var(--teal); }
+.oe-layer.k2 { background:rgba(26,122,74,.08); border:1px solid rgba(26,122,74,.2); }
+.oe-layer.k2 .oe-layer-num { color:var(--green); }
+.oe-layer.k3 { background:rgba(28,25,23,.06); border:1px solid rgba(28,25,23,.15); }
+.oe-layer.k3 .oe-layer-num { color:var(--ink2); }
+
+/* Animated path diagram */
+.path-canvas-wrap { background:var(--white); border:1px solid var(--rule); border-radius:10px; padding:1.25rem; }
+#pathCanvas { display:block; width:100%; }
+.path-controls { display:flex; gap:.6rem; margin-top:.9rem; }
+.path-btn {
+  font-family:'IBM Plex Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase;
+  padding:.5rem 1rem; border:1px solid var(--rule); background:var(--paper); color:var(--ink2);
+  border-radius:5px; cursor:pointer; transition:all .2s;
+}
+.path-btn.primary { background:var(--amber); color:var(--white); border-color:var(--amber); }
+.path-btn:hover { border-color:var(--amber); color:var(--amber); }
+.path-btn.primary:hover { background:var(--amber2); color:var(--white); }
+.path-status { font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--teal); margin-left:.5rem; align-self:center; }
+
+/* Node reveal table */
+.node-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:.82rem; }
+.node-table th { background:var(--paper3); padding:.75rem 1rem; text-align:left; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; color:var(--ink3); border-bottom:2px solid var(--rule); }
+.node-table td { padding:.75rem 1rem; border-bottom:1px solid var(--rule); vertical-align:middle; }
+.node-table tr:last-child td { border-bottom:none; }
+.td-knows { color:var(--green); font-size:.75rem; }
+.td-blind  { color:var(--red); font-size:.75rem; }
+.row-highlight { background:var(--teal-pale); }
+
+/* ═══════════════════════════════════════════
+   CH5   SWARM STORAGE
+═══════════════════════════════════════════ */
+.swarm-vis { margin:2.5rem 0; }
+#swarmCanvas { display:block; width:100%; border:1px solid var(--rule); border-radius:10px; background:var(--white); }
+.swarm-explain {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); margin-top:2rem;
+}
+.se-card { background:var(--paper); padding:1.4rem; }
+.se-step { font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); margin-bottom:.4rem; }
+.se-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:.5rem; }
+.se-desc { font-size:.83rem; color:var(--ink2); line-height:1.65; }
+
+/* ═══════════════════════════════════════════
+   CH6   BNS SYSTEM
+═══════════════════════════════════════════ */
+.bns-flow {
+  display:grid; grid-template-columns:1fr 1.5px 1fr 1.5px 1fr;
+  gap:0; align-items:center; margin:2.5rem 0; background:var(--white);
+  border:1px solid var(--rule); border-radius:10px; padding:2rem;
+}
+.bns-step { text-align:center; padding:0 1.5rem; }
+.bns-icon { font-size:2.5rem; margin-bottom:.7rem; }
+.bns-step-title { font-size:.88rem; font-weight:700; margin-bottom:.35rem; color:var(--ink); }
+.bns-step-desc { font-size:.78rem; color:var(--ink3); line-height:1.55; }
+.bns-divider { width:1px; height:80px; background:var(--rule); }
+
+/* BNS lookup demo */
+.bns-lookup {
+  background:var(--paper3); border:1px solid var(--rule); border-radius:10px;
+  padding:1.75rem 2rem; margin:1.5rem 0;
+}
+.bns-lookup-title { font-size:.75rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:1rem; }
+.bns-input-row { display:flex; gap:.65rem; align-items:center; }
+.bns-input {
+  font-family:'IBM Plex Mono',monospace; font-size:.85rem; background:var(--white);
+  border:1px solid var(--rule); color:var(--ink); padding:.6rem 1rem;
+  border-radius:6px; flex:1; outline:none; transition:border-color .2s;
+}
+.bns-input:focus { border-color:var(--amber); }
+.bns-lookup-btn {
+  padding:.6rem 1.25rem; background:var(--teal); color:var(--white);
+  border:none; border-radius:6px; font-weight:600; font-size:.82rem;
+  font-family:'IBM Plex Sans',sans-serif; cursor:pointer; transition:background .2s; white-space:nowrap;
+}
+.bns-lookup-btn:hover { background:var(--teal2); }
+.bns-result {
+  margin-top:1.1rem; padding:1rem 1.2rem; background:var(--white); border:1px solid var(--rule);
+  border-radius:8px; display:none;
+}
+.bns-result.show { display:block; }
+.bns-res-row { display:flex; align-items:flex-start; gap:.75rem; margin-bottom:.55rem; font-size:.8rem; }
+.bns-res-row:last-child { margin-bottom:0; }
+.bns-res-key { font-family:'IBM Plex Mono',monospace; font-size:.65rem; color:var(--ink3); width:80px; flex-shrink:0; padding-top:.05rem; }
+.bns-res-val { font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--teal); word-break:break-all; line-height:1.5; }
+.bns-badge { display:inline-flex; align-items:center; gap:.3rem; font-family:'IBM Plex Mono',monospace; font-size:.55rem; padding:.18rem .55rem; background:var(--green-pale); border:1px solid rgba(26,122,74,.3); color:var(--green); border-radius:4px; margin-left:.4rem; }
+
+/* ═══════════════════════════════════════════
+   CH7   VOICE AND VIDEO CALLS
+═══════════════════════════════════════════ */
+.calls-layout { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; margin:2.5rem 0; }
+.call-protocol {
+  background:var(--white); border:1px solid var(--rule); border-radius:10px;
+  overflow:hidden;
+}
+.cp-header { background:var(--paper3); padding:.9rem 1.3rem; border-bottom:1px solid var(--rule); font-size:.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink3); }
+.cp-body { padding:1.25rem 1.3rem; }
+.cp-item { display:flex; gap:.85rem; margin-bottom:.95rem; padding-bottom:.95rem; border-bottom:1px solid var(--rule); align-items:flex-start; }
+.cp-item:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+.cp-icon { font-size:1.25rem; flex-shrink:0; margin-top:.05rem; }
+.cp-text h5 { font-size:.88rem; font-weight:700; color:var(--ink); margin-bottom:.25rem; }
+.cp-text p { font-size:.8rem; color:var(--ink3); line-height:1.55; }
+.cp-tech { font-family:'IBM Plex Mono',monospace; font-size:.6rem; color:var(--teal); margin-top:.25rem; }
+
+/* Call flow vis */
+.call-flow { background:var(--white); border:1px solid var(--rule); border-radius:10px; padding:1.5rem; }
+.cf-title-sm { font-size:.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink3); margin-bottom:1.25rem; }
+.cflow-step { display:flex; align-items:flex-start; gap:.75rem; margin-bottom:.85rem; }
+.cflow-step:last-child { margin-bottom:0; }
+.cflow-num { font-family:'IBM Plex Mono',monospace; font-size:.55rem; background:var(--amber-pale); color:var(--amber); padding:.2rem .45rem; border-radius:3px; font-weight:600; flex-shrink:0; margin-top:.1rem; }
+.cflow-text h5 { font-size:.85rem; font-weight:600; color:var(--ink); }
+.cflow-text p { font-size:.78rem; color:var(--ink3); line-height:1.5; margin-top:.15rem; }
+
+/* ═══════════════════════════════════════════
+   CH8   IN-CHAT PAYMENTS
+═══════════════════════════════════════════ */
+.payment-arch { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin:2.5rem 0; }
+.privacy-shield {
+  background:var(--ink); color:var(--paper); padding:2rem 2.25rem; border-radius:12px;
+}
+.ps-title { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; margin-bottom:1.25rem; color:var(--amber); }
+.ps-item { display:flex; gap:.85rem; align-items:flex-start; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,.08); }
+.ps-item:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+.ps-ico { font-size:1.15rem; flex-shrink:0; margin-top:.05rem; }
+.ps-body h5 { font-size:.9rem; font-weight:600; color:var(--paper); margin-bottom:.25rem; }
+.ps-body p { font-size:.8rem; color:rgba(247,244,238,.55); line-height:1.55; }
+.ps-body .tech { font-family:'IBM Plex Mono',monospace; font-size:.6rem; color:var(--amber); margin-top:.2rem; }
+
+/* Payment builder */
+.pay-builder {
+  background:var(--white); border:1px solid var(--rule); border-radius:10px; overflow:hidden;
+}
+.pb-header { background:var(--paper3); border-bottom:1px solid var(--rule); padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+.pb-header-title { font-size:.78rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink3); }
+.pb-live { font-family:'IBM Plex Mono',monospace; font-size:.58rem; color:var(--green); letter-spacing:.1em; }
+.pb-body { padding:1.5rem; }
+.pb-field { margin-bottom:1rem; }
+.pb-label { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--ink3); margin-bottom:.35rem; display:block; }
+.pb-input {
+  width:100%; background:var(--paper); border:1px solid var(--rule); color:var(--ink);
+  font-family:'IBM Plex Mono',monospace; font-size:.9rem; padding:.6rem .85rem;
+  border-radius:6px; outline:none; transition:border-color .2s;
+}
+.pb-input:focus { border-color:var(--teal); }
+.pb-summary { background:var(--teal-pale); border:1px solid rgba(11,122,128,.2); border-radius:8px; padding:1.1rem 1.25rem; margin-top:.5rem; }
+.pb-summary-row { display:flex; justify-content:space-between; font-size:.82rem; margin-bottom:.35rem; }
+.pb-summary-row:last-child { margin-bottom:0; font-weight:700; font-size:.9rem; border-top:1px solid rgba(11,122,128,.2); padding-top:.35rem; margin-top:.35rem; }
+.pb-key   { color:var(--ink3); }
+.pb-value { font-family:'IBM Plex Mono',monospace; color:var(--teal); }
+.pb-value.amber { color:var(--amber); }
+.pb-send-btn {
+  width:100%; margin-top:1rem; padding:.75rem; background:var(--teal); color:var(--white);
+  border:none; border-radius:8px; font-weight:700; font-size:.9rem; cursor:pointer;
+  font-family:'IBM Plex Sans',sans-serif; transition:background .2s;
+}
+.pb-send-btn:hover { background:var(--teal2); }
+.pb-sent-msg { text-align:center; font-size:.82rem; color:var(--green); margin-top:.75rem; min-height:1.2em; font-family:'IBM Plex Mono',monospace; }
+
+/* ═══════════════════════════════════════════
+   CH9   OPEN SOURCE
+═══════════════════════════════════════════ */
+.oss-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin:2.5rem 0; }
+.oss-card { background:var(--white); border:1px solid var(--rule); border-radius:10px; padding:1.5rem; }
+.oss-icon { font-size:2rem; margin-bottom:.75rem; }
+.oss-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:.4rem; }
+.oss-desc { font-size:.83rem; color:var(--ink2); line-height:1.65; }
+.oss-link { display:inline-flex; align-items:center; gap:.4rem; font-size:.78rem; font-weight:600; color:var(--amber); text-decoration:none; margin-top:.75rem; }
+.oss-link:hover { color:var(--amber2); }
+
+/* ═══════════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════════ */
+#download { background:var(--ink); color:var(--paper); padding:6rem 0; }
+.dl-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:.85rem; margin-top:3rem; }
+.dl-card {
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:1.5rem 1rem; text-align:center;
+  text-decoration:none; color:var(--paper);
+  transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:.6rem;
+}
+.dl-card:hover { background:rgba(200,104,10,.12); border-color:rgba(200,104,10,.4); transform:translateY(-3px); }
+.dl-icon { font-size:2.25rem; }
+.dl-name { font-weight:700; font-size:.9rem; }
+.dl-store { font-family:'IBM Plex Mono',monospace; font-size:.58rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(247,244,238,.4); }
+.dl-arrow { font-size:.7rem; color:var(--amber); }
+
+/* ═══════════════════════════════════════════
+   CALLOUT BOXES
+═══════════════════════════════════════════ */
+.callout {
+  padding:1.25rem 1.5rem; border-radius:8px; margin:1.5rem 0;
+  border-left:4px solid;
+}
+.callout-amber { border-color:var(--amber); background:var(--amber-pale); }
+.callout-teal  { border-color:var(--teal); background:var(--teal-pale); }
+.callout-ink   { border-color:var(--ink2); background:rgba(28,25,23,.04); }
+.callout-head  { font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.4rem; }
+.callout-head.amber { color:var(--amber); }
+.callout-head.teal  { color:var(--teal); }
+.callout-head.ink   { color:var(--ink2); }
+.callout p { font-size:.88rem; line-height:1.65; color:var(--ink2); }
+
+/* Pill badges */
+.pill {
+  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:.58rem;
+  letter-spacing:.1em; text-transform:uppercase; padding:.18rem .65rem;
+  border-radius:4px; vertical-align:middle; margin-left:.3rem;
+}
+.pill-amber { background:var(--amber-pale); color:var(--amber); border:1px solid rgba(200,104,10,.25); }
+.pill-teal  { background:var(--teal-pale); color:var(--teal); border:1px solid rgba(11,122,128,.25); }
+.pill-green { background:var(--green-pale); color:var(--green); border:1px solid rgba(26,122,74,.25); }
+
+/* Two-col text layout */
+.two-col-text { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+.two-col-text p + p { margin-top:.85rem; }
+
+/* RESPONSIVE */
+@media(max-width:1050px) {
+  .hero-layout { grid-template-columns:1fr; }
+  .hero-right { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; position:static; }
+  .app-audit { grid-template-columns:repeat(2,1fr); }
+  .onion-explainer { grid-template-columns:1fr; }
+  .calls-layout { grid-template-columns:1fr; }
+  .payment-arch { grid-template-columns:1fr; }
+  .dl-grid { grid-template-columns:repeat(3,1fr); }
+  .two-col-text { grid-template-columns:1fr; }
+  .creation-flow { grid-template-columns:repeat(3,1fr); }
+  .creation-flow::before { display:none; }
+}
+@media(max-width:720px) {
+  .w,.wn { padding:0 1.25rem; }
+  .app-audit { grid-template-columns:1fr; }
+  .swarm-explain { grid-template-columns:1fr; }
+  .oss-grid { grid-template-columns:1fr; }
+  .dl-grid { grid-template-columns:repeat(2,1fr); }
+  .bns-flow { grid-template-columns:1fr; }
+  .bns-divider { display:none; }
+  .nav-chapters { display:none; }
+  .creation-flow { grid-template-columns:repeat(2,1fr); }
+  .hero-right { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     NAV
+════════════════════════════════════ -->
+<nav id="mainnav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">B<span>Chat</span></a>
+    <div class="nav-chapters">
+      <a class="nch" href="#ch1">The Problem</a>
+      <a class="nch" href="#ch2">Your Identity</a>
+      <a class="nch" href="#ch3">Encryption</a>
+      <a class="nch" href="#ch4">Onion Routing</a>
+      <a class="nch" href="#ch5">Offline Delivery</a>
+      <a class="nch" href="#ch6">BNS Names</a>
+      <a class="nch" href="#ch7">Calls</a>
+      <a class="nch" href="#ch8">Payments</a>
+      <a class="nch" href="#ch9">Open Source</a>
+    </div>
+    <a class="nav-dl" href="#download">Download</a>
+  </div>
+</nav>
+<div id="progress"><div id="progress-fill"></div></div>
+
+<!-- ════════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg-text">BChat</div>
+  <div class="w">
+    <div class="hero-layout">
+      <div>
+        <div class="hero-chapter sr">Complete Technical Guide</div>
+        <h1 class="hero-h1 sr d1">How BChat<br><em>Actually</em><br>Works.</h1>
+        <p class="hero-lead sr d2">BChat is not just "another encrypted messenger." It is a decentralised messaging protocol built on blockchain infrastructure, with no central server, no identity requirement, and no ability for anyone   including its developers   to read your messages or know who you are talking to. This guide explains every layer of that, clearly.</p>
+
+        <div class="hero-index sr d3">
+          <div class="hi-label">What you will learn</div>
+          <div class="hi-list">
+            <a class="hi-item" href="#ch1"><span class="hi-num">01</span>Why mainstream messengers compromise your privacy</a>
+            <a class="hi-item" href="#ch2"><span class="hi-num">02</span>How BChat creates an identity with zero personal data</a>
+            <a class="hi-item" href="#ch3"><span class="hi-num">03</span>The Double Ratchet encryption engine explained</a>
+            <a class="hi-item" href="#ch4"><span class="hi-num">04</span>How onion routing makes messages untraceable</a>
+            <a class="hi-item" href="#ch5"><span class="hi-num">05</span>Swarm storage and how offline delivery works</a>
+            <a class="hi-item" href="#ch6"><span class="hi-num">06</span>BNS   turning a 64-character ID into a human name</a>
+            <a class="hi-item" href="#ch7"><span class="hi-num">07</span>How private voice and video calls work</a>
+            <a class="hi-item" href="#ch8"><span class="hi-num">08</span>In-chat payments and transaction privacy</a>
+            <a class="hi-item" href="#ch9"><span class="hi-num">09</span>Open source   why transparency matters here</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right sr d2">
+        <div class="stat-block">
+          <div class="sb-num amber-text">0</div>
+          <div class="sb-label">Data Points Collected</div>
+          <div class="sb-desc">BChat collects no name, no phone number, no email, no IP address, no contact list, and no location data   ever.</div>
+        </div>
+        <div class="stat-block">
+          <div class="sb-num teal-text">3+</div>
+          <div class="sb-label">Encryption Hops</div>
+          <div class="sb-desc">Every message travels through a minimum of 3 independent Beldex masternodes before reaching its destination.</div>
+        </div>
+        <div class="stat-block">
+          <div class="sb-num" style="color:var(--green);">E2E</div>
+          <div class="sb-label">Double Ratchet</div>
+          <div class="sb-desc">Uses the same cryptographic protocol trusted by Signal   with a unique key for every single message.</div>
+        </div>
+        <div class="stat-block">
+          <div class="sb-num" style="color:var(--ink);">5</div>
+          <div class="sb-label">Platforms</div>
+          <div class="sb-desc">Android, iOS, Windows, macOS, Linux. One seed phrase. Your identity travels with you across all devices.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH1   THE SURVEILLANCE PROBLEM
+════════════════════════════════════ -->
+<section id="ch1" class="section section-paper2">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 01</div><div class="ch-rule"></div></div>
+  <h2 class="sr">What is actually<br>happening when you<br>send a message.</h2>
+  <div class="two-col-text" style="margin-top:2rem;">
+    <div class="sr d1">
+      <p>When you tap Send on WhatsApp, your message does not simply travel from your phone to your friend's phone. It travels to a Meta server in California, where it is decrypted, scanned for compliance and advertising signals, re-encrypted, and then forwarded. The metadata   who you contacted, when, how often, from what location   is permanently logged.</p>
+      <p style="margin-top:.85rem;">Telegram is more nuanced. Its standard chats are stored on Telegram's servers in plaintext. "Secret chats" are end-to-end encrypted, but the app still knows your phone number, device fingerprint, IP address, and contact list. If Telegram's servers were compromised, your social graph would be exposed.</p>
+    </div>
+    <div class="sr d2">
+      <p>Even Signal   the gold standard of consumer privacy   requires a phone number. That phone number links your Signal identity to a real-world identity, and Signal knows when you joined, when you were last active, and the phone numbers of the people you talk to.</p>
+      <p style="margin-top:.85rem;">BChat is architecturally different. There is no central server. There is no company database of user accounts. The app does not know who you are because it never asked. There is genuinely nothing to breach, because nothing is stored.</p>
+    </div>
+  </div>
+
+  <h3 class="sr" style="margin:3rem 0 .5rem;">App-by-app audit: what each messenger knows about you</h3>
+  <div class="app-audit sr d1">
+    <div class="aa-col">
+      <div class="aa-app">WhatsApp</div>
+      <div class="aa-sub">Owned by Meta</div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Phone number (required)</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Full contact list uploaded</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Location, device ID</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Message timing metadata</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Shared with Meta ad network</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Purchase and payment history</span></div>
+    </div>
+    <div class="aa-col">
+      <div class="aa-app">Telegram</div>
+      <div class="aa-sub">Centralised servers</div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Phone number (required)</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Chats stored server-side (default)</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">IP address logged</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Contact list, username</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text">E2E only in "Secret Chat"</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Can be legally compelled to share</span></div>
+    </div>
+    <div class="aa-col">
+      <div class="aa-app">Signal</div>
+      <div class="aa-sub">Non-profit, best-in-class</div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Phone number (required)</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">E2E encrypted by default</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Registration date, last active time</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Knows your phone contacts</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">Sealed Sender hides who messages who</span></div>
+      <div class="aa-item"><span class="aa-ico">⚠</span><span class="aa-text bad">Centralised server infrastructure</span></div>
+    </div>
+    <div class="aa-col featured">
+      <div class="aa-app good">BChat</div>
+      <div class="aa-sub">Decentralised, no server</div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">No phone number, ever</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">E2E encrypted, always</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">No IP address logged</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">No contact list uploaded</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">No central server to breach</span></div>
+      <div class="aa-item"><span class="aa-ico">✓</span><span class="aa-text good">Messages onion-routed, untraceable</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem;" class="sr d2">
+    <h4 style="margin-bottom:1rem;">How much of your data does each app expose?</h4>
+    <div class="meter-block">
+      <div class="meter-title">Data exposure score (higher = more exposed)</div>
+      <div class="meter-row">
+        <div class="meter-app" style="color:var(--red);">WhatsApp</div>
+        <div class="meter-bar-wrap"><div class="meter-bar" style="background:#C0392B;" data-w="92"></div></div>
+        <div class="meter-val" style="color:var(--red);">92%</div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-app" style="color:#C07A0A;">Telegram</div>
+        <div class="meter-bar-wrap"><div class="meter-bar" style="background:#C07A0A;" data-w="70"></div></div>
+        <div class="meter-val" style="color:#C07A0A;">70%</div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-app" style="color:#888;">Signal</div>
+        <div class="meter-bar-wrap"><div class="meter-bar" style="background:#888;" data-w="22"></div></div>
+        <div class="meter-val" style="color:#888;">22%</div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-app" style="color:var(--green);font-weight:700;">BChat</div>
+        <div class="meter-bar-wrap"><div class="meter-bar" style="background:var(--green);" data-w="0"></div></div>
+        <div class="meter-val" style="color:var(--green);">0%</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH2   ACCOUNT CREATION
+════════════════════════════════════ -->
+<section id="ch2" class="section">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 02</div><div class="ch-rule"></div></div>
+  <h2 class="sr">Your identity on BChat<br>does not exist until<br>it is generated locally.</h2>
+  <div class="two-col-text" style="margin-top:2rem;">
+    <div class="sr d1">
+      <p>Creating an account on BChat is radically different from every other messaging app. There is no form to fill out. No phone number verification. No email confirmation. You tap one button, and your phone's cryptographic hardware generates a complete identity without contacting any server.</p>
+      <p style="margin-top:.85rem;">What gets created is an <strong>Ed25519 keypair</strong>   an asymmetric cryptographic key pair used across blockchain systems worldwide. The <strong>public key</strong> becomes your BChat ID   a 64-66 character alphanumeric string. The <strong>private key</strong> never leaves your device.</p>
+    </div>
+    <div class="sr d2">
+      <p>Simultaneously, a <strong>24-word mnemonic recovery seed</strong> is derived from your private key. This is the only way to restore access to your account on a new device. It is your responsibility to store it safely   BChat cannot help you if it is lost, because BChat does not know it.</p>
+      <p style="margin-top:.85rem;">Your BChat ID is also automatically linked to a unique <strong>Beldex wallet address</strong>. This means every BChat account has built-in BDX payment capability without any separate registration   your messaging identity and your payment identity are one and the same.</p>
+    </div>
+  </div>
+
+  <div class="creation-flow sr d1">
+    <div class="cf-step">
+      <div class="cf-circle">👆<div class="cf-n">1</div></div>
+      <div class="cf-title">Tap Create Account</div>
+      <div class="cf-desc">No form, no fields. One button tap triggers local key generation entirely on your device.</div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-circle">🔑<div class="cf-n">2</div></div>
+      <div class="cf-title">Ed25519 Keypair Generated</div>
+      <div class="cf-desc">Your phone generates a cryptographic keypair using the Ed25519 elliptic curve algorithm. The private key never leaves your device.</div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-circle">🆔<div class="cf-n">3</div></div>
+      <div class="cf-title">BChat ID Created</div>
+      <div class="cf-desc">Your public key becomes your BChat ID   a 64-character on-chain identifier. This is what you share with friends instead of a phone number.</div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-circle">📝<div class="cf-n">4</div></div>
+      <div class="cf-title">24-Word Seed Issued</div>
+      <div class="cf-desc">A mnemonic recovery phrase is derived. Write it down on paper. Stored nowhere else. This is your only key to account recovery.</div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-circle">💼<div class="cf-n">5</div></div>
+      <div class="cf-title">Beldex Wallet Linked</div>
+      <div class="cf-desc">A unique Beldex wallet address is derived from the same keypair and linked to your BChat ID   payment capability included automatically.</div>
+    </div>
+  </div>
+
+  <div class="id-generator sr d2">
+    <div class="ig-label">Generated BChat ID (public   share this)</div>
+    <div class="ig-id" id="genId">Click the button below to generate a sample BChat ID...</div>
+    <div class="ig-label" style="margin-top:1rem;">Recovery Seed (private   never share, never store digitally)</div>
+    <div class="ig-seed" id="genSeed">Your 24-word mnemonic will appear here...</div>
+    <div class="ig-label" style="margin-top:1rem;">Linked Beldex Wallet Address</div>
+    <div class="ig-wallet" id="genWallet">Your wallet address will appear here...</div>
+    <button class="ig-btn" onclick="generateId()">Generate Sample Identity</button>
+    <div class="ig-note">This is a simulation for educational purposes. In the real app, this process happens on your device using cryptographic-grade randomness. No network call is ever made during account creation.</div>
+  </div>
+
+  <div class="callout callout-amber sr d3">
+    <div class="callout-head amber">Why this matters</div>
+    <p>Because your BChat ID is derived from a keypair generated locally   and because no server ever receives your private key, phone number, or email   there is no central database that connects your real identity to your BChat account. If Beldex's entire server infrastructure was seized tomorrow, the attacker would find nothing linking you to your BChat ID.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH3   ENCRYPTION ENGINE
+════════════════════════════════════ -->
+<section id="ch3" class="section section-paper2">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 03</div><div class="ch-rule"></div></div>
+  <h2 class="sr">The encryption engine:<br>every message gets<br>a brand new key.</h2>
+  <div class="two-col-text" style="margin-top:2rem;">
+    <div class="sr d1">
+      <p>BChat uses the <strong>TextSecure protocol</strong>   the same cryptographic foundation used by Signal. At its core is the <strong>Double Ratchet Algorithm</strong> combined with <strong>Extended Triple Diffie-Hellman (X3DH)</strong> for initial key agreement. This combination provides something called <strong>Perfect Forward Secrecy</strong>.</p>
+      <p style="margin-top:.85rem;">Perfect Forward Secrecy means that even if an attacker records all your encrypted messages today and later steals your private key, they still cannot decrypt those past messages. This is because each message is encrypted with a unique, ephemeral key that is deleted after use.</p>
+    </div>
+    <div class="sr d2">
+      <p>The "ratchet" metaphor is intentional: just like a ratchet wrench that only turns one way, the key state advances forward with each message and can never go backwards. An attacker who breaks key N cannot derive key N-1 or any previous key.</p>
+      <p style="margin-top:.85rem;">When two BChat users first contact each other, their apps perform an X3DH handshake   a multi-step key exchange that establishes a shared secret without ever sending that secret across the network. From that shared secret, the Double Ratchet begins generating an endless chain of message keys.</p>
+    </div>
+  </div>
+
+  <h3 class="sr d1" style="margin:2.5rem 0 1.25rem;">Three layers of encryption in every message</h3>
+  <div class="enc-layers sr d2">
+    <div class="enc-layer l1">
+      <div>
+        <div class="enc-layer-name">Message Encryption</div>
+        <div class="enc-layer-tech">AES-256-CBC + HMAC-SHA256</div>
+      </div>
+      <div class="enc-layer-desc">The message content is encrypted with a symmetric key derived from the Double Ratchet chain. Each message has a unique key, generated from the previous key plus a ratchet step. Deleting a message truly removes access   there is no way to recover keys that have been ratcheted past.</div>
+    </div>
+    <div class="enc-layer l2">
+      <div>
+        <div class="enc-layer-name">Session Encryption</div>
+        <div class="enc-layer-tech">Curve25519 + X3DH</div>
+      </div>
+      <div class="enc-layer-desc">The session layer establishes the shared secret between two parties using Curve25519 elliptic-curve Diffie-Hellman. The X3DH handshake uses four different keys: your identity key, a signed prekey, a one-time prekey, and an ephemeral key. This multi-key exchange makes it mathematically impractical to forge a session.</div>
+    </div>
+    <div class="enc-layer l3">
+      <div>
+        <div class="enc-layer-name">Transport Encryption</div>
+        <div class="enc-layer-tech">Onion Layers (per-hop)</div>
+      </div>
+      <div class="enc-layer-desc">On top of the end-to-end encrypted message, the network adds per-hop encryption for each masternode in the onion route. This transport encryption ensures that no node can see the plaintext of the inner layers, even if the E2E encryption were somehow compromised.</div>
+    </div>
+  </div>
+
+  <div class="ratchet-vis sr d2">
+    <div class="rv-title">Double Ratchet   how each message key is different</div>
+    <div class="rv-chain" id="ratchetChain">
+      <!-- rendered by JS -->
+    </div>
+    <p style="font-size:.8rem;color:var(--ink3);margin-top:1rem;line-height:1.55;">Each arrow represents one ratchet step. The key used for Message 5 is cryptographically derived from Message 4's key   but you cannot reverse that process to get Message 4's key from Message 5's key. Each key is also deleted immediately after use.</p>
+  </div>
+
+  <h3 class="sr d3" style="margin:2.5rem 0 .75rem;">Try it: see what encryption actually does</h3>
+  <div class="live-enc sr d3">
+    <div class="le-tabs">
+      <div class="le-tab on" id="tab-enc" onclick="switchTab('enc')">Encrypt a message</div>
+      <div class="le-tab" id="tab-dec" onclick="switchTab('dec')">What the recipient sees</div>
+    </div>
+    <div class="le-body">
+      <div id="panel-enc">
+        <div style="font-size:.88rem;color:var(--ink2);margin-bottom:.85rem;line-height:1.65;">Type any message below. Click Encrypt to see what the Beldex network sees as it routes your message   completely unreadable without the recipient's private key.</div>
+        <textarea class="le-input" id="leInput" placeholder="Type your message here, e.g: Hey, are you free tonight?" rows="2"></textarea>
+        <button class="le-btn" onclick="doEncrypt()">Encrypt Message</button>
+        <div class="le-output" id="leOutput">Your encrypted output will appear here...</div>
+        <div class="le-note">Simulation of AES-256 ciphertext. The actual app uses the TextSecure protocol with Double Ratchet key derivation. Every time you click Encrypt, a different output is produced   simulating the ratchet advancing.</div>
+      </div>
+      <div id="panel-dec" style="display:none;">
+        <div style="font-size:.88rem;color:var(--ink2);margin-bottom:.85rem;line-height:1.65;">After the encrypted message travels through 3 masternodes and reaches the recipient's device, their private key decrypts it. Here is what that feels like:</div>
+        <div style="background:var(--green-pale);border:1px solid rgba(26,122,74,.25);border-radius:8px;padding:1.25rem;font-size:.9rem;color:var(--ink);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--green);margin-bottom:.5rem;">✓ DECRYPTED WITH YOUR PRIVATE KEY</div>
+          <div id="decOutput" style="color:var(--ink2);">Type a message in the Encrypt tab first...</div>
+        </div>
+        <div class="le-note">The decrypted message is identical to what you typed. Nothing was altered in transit. The only person who performed this decryption was the recipient   using the private key that never left their device.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH4   ONION ROUTING
+════════════════════════════════════ -->
+<section id="ch4" class="section">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 04</div><div class="ch-rule"></div></div>
+  <h2 class="sr">Onion routing: why no<br>one can trace where<br>your message came from.</h2>
+  <div class="two-col-text" style="margin-top:2rem;">
+    <div class="sr d1">
+      <p>Encryption alone is not enough to protect you. Even if an encrypted message cannot be read, it can still be tracked. A surveillance system watching your internet traffic knows which IP addresses your device communicates with   and from that it can infer who you are talking to, when, and how frequently.</p>
+      <p style="margin-top:.85rem;">BChat solves this with <strong>onion routing</strong>   a technique originally developed for the Tor anonymity network and adapted here for the Beldex masternode infrastructure. Before your message enters the network, it is wrapped in <strong>three nested encryption layers</strong>, one for each node in the route.</p>
+    </div>
+    <div class="sr d2">
+      <p>Think of it as a series of envelopes. The outer envelope is addressed to Node 1. Inside is another envelope addressed to Node 2. Inside that is a final envelope addressed to Node 3, which then delivers the innermost message to the recipient.</p>
+      <p style="margin-top:.85rem;">Crucially, each node only ever sees the outermost envelope. Node 1 knows your IP address but not the destination. Node 3 knows the destination but not your IP address. No single node   and no collaboration between nodes   can link sender and recipient.</p>
+    </div>
+  </div>
+
+  <div class="onion-explainer sr d1">
+    <div>
+      <h4 style="margin-bottom:1.25rem;">The four encryption layers in detail</h4>
+      <div class="oe-layers">
+        <div class="oe-layer k0">
+          <div class="oe-layer-num">L0</div>
+          <div class="oe-layer-title">Your Message</div>
+          <div class="oe-layer-detail">The original E2E encrypted payload. Encrypted with the recipient's public key. Readable only by the final recipient with their private key.</div>
+        </div>
+        <div class="oe-layer k1">
+          <div class="oe-layer-num">L1</div>
+          <div class="oe-layer-title">Node 3 Wrap</div>
+          <div class="oe-layer-detail">L0 is wrapped with Node 3's public key + delivery instructions for the final hop. Node 3 decrypts this layer and sees only the delivery address.</div>
+        </div>
+        <div class="oe-layer k2">
+          <div class="oe-layer-num">L2</div>
+          <div class="oe-layer-title">Node 2 Wrap</div>
+          <div class="oe-layer-detail">L1 is wrapped with Node 2's key + instructions to pass to Node 3. Node 2 decrypts this and knows only: "send what's inside to Node 3."</div>
+        </div>
+        <div class="oe-layer k3">
+          <div class="oe-layer-num">L3</div>
+          <div class="oe-layer-title">Node 1 Wrap (outermost)</div>
+          <div class="oe-layer-detail">L2 is wrapped with Node 1's key. Your device sends this outer layer. Node 1 sees your IP address but cannot see any inner content or destination.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h4 style="margin-bottom:1.25rem;">Animated routing simulation</h4>
+      <div class="path-canvas-wrap">
+        <canvas id="pathCanvas" height="220"></canvas>
+        <div class="path-controls">
+          <button class="path-btn primary" onclick="runPath()">Send Message</button>
+          <button class="path-btn" onclick="resetPath()">Reset</button>
+          <span class="path-status" id="pathStatus">Ready</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sr d2" style="margin:3rem 0 1rem;">What each node can and cannot see</h3>
+  <table class="node-table sr d2">
+    <thead>
+      <tr>
+        <th>Party</th>
+        <th>Knows your IP?</th>
+        <th>Knows recipient?</th>
+        <th>Can read message?</th>
+        <th>Can see message size?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Node 1 (Entry)</strong></td><td class="td-knows">Yes   your real IP</td><td class="td-blind">No   sees only Node 2</td><td class="td-blind">No</td><td class="td-blind">No   padded</td></tr>
+      <tr><td><strong>Node 2 (Middle)</strong></td><td class="td-blind">No   sees Node 1's IP</td><td class="td-blind">No   sees only Node 3</td><td class="td-blind">No</td><td class="td-blind">No</td></tr>
+      <tr class="row-highlight"><td><strong>Node 3 (Exit)</strong></td><td class="td-blind">No   sees Node 2's IP</td><td class="td-knows">Yes   recipient address</td><td class="td-blind">No</td><td class="td-blind">No</td></tr>
+      <tr><td><strong>Beldex Network</strong></td><td class="td-blind">No single node has full picture</td><td class="td-blind">Distributed, no central view</td><td class="td-blind">No</td><td class="td-blind">No</td></tr>
+      <tr><td><strong>Recipient</strong></td><td class="td-blind">No   never revealed</td><td class="td-knows">Yes   their own address</td><td class="td-knows">Yes   with private key</td><td class="td-knows">Yes</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-teal sr d3">
+    <div class="callout-head teal">Why not just use Tor?</div>
+    <p>Tor uses volunteer exit nodes that can be operated by anyone, including adversaries. Beldex masternodes require operators to lock 10,000 BDX as collateral   creating a strong economic disincentive to operate malicious nodes. A majority attack on the routing network would require acquiring and locking hundreds of millions of dollars in BDX.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH5   SWARM STORAGE
+════════════════════════════════════ -->
+<section id="ch5" class="section section-paper2">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 05</div><div class="ch-rule"></div></div>
+  <h2 class="sr">Swarm storage: how<br>your message waits<br>without being read.</h2>
+  <div class="two-col-text" style="margin-top:2rem;">
+    <div class="sr d1">
+      <p>One practical challenge for decentralised messaging is offline delivery. In a traditional messenger, if you are offline, your messages sit on a central server until you reconnect. But BChat has no central server. How does it hold your messages?</p>
+      <p style="margin-top:.85rem;">The answer is <strong>Swarm Storage</strong>. When a message is sent to a BChat ID whose owner is currently offline, the exit node (Node 3) forwards the encrypted message to a group of masternodes called a <strong>swarm</strong>   a cluster of 8-10 masternodes that are jointly responsible for storing messages for a particular BChat ID range.</p>
+    </div>
+    <div class="sr d2">
+      <p>The swarm stores only the encrypted message ciphertext. The masternodes in the swarm have no ability to read it   they do not have the recipient's private key. They are functioning as encrypted storage boxes, holding sealed envelopes they cannot open.</p>
+      <p style="margin-top:.85rem;">When the recipient comes online, their BChat app contacts the swarm and retrieves all pending encrypted messages. The messages are decrypted locally on the recipient's device. After retrieval, messages are deleted from the swarm. No permanent storage of your communications exists anywhere on the network.</p>
+    </div>
+  </div>
+
+  <canvas id="swarmCanvas" height="260" class="sr d1"></canvas>
+
+  <div class="swarm-explain sr d2">
+    <div class="se-card">
+      <div class="se-step">Step 01 / Sent</div>
+      <div class="se-title">Message enters the route</div>
+      <div class="se-desc">Your device wraps the encrypted message in three onion layers and sends it through Node 1. It travels through Node 2, then to Node 3 (exit). The recipient is offline at this moment.</div>
+    </div>
+    <div class="se-card">
+      <div class="se-step">Step 02 / Stored</div>
+      <div class="se-title">Swarm accepts the payload</div>
+      <div class="se-desc">Node 3 identifies the swarm responsible for the recipient's BChat ID and forwards the fully encrypted message. 8-10 masternodes store identical copies for redundancy   no single node can drop your message.</div>
+    </div>
+    <div class="se-card">
+      <div class="se-step">Step 03 / Delivered</div>
+      <div class="se-title">Recipient retrieves and decrypts</div>
+      <div class="se-desc">When the recipient comes online, their app polls the swarm, retrieves the ciphertext, and decrypts it locally. The swarm then deletes the message. The network retains no copy of what was said.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-amber sr d3">
+    <div class="callout-head amber">Key guarantee</div>
+    <p>Because every masternode in the swarm receives only the already-encrypted ciphertext, a complete compromise of every masternode in a swarm would reveal nothing readable. Decryption requires the recipient's private key, which is stored only on the recipient's device and never transmitted to any network node.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH6   BNS
+════════════════════════════════════ -->
+<section id="ch6" class="section">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 06</div><div class="ch-rule"></div></div>
+  <h2 class="sr">BNS: turning a 64-character<br>string into a name<br>you can remember.</h2>
+  <p class="lead sr d1" style="max-width:680px;margin-top:1.5rem;">A BChat ID like <span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:var(--amber);">bd3f9c2e8d71b4f06a5e9c3d2b8f17a4e6c9d3b2...</span> is impossible to memorise. The Beldex Name System solves this by letting you register a short, readable name that maps on-chain to your full BChat ID and Beldex wallet address.</p>
+
+  <div class="bns-flow sr d2">
+    <div class="bns-step">
+      <div class="bns-icon">💡</div>
+      <div class="bns-step-title">Choose Your Name</div>
+      <div class="bns-step-desc">Pick any available .bdx name, for example <strong>alice.bdx</strong>. Names are unique   first to register owns it. You can also register names for the Beldex Browser and BelNet VPN.</div>
+    </div>
+    <div class="bns-divider"></div>
+    <div class="bns-step">
+      <div class="bns-icon">⛓</div>
+      <div class="bns-step-title">Registered On-Chain</div>
+      <div class="bns-step-desc">You pay a registration fee in BDX. The mapping between your name and your BChat ID is written permanently to the Beldex blockchain   a public ledger that anyone can query but nobody can alter.</div>
+    </div>
+    <div class="bns-divider"></div>
+    <div class="bns-step">
+      <div class="bns-icon">✅</div>
+      <div class="bns-step-title">Verified Badge</div>
+      <div class="bns-step-desc">When you link your BNS name inside the BChat app, your profile receives a verification badge. Contacts know they are talking to the authentic owner of that name, not an impersonator.</div>
+    </div>
+  </div>
+
+  <h4 style="margin-bottom:1rem;" class="sr d2">How BNS resolution works</h4>
+  <p style="font-size:.88rem;color:var(--ink2);max-width:680px;margin-bottom:1.5rem;" class="sr d2">When someone types <strong>alice.bdx</strong> in BChat's "New Message" field, the app queries the Beldex blockchain to resolve that name. The blockchain returns the full BChat ID and linked wallet address. The sender never needs to handle the long hexadecimal string directly.</p>
+
+  <div class="bns-lookup sr d2">
+    <div class="bns-lookup-title">Interactive BNS Lookup Simulation</div>
+    <div class="bns-input-row">
+      <input class="bns-input" id="bnsInput" placeholder="Enter a BNS name, e.g: alice.bdx" value="alice.bdx">
+      <button class="bns-lookup-btn" onclick="doLookup()">Resolve Name</button>
+    </div>
+    <div class="bns-result" id="bnsResult">
+      <div class="bns-res-row">
+        <div class="bns-res-key">BNS Name</div>
+        <div class="bns-res-val" id="bnsResName"></div>
+      </div>
+      <div class="bns-res-row">
+        <div class="bns-res-key">BChat ID</div>
+        <div class="bns-res-val" id="bnsResId"></div>
+      </div>
+      <div class="bns-res-row">
+        <div class="bns-res-key">Wallet</div>
+        <div class="bns-res-val" id="bnsResWallet"></div>
+      </div>
+      <div class="bns-res-row">
+        <div class="bns-res-key">Status</div>
+        <div class="bns-res-val" id="bnsResStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-ink sr d3">
+    <div class="callout-head ink">Privacy note on BNS names</div>
+    <p>Because BNS registrations are written to a public blockchain, the name itself is visible to anyone who queries the chain. However, the mapping is only between the name and the BChat ID (a pseudonymous identifier)   not between the name and your real-world identity. Sharing a BNS name is still safer than sharing a phone number because it reveals nothing about who you are in the physical world.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH7   VOICE AND VIDEO CALLS
+════════════════════════════════════ -->
+<section id="ch7" class="section section-paper3">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 07</div><div class="ch-rule"></div></div>
+  <h2 class="sr">Private calls: peer-to-peer,<br>no phone number,<br>encrypted in transit.</h2>
+  <p class="lead sr d1" style="max-width:700px;margin-top:1.5rem;margin-bottom:2.5rem;">BChat supports voice and video calls without requiring a phone number, an account on a call provider, or any subscription service. Calls are established directly between two devices using WebRTC   the same technology used by video conferencing tools   but with end-to-end encryption layered on top.</p>
+
+  <div class="calls-layout sr d1">
+    <div>
+      <div class="call-protocol">
+        <div class="cp-header">How Private Calls Work   Technical Stack</div>
+        <div class="cp-body">
+          <div class="cp-item">
+            <div class="cp-icon">🤝</div>
+            <div class="cp-text">
+              <h5>Call Setup via BChat ID</h5>
+              <p>Calls are initiated using the recipient's BChat ID. No phone number dialling. The call request is sent through the normal BChat message routing to the recipient.</p>
+              <div class="cp-tech">BChat ID → masternode route → recipient device</div>
+            </div>
+          </div>
+          <div class="cp-item">
+            <div class="cp-icon">🔐</div>
+            <div class="cp-text">
+              <h5>DTLS-SRTP Encryption</h5>
+              <p>Audio and video data streams are encrypted using DTLS-SRTP   the standard used by WebRTC. All media packets are encrypted before transmission and cannot be intercepted in transit.</p>
+              <div class="cp-tech">DTLS 1.2 + SRTP (AES-128 / AES-256)</div>
+            </div>
+          </div>
+          <div class="cp-item">
+            <div class="cp-icon">📡</div>
+            <div class="cp-text">
+              <h5>ICE and STUN for Direct Connection</h5>
+              <p>BChat uses the ICE (Interactive Connectivity Establishment) framework with STUN servers to punch through NAT firewalls and establish a direct peer-to-peer connection where possible. The call payload never passes through Beldex's infrastructure once connected.</p>
+              <div class="cp-tech">WebRTC ICE + STUN / TURN fallback</div>
+            </div>
+          </div>
+          <div class="cp-item">
+            <div class="cp-icon">🚫</div>
+            <div class="cp-text">
+              <h5>Message Request Gate</h5>
+              <p>You cannot receive calls from people you have not accepted a message request from. This prevents unsolicited call spam and ensures you are always in control of who can reach you.</p>
+              <div class="cp-tech">Message request must be accepted before call access</div>
+            </div>
+          </div>
+          <div class="cp-item">
+            <div class="cp-icon">⚙</div>
+            <div class="cp-text">
+              <h5>Calls Can Be Disabled</h5>
+              <p>For users who only want text messaging   or who use BChat in professional settings where calls would be disruptive   the calling feature can be completely disabled in app settings. When disabled, no call requests are received at all.</p>
+              <div class="cp-tech">Settings → Privacy → Disable Voice and Video Calls</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="call-flow">
+        <div class="cf-title-sm">Step-by-step: How a private call is established</div>
+        <div class="cflow-step">
+          <div class="cflow-num">01</div>
+          <div class="cflow-text">
+            <h5>Alice taps "Call" on Bob's BChat ID</h5>
+            <p>BChat generates a SDP (Session Description Protocol) offer containing Alice's connection capabilities. This is encrypted and sent to Bob via the normal BChat message pathway.</p>
+          </div>
+        </div>
+        <div class="cflow-step">
+          <div class="cflow-num">02</div>
+          <div class="cflow-text">
+            <h5>Bob receives the encrypted call request</h5>
+            <p>Bob's device decrypts the call offer. A notification appears. Bob's identity is verified through the BChat ID keypair   Alice knows with certainty she is calling the right person.</p>
+          </div>
+        </div>
+        <div class="cflow-step">
+          <div class="cflow-num">03</div>
+          <div class="cflow-text">
+            <h5>ICE candidate exchange and DTLS handshake</h5>
+            <p>Both devices exchange network candidates (IP addresses and ports) to find the best direct connection path. DTLS performs a handshake to establish encryption keys for the media stream.</p>
+          </div>
+        </div>
+        <div class="cflow-step">
+          <div class="cflow-num">04</div>
+          <div class="cflow-text">
+            <h5>Peer-to-peer encrypted stream begins</h5>
+            <p>Audio and video flow directly between devices, encrypted with SRTP. The Beldex network is no longer involved   the call is a direct encrypted tunnel. No server can record or intercept it.</p>
+          </div>
+        </div>
+        <div class="cflow-step">
+          <div class="cflow-num">05</div>
+          <div class="cflow-text">
+            <h5>Call ends   no recording, no logs</h5>
+            <p>BChat does not record calls. No call log is stored on any server. The session keys are discarded. The only record of the call is on the devices of the two participants, locally.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH8   IN-CHAT PAYMENTS
+════════════════════════════════════ -->
+<section id="ch8" class="section">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 08</div><div class="ch-rule"></div></div>
+  <h2 class="sr">In-chat payments: send money<br>as privately as you<br>send a message.</h2>
+  <p class="lead sr d1" style="max-width:700px;margin-top:1.5rem;margin-bottom:2.5rem;">BChat has a full Beldex wallet integrated directly into every conversation. Because every BChat ID is already linked to a Beldex wallet address at account creation, payments require no setup and no additional registration. And because Beldex uses three distinct privacy technologies, the payment itself is as private as the message that accompanies it.</p>
+
+  <div class="payment-arch sr d1">
+    <div>
+      <div class="privacy-shield">
+        <div class="ps-title">How payment privacy works</div>
+        <div class="ps-item">
+          <div class="ps-ico">🔁</div>
+          <div class="ps-body">
+            <h5>Ring Signatures   who sent it?</h5>
+            <p>Your transaction is signed alongside 10 other real transactions ("decoy outputs") drawn from the blockchain. An observer sees 11 possible senders and cannot determine which one actually sent the payment.</p>
+            <div class="tech">RingCT with 10 decoys per transaction</div>
+          </div>
+        </div>
+        <div class="ps-item">
+          <div class="ps-ico">📫</div>
+          <div class="ps-body">
+            <h5>Stealth Addresses   who received it?</h5>
+            <p>For each incoming payment, your wallet generates a unique one-time address derived from your public key. The transaction is sent to this ephemeral address. Only you can identify it as belonging to you.</p>
+            <div class="tech">Elliptic Curve Diffie-Hellman key derivation</div>
+          </div>
+        </div>
+        <div class="ps-item">
+          <div class="ps-ico">🔒</div>
+          <div class="ps-body">
+            <h5>RingCT   how much was sent?</h5>
+            <p>Transaction amounts are hidden using Pedersen Commitments   a cryptographic proof that the input amounts equal the output amounts without revealing what those amounts actually are. Bulletproofs+ reduces proof size by 80%.</p>
+            <div class="tech">Pedersen Commitments + Bulletproofs+</div>
+          </div>
+        </div>
+        <div class="ps-item">
+          <div class="ps-ico">⚡</div>
+          <div class="ps-body">
+            <h5>Flash Transactions   instant settlement</h5>
+            <p>BDX uses Flash for instant transaction confirmation. The 0.003 BDX fee is flat regardless of amount   sending 10 BDX costs the same as sending 10,000,000 BDX. Cross-border, instant, private.</p>
+            <div class="tech">0.003 BDX flat fee · ~2 minute confirmation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="pay-builder">
+        <div class="pb-header">
+          <div class="pb-header-title">Payment Builder   Try it</div>
+          <div class="pb-live">● Live Preview</div>
+        </div>
+        <div class="pb-body">
+          <div class="pb-field">
+            <label class="pb-label" for="pbTo">Send to (BNS name or BChat ID)</label>
+            <input class="pb-input" id="pbTo" value="alice.bdx" placeholder="alice.bdx or full BChat ID">
+          </div>
+          <div class="pb-field">
+            <label class="pb-label" for="pbAmount">Amount (BDX)</label>
+            <input class="pb-input" id="pbAmount" type="number" value="250" min="0.001" step="0.001">
+          </div>
+          <div class="pb-summary">
+            <div class="pb-summary-row"><span class="pb-key">Recipient</span><span class="pb-value" id="pbSumTo">alice.bdx</span></div>
+            <div class="pb-summary-row"><span class="pb-key">Amount</span><span class="pb-value" id="pbSumAmt">250 BDX</span></div>
+            <div class="pb-summary-row"><span class="pb-key">Network fee</span><span class="pb-value amber">0.003 BDX (always)</span></div>
+            <div class="pb-summary-row"><span class="pb-key">Sender visible?</span><span class="pb-value" style="color:var(--green);">Hidden by Ring Signatures</span></div>
+            <div class="pb-summary-row"><span class="pb-key">Amount visible?</span><span class="pb-value" style="color:var(--green);">Hidden by RingCT</span></div>
+            <div class="pb-summary-row"><span class="pb-key">Total to send</span><span class="pb-value" id="pbSumTotal">250.003 BDX</span></div>
+          </div>
+          <button class="pb-send-btn" onclick="doSend()">Send Payment</button>
+          <div class="pb-sent-msg" id="pbSentMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-teal sr d2">
+    <div class="callout-head teal">Why the fee is always the same</div>
+    <p>Traditional bank transfers and crypto networks charge fees proportional to the transaction amount or to network congestion. The Beldex network uses a fixed fee structure: 0.003 BDX per transaction regardless of size, timing, or destination country. This makes BChat payments genuinely useful for real-world cross-border transactions   there is no fee surprise for large amounts and no waiting for "low-fee windows."</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     CH9   OPEN SOURCE
+════════════════════════════════════ -->
+<section id="ch9" class="section section-paper2">
+<div class="w">
+  <div class="chapter-mark sr"><div class="ch-num">Chapter 09</div><div class="ch-rule"></div></div>
+  <h2 class="sr">Open source: do not<br>trust us. Verify<br>everything yourself.</h2>
+  <p class="lead sr d1" style="max-width:700px;margin-top:1.5rem;margin-bottom:2.5rem;">In privacy software, trust claims without code are worthless. Any company can publish a privacy policy. BChat instead publishes its source code. Every line that handles your messages, keys, and payments is publicly readable on GitHub. Security researchers, auditors, and developers worldwide can verify that BChat behaves exactly as described.</p>
+
+  <div class="oss-grid sr d1">
+    <div class="oss-card">
+      <div class="oss-icon">📱</div>
+      <div class="oss-title">Android Source</div>
+      <div class="oss-desc">The complete Android application including all encryption, routing, and wallet code. Written in Kotlin and Java. The repository includes build instructions so anyone can compile the app themselves and verify that the published APK matches the code.</div>
+      <a class="oss-link" href="https://github.com/Beldex-Coin/bchat-android" target="_blank">github.com/Beldex-Coin/bchat-android →</a>
+    </div>
+    <div class="oss-card">
+      <div class="oss-icon">🔬</div>
+      <div class="oss-title">Audited by CertiK</div>
+      <div class="oss-desc">BChat smart contracts and protocol code have been independently audited by CertiK   one of the most respected blockchain security firms in the industry. The audit report is public. All critical findings were resolved before deployment.</div>
+      <a class="oss-link" href="https://www.certik.com/projects/beldex" target="_blank">View CertiK audit report →</a>
+    </div>
+    <div class="oss-card">
+      <div class="oss-icon">🧪</div>
+      <div class="oss-title">Audited by QuillAudits</div>
+      <div class="oss-desc">A second independent audit was performed by QuillAudits, providing additional coverage and a second set of expert eyes on the codebase. Multiple independent audits reduce the risk of any single firm missing a vulnerability.</div>
+      <a class="oss-link" href="https://www.quillaudits.com/leaderboard/beldex" target="_blank">View QuillAudits profile →</a>
+    </div>
+    <div class="oss-card">
+      <div class="oss-icon">🏛</div>
+      <div class="oss-title">TextSecure Protocol</div>
+      <div class="oss-desc">The encryption protocol itself is not custom-built or proprietary   it is the well-studied, publicly published TextSecure protocol. Years of academic cryptographic research and real-world deployment have validated its security properties. BChat does not ask you to trust new, unproven encryption.</div>
+      <a class="oss-link" href="https://signal.org/docs/" target="_blank">TextSecure protocol documentation →</a>
+    </div>
+    <div class="oss-card">
+      <div class="oss-icon">🤝</div>
+      <div class="oss-title">Community Contributors</div>
+      <div class="oss-desc">BChat is built by community contributors from around the world. Any developer can submit pull requests. Bug reports, feature proposals, and security disclosures are all handled transparently through GitHub. The app's roadmap is shaped by community input.</div>
+      <a class="oss-link" href="https://www.beldex.io/beldex-contributor.html" target="_blank">Become a contributor →</a>
+    </div>
+    <div class="oss-card">
+      <div class="oss-icon">📣</div>
+      <div class="oss-title">Follow the Development</div>
+      <div class="oss-desc">New releases, security advisories, and development updates are announced on the official BChat Twitter and the Beldex Medium blog. The community discusses development direction in public forums   not behind closed doors.</div>
+      <a class="oss-link" href="https://twitter.com/bchat_official" target="_blank">@bchat_official on Twitter →</a>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     DOWNLOAD
+════════════════════════════════════ -->
+<section id="download">
+<div class="w">
+  <div class="sr" style="text-align:center;margin-bottom:1rem;">
+    <h2 style="color:var(--paper);">Get BChat Now</h2>
+    <p style="color:rgba(247,244,238,.55);margin-top:.9rem;font-size:1rem;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.8;">No account registration. No personal information. Just download, tap Create Account, and start messaging privately. Your 24-word recovery seed is your only credential   across all platforms.</p>
+  </div>
+  <div class="dl-grid sr d1">
+    <a class="dl-card" href="https://play.google.com/store/apps/details?id=io.beldex.bchat" target="_blank">
+      <div class="dl-icon">🤖</div>
+      <div class="dl-name">Android</div>
+      <div class="dl-store">Google Play</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://apps.apple.com/us/app/bchat-messenger/id1626066143" target="_blank">
+      <div class="dl-icon">🍎</div>
+      <div class="dl-name">iOS / iPhone</div>
+      <div class="dl-store">App Store</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://bchat.beldex.io/" target="_blank">
+      <div class="dl-icon">🪟</div>
+      <div class="dl-name">Windows</div>
+      <div class="dl-store">Desktop App</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://bchat.beldex.io/" target="_blank">
+      <div class="dl-icon">🍏</div>
+      <div class="dl-name">macOS</div>
+      <div class="dl-store">Desktop App</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+    <a class="dl-card" href="https://bchat.beldex.io/" target="_blank">
+      <div class="dl-icon">🐧</div>
+      <div class="dl-name">Linux</div>
+      <div class="dl-store">Desktop App</div>
+      <div class="dl-arrow">↗</div>
+    </a>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;" class="sr d2">
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,244,238,.25);">BChat · Built on Beldex Blockchain · TextSecure Protocol · Open Source · Zero Data Collected</p>
+    <p style="font-size:.8rem;color:rgba(247,244,238,.3);margin-top:.6rem;">support@beldex.io · github.com/Beldex-Coin · @bchat_official</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ── Scroll reveal ── */
+var obs = new IntersectionObserver(function(e) {
+  e.forEach(function(x) { if (x.isIntersecting) x.target.classList.add('vis'); });
+}, { threshold: 0.06 });
+document.querySelectorAll('.sr').forEach(function(el) { obs.observe(el); });
+
+/* ── Progress bar ── */
+window.addEventListener('scroll', function() {
+  var h = document.documentElement;
+  var pct = (window.scrollY / (h.scrollHeight - window.innerHeight)) * 100;
+  var bar = document.getElementById('progress-fill');
+  if (bar) bar.style.width = Math.min(100, pct) + '%';
+
+  /* Nav highlight */
+  var sections = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9'];
+  var mid = window.scrollY + 120;
+  var cur = null;
+  sections.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.offsetTop <= mid) cur = id;
+  });
+  document.querySelectorAll('.nch').forEach(function(a) {
+    a.classList.toggle('act', a.getAttribute('href') === '#' + cur);
+  });
+}, { passive: true });
+
+/* ── Meter bars animate on view ── */
+var meterObs = new IntersectionObserver(function(e) {
+  e.forEach(function(x) {
+    if (x.isIntersecting) {
+      x.target.querySelectorAll('.meter-bar').forEach(function(b) {
+        b.style.width = (b.getAttribute('data-w') || 0) + '%';
+      });
+    }
+  });
+}, { threshold: 0.2 });
+var mblock = document.querySelector('.meter-block');
+if (mblock) meterObs.observe(mblock);
+
+/* ── Helpers ── */
+var HEX = '0123456789abcdef';
+var WORDS = ['abandon','ability','able','about','above','absent','absorb','abstract','absurd','abuse','access','accident','account','accuse','achieve','acid','acoustic','acquire','across','act','action','actor','actual','adapt','add','addict','address','adjust','admit','adult','advance','advice','aerobic','afford','afraid','again','agent','agree','ahead','aim','air','airport','aisle','alarm','album','alert','alien','all','alley','allow','almost','alone','alpha','already','alter','always','amateur','amazing','amount','amused','analyst','ancient','anger','angle','animal','another','answer','antenna','antique','anxiety','apart','apple','approve','april','arch','arctic','area','arena','argue','arm','armor','army','around','arrow','artist','aspect','assault','asset','assist','assume','athlete','atom','attack','attend','attitude','auction','audit','august','aunt','author','auto','autumn','average','avoid','aware','away'];
+function rh(n){var s='';for(var i=0;i<n;i++)s+=HEX[Math.floor(Math.random()*16)];return s;}
+function rw(n){var a=[];for(var i=0;i<n;i++)a.push(WORDS[Math.floor(Math.random()*WORDS.length)]);return a;}
+function lcg(seed){ var s=seed; return function(){ s=(s*1664525+1013904223)&0xffffffff; return Math.abs(s); }; }
+
+/* ── CH2: Generate ID ── */
+function generateId() {
+  var id = 'bd' + rh(62);
+  var seed = rw(24).join(' ');
+  var wallet = 'bx' + rh(94);
+  document.getElementById('genId').textContent = id;
+  document.getElementById('genSeed').textContent = seed;
+  document.getElementById('genWallet').textContent = wallet;
+}
+
+/* ── CH3: Ratchet chain ── */
+(function buildRatchet() {
+  var wrap = document.getElementById('ratchetChain');
+  if (!wrap) return;
+  var msgs = ['Hello there','Got it!','Are you free?','Yes, around 5pm','Perfect, see you'];
+  var colors = ['#C8680A','#0B7A80','#1A7A4A','#6B5E56','#C8680A'];
+  var html = '';
+  msgs.forEach(function(m, i) {
+    if (i > 0) html += '<div class="rv-arrow">→</div>';
+    html += '<div class="rv-msg">';
+    html += '<div class="rv-bubble" style="border-color:' + colors[i] + ';">' + m + '</div>';
+    html += '<div class="rv-key" style="color:' + colors[i] + ';">Key #' + (i+1) + '<br>' + rh(8) + '</div>';
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+})();
+
+/* ── CH3: Live encrypt / decrypt ── */
+var lastPlaintext = '';
+var leRng = null;
+
+function switchTab(t) {
+  document.getElementById('tab-enc').classList.toggle('on', t==='enc');
+  document.getElementById('tab-dec').classList.toggle('on', t==='dec');
+  document.getElementById('panel-enc').style.display = t==='enc' ? '' : 'none';
+  document.getElementById('panel-dec').style.display = t==='dec' ? '' : 'none';
+}
+
+function doEncrypt() {
+  var inp = document.getElementById('leInput').value.trim();
+  var out = document.getElementById('leOutput');
+  var dec = document.getElementById('decOutput');
+  if (!inp) { out.textContent = 'Please type a message first.'; return; }
+  lastPlaintext = inp;
+  /* Simulate Double Ratchet   different output every call */
+  var seed = Date.now();
+  var r = lcg(seed);
+  var hex = '-----BEGIN BCHAT ENCRYPTED MESSAGE-----\n';
+  var lineLen = 0;
+  var totalChars = Math.max(120, inp.length * 8);
+  for (var i = 0; i < totalChars; i++) {
+    hex += HEX[r() % 16];
+    lineLen++;
+    if (lineLen === 64) { hex += '\n'; lineLen = 0; }
+  }
+  if (lineLen > 0) hex += '\n';
+  hex += '-----END BCHAT ENCRYPTED MESSAGE-----';
+  out.style.opacity = '0';
+  setTimeout(function() { out.textContent = hex; out.style.opacity = '1'; }, 150);
+  dec.textContent = inp;
+}
+
+document.getElementById('leInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doEncrypt(); }
+});
+
+/* ── CH4: Path animation ── */
+var pathRunning = false;
+var pathStep = 0;
+var pathTimer = null;
+
+var NODES_DEF = [
+  { label: 'You',    sub: 'Sender',    color: '#C8680A' },
+  { label: 'Node 1', sub: 'Entry hop', color: '#0B7A80' },
+  { label: 'Node 2', sub: 'Middle',    color: '#1A7A4A' },
+  { label: 'Node 3', sub: 'Exit hop',  color: '#6B5E56' },
+  { label: 'Bob',    sub: 'Recipient', color: '#C8680A' },
+];
+
+function drawPath(step) {
+  var canvas = document.getElementById('pathCanvas');
+  if (!canvas) return;
+  var W = canvas.width, H = canvas.height;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  var nodeCount = NODES_DEF.length;
+  var spacing = W / (nodeCount + 1);
+  var cy = H / 2;
+  var positions = NODES_DEF.map(function(_, i) { return { x: spacing * (i + 1), y: cy }; });
+
+  /* Draw base lines */
+  for (var i = 0; i < positions.length - 1; i++) {
+    ctx.strokeStyle = '#D4CCB8';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 6]);
+    ctx.beginPath();
+    ctx.moveTo(positions[i].x, cy);
+    ctx.lineTo(positions[i+1].x, cy);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  /* Draw progress lines */
+  for (var j = 0; j < Math.min(step, positions.length - 1); j++) {
+    ctx.strokeStyle = NODES_DEF[j].color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(positions[j].x, cy);
+    ctx.lineTo(positions[j+1].x, cy);
+    ctx.stroke();
+    /* Arrow */
+    var mx = (positions[j].x + positions[j+1].x) / 2;
+    ctx.fillStyle = NODES_DEF[j].color;
+    ctx.beginPath();
+    ctx.moveTo(mx + 6, cy);
+    ctx.lineTo(mx - 5, cy - 6);
+    ctx.lineTo(mx - 5, cy + 6);
+    ctx.fill();
+  }
+
+  /* Draw nodes */
+  NODES_DEF.forEach(function(n, i) {
+    var p = positions[i];
+    var active = i <= step;
+    var r = active ? 22 : 18;
+    ctx.fillStyle = active ? n.color : '#E8E4DB';
+    ctx.strokeStyle = n.color;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    /* label */
+    ctx.fillStyle = active ? (n.color === '#C8680A' ? '#FFFFFF' : '#FFFFFF') : n.color;
+    ctx.font = 'bold 11px IBM Plex Sans, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(n.label, p.x, p.y - 1);
+    /* sub */
+    ctx.fillStyle = '#6B5E56';
+    ctx.font = '10px IBM Plex Sans, sans-serif';
+    ctx.fillText(n.sub, p.x, p.y + 36);
+    /* Layer tag */
+    if (active && i > 0 && i < 4) {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 9px IBM Plex Mono, monospace';
+      ctx.fillText('Layer ' + i + ' peeled', p.x, p.y - 38);
+    }
+  });
+
+  /* Status */
+  var statuses = ['Ready','Message encrypted in 3 layers, entering network...','Node 1: peels outer layer. Sees your IP only.','Node 2: peels middle layer. Passes it forward.','Node 3: peels last layer. Delivers to Bob.','Bob decrypts. Only Bob can read it. ✓'];
+  document.getElementById('pathStatus').textContent = statuses[Math.min(step, statuses.length-1)];
+}
+
+function sizePathCanvas() {
+  var c = document.getElementById('pathCanvas');
+  if (c) { c.width = c.parentElement.clientWidth - 32; drawPath(pathStep); }
+}
+
+function runPath() {
+  if (pathRunning) return;
+  pathRunning = true; pathStep = 0;
+  pathTimer = setInterval(function() {
+    pathStep++;
+    drawPath(pathStep);
+    if (pathStep >= NODES_DEF.length) {
+      clearInterval(pathTimer); pathRunning = false;
+      setTimeout(function() { pathStep = 0; drawPath(0); }, 2000);
+    }
+  }, 700);
+}
+
+function resetPath() {
+  clearInterval(pathTimer); pathRunning = false; pathStep = 0; drawPath(0);
+}
+
+/* ── CH5: Swarm canvas ── */
+var swarmT = 0;
+var swarmAF = null;
+
+function drawSwarm() {
+  var canvas = document.getElementById('swarmCanvas');
+  if (!canvas) return;
+  var W = canvas.width, H = canvas.height;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  /* Background */
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  var CX = W * 0.5, CY = H * 0.5;
+  var swarmR = Math.min(W, H) * 0.28;
+
+  /* Sender */
+  var senderX = W * 0.08, senderY = H * 0.35;
+  ctx.fillStyle = '#C8680A';
+  ctx.beginPath(); ctx.arc(senderX, senderY, 20, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#1C1917'; ctx.font = 'bold 11px IBM Plex Sans, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Sender', senderX, senderY + 32);
+
+  /* Recipient */
+  var recipX = W * 0.92, recipY = H * 0.35;
+  var recipColor = (swarmT > 300) ? '#1A7A4A' : '#D4CCB8';
+  ctx.fillStyle = recipColor;
+  ctx.beginPath(); ctx.arc(recipX, recipY, 20, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#1C1917'; ctx.textAlign = 'center';
+  ctx.fillText((swarmT > 300) ? 'Online ✓' : 'Offline', recipX, recipY + 32);
+
+  /* Swarm nodes in circle */
+  var swarmCount = 8;
+  var swarmNodes = [];
+  for (var i = 0; i < swarmCount; i++) {
+    var ang = (i / swarmCount) * Math.PI * 2 - Math.PI / 2;
+    swarmNodes.push({ x: CX + Math.cos(ang) * swarmR, y: CY + Math.sin(ang) * swarmR });
+  }
+
+  /* Swarm circle label */
+  ctx.strokeStyle = 'rgba(11,122,128,.15)'; ctx.lineWidth = 1; ctx.setLineDash([4, 6]);
+  ctx.beginPath(); ctx.arc(CX, CY, swarmR + 14, 0, Math.PI * 2); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#0B7A80'; ctx.font = '10px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
+  ctx.fillText('SWARM   8 masternodes holding encrypted copies', CX, CY + swarmR + 30);
+  ctx.fillText('Message stored as ciphertext · No node can read it', CX, CY + swarmR + 44);
+
+  /* Draw swarm nodes */
+  swarmNodes.forEach(function(n, i) {
+    var has = swarmT > 80;
+    ctx.fillStyle = has ? 'rgba(11,122,128,.15)' : '#F0EDE6';
+    ctx.strokeStyle = has ? '#0B7A80' : '#D4CCB8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(n.x, n.y, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    if (has) {
+      ctx.fillStyle = '#0B7A80'; ctx.font = 'bold 9px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🔒', n.x, n.y);
+    }
+  });
+
+  /* Traveling packet */
+  var phase = swarmT % 480;
+  if (phase < 80) {
+    /* Sender to first swarm node */
+    var prog = phase / 80;
+    var px = senderX + (swarmNodes[0].x - senderX) * prog;
+    var py = senderY + (swarmNodes[0].y - senderY) * prog;
+    ctx.fillStyle = '#C8680A';
+    ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 8px IBM Plex Mono'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('📨', px, py);
+  } else if (phase >= 80 && phase < 200) {
+    /* Spread to swarm */
+    var sp = (phase - 80) / 120;
+    for (var k = 0; k < swarmCount; k++) {
+      if (k / swarmCount <= sp) {
+        var src = swarmNodes[0];
+        var dst = swarmNodes[k];
+        ctx.strokeStyle = 'rgba(11,122,128,.25)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(src.x, src.y); ctx.lineTo(dst.x, dst.y); ctx.stroke();
+      }
+    }
+  } else if (phase >= 200 && phase < 300) {
+    /* Waiting */
+    var wt = (phase - 200) / 100;
+    ctx.fillStyle = '#6B5E56'; ctx.font = '11px IBM Plex Sans, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Recipient offline... message held securely in swarm', CX, 22);
+  } else if (phase >= 300 && phase < 420) {
+    /* Recipient comes online, retrieves */
+    var rp = (phase - 300) / 120;
+    var sx = swarmNodes[0].x + (recipX - swarmNodes[0].x) * rp;
+    var sy = swarmNodes[0].y + (recipY - swarmNodes[0].y) * rp;
+    ctx.fillStyle = '#1A7A4A';
+    ctx.beginPath(); ctx.arc(sx, sy, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#1C1917'; ctx.font = '11px IBM Plex Sans, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Recipient online   retrieving from swarm...', CX, 22);
+  } else {
+    ctx.fillStyle = '#1A7A4A'; ctx.font = 'bold 11px IBM Plex Sans, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('✓ Message delivered and decrypted. Swarm deletes its copies.', CX, 22);
+  }
+
+  swarmT++;
+  swarmAF = requestAnimationFrame(drawSwarm);
+}
+
+/* ── CH6: BNS lookup ── */
+function doLookup() {
+  var name = document.getElementById('bnsInput').value.trim();
+  if (!name) return;
+  var cleanName = name.toLowerCase().replace(/[^a-z0-9.]/g, '') || 'unknown.bdx';
+  var seed = 0;
+  for (var i = 0; i < cleanName.length; i++) seed += cleanName.charCodeAt(i) * (i + 1);
+  var r = lcg(seed);
+  var genId = 'bd' + Array.from({length: 62}, function() { return HEX[r() % 16]; }).join('');
+  var genWallet = 'bx' + Array.from({length: 94}, function() { return HEX[r() % 16]; }).join('');
+  document.getElementById('bnsResName').innerHTML = cleanName + ' <span class="bns-badge">✓ verified</span>';
+  document.getElementById('bnsResId').textContent = genId;
+  document.getElementById('bnsResWallet').textContent = genWallet;
+  document.getElementById('bnsResStatus').innerHTML = '<span style="color:var(--green);">● Active registration · On-chain since block #4,293,842</span>';
+  var res = document.getElementById('bnsResult');
+  res.classList.add('show');
+}
+
+/* ── CH8: Payment builder ── */
+function updatePaySummary() {
+  var to = document.getElementById('pbTo').value || 'unknown';
+  var amt = parseFloat(document.getElementById('pbAmount').value) || 0;
+  document.getElementById('pbSumTo').textContent = to;
+  document.getElementById('pbSumAmt').textContent = amt.toFixed(3) + ' BDX';
+  document.getElementById('pbSumTotal').textContent = (amt + 0.003).toFixed(3) + ' BDX';
+}
+
+document.getElementById('pbTo').addEventListener('input', updatePaySummary);
+document.getElementById('pbAmount').addEventListener('input', updatePaySummary);
+
+function doSend() {
+  var msg = document.getElementById('pbSentMsg');
+  var hash = rh(64);
+  msg.innerHTML = '✓ Sent! TX Hash: <span style="font-size:.6rem;">' + hash + '</span>';
+  setTimeout(function() { msg.textContent = ''; }, 4000);
+}
+
+/* ── INIT ── */
+window.addEventListener('load', function() {
+  sizePathCanvas();
+  var sc = document.getElementById('swarmCanvas');
+  if (sc) { sc.width = sc.parentElement.clientWidth || 800; drawSwarm(); }
+});
+
+window.addEventListener('resize', function() {
+  sizePathCanvas();
+  var sc = document.getElementById('swarmCanvas');
+  if (sc) { sc.width = sc.parentElement.clientWidth || 800; }
+}, { passive: true });
+</script>
+</body>
+</html>

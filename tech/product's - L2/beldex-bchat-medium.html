@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BChat   How Private Messaging Really Works</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0:#060B14; --bg1:#080F1A; --bg2:#0C1422; --bg3:#111B2E; --bg4:#162338;
+  --ln:#1A2D44; --ln2:#254060;
+  --tl:#00D4A8; --tl2:#00B891; --tl3:#00EBBE;
+  --tl-gl:rgba(0,212,168,.12); --tl-gd:rgba(0,212,168,.07);
+  --co:#FF6B47; --co2:rgba(255,107,71,.12);
+  --gd:#FFD166; --gd2:rgba(255,209,102,.10);
+  --sk:#5BA4FF;
+  --tx:#DFF0EA; --tx2:#8AADA3; --tx3:#3A6458; --txd:#1E3D34;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg0);color:var(--tx);font-family:'Outfit',sans-serif;font-size:1rem;line-height:1.75;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,168,.007) 2px,rgba(0,212,168,.007) 4px);}
+
+.w{max-width:1100px;margin:0 auto;padding:0 2.25rem;position:relative;z-index:2;}
+.wn{max-width:780px;margin:0 auto;padding:0 2.25rem;position:relative;z-index:2;}
+
+/* TYPE */
+h1{font-family:'Sora',sans-serif;font-size:clamp(2.8rem,6.5vw,5.5rem);font-weight:800;line-height:.95;letter-spacing:-.02em;}
+h2{font-family:'Sora',sans-serif;font-size:clamp(1.9rem,4vw,3.2rem);font-weight:700;line-height:1.0;letter-spacing:-.01em;}
+h3{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;}
+.tl{color:var(--tl);} .co{color:var(--co);} .gd{color:var(--gd);} .sk{color:var(--sk);}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tl);display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--tl);}
+
+/* REVEAL */
+.fi{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+.fi.on{opacity:1;transform:none;}
+.d1{transition-delay:.1s;} .d2{transition-delay:.2s;} .d3{transition-delay:.3s;} .d4{transition-delay:.4s;}
+
+/* SECTIONS */
+.sec{padding:5.5rem 0;border-top:1px solid var(--ln);position:relative;overflow:hidden;}
+.sec-alt{background:var(--bg1);}
+.sec-alt2{background:var(--bg2);}
+
+/* PROGRESS */
+#progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:999;background:var(--bg3);}
+#pbar{height:100%;width:0;background:linear-gradient(90deg,var(--tl),var(--tl3));transition:width .1s;}
+
+/* NAV */
+#nav{position:fixed;top:2px;left:0;right:0;z-index:900;background:rgba(6,11,20,.92);border-bottom:1px solid var(--ln);backdrop-filter:blur(16px);}
+.nav-row{max-width:1100px;margin:0 auto;padding:0 2.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:800;color:var(--tx);text-decoration:none;letter-spacing:-.02em;}
+.nav-logo span{color:var(--tl);}
+.nav-links{display:flex;gap:.15rem;}
+.nl{font-size:.78rem;font-weight:600;color:var(--tx2);text-decoration:none;padding:.32rem .7rem;border-radius:5px;transition:all .18s;white-space:nowrap;}
+.nl:hover{color:var(--tl);background:var(--tl-gl);}
+.nav-dl{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.45rem 1.1rem;background:var(--tl);color:var(--bg0);border-radius:6px;text-decoration:none;font-weight:700;transition:background .18s;}
+.nav-dl:hover{background:var(--tl3);}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:6rem 0 0;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 40% 35%,rgba(0,212,168,.07) 0%,transparent 60%),radial-gradient(ellipse 45% 45% at 85% 80%,rgba(255,107,71,.05) 0%,transparent 55%);}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.hero-tag{display:flex;align-items:center;gap:.7rem;margin-bottom:1.6rem;}
+.hero-tag-line{width:30px;height:2px;background:var(--tl);border-radius:1px;}
+.hero-tag-text{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tl);}
+.hero-sub{font-size:1.1rem;color:var(--tx2);line-height:1.85;max-width:480px;margin-bottom:2rem;}
+.hero-stats{display:flex;gap:2rem;margin-bottom:2.5rem;}
+.hstat{border-left:2px solid var(--tl);padding-left:.85rem;}
+.hstat-n{font-family:'Sora',sans-serif;font-size:1.9rem;font-weight:800;color:var(--tl);line-height:1;}
+.hstat-l{font-size:.75rem;color:var(--tx2);margin-top:.15rem;text-transform:uppercase;letter-spacing:.06em;}
+.hero-btns{display:flex;gap:.85rem;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-weight:700;font-size:.95rem;padding:.7rem 1.65rem;border-radius:8px;text-decoration:none;cursor:pointer;border:none;transition:all .2s;}
+.btn-fill{background:var(--tl);color:var(--bg0);}
+.btn-fill:hover{background:var(--tl3);}
+.btn-out{background:transparent;color:var(--tl);border:1.5px solid rgba(0,212,168,.4);}
+.btn-out:hover{border-color:var(--tl);background:var(--tl-gl);}
+
+/* HERO DEMO */
+.hero-demo{background:var(--bg2);border:1px solid var(--ln2);border-radius:16px;overflow:hidden;}
+.demo-bar{background:var(--bg3);border-bottom:1px solid var(--ln);padding:.75rem 1.25rem;display:flex;align-items:center;gap:.5rem;}
+.demo-dot{width:9px;height:9px;border-radius:50%;}
+.demo-bar-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2);margin-left:.35rem;}
+.demo-split{display:grid;grid-template-columns:1fr 1fr;}
+.demo-pane{padding:1.2rem 1.3rem;border-right:1px solid var(--ln);}
+.demo-pane:last-child{border-right:none;}
+.demo-pane-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.6rem;}
+.dp-you{color:var(--tl);} .dp-network{color:var(--co);}
+.demo-input{width:100%;background:var(--bg1);border:1px solid var(--ln2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.88rem;padding:.6rem .85rem;border-radius:7px;outline:none;resize:none;transition:border-color .2s;line-height:1.5;}
+.demo-input:focus{border-color:var(--tl);}
+.demo-cipher{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--co);word-break:break-all;line-height:1.75;min-height:70px;opacity:.7;}
+.demo-badge{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;margin-top:.7rem;}
+.badge-tl{color:var(--tl);} .badge-co{color:var(--co);}
+
+/* HERO STRIP */
+.hero-strip{position:relative;z-index:2;border-top:1px solid var(--ln);background:var(--bg1);margin-top:3.5rem;}
+.strip-inner{display:flex;overflow-x:auto;scrollbar-width:none;}
+.strip-inner::-webkit-scrollbar{display:none;}
+.strip-item{display:flex;align-items:center;gap:.65rem;padding:.9rem 1.6rem;border-right:1px solid var(--ln);flex-shrink:0;cursor:pointer;transition:background .18s;text-decoration:none;}
+.strip-item:last-child{border-right:none;}
+.strip-item:hover{background:var(--tl-gl);}
+.strip-num{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--tl);}
+.strip-txt{font-size:.78rem;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;}
+
+/* CALLOUT */
+.callout{padding:1.1rem 1.35rem;border-radius:9px;border-left:3px solid;margin:1.4rem 0;}
+.callout-tl{border-color:var(--tl);background:var(--tl-gl);}
+.callout-co{border-color:var(--co);background:var(--co2);}
+.callout-gd{border-color:var(--gd);background:var(--gd2);}
+.callout p{font-size:.9rem;color:var(--tx2);line-height:1.65;}
+.callout-head{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem;}
+.callout-tl .callout-head{color:var(--tl);}
+.callout-co .callout-head{color:var(--co);}
+.callout-gd .callout-head{color:var(--gd);}
+
+/* CH1 PROBLEM */
+.problem-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.app-picker{display:flex;flex-direction:column;gap:.65rem;}
+.app-btn{display:flex;align-items:center;gap:1rem;padding:1.1rem 1.4rem;border:1.5px solid var(--ln2);background:var(--bg2);border-radius:12px;cursor:pointer;transition:all .22s;text-align:left;width:100%;}
+.app-btn:hover{border-color:var(--tx3);}
+.app-btn.sel-bad{border-color:var(--co);background:rgba(255,107,71,.07);}
+.app-btn.sel-good{border-color:var(--tl);background:var(--tl-gl);}
+.app-icon{font-size:1.75rem;flex-shrink:0;}
+.app-btn-name{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;color:var(--tx);}
+.app-btn-sub{font-size:.78rem;color:var(--tx2);margin-top:.1rem;}
+.app-data-badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .65rem;border-radius:4px;flex-shrink:0;}
+.badge-red{background:rgba(255,107,71,.12);color:var(--co);border:1px solid rgba(255,107,71,.25);}
+.badge-grn{background:var(--tl-gl);color:var(--tl);border:1px solid rgba(0,212,168,.25);}
+.data-panel{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;padding:1.5rem;min-height:320px;position:sticky;top:72px;}
+.dp-header{margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:1px solid var(--ln);}
+.dp-app-name{font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:var(--tx);}
+.dp-verdict{font-size:.8rem;margin-top:.25rem;}
+.dp-list{display:flex;flex-direction:column;gap:.5rem;}
+.dp-item{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem .8rem;border-radius:8px;font-size:.9rem;color:var(--tx2);}
+.dp-item.bad{background:rgba(255,107,71,.07);border:1px solid rgba(255,107,71,.15);}
+.dp-item.good{background:var(--tl-gl);border:1px solid rgba(0,212,168,.2);}
+.dp-item.neutral{background:rgba(255,209,102,.06);border:1px solid rgba(255,209,102,.15);}
+.dp-ico{flex-shrink:0;}
+.dp-item.bad .dp-txt{color:rgba(255,107,71,.9);}
+.dp-item.good .dp-txt{color:rgba(0,212,168,.9);}
+.dp-item.neutral .dp-txt{color:rgba(255,209,102,.85);}
+.dp-empty{color:var(--tx3);font-size:.9rem;padding:1rem 0;text-align:center;}
+
+/* CH2 IDENTITY */
+.identity-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.vs-block{display:flex;flex-direction:column;gap:.85rem;}
+.vs-card{border-radius:12px;padding:1.3rem 1.4rem;border:1.5px solid;}
+.vs-card.bad{border-color:rgba(255,107,71,.3);background:rgba(255,107,71,.05);}
+.vs-card.good{border-color:rgba(0,212,168,.3);background:var(--tl-gl);}
+.vc-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.65rem;}
+.vc-label.bad{color:var(--co);} .vc-label.good{color:var(--tl);}
+.vc-row{display:flex;align-items:center;gap:.6rem;font-size:.9rem;color:var(--tx2);margin-bottom:.45rem;font-weight:500;}
+.vc-row:last-child{margin-bottom:0;}
+.vc-row.bad .vc-txt{color:rgba(255,107,71,.85);}
+.vc-row.good .vc-txt{color:rgba(0,212,168,.9);}
+.creation-card{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;overflow:hidden;}
+.cc-topbar{background:var(--bg3);border-bottom:1px solid var(--ln);padding:.9rem 1.3rem;display:flex;align-items:center;gap:.5rem;}
+.cc-dot{width:9px;height:9px;border-radius:50%;}
+.cc-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2);margin-left:.3rem;}
+.cc-body{padding:1.5rem;}
+.cc-steps{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.5rem;}
+.cc-step{display:flex;align-items:center;gap:.85rem;padding:.8rem 1rem;border-radius:9px;background:var(--bg3);border:1px solid var(--ln);opacity:.35;transition:all .4s ease;}
+.cc-step.active{opacity:1;border-color:var(--tl);background:var(--tl-gl);}
+.cc-step.done{opacity:.7;border-color:var(--ln2);}
+.cc-step-num{width:28px;height:28px;border-radius:50%;border:2px solid var(--ln2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--tx2);flex-shrink:0;transition:all .4s;}
+.cc-step.active .cc-step-num{border-color:var(--tl);color:var(--tl);background:rgba(0,212,168,.1);}
+.cc-step.done .cc-step-num{background:var(--tl);border-color:var(--tl);color:var(--bg0);}
+.cc-step-title{font-size:.88rem;font-weight:700;color:var(--tx);}
+.cc-step-desc{font-size:.78rem;color:var(--tx2);line-height:1.45;margin-top:.15rem;}
+.cc-result{background:var(--bg0);border:1px solid var(--ln);border-radius:10px;padding:1.1rem;min-height:90px;}
+.cc-result-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tl);margin-bottom:.5rem;}
+.cc-result-value{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--tx);word-break:break-all;line-height:1.7;}
+.cc-result-empty{font-size:.82rem;color:var(--tx3);font-style:italic;}
+.cc-btn-row{display:flex;gap:.65rem;margin-top:1.2rem;}
+.cc-btn{padding:.58rem 1.2rem;border-radius:7px;font-weight:700;font-size:.85rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;border:none;}
+.cc-btn-primary{background:var(--tl);color:var(--bg0);}
+.cc-btn-primary:hover{background:var(--tl3);}
+.cc-btn-secondary{background:var(--bg3);color:var(--tx2);border:1px solid var(--ln2);}
+.cc-btn-secondary:hover{border-color:var(--tl);color:var(--tl);}
+
+/* CH3 ENCRYPTION */
+.enc-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.enc-steps-list{display:flex;flex-direction:column;gap:.6rem;margin-top:1.5rem;}
+.es{display:flex;align-items:flex-start;gap:.85rem;padding:.85rem 1rem;border-radius:10px;background:var(--bg2);border:1px solid var(--ln);transition:border-color .2s;}
+.es:hover{border-color:var(--tl);}
+.es-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem;}
+.es-title{font-size:.92rem;font-weight:700;color:var(--tx);margin-bottom:.18rem;}
+.es-desc{font-size:.82rem;color:var(--tx2);line-height:1.5;}
+.enc-box{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;overflow:hidden;}
+.eb-topbar{background:var(--bg3);border-bottom:1px solid var(--ln);padding:.85rem 1.3rem;display:flex;align-items:center;gap:.5rem;}
+.eb-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2);margin-left:.3rem;}
+.eb-body{padding:1.4rem;}
+.eb-input-row{display:grid;grid-template-columns:1fr auto;gap:.6rem;margin-bottom:1rem;}
+.eb-input{background:var(--bg1);border:1.5px solid var(--ln2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:.65rem .9rem;border-radius:7px;outline:none;transition:border-color .2s;}
+.eb-input:focus{border-color:var(--tl);}
+.eb-go{padding:.65rem 1.1rem;background:var(--tl);color:var(--bg0);border:none;border-radius:7px;font-weight:700;font-size:.85rem;cursor:pointer;transition:background .18s;white-space:nowrap;font-family:'Outfit',sans-serif;}
+.eb-go:hover{background:var(--tl3);}
+.lock-stage{display:grid;grid-template-columns:1fr 40px 1fr;align-items:center;gap:.5rem;margin-bottom:1rem;}
+.ls-box{background:var(--bg1);border:1px solid var(--ln);border-radius:8px;padding:.75rem .9rem;min-height:72px;}
+.ls-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem;}
+.ls-box.plain .ls-label{color:var(--tl);}
+.ls-box.cipher .ls-label{color:var(--co);}
+.ls-text{font-size:.85rem;color:var(--tx);line-height:1.55;word-break:break-all;}
+.ls-text.cipher-text{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(255,107,71,.8);line-height:1.7;}
+.ls-text.empty{color:var(--tx3);font-style:italic;font-size:.82rem;}
+.ls-arrow{text-align:center;font-size:1.1rem;color:var(--gd);}
+.unlock-row{display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;}
+.eb-unlock{padding:.5rem 1.1rem;background:var(--bg3);color:var(--tl);border:1px solid rgba(0,212,168,.3);border-radius:7px;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .18s;font-family:'Outfit',sans-serif;}
+.eb-unlock:hover{background:var(--tl-gl);}
+.eb-unlock:disabled{opacity:.35;cursor:not-allowed;}
+.eb-proof{font-size:.8rem;color:var(--tl);display:none;align-items:center;gap:.4rem;}
+.eb-proof.show{display:flex;}
+.eb-note{font-size:.78rem;color:var(--tx2);margin-top:.8rem;line-height:1.55;}
+
+/* CH4 JOURNEY */
+#journeyCanvas{display:block;width:100%;background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;}
+.journey-controls{display:flex;gap:.65rem;margin-top:.9rem;align-items:center;flex-wrap:wrap;}
+.jbtn{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:6px;cursor:pointer;transition:all .2s;border:none;}
+.jbtn-primary{background:var(--tl);color:var(--bg0);font-weight:700;}
+.jbtn-primary:hover{background:var(--tl3);}
+.jbtn-secondary{background:var(--bg3);color:var(--tx2);border:1px solid var(--ln2);}
+.jbtn-secondary:hover{border-color:var(--tl);color:var(--tl);}
+.journey-status{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--tl);letter-spacing:.08em;margin-left:.3rem;}
+.journey-info{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--ln);border:1px solid var(--ln);border-radius:10px;overflow:hidden;margin-top:1.5rem;}
+.ji-cell{background:var(--bg2);padding:.9rem 1rem;transition:background .3s;}
+.ji-cell.lit{background:var(--tl-gl);}
+.ji-node{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tl);margin-bottom:.3rem;}
+.ji-title{font-size:.82rem;font-weight:700;color:var(--tx);margin-bottom:.25rem;}
+.ji-sees{font-size:.75rem;color:var(--tx2);line-height:1.45;}
+.ji-sees span.ok{color:var(--tl);}
+.ji-sees span.no{color:var(--co);}
+
+/* CH4b SWARM */
+#swarmCanvas{display:block;width:100%;background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;}
+.swarm-phase-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.1rem;}
+.swarm-phase{flex:1;min-width:130px;padding:.55rem .9rem;border-radius:8px;border:1.5px solid var(--ln2);background:var(--bg2);font-size:.8rem;font-weight:600;color:var(--tx2);transition:all .3s;text-align:center;cursor:pointer;}
+.swarm-phase:hover{border-color:var(--tx3);}
+.swarm-phase.active{border-color:var(--tl);background:var(--tl-gl);color:var(--tl);}
+.swarm-phase.done{border-color:var(--ln2);color:var(--tx3);}
+.swarm-status-box{background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:.85rem 1.2rem;margin-top:1rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--tl);letter-spacing:.06em;min-height:42px;transition:all .3s;}
+.swarm-btns{display:flex;gap:.65rem;margin-top:1rem;flex-wrap:wrap;}
+
+/* CH5 FEATURES */
+.feature-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.ft{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;border-radius:8px;cursor:pointer;background:var(--bg2);border:1.5px solid var(--ln2);font-size:.88rem;font-weight:600;color:var(--tx2);transition:all .22s;}
+.ft:hover{border-color:var(--tx3);color:var(--tx);}
+.ft.on{background:var(--tl-gl);border-color:var(--tl);color:var(--tl);}
+.ft-icon{font-size:1.05rem;}
+.feature-panel{display:none;}
+.feature-panel.on{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+.fp-title{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.75rem;}
+.fp-desc{font-size:1rem;color:var(--tx2);line-height:1.8;}
+.fp-points{display:flex;flex-direction:column;gap:.55rem;margin-top:1.25rem;}
+.fp-pt{display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;color:var(--tx2);line-height:1.55;}
+.fp-pt .dot{width:6px;height:6px;border-radius:50%;background:var(--tl);flex-shrink:0;margin-top:.55rem;}
+.fp-demo{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:14px;overflow:hidden;}
+.fp-demo-bar{background:var(--bg3);border-bottom:1px solid var(--ln);padding:.75rem 1.2rem;}
+.fp-demo-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2);}
+.fp-demo-body{padding:1.3rem;}
+.mini-chat{display:flex;flex-direction:column;gap:.5rem;max-height:240px;overflow-y:auto;}
+.mc-bubble{padding:.5rem .85rem;border-radius:10px;max-width:88%;font-size:.82rem;line-height:1.45;}
+.mc-out{background:var(--tl-gl);border:1px solid rgba(0,212,168,.2);color:var(--tx);align-self:flex-end;border-bottom-right-radius:3px;}
+.mc-in{background:var(--bg3);border:1px solid var(--ln);color:var(--tx2);align-self:flex-start;border-bottom-left-radius:3px;}
+.mc-name{font-size:.6rem;font-family:'JetBrains Mono',monospace;color:var(--tx3);margin-bottom:.25rem;}
+.mc-sys{align-self:center;font-size:.6rem;font-family:'JetBrains Mono',monospace;color:var(--tl);letter-spacing:.06em;}
+@keyframes popIn{from{opacity:0;transform:scale(.9) translateY(4px);}to{opacity:1;transform:none;}}
+.mc-bubble{animation:popIn .3s ease both;}
+.call-demo{text-align:center;padding:.5rem 0;}
+.cd-avatar{font-size:2.5rem;margin-bottom:.5rem;}
+.cd-name{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.25rem;}
+.cd-status{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;}
+.cd-status.connected{color:var(--tl);}
+.cd-buttons{display:flex;justify-content:center;gap:.85rem;margin-top:1.1rem;}
+.cd-btn{width:44px;height:44px;border-radius:50%;border:none;font-size:1.1rem;cursor:pointer;transition:all .2s;}
+.cd-btn.red{background:rgba(255,107,71,.2);color:var(--co);}
+.cd-btn.grn{background:var(--tl-gl);color:var(--tl);}
+.cd-encrypted{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--tl);letter-spacing:.08em;margin-top:.65rem;}
+.cd-waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:30px;margin-top:.6rem;}
+.wave-bar{width:3px;background:var(--tl);border-radius:2px;animation:waveBounce .8s ease-in-out infinite;}
+@keyframes waveBounce{0%,100%{height:4px;}50%{height:20px;}}
+@keyframes ring{0%{transform:rotate(-12deg);}100%{transform:rotate(12deg);}}
+
+/* BNS */
+.bns-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.bns-box{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;overflow:hidden;}
+.bns-topbar{background:var(--bg3);border-bottom:1px solid var(--ln);padding:.85rem 1.3rem;}
+.bns-topbar-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2);}
+.bns-body{padding:1.35rem;}
+.bns-before-after{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.65rem;margin-bottom:1.25rem;}
+.bna-side{background:var(--bg1);border:1px solid var(--ln);border-radius:7px;padding:.65rem .85rem;}
+.bna-label{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;}
+.bna-side.ugly .bna-label{color:var(--tx3);}
+.bna-side.clean .bna-label{color:var(--tl);}
+.bna-value{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--tx);word-break:break-all;line-height:1.6;}
+.bna-value.clean-val{font-size:.92rem;font-weight:700;color:var(--tl);}
+.bna-arrow{text-align:center;color:var(--gd);font-size:1.2rem;}
+.bns-input-row{display:flex;gap:.6rem;}
+.bns-input{font-family:'JetBrains Mono',monospace;font-size:.82rem;flex:1;background:var(--bg1);border:1.5px solid var(--ln2);color:var(--tx);padding:.55rem .85rem;border-radius:7px;outline:none;transition:border-color .2s;}
+.bns-input:focus{border-color:var(--tl);}
+.bns-btn{padding:.55rem 1.1rem;background:var(--tl);color:var(--bg0);border:none;border-radius:7px;font-weight:700;font-size:.82rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:background .18s;white-space:nowrap;}
+.bns-btn:hover{background:var(--tl3);}
+.bns-result{margin-top:1rem;background:var(--bg1);border:1.5px solid rgba(0,212,168,.25);border-radius:9px;padding:1rem 1.1rem;display:none;}
+.bns-result.show{display:block;}
+.br-row{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.45rem;font-size:.82rem;}
+.br-row:last-child{margin-bottom:0;}
+.br-key{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--tx2);width:72px;flex-shrink:0;padding-top:.05rem;text-transform:uppercase;letter-spacing:.06em;}
+.br-val{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--tl);word-break:break-all;line-height:1.5;}
+.verified-chip{display:inline-flex;align-items:center;gap:.3rem;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;background:var(--tl-gl);color:var(--tl);padding:.18rem .55rem;border-radius:4px;border:1px solid rgba(0,212,168,.25);margin-left:.35rem;}
+
+/* PAYMENTS */
+.pay-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.pay-privacy-cards{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:1.5rem;}
+.ppc{background:var(--bg2);border:1px solid var(--ln2);border-radius:12px;padding:1.1rem;transition:border-color .22s;}
+.ppc:hover{border-color:var(--tl);}
+.ppc-icon{font-size:1.35rem;margin-bottom:.4rem;}
+.ppc-title{font-size:.88rem;font-weight:700;color:var(--tx);margin-bottom:.25rem;}
+.ppc-desc{font-size:.78rem;color:var(--tx2);line-height:1.5;}
+.pay-box{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:16px;overflow:hidden;}
+.pay-topbar{background:var(--bg3);border-bottom:1px solid var(--ln);padding:.85rem 1.3rem;display:flex;align-items:center;justify-content:space-between;}
+.pay-topbar-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx2);}
+.pay-live{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--tl);letter-spacing:.1em;}
+.pay-body{padding:1.4rem;}
+.pay-field{margin-bottom:.9rem;}
+.pay-label{display:block;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tx2);margin-bottom:.35rem;}
+.pay-input{width:100%;background:var(--bg1);border:1.5px solid var(--ln2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:.6rem .9rem;border-radius:7px;outline:none;transition:border-color .2s;}
+.pay-input:focus{border-color:var(--tl);}
+.pay-summary{background:var(--bg1);border:1px solid var(--ln);border-radius:9px;padding:1rem 1.1rem;margin-top:.25rem;}
+.psum-row{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;margin-bottom:.4rem;}
+.psum-row:last-child{margin-bottom:0;font-weight:700;font-size:.92rem;border-top:1px solid var(--ln);padding-top:.4rem;margin-top:.4rem;}
+.psum-key{color:var(--tx2);}
+.psum-val{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--tl);}
+.psum-val.gd{color:var(--gd);}
+.pay-shield-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;}
+.shield-badge{display:flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .65rem;border-radius:4px;border:1px solid;}
+.sb-tl{color:var(--tl);border-color:rgba(0,212,168,.25);background:var(--tl-gl);}
+.pay-send-btn{width:100%;margin-top:1rem;padding:.7rem;background:var(--tl);color:var(--bg0);border:none;border-radius:8px;font-weight:800;font-size:.92rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:background .2s;}
+.pay-send-btn:hover{background:var(--tl3);}
+.pay-msg{text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--tl);margin-top:.6rem;min-height:1.2em;letter-spacing:.08em;}
+
+/* DOWNLOAD */
+#download{padding:5.5rem 0;background:var(--bg1);border-top:1px solid var(--ln);}
+.dl-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.85rem;margin-top:2.5rem;}
+.dl-card{background:var(--bg2);border:1.5px solid var(--ln2);border-radius:12px;padding:1.4rem 1rem;text-align:center;text-decoration:none;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:.55rem;transition:all .22s;}
+.dl-card:hover{background:var(--tl-gl);border-color:var(--tl);transform:translateY(-3px);}
+.dl-icon{font-size:2.1rem;}
+.dl-name{font-weight:700;font-size:.9rem;}
+.dl-sub{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);}
+.dl-arrow{font-size:.7rem;color:var(--tl);}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .hero-inner,.problem-layout,.identity-layout,.enc-layout,.bns-layout,.pay-layout{grid-template-columns:1fr;}
+  .hero-demo{display:none;}
+  .feature-panel.on{grid-template-columns:1fr;}
+  .journey-info{grid-template-columns:1fr 1fr;}
+  .dl-grid{grid-template-columns:repeat(3,1fr);}
+  .pay-privacy-cards{grid-template-columns:1fr;}
+}
+@media(max-width:640px){
+  .w,.wn{padding:0 1.25rem;}
+  .nav-links{display:none;}
+  .dl-grid{grid-template-columns:1fr 1fr;}
+  .journey-info{grid-template-columns:1fr;}
+  .feature-tabs{flex-direction:column;}
+  .lock-stage{grid-template-columns:1fr 30px 1fr;gap:.3rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"><div id="pbar"></div></div>
+
+<nav id="nav">
+  <div class="nav-row">
+    <a class="nav-logo" href="#">B<span>Chat</span></a>
+    <div class="nav-links">
+      <a class="nl" href="#ch1">The Problem</a>
+      <a class="nl" href="#ch2">Identity</a>
+      <a class="nl" href="#ch3">Encryption</a>
+      <a class="nl" href="#ch4">Routing</a>
+      <a class="nl" href="#ch4b">Swarm</a>
+      <a class="nl" href="#ch5">Features</a>
+      <a class="nl" href="#ch6">BNS</a>
+      <a class="nl" href="#ch7">Payments</a>
+    </div>
+    <a class="nav-dl" href="#download">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="w">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-tag fi">
+          <div class="hero-tag-line"></div>
+          <div class="hero-tag-text">Beldex Ecosystem · Private Messenger · Complete Guide</div>
+        </div>
+        <h1 class="fi d1">The only app<br>that <span class="tl">knows nothing</span><br>about you.</h1>
+        <p class="hero-sub fi d2">BChat is built on the Beldex blockchain. No phone number. No email. No data of any kind. Your messages are end-to-end encrypted and routed through multiple nodes so nobody can trace them back to you.</p>
+        <div class="hero-stats fi d3">
+          <div class="hstat"><div class="hstat-n">0</div><div class="hstat-l">Data Collected</div></div>
+          <div class="hstat"><div class="hstat-n">3+</div><div class="hstat-l">Routing Hops</div></div>
+          <div class="hstat"><div class="hstat-n" style="color:var(--gd)">5</div><div class="hstat-l">Platforms</div></div>
+        </div>
+        <div class="hero-btns fi d4">
+          <a class="btn btn-fill" href="#download">Get BChat Free</a>
+          <a class="btn btn-out" href="#ch1">How is it different?</a>
+        </div>
+      </div>
+      <div class="hero-demo fi d2">
+        <div class="demo-bar">
+          <div class="demo-dot" style="background:#ff5f57"></div>
+          <div class="demo-dot" style="background:#febc2e"></div>
+          <div class="demo-dot" style="background:#28c840"></div>
+          <div class="demo-bar-title">Live Encryption Preview</div>
+        </div>
+        <div class="demo-split">
+          <div class="demo-pane">
+            <div class="demo-pane-label dp-you">What you type</div>
+            <textarea class="demo-input" id="heroTypeInput" rows="3" placeholder="Start typing anything..." oninput="heroType()"></textarea>
+            <div class="demo-badge badge-tl"><span>🔓</span> Readable only to you and your friend</div>
+          </div>
+          <div class="demo-pane">
+            <div class="demo-pane-label dp-network">What the network sees</div>
+            <div class="demo-cipher" id="heroCipher">Start typing on the left to see real-time encryption...</div>
+            <div class="demo-badge badge-co"><span>🔒</span> Unreadable to anyone else</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-strip">
+    <div class="strip-inner">
+      <a class="strip-item" href="#ch1"><span class="strip-num">01</span><span class="strip-txt">Why Normal Apps Fail You</span></a>
+      <a class="strip-item" href="#ch2"><span class="strip-num">02</span><span class="strip-txt">How Your Account Works</span></a>
+      <a class="strip-item" href="#ch3"><span class="strip-num">03</span><span class="strip-txt">How Messages Are Encrypted</span></a>
+      <a class="strip-item" href="#ch4"><span class="strip-num">04</span><span class="strip-txt">The 3-Hop Message Journey</span></a>
+      <a class="strip-item" href="#ch4b"><span class="strip-num">04b</span><span class="strip-txt">Swarm Storage</span></a>
+      <a class="strip-item" href="#ch5"><span class="strip-num">05</span><span class="strip-txt">Every Feature</span></a>
+      <a class="strip-item" href="#ch6"><span class="strip-num">06</span><span class="strip-txt">BNS Names</span></a>
+      <a class="strip-item" href="#ch7"><span class="strip-num">07</span><span class="strip-txt">Pay As You Chat</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CH1 THE PROBLEM -->
+<section id="ch1" class="sec sec-alt">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 01</div>
+    <h2>Why your current<br>messenger is a <span class="co">problem.</span></h2>
+    <p style="font-size:1.05rem;color:var(--tx2);margin-top:.9rem;max-width:620px;line-height:1.85;">Every major messaging app collects data about you. Some sell it to advertisers. Some hand it to governments when asked. Click each app below to see exactly what it knows about you.</p>
+  </div>
+  <div class="problem-layout" style="margin-top:3rem;">
+    <div class="app-picker fi d1">
+      <button class="app-btn" onclick="pickApp('whatsapp',this)">
+        <div class="app-icon">💬</div>
+        <div><div class="app-btn-name">WhatsApp</div><div class="app-btn-sub">Owned by Meta (Facebook)</div></div>
+        <div class="app-data-badge badge-red">Collects Data</div>
+      </button>
+      <button class="app-btn" onclick="pickApp('telegram',this)">
+        <div class="app-icon">✈️</div>
+        <div><div class="app-btn-name">Telegram</div><div class="app-btn-sub">Centralised servers</div></div>
+        <div class="app-data-badge badge-red">Partial Risk</div>
+      </button>
+      <button class="app-btn" onclick="pickApp('signal',this)">
+        <div class="app-icon">🔵</div>
+        <div><div class="app-btn-name">Signal</div><div class="app-btn-sub">Non-profit, best mainstream option</div></div>
+        <div class="app-data-badge" style="background:rgba(255,209,102,.1);color:var(--gd);border:1px solid rgba(255,209,102,.25);">Limited Data</div>
+      </button>
+      <button class="app-btn" onclick="pickApp('bchat',this)">
+        <div class="app-icon">🛡️</div>
+        <div><div class="app-btn-name">BChat</div><div class="app-btn-sub">Beldex blockchain, decentralised</div></div>
+        <div class="app-data-badge badge-grn">Zero Data</div>
+      </button>
+    </div>
+    <div class="data-panel fi d2" id="dataPanel"><div class="dp-empty">Click an app to see what it knows about you</div></div>
+  </div>
+</div>
+</section>
+
+<!-- CH2 IDENTITY -->
+<section id="ch2" class="sec">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 02</div>
+    <h2>Your BChat ID:<br>created in <span class="tl">one tap,</span> no questions asked.</h2>
+  </div>
+  <div class="identity-layout" style="margin-top:3rem;">
+    <div class="fi d1">
+      <p style="font-size:1.05rem;color:var(--tx2);line-height:1.85;margin-bottom:1.5rem;">Creating a BChat account is completely different from every other app. There is no form. No phone number check. No email. You tap one button and the Beldex blockchain generates a unique identity for you, entirely on your device, without contacting any server.</p>
+      <div class="vs-block">
+        <div class="vs-card bad">
+          <div class="vc-label bad">Other messengers require</div>
+          <div class="vc-row bad"><span class="vc-ico">✕</span><span class="vc-txt">Phone number (SMS verification)</span></div>
+          <div class="vc-row bad"><span class="vc-ico">✕</span><span class="vc-txt">Email address</span></div>
+          <div class="vc-row bad"><span class="vc-ico">✕</span><span class="vc-txt">Your real name or username</span></div>
+          <div class="vc-row bad"><span class="vc-ico">✕</span><span class="vc-txt">Access to your contact list</span></div>
+        </div>
+        <div class="vs-card good">
+          <div class="vc-label good">BChat only needs</div>
+          <div class="vc-row good"><span class="vc-ico">✓</span><span class="vc-txt">One tap on "Create Account"</span></div>
+          <div class="vc-row good"><span class="vc-ico">✓</span><span class="vc-txt">That is all</span></div>
+        </div>
+      </div>
+      <div class="callout callout-gd">
+        <div class="callout-head">Your Recovery Seed</div>
+        <p>When your account is created, BChat gives you a <strong style="color:var(--gd)">24-word recovery phrase.</strong> Write it on paper and keep it safe. This is the only way to restore your account on a new device. BChat does not store it anywhere.</p>
+      </div>
+    </div>
+    <div class="fi d2">
+      <div class="creation-card">
+        <div class="cc-topbar">
+          <div class="cc-dot" style="background:#ff5f57"></div>
+          <div class="cc-dot" style="background:#febc2e"></div>
+          <div class="cc-dot" style="background:#28c840"></div>
+          <div class="cc-title">Account Creation   Step by Step</div>
+        </div>
+        <div class="cc-body">
+          <div class="cc-steps">
+            <div class="cc-step" id="step0"><div class="cc-step-num">1</div><div><div class="cc-step-title">You tap "Create Account"</div><div class="cc-step-desc">No form. No personal data requested.</div></div></div>
+            <div class="cc-step" id="step1"><div class="cc-step-num">2</div><div><div class="cc-step-title">Your device generates a keypair</div><div class="cc-step-desc">A unique public and private key is created locally. The private key never leaves your phone.</div></div></div>
+            <div class="cc-step" id="step2"><div class="cc-step-num">3</div><div><div class="cc-step-title">Your BChat ID is born</div><div class="cc-step-desc">The public key becomes your 64-character BChat ID, your identity on the network.</div></div></div>
+            <div class="cc-step" id="step3"><div class="cc-step-num">4</div><div><div class="cc-step-title">A wallet is linked automatically</div><div class="cc-step-desc">A Beldex wallet address is derived and linked to your BChat ID. Payment capability is included.</div></div></div>
+          </div>
+          <div class="cc-result" id="ccResult"><div class="cc-result-empty">Press "Next Step" to watch account creation happen</div></div>
+          <div class="cc-btn-row">
+            <button class="cc-btn cc-btn-primary" id="ccNextBtn" onclick="ccNext()">Next Step</button>
+            <button class="cc-btn cc-btn-secondary" onclick="ccReset()">Start Over</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CH3 ENCRYPTION -->
+<section id="ch3" class="sec sec-alt">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 03</div>
+    <h2>Encryption: your message<br>is <span class="tl">locked</span> before it leaves your phone.</h2>
+  </div>
+  <div class="enc-layout" style="margin-top:3rem;">
+    <div class="fi d1">
+      <p style="font-size:1.05rem;color:var(--tx2);line-height:1.85;margin-bottom:1.5rem;">End-to-end encryption means your message is scrambled into unreadable data on your device. It can only be unscrambled by the person you are sending it to. Not even BChat developers could read it.</p>
+      <div class="enc-steps-list">
+        <div class="es"><div class="es-icon">✍️</div><div><div class="es-title">You type your message</div><div class="es-desc">Readable text on your screen, yours alone.</div></div></div>
+        <div class="es"><div class="es-icon">🔐</div><div><div class="es-title">Your app locks it</div><div class="es-desc">BChat encrypts the message using your friend's public key. It becomes scrambled data.</div></div></div>
+        <div class="es"><div class="es-icon">📡</div><div><div class="es-title">It travels as scrambled data</div><div class="es-desc">The encrypted message passes through Beldex nodes. No node or server can read it.</div></div></div>
+        <div class="es"><div class="es-icon">🔓</div><div><div class="es-title">Only your friend can open it</div><div class="es-desc">Their private key, stored only on their device, is the only key that fits this lock.</div></div></div>
+      </div>
+    </div>
+    <div class="fi d2">
+      <div class="enc-box">
+        <div class="eb-topbar">
+          <div class="demo-dot" style="background:#ff5f57"></div>
+          <div class="demo-dot" style="background:#febc2e"></div>
+          <div class="demo-dot" style="background:#28c840"></div>
+          <div class="eb-label">Encryption Demo</div>
+        </div>
+        <div class="eb-body">
+          <div style="font-size:.9rem;color:var(--tx2);margin-bottom:1rem;line-height:1.65;">Type any message and click Lock. Then click Unlock to see it come back.</div>
+          <div class="eb-input-row">
+            <input class="eb-input" id="ebInput" placeholder="e.g. Meet me at 6pm" value="Meet me at 6pm">
+            <button class="eb-go" onclick="ebLock()">🔐 Lock</button>
+          </div>
+          <div class="lock-stage">
+            <div class="ls-box plain"><div class="ls-label">Your message</div><div class="ls-text" id="ebPlain">Your message appears here</div></div>
+            <div class="ls-arrow" id="ebArrow">🔒</div>
+            <div class="ls-box cipher"><div class="ls-label">On the network</div><div class="ls-text cipher-text empty" id="ebCipher">Lock a message to see ciphertext</div></div>
+          </div>
+          <div class="unlock-row">
+            <button class="eb-unlock" onclick="ebUnlock()" id="ebUnlockBtn" disabled>🔓 Unlock (Recipient Key)</button>
+            <div class="eb-proof" id="ebProof"><span>✓</span><span>Decrypted successfully</span></div>
+          </div>
+          <div class="eb-note">Each message uses a unique key that is deleted after use. Past messages cannot be decrypted even if your current key is compromised.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CH4 ROUTING -->
+<section id="ch4" class="sec">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 04</div>
+    <h2>The 3-hop journey:<br>why your message <span class="tl">cannot be traced.</span></h2>
+  </div>
+  <div class="fi d1" style="max-width:700px;margin-top:1.5rem;">
+    <p style="font-size:1.05rem;color:var(--tx2);line-height:1.85;">Encryption protects what you say. But who you are saying it to, and from where, can still be tracked if messages go directly from you to your friend. BChat solves this with <strong style="color:var(--tx)">onion routing:</strong> your message travels through a chain of 3 independent Beldex masternodes. Each node sees only one step, never the full picture.</p>
+  </div>
+  <div style="margin-top:2.5rem;" class="fi d2">
+    <canvas id="journeyCanvas" height="240"></canvas>
+    <div class="journey-controls">
+      <button class="jbtn jbtn-primary" onclick="jSend()">Send Message</button>
+      <button class="jbtn jbtn-secondary" onclick="jReset()">Reset</button>
+      <span class="journey-status" id="jStatus">Press Send Message to begin</span>
+    </div>
+    <div class="journey-info" id="journeyInfo">
+      <div class="ji-cell" id="jc0"><div class="ji-node">You</div><div class="ji-title">Sender</div><div class="ji-sees">Knows: <span class="ok">your message</span><br>Does not know: <span class="no">routing path</span></div></div>
+      <div class="ji-cell" id="jc1"><div class="ji-node">Node 1</div><div class="ji-title">Entry Relay</div><div class="ji-sees">Sees: <span class="ok">your IP</span><br>Blind to: <span class="no">content, destination</span></div></div>
+      <div class="ji-cell" id="jc2"><div class="ji-node">Node 2</div><div class="ji-title">Middle Relay</div><div class="ji-sees">Sees: <span class="ok">Node 1 address</span><br>Blind to: <span class="no">origin, content, dest</span></div></div>
+      <div class="ji-cell" id="jc3"><div class="ji-node">Node 3</div><div class="ji-title">Exit Relay</div><div class="ji-sees">Sees: <span class="ok">recipient address</span><br>Blind to: <span class="no">your identity, content</span></div></div>
+      <div class="ji-cell" id="jc4"><div class="ji-node">Friend</div><div class="ji-title">Recipient</div><div class="ji-sees">Sees: <span class="ok">your message</span><br>Blind to: <span class="no">routing path</span></div></div>
+    </div>
+  </div>
+  <div class="callout callout-tl fi d3" style="margin-top:2rem;max-width:680px;">
+    <div class="callout-head">Why 3 nodes is enough</div>
+    <p>Node 1 knows your identity but not the destination. Node 3 knows the destination but not your identity. Node 2 knows neither. No single node, and no collaboration between nodes, can link sender and recipient.</p>
+  </div>
+</div>
+</section>
+
+<!-- CH4b SWARM STORAGE -->
+<section id="ch4b" class="sec sec-alt2">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 04b</div>
+    <h2>Swarm storage: how your message<br>waits when you are <span class="tl">offline.</span></h2>
+  </div>
+  <div class="fi d1" style="max-width:720px;margin-top:1.25rem;">
+    <p style="font-size:1.05rem;color:var(--tx2);line-height:1.85;">BChat has no central server to hold messages. So when your friend is offline, where does the message go? It is stored across a cluster of 8 to 10 Beldex masternodes called a <strong style="color:var(--tx)">swarm</strong>. Each node holds only an encrypted copy it cannot read. When your friend reconnects, they retrieve and decrypt it. Then every copy in the swarm is deleted.</p>
+  </div>
+  <div style="margin-top:2.5rem;" class="fi d2">
+    <canvas id="swarmCanvas" height="300"></canvas>
+    <div class="swarm-status-box" id="swarmStatus">Press a step below to start the simulation.</div>
+    <div class="swarm-phase-bar">
+      <div class="swarm-phase" id="sph0" onclick="swarmPhase(0)">1. Send Message</div>
+      <div class="swarm-phase" id="sph1" onclick="swarmPhase(1)">2. Swarm Stores It</div>
+      <div class="swarm-phase" id="sph2" onclick="swarmPhase(2)">3. Friend is Offline</div>
+      <div class="swarm-phase" id="sph3" onclick="swarmPhase(3)">4. Friend Reconnects</div>
+      <div class="swarm-phase" id="sph4" onclick="swarmPhase(4)">5. Retrieved and Deleted</div>
+    </div>
+    <div class="swarm-btns">
+      <button class="jbtn jbtn-primary" onclick="swarmAuto()">Auto-Play All Steps</button>
+      <button class="jbtn jbtn-secondary" onclick="swarmReset()">Reset</button>
+    </div>
+  </div>
+  <div class="callout callout-tl fi d3" style="margin-top:2rem;max-width:680px;">
+    <div class="callout-head">Key guarantee</div>
+    <p>Every masternode in the swarm holds only encrypted ciphertext. They do not have the recipient's private key. A full compromise of every node in the swarm would still reveal nothing readable. Decryption can only happen on the recipient's own device.</p>
+  </div>
+</div>
+</section>
+
+<!-- CH5 FEATURES -->
+<section id="ch5" class="sec sec-alt">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 05</div>
+    <h2>Everything BChat<br>can <span class="tl">do.</span></h2>
+    <p style="font-size:1.05rem;color:var(--tx2);margin-top:.85rem;max-width:580px;line-height:1.85;">BChat is a complete messaging platform, not just encrypted text. Select a feature to see how it works.</p>
+  </div>
+  <div class="feature-tabs fi d1" style="margin-top:2.5rem;">
+    <button class="ft on" onclick="switchFeature('messaging',this)"><span class="ft-icon">💬</span>Messaging</button>
+    <button class="ft" onclick="switchFeature('groups',this)"><span class="ft-icon">👥</span>Group Chats</button>
+    <button class="ft" onclick="switchFeature('calls',this)"><span class="ft-icon">📞</span>Private Calls</button>
+    <button class="ft" onclick="switchFeature('metadata',this)"><span class="ft-icon">🕵️</span>Metadata</button>
+    <button class="ft" onclick="switchFeature('account',this)"><span class="ft-icon">🔑</span>Account Control</button>
+  </div>
+
+  <!-- Messaging -->
+  <div class="feature-panel on fi d2" id="fp-messaging">
+    <div>
+      <div class="fp-title">Private Messaging</div>
+      <div class="fp-desc">Every message is end-to-end encrypted before leaving your device and travels through at least 3 Beldex masternodes. No server ever stores your messages in readable form.</div>
+      <div class="fp-points">
+        <div class="fp-pt"><div class="dot"></div><div>Send text, images, video, files and GIFs, all encrypted</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Messages stored only on sender and recipient devices</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>No metadata logged, not even message timing or size</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Your BChat ID is the only identifier, no phone number</div></div>
+      </div>
+    </div>
+    <div class="fp-demo">
+      <div class="fp-demo-bar"><div class="fp-demo-title">Live Chat</div></div>
+      <div class="fp-demo-body">
+        <div class="mini-chat" id="liveChat">
+          <div class="mc-sys">🔒 End-to-end encrypted · 3 hops routed</div>
+          <div class="mc-bubble mc-in"><div class="mc-name">alice.bdx</div>Hey, are you free to talk?</div>
+          <div class="mc-bubble mc-out">Yes, what is up?</div>
+          <div class="mc-bubble mc-in"><div class="mc-name">alice.bdx</div>Just wanted to check in privately 😊</div>
+          <div class="mc-sys">✓ 0 data stored on any server</div>
+        </div>
+        <div style="display:flex;gap:.6rem;margin-top:1rem;">
+          <input id="liveMsgInput" style="flex:1;background:var(--bg1);border:1px solid var(--ln2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.85rem;padding:.5rem .75rem;border-radius:7px;outline:none;" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendLiveMsg()">
+          <button onclick="sendLiveMsg()" style="padding:.5rem 1rem;background:var(--tl);color:var(--bg0);border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:.8rem;font-family:'Outfit',sans-serif;">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Groups -->
+  <div class="feature-panel fi d2" id="fp-groups">
+    <div>
+      <div class="fp-title">Private Group Chats</div>
+      <div class="fp-desc">Create group conversations with complete privacy. All group messages are end-to-end encrypted. Participants see each other only by BChat ID or BNS name.</div>
+      <div class="fp-points">
+        <div class="fp-pt"><div class="dot"></div><div><strong style="color:var(--tx)">Private Groups:</strong> invite-only, maximum privacy, all members encrypted</div></div>
+        <div class="fp-pt"><div class="dot"></div><div><strong style="color:var(--tx)">Open Groups:</strong> public community spaces still protected by routing</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>You can only add people who are already in your contacts</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Group message history stays on your device, not a server</div></div>
+      </div>
+      <div style="margin-top:1.2rem;">
+        <div style="font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);margin-bottom:.65rem;">Click contacts to add to your group:</div>
+        <div id="contactPool" style="display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1rem;"></div>
+        <div style="background:var(--bg1);border:1px solid var(--ln);border-radius:8px;padding:.75rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;line-height:1.7;color:var(--tl);">
+          <div style="color:var(--tx2);margin-bottom:.25rem;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;">Group State</div>
+          <div>Members: <span id="groupCount" style="color:var(--tl)">1 (you only)</span></div>
+          <div>Group Key: <span id="groupKey" style="color:var(--gd)">No members yet</span></div>
+          <div>Status: <span id="groupStatus" style="color:var(--tx3)">Add contacts to create a group</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fp-demo">
+      <div class="fp-demo-bar"><div class="fp-demo-title">Group Chat Preview</div></div>
+      <div class="fp-demo-body">
+        <div class="mini-chat">
+          <div class="mc-sys">🔒 Private Group · 4 members · All encrypted</div>
+          <div class="mc-bubble mc-in"><div class="mc-name">alice.bdx</div>Good morning team!</div>
+          <div class="mc-bubble mc-in" style="margin-top:2px;"><div class="mc-name">bob.bdx</div>Ready for today?</div>
+          <div class="mc-bubble mc-out">Yes, joining in 5 minutes</div>
+          <div class="mc-bubble mc-in"><div class="mc-name">carol.bdx</div>Same here 👍</div>
+          <div class="mc-sys">No participant identities revealed outside</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calls -->
+  <div class="feature-panel fi d2" id="fp-calls">
+    <div>
+      <div class="fp-title">Private Voice and Video Calls</div>
+      <div class="fp-desc">Encrypted voice and video calls directly between two devices. No phone number needed. Calls are peer-to-peer, encrypted in transit.</div>
+      <div class="fp-points">
+        <div class="fp-pt"><div class="dot"></div><div>Calls connect using BChat ID, no phone number dialling</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Audio and video are encrypted between the two devices</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>You cannot receive a call unless you accepted the person's message request first</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Calling can be fully disabled in settings</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>No call records stored on any server</div></div>
+      </div>
+    </div>
+    <div class="fp-demo">
+      <div class="fp-demo-bar"><div class="fp-demo-title" id="callDemoTitle">Incoming Call Simulation</div></div>
+      <div class="fp-demo-body">
+        <div id="callStateIdle" class="call-demo">
+          <div style="font-size:.85rem;color:var(--tx2);text-align:center;margin-bottom:1rem;line-height:1.6;">Simulate an incoming BChat call. Notice: no phone number, just a BChat ID.</div>
+          <button onclick="triggerCall()" style="width:100%;padding:.65rem;background:var(--tl);color:var(--bg0);border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:'Outfit',sans-serif;">Simulate Incoming Call</button>
+        </div>
+        <div id="callStateRing" class="call-demo" style="display:none;">
+          <div class="cd-avatar" style="animation:ring .6s ease-in-out infinite alternate;">📳</div>
+          <div class="cd-name">alice.bdx</div>
+          <div class="cd-status" style="color:var(--gd)">Incoming call...</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--tx3);margin-top:.3rem;text-align:center;">ID: bd3f9c2e...a4e6c9d3</div>
+          <div class="cd-buttons" style="margin-top:1rem;">
+            <button class="cd-btn red" onclick="rejectCall()">📵</button>
+            <button class="cd-btn grn" onclick="acceptCall()">📞</button>
+          </div>
+        </div>
+        <div id="callStateConn" class="call-demo" style="display:none;">
+          <div class="cd-avatar">👤</div>
+          <div class="cd-name">alice.bdx</div>
+          <div class="cd-status connected">● Connected   Encrypted P2P</div>
+          <div class="cd-waveform">
+            <div class="wave-bar" style="animation-delay:0s"></div>
+            <div class="wave-bar" style="animation-delay:.1s"></div>
+            <div class="wave-bar" style="animation-delay:.2s"></div>
+            <div class="wave-bar" style="animation-delay:.3s"></div>
+            <div class="wave-bar" style="animation-delay:.4s"></div>
+            <div class="wave-bar" style="animation-delay:.15s"></div>
+            <div class="wave-bar" style="animation-delay:.25s"></div>
+          </div>
+          <div class="cd-buttons">
+            <button class="cd-btn grn">🎙️</button>
+            <button class="cd-btn red" onclick="endCall()">📵</button>
+            <button class="cd-btn grn">📹</button>
+          </div>
+          <div class="cd-encrypted">🔒 Peer-to-peer · No server relay · No call record</div>
+        </div>
+        <div id="callStateEnd" class="call-demo" style="display:none;">
+          <div style="font-size:1.5rem;text-align:center;margin-bottom:.5rem;">📵</div>
+          <div class="cd-name" style="text-align:center;">Call ended</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--tx3);text-align:center;margin-top:.35rem;">No call log stored. No server record.</div>
+          <button onclick="resetCall()" style="margin-top:1rem;width:100%;padding:.55rem;background:var(--bg3);color:var(--tx2);border:1px solid var(--ln2);border-radius:7px;font-weight:600;font-size:.82rem;cursor:pointer;font-family:'Outfit',sans-serif;">Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metadata -->
+  <div class="feature-panel fi d2" id="fp-metadata">
+    <div>
+      <div class="fp-title">Zero Metadata   Nothing to Track</div>
+      <div class="fp-desc">Even with encryption, metadata can expose you. Metadata is information about a message, who sent it, when, how big it was, how often you message someone. BChat strips all of this.</div>
+      <div class="fp-points">
+        <div class="fp-pt"><div class="dot"></div><div>No timestamp logging, authorities cannot build a timeline of your contacts</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>No message size stored, even large file transfers leave no trace</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>No IP address, your physical location stays hidden</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>No frequency patterns, nobody can tell who you talk to most</div></div>
+      </div>
+      <div style="margin-top:1.2rem;">
+        <div style="font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);margin-bottom:.65rem;">Select an app to compare:</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button onclick="showMeta('whatsapp',this)" class="meta-sel" style="padding:.4rem .9rem;border-radius:6px;font-size:.82rem;font-weight:600;border:1.5px solid rgba(255,107,71,.3);background:rgba(255,107,71,.06);color:var(--co);cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif;">WhatsApp</button>
+          <button onclick="showMeta('telegram',this)" class="meta-sel" style="padding:.4rem .9rem;border-radius:6px;font-size:.82rem;font-weight:600;border:1.5px solid rgba(255,209,102,.3);background:rgba(255,209,102,.06);color:var(--gd);cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif;">Telegram</button>
+          <button onclick="showMeta('bchat',this)" class="meta-sel" style="padding:.4rem .9rem;border-radius:6px;font-size:.82rem;font-weight:600;border:1.5px solid rgba(0,212,168,.3);background:var(--tl-gl);color:var(--tl);cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif;">BChat</button>
+        </div>
+      </div>
+    </div>
+    <div class="fp-demo">
+      <div class="fp-demo-bar"><div class="fp-demo-title" id="metaDemoTitle">Metadata Log Viewer   Select an App</div></div>
+      <div class="fp-demo-body" id="metaDemoBody"><div style="color:var(--tx3);font-size:.85rem;padding:1rem 0;text-align:center;font-style:italic;">Click an app above to see what it logs for a single message.</div></div>
+    </div>
+  </div>
+
+  <!-- Account -->
+  <div class="feature-panel fi d2" id="fp-account">
+    <div>
+      <div class="fp-title">You Own Your Account</div>
+      <div class="fp-desc">Most apps control your account. They can delete it, freeze it, or hand it to authorities. On BChat, your account is a keypair stored on your device. Nobody else controls it.</div>
+      <div class="fp-points">
+        <div class="fp-pt"><div class="dot"></div><div>Your private key is stored only on your device, never transmitted</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Your 24-word recovery seed is the only way to restore your account</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>If you delete your BChat ID, it is removed with no trace left</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>No company can suspend or close your account</div></div>
+        <div class="fp-pt"><div class="dot"></div><div>Your account works across all 5 platforms with the same seed</div></div>
+      </div>
+    </div>
+    <div class="fp-demo">
+      <div class="fp-demo-bar"><div class="fp-demo-title">Seed Phrase Confirmation</div></div>
+      <div class="fp-demo-body">
+        <div style="font-size:.82rem;color:var(--tx2);margin-bottom:.9rem;line-height:1.55;">Your BChat account is your seed. Tap the words below in the correct order to confirm you have recorded them.</div>
+        <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);margin-bottom:.5rem;">Tap in the correct order:</div>
+        <div id="seedWordsDisplay" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem;margin-bottom:.85rem;"></div>
+        <div style="background:var(--bg1);border:1px solid var(--ln);border-radius:8px;padding:.65rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--tx2);min-height:44px;">Confirmed: <span id="seedConfirmList" style="color:var(--tl)">nothing yet</span></div>
+        <div style="display:flex;gap:.6rem;margin-top:.65rem;">
+          <button onclick="seedCheck()" style="flex:1;padding:.5rem;background:var(--tl);color:var(--bg0);border:none;border-radius:6px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:'Outfit',sans-serif;">Verify Order</button>
+          <button onclick="initSeed()" style="padding:.5rem .9rem;background:var(--bg3);color:var(--tx2);border:1px solid var(--ln2);border-radius:6px;font-size:.82rem;cursor:pointer;font-family:'Outfit',sans-serif;">New Seed</button>
+        </div>
+        <div id="seedResult" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;margin-top:.6rem;min-height:1.1em;text-align:center;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- CH6 BNS -->
+<section id="ch6" class="sec">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 06</div>
+    <h2>BNS Names: turn a 64-character ID<br>into <span class="tl">something human.</span></h2>
+  </div>
+  <div class="bns-layout" style="margin-top:3rem;">
+    <div class="fi d1">
+      <p style="font-size:1.05rem;color:var(--tx2);line-height:1.85;margin-bottom:1.5rem;">Your BChat ID is a 64-character string of random letters and numbers, impossible to remember. The Beldex Name System (BNS) lets you register a short, readable name like <strong style="color:var(--tx)">alice.bdx</strong> that points to your full BChat ID and wallet address.</p>
+      <div style="display:flex;flex-direction:column;gap:.7rem;">
+        <div style="display:flex;gap:.8rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--tl);flex-shrink:0;margin-top:.6rem;"></div>
+          <p style="font-size:.95rem;color:var(--tx2);line-height:1.65;"><strong style="color:var(--tx)">One name, two uses.</strong> Your BNS name links to both your BChat ID (for messages) and your Beldex wallet (for payments).</p>
+        </div>
+        <div style="display:flex;gap:.8rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--tl);flex-shrink:0;margin-top:.6rem;"></div>
+          <p style="font-size:.95rem;color:var(--tx2);line-height:1.65;"><strong style="color:var(--tx)">On-chain ownership.</strong> BNS names are registered on the Beldex blockchain. Nobody can take your name away.</p>
+        </div>
+        <div style="display:flex;gap:.8rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--tl);flex-shrink:0;margin-top:.6rem;"></div>
+          <p style="font-size:.95rem;color:var(--tx2);line-height:1.65;"><strong style="color:var(--tx)">Verified badge.</strong> Linking a BNS name gives your profile a verification badge.</p>
+        </div>
+      </div>
+    </div>
+    <div class="fi d2">
+      <div class="bns-box">
+        <div class="bns-topbar"><div class="bns-topbar-title">BNS Name Resolution</div></div>
+        <div class="bns-body">
+          <div style="font-size:.88rem;color:var(--tx2);margin-bottom:1rem;line-height:1.6;">See how a BNS name maps to a BChat ID and wallet address on the Beldex blockchain.</div>
+          <div class="bns-before-after">
+            <div class="bna-side ugly"><div class="bna-label">BChat ID (long)</div><div class="bna-value" id="bnsUglyId">bd3f9c2e8d71b4f06a5...</div></div>
+            <div class="bna-arrow">→</div>
+            <div class="bna-side clean"><div class="bna-label">BNS Name</div><div class="bna-value clean-val" id="bnsCleanName">alice.bdx</div></div>
+          </div>
+          <div class="bns-input-row">
+            <input class="bns-input" id="bnsInput" value="alice.bdx" placeholder="Enter any BNS name...">
+            <button class="bns-btn" onclick="doLookup()">Resolve</button>
+          </div>
+          <div class="bns-result" id="bnsResult">
+            <div class="br-row"><div class="br-key">Name</div><div class="br-val" id="brName"></div></div>
+            <div class="br-row"><div class="br-key">BChat ID</div><div class="br-val" id="brId"></div></div>
+            <div class="br-row"><div class="br-key">Wallet</div><div class="br-val" id="brWallet"></div></div>
+            <div class="br-row"><div class="br-key">Status</div><div class="br-val" id="brStatus"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CH7 PAYMENTS -->
+<section id="ch7" class="sec sec-alt">
+<div class="w">
+  <div class="fi"><div class="eyebrow">Chapter 07</div>
+    <h2>Pay As You Chat:<br>send money as <span class="gd">privately</span> as a message.</h2>
+  </div>
+  <div class="pay-layout" style="margin-top:3rem;">
+    <div class="fi d1">
+      <p style="font-size:1.05rem;color:var(--tx2);line-height:1.85;margin-bottom:1.5rem;">BChat has a full Beldex (BDX) wallet built directly into every conversation. Send cryptocurrency to a friend without leaving the chat, no bank details, no waiting days.</p>
+      <div class="pay-privacy-cards">
+        <div class="ppc"><div class="ppc-icon">🔁</div><div class="ppc-title">Who sent it? Hidden.</div><div class="ppc-desc">Ring signatures mix your transaction with others. Nobody can tell which is yours.</div></div>
+        <div class="ppc"><div class="ppc-icon">📫</div><div class="ppc-title">Who received it? Hidden.</div><div class="ppc-desc">Stealth addresses generate a unique one-time address per payment. Only the recipient can identify it.</div></div>
+        <div class="ppc"><div class="ppc-icon">🔒</div><div class="ppc-title">How much? Hidden.</div><div class="ppc-desc">Transaction amounts are concealed using cryptographic proofs. Observers see only that a valid transaction occurred.</div></div>
+        <div class="ppc"><div class="ppc-icon">⚡</div><div class="ppc-title">Always 0.003 BDX fee.</div><div class="ppc-desc">The network fee is flat regardless of amount. Sending 10 BDX costs the same as sending 10,000 BDX.</div></div>
+      </div>
+    </div>
+    <div class="fi d2">
+      <div class="pay-box">
+        <div class="pay-topbar"><div class="pay-topbar-title">Send BDX   Live Preview</div><div class="pay-live">● Private Payment</div></div>
+        <div class="pay-body">
+          <div class="pay-field"><label class="pay-label" for="payTo">Send to (BNS name or BChat ID)</label><input class="pay-input" id="payTo" value="alice.bdx" oninput="updatePay()"></div>
+          <div class="pay-field"><label class="pay-label" for="payAmt">Amount (BDX)</label><input class="pay-input" id="payAmt" type="number" value="100" min="0.001" step="1" oninput="updatePay()"></div>
+          <div class="pay-summary">
+            <div class="psum-row"><span class="psum-key">Recipient</span><span class="psum-val" id="pSumTo">alice.bdx</span></div>
+            <div class="psum-row"><span class="psum-key">Amount</span><span class="psum-val" id="pSumAmt">100 BDX</span></div>
+            <div class="psum-row"><span class="psum-key">Fee</span><span class="psum-val gd">0.003 BDX (always flat)</span></div>
+            <div class="psum-row"><span class="psum-key">Total</span><span class="psum-val" id="pSumTotal">100.003 BDX</span></div>
+          </div>
+          <div class="pay-shield-row">
+            <div class="shield-badge sb-tl">🔁 Sender hidden</div>
+            <div class="shield-badge sb-tl">📫 Recipient hidden</div>
+            <div class="shield-badge sb-tl">🔒 Amount hidden</div>
+          </div>
+          <button class="pay-send-btn" onclick="doPayment()">Send Payment</button>
+          <div class="pay-msg" id="payMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+<div class="w">
+  <div class="fi" style="text-align:center;margin-bottom:.5rem;">
+    <div class="eyebrow" style="justify-content:center;">Download</div>
+    <h2 style="margin:.5rem 0 1rem;">Get BChat. Free.<br><span class="tl">No sign-up needed.</span></h2>
+    <p style="font-size:1.05rem;color:var(--tx2);max-width:500px;margin:0 auto;line-height:1.85;">Available on Android, iOS, Windows, macOS and Linux. Download, tap Create Account, and you are set.</p>
+  </div>
+  <div class="dl-grid fi d1">
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-android/releases/download/v2.9.2/Bchat-2.9.2-universal-release.apk" target="_blank"><div class="dl-icon">🤖</div><div class="dl-name">Android</div><div class="dl-sub">APK v2.9.2</div><div class="dl-arrow">↗</div></a>
+    <a class="dl-card" href="https://apps.apple.com/us/app/bchat-messenger/id1626066143" target="_blank"><div class="dl-icon">🍎</div><div class="dl-name">iOS</div><div class="dl-sub">App Store</div><div class="dl-arrow">↗</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-win-x64-2.7.3.exe" target="_blank"><div class="dl-icon">🪟</div><div class="dl-name">Windows</div><div class="dl-sub">EXE v2.7.3</div><div class="dl-arrow">↗</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-mac-x64-2.7.3.dmg" target="_blank"><div class="dl-icon">🍏</div><div class="dl-name">macOS</div><div class="dl-sub">DMG v2.7.3</div><div class="dl-arrow">↗</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-linux-amd64-2.7.3.deb" target="_blank"><div class="dl-icon">🐧</div><div class="dl-name">Linux</div><div class="dl-sub">DEB v2.7.3</div><div class="dl-arrow">↗</div></a>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;border-top:1px solid var(--ln);padding-top:2rem;" class="fi d2">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txd);">BChat · Built on Beldex Blockchain · Open Source · Zero Data Collected</p>
+    <p style="font-size:.85rem;color:var(--txd);margin-top:.5rem;">bchat.beldex.io · support@beldex.io · @bchat_official</p>
+  </div>
+</div>
+</section>
+
+<script>
+'use strict';
+
+/* ── helpers ── */
+var HX='0123456789abcdef';
+function rh(n){var s='';for(var i=0;i<n;i++)s+=HX[Math.floor(Math.random()*16)];return s;}
+function lcg(seed){var s=seed;return function(){s=(s*1664525+1013904223)&0xffffffff;return Math.abs(s);};}
+
+/* ── scroll reveal + progress ── */
+var sobs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('on');});},{threshold:0.07});
+document.querySelectorAll('.fi').forEach(function(el){sobs.observe(el);});
+window.addEventListener('scroll',function(){
+  var h=document.documentElement;
+  var p=(window.scrollY/(h.scrollHeight-window.innerHeight))*100;
+  var bar=document.getElementById('pbar');
+  if(bar)bar.style.width=Math.min(100,p)+'%';
+},{passive:true});
+
+/* ── HERO live type-to-encrypt ── */
+var heroTimer=null;
+function heroType(){
+  var val=document.getElementById('heroTypeInput').value;
+  var out=document.getElementById('heroCipher');
+  if(!val.trim()){out.textContent='Start typing on the left...';return;}
+  clearTimeout(heroTimer);
+  heroTimer=setTimeout(function(){
+    var r=lcg(val.length*37+(val.charCodeAt(0)||0));
+    var s='';var line='';var len=Math.max(60,val.length*5);
+    for(var i=0;i<len;i++){line+=HX[r()%16];if(line.length===32){s+=line+'\n';line='';}}
+    if(line)s+=line;
+    out.textContent=s;
+  },120);
+}
+
+/* ── CH1 App comparison ── */
+var APP_DATA={
+  whatsapp:{name:'WhatsApp',verdict:'<span style="color:var(--co)">Collects extensive data. Shares with Meta advertising network.</span>',
+    items:[
+      {type:'bad',text:'Your phone number is required to sign up'},
+      {type:'bad',text:'Your full contact list is uploaded to Meta servers'},
+      {type:'bad',text:'Location, device ID and purchase history tracked'},
+      {type:'bad',text:'Message timing and frequency metadata logged'},
+      {type:'bad',text:'Data shared with Facebook, Instagram and Meta ad partners'},
+      {type:'bad',text:'Cloud backup messages may be unencrypted'}
+    ]},
+  telegram:{name:'Telegram',verdict:'<span style="color:var(--gd)">Partial protection. Standard chats not E2E encrypted by default.</span>',
+    items:[
+      {type:'bad',text:'Phone number required to create an account'},
+      {type:'bad',text:'Standard chats stored on Telegram servers, not end-to-end encrypted'},
+      {type:'neutral',text:'End-to-end encryption only in "Secret Chats" mode'},
+      {type:'bad',text:'IP address and device information logged'},
+      {type:'bad',text:'Has cooperated with authorities in some jurisdictions'},
+      {type:'neutral',text:'Open groups and channels are fully public'}
+    ]},
+  signal:{name:'Signal',verdict:'<span style="color:var(--gd)">Best mainstream option, but still requires your phone number.</span>',
+    items:[
+      {type:'bad',text:'Phone number is required to register'},
+      {type:'neutral',text:'Signal knows your registration date and last active time'},
+      {type:'good',text:'Messages are end-to-end encrypted by default'},
+      {type:'good',text:'Signal does not read message content or sell data'},
+      {type:'bad',text:'Still relies on centralised servers for routing'},
+      {type:'neutral',text:'Contact discovery requires phone number matching'}
+    ]},
+  bchat:{name:'BChat',verdict:'<span style="color:var(--tl)">Zero data collected. No phone number. No central server.</span>',
+    items:[
+      {type:'good',text:'No phone number, email, or name ever requested'},
+      {type:'good',text:'No contact list uploaded, ever'},
+      {type:'good',text:'No IP address, location or device information logged'},
+      {type:'good',text:'No central server, messages routed through decentralised masternodes'},
+      {type:'good',text:'Every message end-to-end encrypted at all times'},
+      {type:'good',text:'Nothing to breach, no user database exists'}
+    ]}
+};
+var pickedBtn=null;
+function pickApp(app,btn){
+  if(pickedBtn){pickedBtn.classList.remove('sel-bad','sel-good');}
+  pickedBtn=btn;
+  btn.classList.add(app==='bchat'?'sel-good':'sel-bad');
+  var d=APP_DATA[app];
+  var html='<div class="dp-header"><div class="dp-app-name">'+d.name+'</div><div class="dp-verdict">'+d.verdict+'</div></div><div class="dp-list">';
+  d.items.forEach(function(it,i){
+    var ico=it.type==='bad'?'✕':it.type==='good'?'✓':'○';
+    html+='<div class="dp-item '+it.type+'" style="animation-delay:'+(i*.07)+'s;animation:slideIn .3s ease both"><span class="dp-ico">'+ico+'</span><span class="dp-txt">'+it.text+'</span></div>';
+  });
+  html+='</div>';
+  document.getElementById('dataPanel').innerHTML=html;
+}
+/* slideIn keyframe via style tag */
+(function(){var s=document.createElement('style');s.textContent='@keyframes slideIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:none;}}';document.head.appendChild(s);})();
+
+/* ── CH2 Account creation steps ── */
+var ccStep=0;
+var CC_STEPS=[
+  {title:'You tap "Create Account"',desc:'No form. No personal data requested.',result:null},
+  {title:'Your device generates a keypair',desc:'Public and private key created locally. Private key never leaves your phone.',result:function(){return {label:'Generated keypair (private key hidden)',val:'Public: '+rh(32)+'...\nPrivate: [secured on device]'   };}},
+  {title:'Your BChat ID is born',desc:'The public key becomes your 64-character BChat ID.',result:function(){return {label:'Your BChat ID',val:'bd'+rh(62)};}},
+  {title:'A wallet is linked automatically',desc:'A Beldex wallet address is derived and linked. Payment capability is ready.',result:function(){return {label:'Your Linked Wallet',val:'bx'+rh(94)};}}
+];
+function ccNext(){
+  if(ccStep>=CC_STEPS.length)return;
+  for(var i=0;i<CC_STEPS.length;i++){
+    var el=document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    if(i<ccStep)el.classList.add('done');
+    if(i===ccStep)el.classList.add('active');
+    var numEl=el.querySelector('.cc-step-num');
+    if(numEl)numEl.textContent=i<ccStep?'✓':String(i+1);
+  }
+  var s=CC_STEPS[ccStep];
+  var res=document.getElementById('ccResult');
+  if(s.result){var r=s.result();res.innerHTML='<div class="cc-result-label">'+r.label+'</div><div class="cc-result-value">'+r.val+'</div>';}
+  else res.innerHTML='<div class="cc-result-empty">Generating...</div>';
+  ccStep++;
+  var btn=document.getElementById('ccNextBtn');
+  if(ccStep>=CC_STEPS.length){btn.textContent='Done';btn.disabled=true;}
+}
+function ccReset(){
+  ccStep=0;
+  var btn=document.getElementById('ccNextBtn');
+  btn.textContent='Next Step'; btn.disabled=false;
+  for(var i=0;i<CC_STEPS.length;i++){
+    var el=document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    var numEl=el.querySelector('.cc-step-num');
+    if(numEl)numEl.textContent=String(i+1);
+  }
+  document.getElementById('ccResult').innerHTML='<div class="cc-result-empty">Press "Next Step" to watch account creation happen</div>';
+}
+
+/* ── CH3 Encryption demo ── */
+var origMsg='';
+var lockedMsg='';
+function ebLock(){
+  var inp=document.getElementById('ebInput').value.trim();
+  if(!inp){return;}
+  origMsg=inp;
+  document.getElementById('ebPlain').textContent=inp;
+  var r=lcg(Date.now());
+  var c='';var line='';var len=Math.max(56,inp.length*6);
+  for(var i=0;i<len;i++){line+=HX[r()%16];if(line.length===32){c+=line+'\n';line='';}}
+  if(line)c+=line;
+  lockedMsg=c;
+  var cipher=document.getElementById('ebCipher');
+  cipher.textContent=c;cipher.style.color='rgba(255,107,71,.8)';
+  document.getElementById('ebUnlockBtn').disabled=false;
+  document.getElementById('ebProof').classList.remove('show');
+}
+function ebUnlock(){
+  var cipher=document.getElementById('ebCipher');
+  cipher.style.color='var(--tl)';
+  cipher.textContent=origMsg;
+  document.getElementById('ebProof').classList.add('show');
+  setTimeout(function(){cipher.style.color='rgba(255,107,71,.8)';cipher.textContent=lockedMsg;},2000);
+}
+
+/* ── CH4 Journey canvas ── */
+var J_NODES=[
+  {label:'You',sub:'Sender',x:.08},
+  {label:'Node 1',sub:'Entry',x:.29},
+  {label:'Node 2',sub:'Middle',x:.50},
+  {label:'Node 3',sub:'Exit',x:.71},
+  {label:'Friend',sub:'Recipient',x:.92}
+];
+var jAnim=null,jRunning=false,jT=0;
+
+function sizeJ(){
+  var c=document.getElementById('journeyCanvas');
+  if(!c)return;
+  c.width=c.parentElement.clientWidth||900;
+  drawJ(0,0);
+}
+
+function drawJ(step,particleX){
+  var c=document.getElementById('journeyCanvas');
+  if(!c)return;
+  var ctx=c.getContext('2d');
+  var W=c.width,H=c.height,CY=H*0.45;
+  var MAX_NODES=J_NODES.length; /* 5 */
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0C1422';ctx.fillRect(0,0,W,H);
+  var positions=J_NODES.map(function(n){return{x:n.x*W,y:CY};});
+
+  /* track lines */
+  for(var i=0;i<MAX_NODES-1;i++){
+    ctx.strokeStyle='#1A2D44';ctx.lineWidth=2;ctx.setLineDash([5,7]);
+    ctx.beginPath();ctx.moveTo(positions[i].x,CY);ctx.lineTo(positions[i+1].x,CY);ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  /* active lines   only draw between nodes 0..min(step,MAX_NODES)-1 */
+  var lineMax=Math.min(step, MAX_NODES);
+  for(var j=0;j<lineMax-1;j++){
+    ctx.strokeStyle='#00D4A8';ctx.lineWidth=2.5;ctx.globalAlpha=.55;
+    ctx.beginPath();ctx.moveTo(positions[j].x,CY);ctx.lineTo(positions[j+1].x,CY);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+
+  /* nodes */
+  J_NODES.forEach(function(n,i){
+    var p=positions[i];
+    var lit=(i<Math.min(step,MAX_NODES));
+    var r=lit?22:17;
+    if(lit){
+      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r+12);
+      g.addColorStop(0,'rgba(0,212,168,.25)');g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,r+12,0,Math.PI*2);ctx.fill();
+    }
+    ctx.fillStyle=lit?'rgba(0,212,168,.15)':'rgba(26,45,68,.8)';
+    ctx.strokeStyle=lit?'#00D4A8':'#254060';ctx.lineWidth=lit?2:1.5;
+    ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+    var icons=['📱','🔵','🔵','🔵','👤'];
+    ctx.font=Math.round(r*.9)+'px serif';ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(icons[i],p.x,p.y);
+    ctx.fillStyle=lit?'#DFF0EA':'#3A6458';
+    ctx.font=(lit?'bold ':'')+Math.round(H*.065)+'px Sora,sans-serif';
+    ctx.fillText(n.label,p.x,p.y+r+14);
+    ctx.fillStyle='#3A6458';ctx.font=Math.round(H*.055)+'px Outfit,sans-serif';
+    ctx.fillText(n.sub,p.x,p.y+r+26);
+  });
+
+  /* packet */
+  if(particleX>0&&particleX<W){
+    var pg=ctx.createRadialGradient(particleX,CY,0,particleX,CY,16);
+    pg.addColorStop(0,'rgba(0,235,190,.9)');pg.addColorStop(1,'transparent');
+    ctx.fillStyle=pg;ctx.beginPath();ctx.arc(particleX,CY,16,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#00EBBE';ctx.beginPath();ctx.arc(particleX,CY,7,0,Math.PI*2);ctx.fill();
+  }
+}
+
+function jSend(){
+  if(jRunning)return;
+  jRunning=true;jT=0;
+  var c=document.getElementById('journeyCanvas');
+  if(!c)return;
+  var W=c.width;
+  var startX=W*0.08,endX=W*0.92,totalFrames=200;
+  var statusMap=[
+    'Press Send Message to begin',
+    'Message encrypted and sent from your device',
+    'Node 1 relays, sees your IP only, not destination',
+    'Node 2 relays, sees neither origin nor destination',
+    'Node 3 delivers, knows destination, not your identity',
+    'Message received and decrypted by your friend'
+  ];
+  cancelAnimationFrame(jAnim);
+  function tick(){
+    var prog=jT/totalFrames;
+    var px=startX+(endX-startX)*prog;
+    /* clamp step to 0..5 (= MAX_NODES) */
+    var nodeStep=Math.min(Math.floor(prog*J_NODES.length), J_NODES.length);
+    drawJ(nodeStep,px);
+    /* highlight info cells */
+    for(var ci=0;ci<5;ci++){
+      var cel=document.getElementById('jc'+ci);
+      if(cel)cel.classList.toggle('lit',ci<nodeStep);
+    }
+    var sIdx=Math.min(nodeStep,statusMap.length-1);
+    document.getElementById('jStatus').textContent=statusMap[sIdx];
+    jT++;
+    if(jT<=totalFrames){jAnim=requestAnimationFrame(tick);}
+    else{jRunning=false;drawJ(J_NODES.length,0);}
+  }
+  jAnim=requestAnimationFrame(tick);
+}
+function jReset(){
+  cancelAnimationFrame(jAnim);jRunning=false;jT=0;
+  document.querySelectorAll('.ji-cell').forEach(function(c){c.classList.remove('lit');});
+  document.getElementById('jStatus').textContent='Press Send Message to begin';
+  drawJ(0,0);
+}
+
+/* ── CH4b SWARM STORAGE ── */
+var swarmAF=null,swarmCurrentPhase=-1;
+var SWARM_N=9;
+var swarmLit=[];
+var SWARM_STATUS=[
+  'Sender encrypts the message and sends it toward the swarm...',
+  'The encrypted message is copied across 9 masternodes. Each stores a locked copy it cannot read.',
+  'Recipient is offline. The swarm holds the encrypted message safely. No node can read it.',
+  'Recipient comes back online. The app detects pending messages and begins retrieval...',
+  'Message retrieved, decrypted on device. Swarm deletes all 9 copies. Nothing remains.'
+];
+
+function sizeSwarm(){
+  var c=document.getElementById('swarmCanvas');
+  if(!c)return;
+  c.width=c.parentElement.clientWidth||800;
+  drawSwarmPhase(swarmCurrentPhase);
+}
+
+function drawSwarmPhase(phase){
+  var c=document.getElementById('swarmCanvas');
+  if(!c)return;
+  var ctx=c.getContext('2d');
+  var W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0C1422';ctx.fillRect(0,0,W,H);
+  var CY=H*0.5,SX=W*0.08,RX=W*0.92,SCX=W*0.5;
+  var swarmR=Math.min(H*0.32,W*0.17);
+
+  /* Swarm ring positions */
+  var nodePos=[];
+  for(var i=0;i<SWARM_N;i++){
+    var ang=(i/SWARM_N)*Math.PI*2-Math.PI/2;
+    nodePos.push({x:SCX+Math.cos(ang)*swarmR,y:CY+Math.sin(ang)*swarmR});
+  }
+
+  /* Ring outline */
+  ctx.strokeStyle='rgba(26,45,68,.5)';ctx.lineWidth=1;ctx.setLineDash([3,6]);
+  ctx.beginPath();ctx.arc(SCX,CY,swarmR+16,0,Math.PI*2);ctx.stroke();
+  ctx.setLineDash([]);
+
+  /* Swarm center label */
+  ctx.fillStyle=(phase>=1&&phase<=3)?'rgba(0,212,168,.5)':'rgba(58,100,88,.35)';
+  ctx.font='bold '+Math.round(H*.052)+'px Sora,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('SWARM',SCX,CY);
+  ctx.fillStyle='rgba(58,100,88,.4)';
+  ctx.font=Math.round(H*.042)+'px Outfit,sans-serif';
+  ctx.fillText(SWARM_N+' masternodes',SCX,CY+Math.round(H*.068));
+
+  /* Swarm nodes */
+  nodePos.forEach(function(np,ni){
+    var isActive=(phase>=1&&phase<=3)&&swarmLit[ni];
+    var isDeleting=(phase===4)&&swarmLit[ni];
+    var nr=Math.round(H*.056);
+    if(isActive||isDeleting){
+      var ng=ctx.createRadialGradient(np.x,np.y,0,np.x,np.y,nr+8);
+      ng.addColorStop(0,isDeleting?'rgba(255,107,71,.3)':'rgba(0,212,168,.2)');
+      ng.addColorStop(1,'transparent');
+      ctx.fillStyle=ng;ctx.beginPath();ctx.arc(np.x,np.y,nr+8,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=isDeleting?'rgba(255,107,71,.25)':'rgba(0,212,168,.18)';
+      ctx.lineWidth=1;ctx.setLineDash([3,5]);
+      ctx.beginPath();ctx.moveTo(SCX,CY);ctx.lineTo(np.x,np.y);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.fillStyle=isActive?'rgba(0,212,168,.15)':(isDeleting?'rgba(255,107,71,.08)':'rgba(17,27,46,.9)');
+    ctx.strokeStyle=isActive?'#00D4A8':(isDeleting?'#FF6B47':'#254060');
+    ctx.lineWidth=(isActive||isDeleting)?2:1;
+    ctx.beginPath();ctx.arc(np.x,np.y,nr,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.font=Math.round(nr*.9)+'px serif';ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(isActive?'🔒':(isDeleting?'🗑':'⚫'),np.x,np.y);
+  });
+
+  /* Sender */
+  var sLit=(phase>=0);
+  if(sLit){var sg=ctx.createRadialGradient(SX,CY,0,SX,CY,28);sg.addColorStop(0,'rgba(0,212,168,.2)');sg.addColorStop(1,'transparent');ctx.fillStyle=sg;ctx.beginPath();ctx.arc(SX,CY,28,0,Math.PI*2);ctx.fill();}
+  ctx.fillStyle=sLit?'rgba(0,212,168,.15)':'rgba(17,27,46,.9)';
+  ctx.strokeStyle=sLit?'#00D4A8':'#254060';ctx.lineWidth=sLit?2:1;
+  ctx.beginPath();ctx.arc(SX,CY,22,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.font='18px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('📱',SX,CY);
+  ctx.fillStyle=sLit?'#DFF0EA':'#3A6458';ctx.font='bold '+Math.round(H*.058)+'px Sora,sans-serif';ctx.textBaseline='top';
+  ctx.fillText('Sender',SX,CY+26);
+
+  /* Recipient */
+  var rLit=(phase>=3);
+  if(rLit){var rg=ctx.createRadialGradient(RX,CY,0,RX,CY,28);rg.addColorStop(0,'rgba(0,212,168,.2)');rg.addColorStop(1,'transparent');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(RX,CY,28,0,Math.PI*2);ctx.fill();}
+  ctx.fillStyle=rLit?'rgba(0,212,168,.12)':'rgba(17,27,46,.9)';
+  ctx.strokeStyle=rLit?'#00D4A8':'#254060';ctx.lineWidth=rLit?2:1;
+  ctx.beginPath();ctx.arc(RX,CY,22,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.font='18px serif';ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillText(rLit?'📲':'😴',RX,CY);
+  ctx.fillStyle=rLit?'#DFF0EA':'#3A6458';ctx.font='bold '+Math.round(H*.058)+'px Sora,sans-serif';ctx.textBaseline='top';
+  ctx.fillText(rLit?'Online':'Offline',RX,CY+26);
+
+  /* phase-specific arrows */
+  if(phase===0){
+    ctx.strokeStyle='rgba(0,212,168,.4)';ctx.lineWidth=2;ctx.setLineDash([4,5]);
+    ctx.beginPath();ctx.moveTo(SX+24,CY);ctx.lineTo(SCX-swarmR-8,CY);ctx.stroke();
+    ctx.setLineDash([]);
+    var px=SCX-swarmR-22;
+    var pg=ctx.createRadialGradient(px,CY,0,px,CY,12);
+    pg.addColorStop(0,'rgba(0,235,190,.9)');pg.addColorStop(1,'transparent');
+    ctx.fillStyle=pg;ctx.beginPath();ctx.arc(px,CY,12,0,Math.PI*2);ctx.fill();
+    ctx.font='12px serif';ctx.textBaseline='middle';ctx.textAlign='center';ctx.fillText('📨',px,CY);
+  }
+  if(phase>=3){
+    ctx.strokeStyle='rgba(0,212,168,.3)';ctx.lineWidth=2;ctx.setLineDash([4,5]);
+    ctx.beginPath();ctx.moveTo(SCX+swarmR+8,CY);ctx.lineTo(RX-24,CY);ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+function swarmPhase(p){
+  cancelAnimationFrame(swarmAF);
+  for(var i=0;i<5;i++){
+    var el=document.getElementById('sph'+i);
+    if(el){el.classList.remove('active','done');if(i<p)el.classList.add('done');if(i===p)el.classList.add('active');}
+  }
+  if(p===0){
+    swarmLit=new Array(SWARM_N).fill(false);
+    swarmCurrentPhase=0;
+    drawSwarmPhase(0);
+  } else if(p===1){
+    swarmLit=new Array(SWARM_N).fill(false);
+    var ni=0;
+    function lightNext(){
+      if(ni<SWARM_N){swarmLit[ni]=true;ni++;drawSwarmPhase(1);swarmAF=setTimeout(lightNext,120);}
+    }
+    lightNext();
+    swarmCurrentPhase=1;
+  } else if(p===2){
+    swarmLit=new Array(SWARM_N).fill(true);
+    swarmCurrentPhase=2;
+    drawSwarmPhase(2);
+  } else if(p===3){
+    swarmLit=new Array(SWARM_N).fill(true);
+    swarmCurrentPhase=3;
+    drawSwarmPhase(3);
+  } else if(p===4){
+    swarmLit=new Array(SWARM_N).fill(true);
+    swarmCurrentPhase=4;
+    var di=0;
+    function darkNext(){
+      if(di<SWARM_N){swarmLit[di]=false;di++;drawSwarmPhase(4);swarmAF=setTimeout(darkNext,100);}
+      else{drawSwarmPhase(4);}
+    }
+    darkNext();
+  }
+  document.getElementById('swarmStatus').textContent=SWARM_STATUS[p];
+}
+
+function swarmReset(){
+  clearTimeout(swarmAF);cancelAnimationFrame(swarmAF);
+  swarmCurrentPhase=-1;
+  swarmLit=new Array(SWARM_N).fill(false);
+  for(var i=0;i<5;i++){var el=document.getElementById('sph'+i);if(el)el.classList.remove('active','done');}
+  document.getElementById('swarmStatus').textContent='Press a step below to start the simulation.';
+  drawSwarmPhase(-1);
+}
+var swarmAutoStep=0;
+function swarmAuto(){
+  swarmAutoStep=0;
+  function runNext(){if(swarmAutoStep<=4){swarmPhase(swarmAutoStep);swarmAutoStep++;setTimeout(runNext,swarmAutoStep===3?2200:1800);}}
+  runNext();
+}
+
+/* ── CH5 Features tabs ── */
+function switchFeature(id,btn){
+  document.querySelectorAll('.feature-panel').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.ft').forEach(function(b){b.classList.remove('on');});
+  var panel=document.getElementById('fp-'+id);
+  if(panel)panel.classList.add('on');
+  if(btn)btn.classList.add('on');
+  if(id==='account')initSeed();
+}
+
+var ALICE_REPLIES=['Got it!','Sure, no problem.','Sounds good!','On my way!','Perfect timing.','Thanks for that!','Noted!'];
+function sendLiveMsg(){
+  var inp=document.getElementById('liveMsgInput');
+  var text=inp.value.trim();if(!text)return;
+  var chat=document.getElementById('liveChat');
+  var b=document.createElement('div');b.className='mc-bubble mc-out';b.textContent=text;
+  var last=chat.lastElementChild;chat.insertBefore(b,last);
+  inp.value='';
+  setTimeout(function(){
+    var r2=document.createElement('div');r2.className='mc-bubble mc-in';
+    r2.innerHTML='<div class="mc-name">alice.bdx</div>'+ALICE_REPLIES[Math.floor(Math.random()*ALICE_REPLIES.length)];
+    chat.insertBefore(r2,last);chat.scrollTop=chat.scrollHeight;
+  },700+Math.random()*500);
+}
+
+/* group builder */
+var groupMembers=[];
+(function buildContactPool(){
+  var contacts=['alice.bdx','bob.bdx','carol.bdx','dave.bdx','eve.bdx'];
+  var pool=document.getElementById('contactPool');
+  if(!pool)return;
+  contacts.forEach(function(name){
+    var btn=document.createElement('button');
+    btn.textContent=name;
+    btn.style.cssText='padding:.35rem .8rem;border-radius:6px;font-size:.8rem;font-family:JetBrains Mono,monospace;border:1.5px solid var(--ln2);background:var(--bg1);color:var(--tx2);cursor:pointer;transition:all .22s;';
+    btn.onclick=function(){
+      var idx=groupMembers.indexOf(name);
+      if(idx>-1){groupMembers.splice(idx,1);btn.style.borderColor='var(--ln2)';btn.style.background='var(--bg1)';btn.style.color='var(--tx2)';}
+      else{groupMembers.push(name);btn.style.borderColor='var(--tl)';btn.style.background='var(--tl-gl)';btn.style.color='var(--tl)';}
+      var c=groupMembers.length;
+      document.getElementById('groupCount').textContent=(c+1)+' (you + '+c+' others)';
+      if(c===0){document.getElementById('groupKey').textContent='No members yet';document.getElementById('groupKey').style.color='var(--tx3)';document.getElementById('groupStatus').textContent='Add contacts to create a group';document.getElementById('groupStatus').style.color='var(--tx3)';return;}
+      document.getElementById('groupKey').textContent=rh(16)+'... (refreshed)';
+      document.getElementById('groupKey').style.color='var(--gd)';
+      document.getElementById('groupStatus').textContent='Private group active, '+c+' member'+(c>1?'s':'')+', E2E encrypted';
+      document.getElementById('groupStatus').style.color='var(--tl)';
+    };
+    pool.appendChild(btn);
+  });
+})();
+
+/* call simulation */
+function triggerCall(){document.getElementById('callStateIdle').style.display='none';document.getElementById('callStateRing').style.display='block';}
+function acceptCall(){document.getElementById('callStateRing').style.display='none';document.getElementById('callStateConn').style.display='block';}
+function rejectCall(){document.getElementById('callStateRing').style.display='none';document.getElementById('callStateEnd').style.display='block';}
+function endCall(){document.getElementById('callStateConn').style.display='none';document.getElementById('callStateEnd').style.display='block';}
+function resetCall(){['callStateRing','callStateConn','callStateEnd'].forEach(function(id){document.getElementById(id).style.display='none';});document.getElementById('callStateIdle').style.display='block';}
+
+/* metadata comparison */
+var META={
+  whatsapp:{title:'WhatsApp Metadata Log',rows:[
+    {bad:true,key:'Sender Phone',val:'+91 98765 43210'},
+    {bad:true,key:'Recipient Phone',val:'+44 7911 123456'},
+    {bad:true,key:'Timestamp',val:'2025-03-15 14:22:07 UTC'},
+    {bad:true,key:'Message Size',val:'847 bytes'},
+    {bad:true,key:'Sender IP',val:'103.22.x.x (Mumbai, India)'},
+    {bad:true,key:'Device',val:'iPhone 15 Pro / iOS 18.2'},
+    {bad:true,key:'Read Receipt',val:'Yes, 14:22:09'},
+    {bad:true,key:'Shared with',val:'Meta advertising network'},
+    {bad:false,key:'Content',val:'[Encrypted]'},
+  ]},
+  telegram:{title:'Telegram Metadata Log',rows:[
+    {bad:true,key:'Sender Phone',val:'+91 98765 43210'},
+    {bad:true,key:'Username',val:'@user_handle'},
+    {bad:true,key:'Timestamp',val:'2025-03-15 14:22:07'},
+    {bad:true,key:'Sender IP',val:'103.22.x.x'},
+    {bad:true,key:'Device',val:'Android 14 / Pixel 7'},
+    {bad:true,key:'Content',val:'[Stored on server, not E2E by default]'},
+    {bad:true,key:'Stored Until',val:'Indefinitely on Telegram servers'},
+  ]},
+  bchat:{title:'BChat Metadata Log',rows:[
+    {bad:false,key:'Sender ID',val:'[BChat ID only, no personal info]'},
+    {bad:false,key:'Recipient',val:'[BChat ID, no personal info]'},
+    {bad:false,key:'Timestamp',val:'[Not logged]'},
+    {bad:false,key:'Message Size',val:'[Not logged, padding applied]'},
+    {bad:false,key:'Sender IP',val:'[Hidden by 3-hop onion routing]'},
+    {bad:false,key:'Device Info',val:'[Never collected]'},
+    {bad:false,key:'Content',val:'[E2E encrypted, unreadable to anyone else]'},
+    {bad:false,key:'Stored Where',val:'[Only on sender and recipient devices]'},
+  ]}
+};
+function showMeta(app,btn){
+  document.querySelectorAll('.meta-sel').forEach(function(b){b.style.fontWeight='600';});
+  btn.style.fontWeight='800';
+  var d=META[app];
+  document.getElementById('metaDemoTitle').textContent=d.title;
+  var html='<div style="display:flex;flex-direction:column;gap:.35rem;">';
+  d.rows.forEach(function(r,i){
+    var bg=r.bad?'rgba(255,107,71,.07)':'var(--tl-gl)';
+    var bc=r.bad?'rgba(255,107,71,.2)':'rgba(0,212,168,.2)';
+    var kc=r.bad?'rgba(255,107,71,.7)':'var(--tl)';
+    html+='<div style="display:flex;gap:.5rem;align-items:flex-start;padding:.45rem .7rem;border-radius:6px;background:'+bg+';border:1px solid '+bc+';animation:slideIn .25s ease both;animation-delay:'+(i*.04)+'s">';
+    html+='<div style="font-family:JetBrains Mono,monospace;font-size:.6rem;color:'+kc+';width:90px;flex-shrink:0;">'+r.key+'</div>';
+    html+='<div style="font-family:JetBrains Mono,monospace;font-size:.65rem;color:var(--tx2);">'+r.val+'</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('metaDemoBody').innerHTML=html;
+}
+
+/* seed phrase quiz */
+var SEED_POOL=['abandon','ability','able','above','absent','absorb','abstract','acquire','act','adapt','admit','adult','advance','advice','afford','afraid','agent','agree','ahead','aim','air','album','alert','alien'];
+var seedOrder=[];
+var seedClicked=[];
+function initSeed(){
+  seedOrder=SEED_POOL.slice(0,12);
+  seedClicked=[];
+  var shuffled=seedOrder.slice().sort(function(){return Math.random()-.5;});
+  var disp=document.getElementById('seedWordsDisplay');
+  if(!disp)return;
+  disp.innerHTML='';
+  shuffled.forEach(function(w){
+    var btn=document.createElement('button');
+    btn.textContent=w;
+    btn.dataset.word=w;
+    btn.style.cssText='padding:.35rem .5rem;border-radius:6px;font-size:.72rem;font-family:JetBrains Mono,monospace;border:1.5px solid var(--ln2);background:var(--bg1);color:var(--tx2);cursor:pointer;transition:all .22s;text-align:center;';
+    btn.onclick=function(){
+      if(seedClicked.indexOf(w)>-1)return;
+      seedClicked.push(w);
+      btn.style.borderColor='var(--tl)';btn.style.background='var(--tl-gl)';btn.style.color='var(--tl)';
+      var list=document.getElementById('seedConfirmList');
+      if(list)list.textContent=seedClicked.join(' | ');
+    };
+    disp.appendChild(btn);
+  });
+  var list=document.getElementById('seedConfirmList');
+  if(list)list.textContent='nothing yet';
+  var res=document.getElementById('seedResult');
+  if(res)res.textContent='';
+}
+function seedCheck(){
+  var res=document.getElementById('seedResult');
+  if(JSON.stringify(seedClicked)===JSON.stringify(seedOrder)){
+    res.textContent='Perfect! Your seed is confirmed in the correct order.';res.style.color='var(--tl)';
+  } else {
+    res.textContent='Order incorrect. Reset and try again. In the real app order matters.';res.style.color='var(--co)';
+  }
+}
+
+/* ── CH6 BNS Lookup ── */
+function doLookup(){
+  var name=document.getElementById('bnsInput').value.trim().toLowerCase()||'unknown.bdx';
+  var seed=0;
+  for(var i=0;i<name.length;i++)seed+=name.charCodeAt(i)*(i+1)*31;
+  var r=lcg(seed);
+  var genId='bd'+Array.from({length:62},function(){return HX[r()%16];}).join('');
+  var genWallet='bx'+Array.from({length:94},function(){return HX[r()%16];}).join('');
+  document.getElementById('bnsUglyId').textContent=genId.slice(0,26)+'...';
+  document.getElementById('bnsCleanName').textContent=name;
+  document.getElementById('brName').innerHTML=name+'<span class="verified-chip">verified</span>';
+  document.getElementById('brId').textContent=genId;
+  document.getElementById('brWallet').textContent=genWallet;
+  document.getElementById('brStatus').innerHTML='<span style="color:var(--tl)">Active on Beldex blockchain</span>';
+  document.getElementById('bnsResult').classList.add('show');
+}
+
+/* ── CH7 Payment ── */
+function updatePay(){
+  var to=document.getElementById('payTo').value||'unknown';
+  var amt=parseFloat(document.getElementById('payAmt').value)||0;
+  document.getElementById('pSumTo').textContent=to;
+  document.getElementById('pSumAmt').textContent=amt.toFixed(3)+' BDX';
+  document.getElementById('pSumTotal').textContent=(amt+0.003).toFixed(3)+' BDX';
+}
+function doPayment(){
+  var msg=document.getElementById('payMsg');
+  msg.textContent='Sending...';
+  setTimeout(function(){msg.textContent='Sent! TX: '+rh(16)+'...';},1000);
+  setTimeout(function(){msg.textContent='';},4000);
+}
+
+/* ── INIT ── */
+window.addEventListener('load',function(){
+  sizeJ();
+  sizeSwarm();
+  ebLock();
+  updatePay();
+  initSeed();
+});
+window.addEventListener('resize',function(){sizeJ();sizeSwarm();},{passive:true});
+</script>
+</body>
+</html>

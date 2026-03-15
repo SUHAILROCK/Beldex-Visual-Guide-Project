@@ -11,9 +11,10 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#080d18;color:#e2e8f0;font-family:'Sora',sans-serif;min-height:100vh;padding:48px 24px 100px;}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(56,189,126,0.07) 1px,transparent 1px),radial-gradient(rgba(99,102,241,0.05) 1px,transparent 1px),radial-gradient(rgba(56,189,126,0.03) 2px,transparent 2px);background-size:30px 30px,50px 50px,90px 90px;background-position:0 0,25px 25px,45px 45px;pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(56,189,126,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(99,102,241,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body{background:#060a12;color:#e2e8f0;font-family:'Sora',sans-serif;min-height:100vh;padding:48px 24px 100px;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(56,189,126,0.06) 1px,transparent 1px),radial-gradient(rgba(99,102,241,0.04) 1px,transparent 1px);background-size:32px 32px,52px 52px;background-position:0 0,26px 26px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 10%,rgba(56,189,126,0.08) 0%,transparent 40%),radial-gradient(ellipse at 80% 20%,rgba(99,102,241,0.06) 0%,transparent 35%),radial-gradient(ellipse at 50% 60%,rgba(34,211,238,0.04) 0%,transparent 40%),radial-gradient(ellipse at 10% 80%,rgba(139,92,246,0.05) 0%,transparent 35%),radial-gradient(ellipse at 90% 85%,rgba(251,191,36,0.04) 0%,transparent 30%);pointer-events:none;z-index:0;animation:bgShift 20s ease-in-out infinite alternate;}
+@keyframes bgShift{0%{opacity:.7;filter:hue-rotate(0deg);}50%{opacity:1;filter:hue-rotate(5deg);}100%{opacity:.8;filter:hue-rotate(-5deg);}}
 
 .page{position:relative;z-index:1;width:max-content;min-width:100%;margin:0 auto;}
 #treeSvg{position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible;}
@@ -188,8 +189,8 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 
 /* LIGHT THEME */
 [data-theme="light"] body{background:#f5f7fa;color:#1e293b;}
-[data-theme="light"] body::before{background-image:radial-gradient(rgba(13,147,115,0.04) 1px,transparent 1px),radial-gradient(rgba(37,99,235,0.03) 1px,transparent 1px),radial-gradient(rgba(13,147,115,0.02) 2px,transparent 2px);}
-[data-theme="light"] body::after{background:radial-gradient(ellipse at 50% 30%,rgba(13,147,115,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,99,235,0.03) 0%,transparent 50%);}
+[data-theme="light"] body::before{background-image:radial-gradient(rgba(13,147,115,0.04) 1px,transparent 1px),radial-gradient(rgba(37,99,235,0.03) 1px,transparent 1px);}
+[data-theme="light"] body::after{background:radial-gradient(ellipse at 20% 10%,rgba(13,147,115,0.06) 0%,transparent 40%),radial-gradient(ellipse at 80% 20%,rgba(37,99,235,0.05) 0%,transparent 35%),radial-gradient(ellipse at 50% 60%,rgba(8,145,178,0.04) 0%,transparent 40%),radial-gradient(ellipse at 10% 80%,rgba(124,58,237,0.04) 0%,transparent 35%);}
 [data-theme="light"] .header{background:linear-gradient(160deg,rgba(255,255,255,0.8),rgba(245,247,250,0.6));border-color:rgba(13,147,115,0.15);}
 [data-theme="light"] .header::before{background:linear-gradient(90deg,transparent,#0d9373,#2563eb,#0d9373,transparent);}
 [data-theme="light"] .header::after{background:radial-gradient(ellipse at 50% 0%,rgba(13,147,115,0.06) 0%,transparent 50%);}
@@ -297,8 +298,9 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="prod-node" onclick="toggleLevels(this,event)" data-tip="Decentralized private messenger, end-to-end encrypted chats with no phone number required">
             <div class="node-box node-comp"><div class="n-title">💬 BChat</div><div class="n-desc">Private messenger</div></div>
             <div class="level-dropdown">
-              <a href="Products/bchat.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
-              <a href="tech/product's - L2/beldex-bchat.html" class="lvl-link" target="_blank"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Deep Dive</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="tech/product's - L2/beldex-bchat-easy.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="tech/product's - L2/beldex-bchat-medium.html" class="lvl-link" target="_blank"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Deep Dive</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="tech/product's - L2/beldex-bchat-hard.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 3</div><div class="lvl-name">Technical Deep Dive</div></div><span class="lvl-arrow">&rarr;</span></a>
             </div>
           </div>
 
@@ -418,6 +420,13 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 <script>
 // ── PRODUCT LEVEL TOGGLE ──
 function toggleLevels(node, event) {
+  // If click is on a level link, let it navigate naturally
+  var link = event.target.closest('.lvl-link');
+  if (link && !link.classList.contains('soon')) {
+    event.stopPropagation();
+    return; // let the <a> navigate
+  }
+
   event.preventDefault();
   event.stopPropagation();
   var dropdown = node.querySelector('.level-dropdown');
