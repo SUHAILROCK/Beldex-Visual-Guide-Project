@@ -12,31 +12,39 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#080d18;color:#e2e8f0;font-family:'Sora',sans-serif;min-height:100vh;padding:48px 24px 100px;}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(56,189,126,0.07) 1px,transparent 1px),radial-gradient(rgba(99,102,241,0.05) 1px,transparent 1px);background-size:30px 30px,50px 50px;background-position:0 0,25px 25px;pointer-events:none;z-index:0;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(56,189,126,0.07) 1px,transparent 1px),radial-gradient(rgba(99,102,241,0.05) 1px,transparent 1px),radial-gradient(rgba(56,189,126,0.03) 2px,transparent 2px);background-size:30px 30px,50px 50px,90px 90px;background-position:0 0,25px 25px,45px 45px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(56,189,126,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(99,102,241,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
 
 .page{position:relative;z-index:1;width:max-content;min-width:100%;margin:0 auto;}
 #treeSvg{position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible;}
 .tree-content{position:relative;z-index:2;}
 
 /* HEADER */
-.header{text-align:center;margin-bottom:52px;}
-.header .pill{display:inline-block;background:linear-gradient(135deg,#38bd7e,#22d3ee);color:#080d18;font-weight:700;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;padding:5px 18px;border-radius:50px;margin-bottom:14px;box-shadow:0 0 24px rgba(56,189,126,0.25);}
-.header h1{font-size:2.4rem;font-weight:800;letter-spacing:-0.04em;background:linear-gradient(135deg,#fff 30%,#38bd7e 60%,#22d3ee);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-.header .sub{color:#64748b;font-size:.95rem;margin-top:6px;}
-.header .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;font-size:.78rem;margin-bottom:16px;padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);transition:all .25s ease;}
+.header{text-align:center;margin-bottom:52px;padding:36px 40px 32px;background:linear-gradient(160deg,rgba(16,24,40,0.6),rgba(8,13,24,0.4));border:1px solid rgba(56,189,126,0.12);border-radius:20px;position:relative;overflow:hidden;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#38bd7e,#22d3ee,#38bd7e,transparent);}
+.header::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 50% 0%,rgba(56,189,126,0.06) 0%,transparent 50%);pointer-events:none;animation:headerGlow 6s ease-in-out infinite alternate;}
+@keyframes headerGlow{0%{opacity:.5;transform:translateY(0);}100%{opacity:1;transform:translateY(5px);}}
+.header .pill{display:inline-block;background:linear-gradient(135deg,#38bd7e,#22d3ee);color:#080d18;font-weight:700;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;padding:5px 18px;border-radius:50px;margin-bottom:14px;box-shadow:0 0 24px rgba(56,189,126,0.25);position:relative;z-index:1;}
+.header h1{font-size:2.6rem;font-weight:800;letter-spacing:-0.04em;background:linear-gradient(135deg,#fff 20%,#38bd7e 55%,#22d3ee 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;position:relative;z-index:1;text-shadow:none;}
+.header .sub{color:#94a3b8;font-size:.9rem;margin-top:8px;letter-spacing:0.02em;position:relative;z-index:1;}
+.header .back-link{display:inline-flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;font-size:.78rem;margin-bottom:16px;padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);transition:all .25s ease;position:relative;z-index:1;}
 .header .back-link:hover{color:#38bd7e;border-color:rgba(56,189,126,0.25);background:rgba(56,189,126,0.05);}
 
 /* NODE BASE */
 .node-box{border-radius:16px;padding:16px 24px;text-align:center;position:relative;overflow:visible;transition:box-shadow .3s ease,border-color .3s ease,transform .3s cubic-bezier(.4,0,.2,1);will-change:transform,box-shadow;}
 
 /* ROOT */
-.node-root{background:linear-gradient(135deg,#0d2418,#122c20,#0f2a1e);border:2px solid #38bd7e;box-shadow:0 0 60px rgba(56,189,126,0.12),0 0 120px rgba(56,189,126,0.06),inset 0 1px 0 rgba(255,255,255,0.06);padding:40px 56px;margin-bottom:50px;}
-.node-root:hover{transform:translateY(-5px);box-shadow:0 0 80px rgba(56,189,126,0.22),0 0 160px rgba(56,189,126,0.1),inset 0 1px 0 rgba(255,255,255,0.08);}
-.node-root .n-title{font-family:'IBM Plex Mono',monospace;font-size:1.45rem;font-weight:700;color:#38bd7e;letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,126,0.4);}
-.node-root .n-desc{font-size:.9rem;color:#94a3b8;margin-top:6px;}
+.node-root{background:linear-gradient(135deg,#0d2418,#122c20,#0f2a1e);border:2px solid #38bd7e;box-shadow:0 0 60px rgba(56,189,126,0.12),0 0 120px rgba(56,189,126,0.06),inset 0 1px 0 rgba(255,255,255,0.06);padding:40px 56px;margin-bottom:50px;position:relative;overflow:hidden;}
+.node-root::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,126,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,126,0.04) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;opacity:0.5;}
+.node-root::after{content:'';position:absolute;inset:-2px;border-radius:inherit;border:2px solid #38bd7e;opacity:0;animation:rootPulse 3s ease-in-out infinite;}
+@keyframes rootPulse{0%,100%{opacity:0;transform:scale(1);}50%{opacity:0.4;transform:scale(1.01);}}
+@keyframes dotPulse{0%,100%{r:3;opacity:0.5;}50%{r:5;opacity:0.9;}}
+.node-root:hover{transform:translateY(-5px);box-shadow:0 0 80px rgba(56,189,126,0.25),0 0 160px rgba(56,189,126,0.12),inset 0 1px 0 rgba(255,255,255,0.08);}
+.node-root .n-title{font-family:'IBM Plex Mono',monospace;font-size:1.45rem;font-weight:700;color:#38bd7e;letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,126,0.4);position:relative;z-index:1;}
+.node-root .n-desc{font-size:.9rem;color:#94a3b8;margin-top:6px;position:relative;z-index:1;}
 
 /* PILLAR */
-.node-pillar{background:linear-gradient(160deg,rgba(20,28,44,0.97),rgba(12,18,30,0.99));border:1.5px solid rgba(255,255,255,0.09);border-top-width:3px;padding:20px 18px 16px;min-width:160px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 24px -6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,border-color .3s ease;}
+.node-pillar{background:linear-gradient(160deg,rgba(20,28,44,0.97),rgba(12,18,30,0.99));border:1.5px solid rgba(255,255,255,0.09);border-top-width:3px;border-left-width:3px;padding:20px 18px 16px;min-width:160px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 24px -6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,border-color .3s ease;}
 .node-pillar::before{content:'';position:absolute;left:-16%;right:-16%;bottom:-52px;height:138px;opacity:.12;pointer-events:none;z-index:0;transform:translateY(12px) scale(.9);transform-origin:50% 100%;filter:blur(2px);transition:opacity .28s ease,transform .38s cubic-bezier(.16,1,.3,1);}
 .node-pillar:hover{transform:translateY(-6px) scale(1.015);}
 .node-pillar:hover::before{opacity:.42;transform:translateY(-10px) scale(1.08);}
@@ -45,24 +53,30 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .node-pillar .n-desc{font-size:.78rem;color:#64748b;margin-top:4px;position:relative;z-index:1;}
 
 /* Pillar colors */
-.pillar-group.pillar-1 .node-pillar{border-top-color:#38bd7e;} .pillar-group.pillar-1 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(56,189,126,.95) 0%,rgba(56,189,126,.3) 38%,transparent 72%);} .pillar-group.pillar-1 .node-pillar .n-title{color:#6ee9b7;} .pillar-group.pillar-1 .node-pillar:hover{border-color:rgba(56,189,126,0.55);border-top-color:#38bd7e;box-shadow:0 12px 40px -8px rgba(56,189,126,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-2 .node-pillar{border-top-color:#8b5cf6;} .pillar-group.pillar-2 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(139,92,246,.95) 0%,rgba(139,92,246,.3) 38%,transparent 72%);} .pillar-group.pillar-2 .node-pillar .n-title{color:#c4b5fd;} .pillar-group.pillar-2 .node-pillar:hover{border-color:rgba(139,92,246,0.55);border-top-color:#8b5cf6;box-shadow:0 12px 40px -8px rgba(139,92,246,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-3 .node-pillar{border-top-color:#3b82f6;} .pillar-group.pillar-3 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(59,130,246,.95) 0%,rgba(59,130,246,.3) 38%,transparent 72%);} .pillar-group.pillar-3 .node-pillar .n-title{color:#93c5fd;} .pillar-group.pillar-3 .node-pillar:hover{border-color:rgba(59,130,246,0.55);border-top-color:#3b82f6;box-shadow:0 12px 40px -8px rgba(59,130,246,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-4 .node-pillar{border-top-color:#22d3ee;} .pillar-group.pillar-4 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(34,211,238,.95) 0%,rgba(34,211,238,.3) 38%,transparent 72%);} .pillar-group.pillar-4 .node-pillar .n-title{color:#67e8f9;} .pillar-group.pillar-4 .node-pillar:hover{border-color:rgba(34,211,238,0.55);border-top-color:#22d3ee;box-shadow:0 12px 40px -8px rgba(34,211,238,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-5 .node-pillar{border-top-color:#fbbf24;} .pillar-group.pillar-5 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(251,191,36,.95) 0%,rgba(251,191,36,.3) 38%,transparent 72%);} .pillar-group.pillar-5 .node-pillar .n-title{color:#fde68a;} .pillar-group.pillar-5 .node-pillar:hover{border-color:rgba(251,191,36,0.55);border-top-color:#fbbf24;box-shadow:0 12px 40px -8px rgba(251,191,36,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-6 .node-pillar{border-top-color:#fb923c;} .pillar-group.pillar-6 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(251,146,60,.95) 0%,rgba(251,146,60,.3) 38%,transparent 72%);} .pillar-group.pillar-6 .node-pillar .n-title{color:#fed7aa;} .pillar-group.pillar-6 .node-pillar:hover{border-color:rgba(251,146,60,0.55);border-top-color:#fb923c;box-shadow:0 12px 40px -8px rgba(251,146,60,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-7 .node-pillar{border-top-color:#ec4899;} .pillar-group.pillar-7 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(236,72,153,.95) 0%,rgba(236,72,153,.3) 38%,transparent 72%);} .pillar-group.pillar-7 .node-pillar .n-title{color:#f9a8d4;} .pillar-group.pillar-7 .node-pillar:hover{border-color:rgba(236,72,153,0.55);border-top-color:#ec4899;box-shadow:0 12px 40px -8px rgba(236,72,153,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
-.pillar-group.pillar-8 .node-pillar{border-top-color:#10b981;} .pillar-group.pillar-8 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(16,185,129,.95) 0%,rgba(16,185,129,.3) 38%,transparent 72%);} .pillar-group.pillar-8 .node-pillar .n-title{color:#6ee7b7;} .pillar-group.pillar-8 .node-pillar:hover{border-color:rgba(16,185,129,0.55);border-top-color:#10b981;box-shadow:0 12px 40px -8px rgba(16,185,129,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-1 .node-pillar{border-top-color:#38bd7e;border-left-color:#38bd7e;} .pillar-group.pillar-1 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(56,189,126,.95) 0%,rgba(56,189,126,.3) 38%,transparent 72%);} .pillar-group.pillar-1 .node-pillar .n-title{color:#6ee9b7;} .pillar-group.pillar-1 .node-pillar:hover{border-color:rgba(56,189,126,0.55);border-top-color:#38bd7e;border-left-color:#38bd7e;box-shadow:0 12px 40px -8px rgba(56,189,126,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-2 .node-pillar{border-top-color:#8b5cf6;border-left-color:#8b5cf6;} .pillar-group.pillar-2 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(139,92,246,.95) 0%,rgba(139,92,246,.3) 38%,transparent 72%);} .pillar-group.pillar-2 .node-pillar .n-title{color:#c4b5fd;} .pillar-group.pillar-2 .node-pillar:hover{border-color:rgba(139,92,246,0.55);border-top-color:#8b5cf6;border-left-color:#8b5cf6;box-shadow:0 12px 40px -8px rgba(139,92,246,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-3 .node-pillar{border-top-color:#3b82f6;border-left-color:#3b82f6;} .pillar-group.pillar-3 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(59,130,246,.95) 0%,rgba(59,130,246,.3) 38%,transparent 72%);} .pillar-group.pillar-3 .node-pillar .n-title{color:#93c5fd;} .pillar-group.pillar-3 .node-pillar:hover{border-color:rgba(59,130,246,0.55);border-top-color:#3b82f6;border-left-color:#3b82f6;box-shadow:0 12px 40px -8px rgba(59,130,246,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-4 .node-pillar{border-top-color:#22d3ee;border-left-color:#22d3ee;} .pillar-group.pillar-4 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(34,211,238,.95) 0%,rgba(34,211,238,.3) 38%,transparent 72%);} .pillar-group.pillar-4 .node-pillar .n-title{color:#67e8f9;} .pillar-group.pillar-4 .node-pillar:hover{border-color:rgba(34,211,238,0.55);border-top-color:#22d3ee;border-left-color:#22d3ee;box-shadow:0 12px 40px -8px rgba(34,211,238,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-5 .node-pillar{border-top-color:#fbbf24;border-left-color:#fbbf24;} .pillar-group.pillar-5 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(251,191,36,.95) 0%,rgba(251,191,36,.3) 38%,transparent 72%);} .pillar-group.pillar-5 .node-pillar .n-title{color:#fde68a;} .pillar-group.pillar-5 .node-pillar:hover{border-color:rgba(251,191,36,0.55);border-top-color:#fbbf24;border-left-color:#fbbf24;box-shadow:0 12px 40px -8px rgba(251,191,36,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-6 .node-pillar{border-top-color:#fb923c;border-left-color:#fb923c;} .pillar-group.pillar-6 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(251,146,60,.95) 0%,rgba(251,146,60,.3) 38%,transparent 72%);} .pillar-group.pillar-6 .node-pillar .n-title{color:#fed7aa;} .pillar-group.pillar-6 .node-pillar:hover{border-color:rgba(251,146,60,0.55);border-top-color:#fb923c;border-left-color:#fb923c;box-shadow:0 12px 40px -8px rgba(251,146,60,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-7 .node-pillar{border-top-color:#ec4899;border-left-color:#ec4899;} .pillar-group.pillar-7 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(236,72,153,.95) 0%,rgba(236,72,153,.3) 38%,transparent 72%);} .pillar-group.pillar-7 .node-pillar .n-title{color:#f9a8d4;} .pillar-group.pillar-7 .node-pillar:hover{border-color:rgba(236,72,153,0.55);border-top-color:#ec4899;border-left-color:#ec4899;box-shadow:0 12px 40px -8px rgba(236,72,153,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.pillar-group.pillar-8 .node-pillar{border-top-color:#10b981;border-left-color:#10b981;} .pillar-group.pillar-8 .node-pillar::before{background:radial-gradient(ellipse at 50% 100%,rgba(16,185,129,.95) 0%,rgba(16,185,129,.3) 38%,transparent 72%);} .pillar-group.pillar-8 .node-pillar .n-title{color:#6ee7b7;} .pillar-group.pillar-8 .node-pillar:hover{border-color:rgba(16,185,129,0.55);border-top-color:#10b981;border-left-color:#10b981;box-shadow:0 12px 40px -8px rgba(16,185,129,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
 
 /* COMPONENT */
-.node-comp{background:linear-gradient(145deg,rgba(16,22,36,0.97),rgba(11,17,28,0.99));border:1px solid rgba(255,255,255,0.09);padding:12px 14px;border-radius:12px;min-width:110px;box-shadow:0 2px 14px -4px rgba(0,0,0,0.35);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
+.node-comp{background:linear-gradient(145deg,rgba(16,22,36,0.97),rgba(11,17,28,0.99));border:1px solid rgba(255,255,255,0.09);padding:12px 14px;border-radius:12px;min-width:110px;box-shadow:0 2px 14px -4px rgba(0,0,0,0.35);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;position:relative;overflow:hidden;}
+.node-comp::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.03) 0%,transparent 50%);pointer-events:none;opacity:0;transition:opacity .25s;}
+.node-comp:hover::before{opacity:1;}
 .node-comp .n-title{font-family:'IBM Plex Mono',monospace;font-size:.82rem;font-weight:600;color:#e2e8f0;}
 .node-comp .n-desc{font-size:.7rem;color:#64748b;margin-top:3px;}
 .node-comp:hover{transform:translateY(-4px) scale(1.02);border-color:rgba(56,189,126,0.35);box-shadow:0 10px 30px -6px rgba(56,189,126,0.18);}
+/* Linked nodes get a subtle bottom accent */
 a.node-link{text-decoration:none;color:inherit;display:block;width:100%;}
+a.node-link .node-comp{position:relative;border-bottom-width:2px;}
 a.node-link .node-comp::after{content:'';display:inline-block;width:10px;height:10px;border-right:1.5px solid rgba(255,255,255,.2);border-top:1.5px solid rgba(255,255,255,.2);transform:rotate(45deg);position:absolute;right:12px;top:50%;margin-top:-5px;opacity:0;transition:opacity .25s,right .25s;}
-a.node-link .node-comp{position:relative;}
 a.node-link:hover .node-comp::after{opacity:1;right:10px;}
+/* Static (non-linked) nodes appear slightly dimmer */
+.children-row > .node-comp:not(.prod-node .node-comp){opacity:0.8;}
+.children-row > .node-comp:not(.prod-node .node-comp):hover{opacity:1;}
 [data-theme="light"] a.node-link .node-comp::after{border-color:rgba(0,0,0,.25);}
 .pillar-group.pillar-2 .node-comp:hover{border-color:rgba(139,92,246,0.38);box-shadow:0 10px 30px -6px rgba(139,92,246,0.18);}
 .pillar-group.pillar-3 .node-comp:hover{border-color:rgba(59,130,246,0.38);box-shadow:0 10px 30px -6px rgba(59,130,246,0.18);}
@@ -91,17 +105,26 @@ a.node-link:hover .node-comp::after{opacity:1;right:10px;}
 .level-tag .lt-dot{width:7px;height:7px;border-radius:50%;background:#38bd7e;display:inline-block;flex-shrink:0;box-shadow:0 0 8px rgba(56,189,126,0.7);}
 
 /* LEGEND */
-.legend{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:56px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#64748b;padding:18px 28px;border-radius:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);}
-.legend-item{display:flex;align-items:center;gap:7px;}
-.legend-swatch{width:13px;height:13px;border-radius:4px;flex-shrink:0;}
-.legend-swatch-root{background:#38bd7e;}
+.legend{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-top:56px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#94a3b8;padding:20px 32px;border-radius:16px;background:linear-gradient(160deg,rgba(16,24,40,0.5),rgba(8,13,24,0.3));border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(0,0,0,0.2);}
+.legend-item{display:flex;align-items:center;gap:8px;padding:4px 0;}
+.legend-swatch{width:14px;height:14px;border-radius:5px;flex-shrink:0;}
+.legend-swatch-root{background:#38bd7e;box-shadow:0 0 8px rgba(56,189,126,0.3);}
 .legend-swatch-pillar{background:rgba(20,28,44,0.97);border:1.5px solid rgba(255,255,255,0.18);}
 .legend-swatch-comp{background:rgba(16,22,36,0.97);border:1px solid rgba(255,255,255,0.12);}
-.legend-swatch-conn{width:18px;height:2px;border-radius:0;background:rgba(56,189,126,0.6);}
-.legend-badge{font-size:.62rem;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:6px;display:inline-block;}
+.legend-swatch-conn{width:20px;height:2px;border-radius:1px;background:linear-gradient(90deg,rgba(56,189,126,0.3),rgba(56,189,126,0.8),rgba(56,189,126,0.3));}
+.legend-badge{font-size:.62rem;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:6px;display:inline-block;}
 .legend-badge.live{background:rgba(56,189,126,0.18);color:#38bd7e;}
 .legend-badge.progress{background:rgba(250,204,21,0.15);color:#facc15;}
 .legend-badge.roadmap{background:rgba(99,102,241,0.15);color:#818cf8;}
+
+/* FOOTER */
+.tree-footer{text-align:center;padding:32px 20px 24px;margin-top:20px;position:relative;}
+.tree-footer::before{content:'';display:block;width:120px;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,126,0.3),transparent);margin:0 auto 20px;}
+.tree-footer p{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#475569;letter-spacing:0.5px;}
+.tree-footer .ft-brand{color:#38bd7e;font-weight:600;}
+[data-theme="light"] .tree-footer p{color:#94a3b8;}
+[data-theme="light"] .tree-footer .ft-brand{color:#0d9373;}
+[data-theme="light"] .tree-footer::before{background:linear-gradient(90deg,transparent,rgba(13,147,115,0.3),transparent);}
 
 /* CUSTOM TOOLTIPS */
 [data-tip]{position:relative;}
@@ -165,12 +188,18 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 
 /* LIGHT THEME */
 [data-theme="light"] body{background:#f5f7fa;color:#1e293b;}
-[data-theme="light"] body::before{background-image:radial-gradient(rgba(13,147,115,0.04) 1px,transparent 1px),radial-gradient(rgba(37,99,235,0.03) 1px,transparent 1px);}
-[data-theme="light"] .header h1{background:linear-gradient(135deg,#1a1a2e 30%,#0d9373 60%,#2563eb);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+[data-theme="light"] body::before{background-image:radial-gradient(rgba(13,147,115,0.04) 1px,transparent 1px),radial-gradient(rgba(37,99,235,0.03) 1px,transparent 1px),radial-gradient(rgba(13,147,115,0.02) 2px,transparent 2px);}
+[data-theme="light"] body::after{background:radial-gradient(ellipse at 50% 30%,rgba(13,147,115,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(37,99,235,0.03) 0%,transparent 50%);}
+[data-theme="light"] .header{background:linear-gradient(160deg,rgba(255,255,255,0.8),rgba(245,247,250,0.6));border-color:rgba(13,147,115,0.15);}
+[data-theme="light"] .header::before{background:linear-gradient(90deg,transparent,#0d9373,#2563eb,#0d9373,transparent);}
+[data-theme="light"] .header::after{background:radial-gradient(ellipse at 50% 0%,rgba(13,147,115,0.06) 0%,transparent 50%);}
+[data-theme="light"] .header h1{background:linear-gradient(135deg,#1a1a2e 20%,#0d9373 55%,#2563eb 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 [data-theme="light"] .header .sub{color:#64748b;}
 [data-theme="light"] .header .back-link{color:#64748b;border-color:rgba(0,0,0,0.08);background:rgba(0,0,0,0.02);}
 [data-theme="light"] .header .back-link:hover{color:#0d9373;border-color:rgba(13,147,115,0.25);background:rgba(13,147,115,0.05);}
 [data-theme="light"] .node-root{background:linear-gradient(135deg,#effff8,#e0fff2);border-color:#0d9373;box-shadow:0 4px 28px rgba(13,147,115,0.14),0 0 80px rgba(13,147,115,0.06);}
+[data-theme="light"] .node-root::before{background-image:linear-gradient(rgba(13,147,115,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(13,147,115,0.05) 1px,transparent 1px);}
+[data-theme="light"] .node-root::after{border-color:#0d9373;}
 [data-theme="light"] .node-root .n-title{color:#0d9373;text-shadow:0 0 20px rgba(13,147,115,0.2);}
 [data-theme="light"] .node-root .n-desc{color:#64748b;}
 [data-theme="light"] .node-pillar{background:#ffffff;border-color:rgba(0,0,0,0.08);box-shadow:0 4px 20px rgba(0,0,0,0.08);}
@@ -195,7 +224,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
 [data-theme="light"] .node-comp{background:#ffffff;border-color:rgba(0,0,0,0.07);box-shadow:0 2px 10px rgba(0,0,0,0.05);}
 [data-theme="light"] .node-comp .n-title{color:#1e293b;}
 [data-theme="light"] .node-comp .n-desc{color:#64748b;}
-[data-theme="light"] .legend{background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.05);color:#64748b;}
+[data-theme="light"] .legend{background:rgba(255,255,255,0.6);border-color:rgba(0,0,0,0.06);color:#64748b;box-shadow:0 4px 24px rgba(0,0,0,0.06);}
 [data-theme="light"] .legend-swatch-pillar{background:#ffffff;border-color:rgba(0,0,0,0.14);}
 [data-theme="light"] .legend-swatch-comp{background:#ffffff;border-color:rgba(0,0,0,0.1);}
 [data-theme="light"] .legend-swatch-conn{background:rgba(13,147,115,0.55);}
@@ -231,13 +260,13 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       <div class="pillar-group pillar-1">
         <div class="node-box node-pillar" data-tip="The foundational blockchain layer powering the Beldex network with Proof of Stake consensus and masternode infrastructure"><div class="n-emoji">⛓️</div><div class="n-title">Blockchain Core</div><div class="n-desc">PoS Consensus &middot; Masternodes</div></div>
         <div class="children-row">
-          <a href="tech/core/beldex-pos-consensus.html" class="node-link" data-tip="Validators stake BDX to secure the network and validate new blocks"><div class="node-box node-comp"><div class="n-title">PoS Consensus</div><div class="n-desc">Block validation</div></div></a>
-          <a href="tech/core/beldex-masternode.html" class="node-link" data-tip="Full nodes that require 10,000 BDX stake to operate, providing network services and earning rewards"><div class="node-box node-comp"><div class="n-title">Masternodes</div><div class="n-desc">10K BDX stake</div></div></a>
+          <a href="tech/core/beldex-pos-consensus.html" class="node-link" target="_blank" data-tip="Validators stake BDX to secure the network and validate new blocks"><div class="node-box node-comp"><div class="n-title">PoS Consensus</div><div class="n-desc">Block validation</div></div></a>
+          <a href="tech/core/beldex-masternode.html" class="node-link" target="_blank" data-tip="Full nodes that require 10,000 BDX stake to operate, providing network services and earning rewards"><div class="node-box node-comp"><div class="n-title">Masternodes</div><div class="n-desc">10K BDX stake</div></div></a>
           <!-- <a href="tech/core/beldex-node-architecture.html" class="node-link" data-tip="Daemon and service node structure that forms the backbone of the Beldex network"><div class="node-box node-comp"><div class="n-title">Node Architecture</div><div class="n-desc">Network backbone</div></div></a> -->
           <!-- <a href="tech/core/beldex-p2p-networking.html" class="node-link" data-tip="Peer-to-peer communication layer for propagating transactions and blocks across the network"><div class="node-box node-comp"><div class="n-title">P2P Networking</div><div class="n-desc">Peer communication</div></div></a> -->
-          <a href="tech/core/beldex-tx-architecture.html" class="node-link" data-tip="How transactions are constructed, signed, and broadcast on the Beldex blockchain"><div class="node-box node-comp"><div class="n-title">Transaction Architecture</div><div class="n-desc">TX construction</div></div></a>
-          <a href="tech/core/beldex-block-structure.html" class="node-link" data-tip="The data structure of each block including headers, transactions, and metadata"><div class="node-box node-comp"><div class="n-title">Block Structure</div><div class="n-desc">Block data layout</div></div></a>
-          <a href="tech/core/beldex-hardforks.html" class="node-link" data-tip="Beldex Hardforks are network upgrades that have been implemented to improve the functionality and security of the Beldex blockchain"><div class="node-box node-comp"><div class="n-title">Beldex Hardfork</div><div class="n-desc">Network Upgrade</div></div></a>
+          <a href="tech/core/beldex-tx-architecture.html" class="node-link" target="_blank" data-tip="How transactions are constructed, signed, and broadcast on the Beldex blockchain"><div class="node-box node-comp"><div class="n-title">Transaction Architecture</div><div class="n-desc">TX construction</div></div></a>
+          <a href="tech/core/beldex-block-structure.html" class="node-link" target="_blank" data-tip="The data structure of each block including headers, transactions, and metadata"><div class="node-box node-comp"><div class="n-title">Block Structure</div><div class="n-desc">Block data layout</div></div></a>
+          <a href="tech/core/beldex-hardforks.html" class="node-link" target="_blank" data-tip="Beldex Hardforks are network upgrades that have been implemented to improve the functionality and security of the Beldex blockchain"><div class="node-box node-comp"><div class="n-title">Beldex Hardfork</div><div class="n-desc">Network Upgrade</div></div></a>
         </div>
       </div>
 
@@ -246,16 +275,16 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       <div class="pillar-group pillar-2">
         <div class="node-box node-pillar" data-tip="The cryptographic privacy layer that makes Beldex transactions untraceable and unlinkable"><div class="n-emoji">🛡️</div><div class="n-title">Privacy Protocol</div><div class="n-desc">Cryptography Layer</div></div>
         <div class="children-row">
-          <a href="tech/privacy/tech-cryptonote.html" class="node-link" data-tip="The foundational privacy protocol enabling untraceable payments and unlinkable transactions"><div class="node-box node-comp"><div class="n-title">CryptoNote Protocol</div><div class="n-desc">Privacy foundation</div></div></a>
-          <a href="tech/privacy/tech-ring-signatures.html" class="node-link" data-tip="Mixes the sender's transaction with decoys to hide who actually sent the funds"><div class="node-box node-comp"><div class="n-title">Ring Signatures</div><div class="n-desc">Sender privacy</div></div></a>
-          <a href="tech/privacy/tech-stealth-addresses.html" class="node-link" data-tip="One-time addresses generated per transaction so the receiver's real address stays hidden"><div class="node-box node-comp"><div class="n-title">Stealth Addresses</div><div class="n-desc">Receiver privacy</div></div></a>
-          <a href="tech/privacy/tech-ringct.html" class="node-link" data-tip="Ring Confidential Transactions — hides the amount being transferred in every transaction"><div class="node-box node-comp"><div class="n-title">RingCT</div><div class="n-desc">Amount privacy</div></div></a>
+          <a href="tech/privacy/tech-cryptonote.html" class="node-link" target="_blank" data-tip="The foundational privacy protocol enabling untraceable payments and unlinkable transactions"><div class="node-box node-comp"><div class="n-title">CryptoNote Protocol</div><div class="n-desc">Privacy foundation</div></div></a>
+          <a href="tech/privacy/tech-ring-signatures.html" class="node-link" target="_blank" data-tip="Mixes the sender's transaction with decoys to hide who actually sent the funds"><div class="node-box node-comp"><div class="n-title">Ring Signatures</div><div class="n-desc">Sender privacy</div></div></a>
+          <a href="tech/privacy/tech-stealth-addresses.html" class="node-link" target="_blank" data-tip="One-time addresses generated per transaction so the receiver's real address stays hidden"><div class="node-box node-comp"><div class="n-title">Stealth Addresses</div><div class="n-desc">Receiver privacy</div></div></a>
+          <a href="tech/privacy/tech-ringct.html" class="node-link" target="_blank" data-tip="Ring Confidential Transactions — hides the amount being transferred in every transaction"><div class="node-box node-comp"><div class="n-title">RingCT</div><div class="n-desc">Amount privacy</div></div></a>
           <div class="node-box node-comp" data-tip="Fake outputs mixed into ring signatures to obscure the real transaction source"><div class="n-title">Decoy Outputs</div><div class="n-desc">Blockchain privacy</div></div>
-          <a href="tech/consensus/tech-utxo.html" class="node-link" data-tip="Unspent Transaction Output model — tracks spendable coins without exposing balances"><div class="node-box node-comp"><div class="n-title">UTXO model</div><div class="n-desc">Output tracking</div></div></a>
+          <a href="tech/consensus/tech-utxo.html" class="node-link" target="_blank" data-tip="Unspent Transaction Output model — tracks spendable coins without exposing balances"><div class="node-box node-comp"><div class="n-title">UTXO model</div><div class="n-desc">Output tracking</div></div></a>
           <div class="node-box node-comp" data-tip="Unique identifiers that prevent double-spending without revealing which output was spent"><div class="n-title">Key Images</div><div class="n-desc">Double-spend prevention</div></div>
           <div class="node-box node-comp" data-tip="Cryptographic commitments that prove transaction amounts are valid without revealing them"><div class="n-title">Pedersen Commitments</div><div class="n-desc">Amount commitment</div></div>
           <div class="node-box node-comp" data-tip="Ed25519 curve used for key generation, signing, and all cryptographic operations in Beldex"><div class="n-title">Elliptic Curve Cryptography</div><div class="n-desc">Key generation</div></div>
-          <a href="tech/privacy/tech-bulletproof.html" class="node-link" data-tip="Compact zero-knowledge range proofs that verify amounts are positive without revealing values"><div class="node-box node-comp"><div class="n-title">Bulletproofs++</div><div class="n-desc">Range proofs</div></div></a>
+          <a href="tech/privacy/tech-bulletproof.html" class="node-link" target="_blank" data-tip="Compact zero-knowledge range proofs that verify amounts are positive without revealing values"><div class="node-box node-comp"><div class="n-title">Bulletproofs++</div><div class="n-desc">Range proofs</div></div></a>
           <div class="node-box node-comp" data-tip="Transaction propagation protocol that obscures the originating IP address of a transaction"><div class="n-title">Dandelion++</div><div class="n-desc">IP obfuscation</div></div>
         </div>
       </div>
@@ -268,15 +297,15 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="prod-node" onclick="toggleLevels(this,event)" data-tip="Decentralized private messenger, end-to-end encrypted chats with no phone number required">
             <div class="node-box node-comp"><div class="n-title">💬 BChat</div><div class="n-desc">Private messenger</div></div>
             <div class="level-dropdown">
-              <a href="Products/bchat.html" class="lvl-link"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
-              <a href="tech/product's - L2/beldex-bchat.html" class="lvl-link"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Deep Dive</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="Products/bchat.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="tech/product's - L2/beldex-bchat.html" class="lvl-link" target="_blank"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Deep Dive</div></div><span class="lvl-arrow">&rarr;</span></a>
             </div>
           </div>
 
           <div class="prod-node" onclick="toggleLevels(this,event)" data-tip="Decentralized VPN powered by Beldex masternodes, onion-routed traffic for anonymous browsing">
             <div class="node-box node-comp"><div class="n-title">🌐 BelNet</div><div class="n-desc">Decentralized VPN</div></div>
             <div class="level-dropdown">
-              <a href="Products/belnet.html" class="lvl-link"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="Products/belnet.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
               <a href="#" class="lvl-link soon"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Coming Soon</div></div></a>
             </div>
           </div>
@@ -284,7 +313,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="prod-node" onclick="toggleLevels(this,event)" data-tip="Privacy-focused web browser with built-in ad blocking, tracker prevention, and BelNet integration">
             <div class="node-box node-comp"><div class="n-title">🧭 Browser</div><div class="n-desc">Private browser</div></div>
             <div class="level-dropdown">
-              <a href="Products/beldex-browser-explained.html" class="lvl-link"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="Products/beldex-browser-explained.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
               <a href="#" class="lvl-link soon"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Coming Soon</div></div></a>
             </div>
           </div>
@@ -292,7 +321,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="prod-node" onclick="toggleLevels(this,event)" data-tip="Beldex Name Service, human-readable .bdx domains mapped to wallet addresses and BChat IDs">
             <div class="node-box node-comp"><div class="n-title">🏷️ BNS</div><div class="n-desc">.bdx domains</div></div>
             <div class="level-dropdown">
-              <a href="Products/bns.html" class="lvl-link"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="Products/bns.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
               <a href="#" class="lvl-link soon"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Coming Soon</div></div></a>
             </div>
           </div>
@@ -313,7 +342,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
         <div class="node-box node-pillar" data-tip="Cross-chain bridges and naming services that connect Beldex to other blockchain ecosystems"><div class="n-emoji">🌉</div><div class="n-title">Interoperability</div><div class="n-desc">Cross-Chain &middot; Naming</div></div>
         <div class="children-row">
           <div class="node-box node-comp" data-tip="Legacy bridge for wrapping BDX as wBDX on Ethereum and BSC — superseded by LayerZero"><div class="n-title">Beldex Bridge</div><div class="n-desc">Legacy wBDX</div></div>
-          <a href="tech/network/tech-layerzero.html" class="node-link" data-tip="Omnichain Fungible Token standard via LayerZero — enables native BDX transfers across multiple chains"><div class="node-box node-comp"><div class="n-title">LayerZero OFT</div><div class="n-desc">Multichain bridge</div></div></a>
+          <a href="tech/network/tech-layerzero.html" class="node-link" target="_blank" data-tip="Omnichain Fungible Token standard via LayerZero — enables native BDX transfers across multiple chains"><div class="node-box node-comp"><div class="n-title">LayerZero OFT</div><div class="n-desc">Multichain bridge</div></div></a>
         </div>
       </div>
 
@@ -333,7 +362,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       <div class="pillar-group pillar-6">
         <div class="node-box node-pillar" data-tip="AI-powered features being integrated into Beldex products for smarter, privacy-preserving intelligence"><div class="n-emoji">🤖</div><div class="n-title">BeldexAI</div><div class="n-desc">Intelligence &middot; In Progress</div></div>
         <div class="children-row">
-          <a href="Products/federated-learning.html" class="node-link" data-tip="Privacy-preserving machine learning that trains models on-device without exposing user data"><div class="node-box node-comp"><div class="n-title">Federated Learning</div><div class="n-desc">On-device AI</div></div></a>
+          <a href="Products/federated-learning.html" class="node-link" target="_blank" data-tip="Privacy-preserving machine learning that trains models on-device without exposing user data"><div class="node-box node-comp"><div class="n-title">Federated Learning</div><div class="n-desc">On-device AI</div></div></a>
           <div class="node-box node-comp" data-tip="AI-based spam and scam detection for BChat messages without reading message content"><div class="n-title">Spam Detection</div><div class="n-desc">Fraud filtering</div></div>
           <div class="node-box node-comp" data-tip="AI-driven optimization of masternode routing and network resource allocation"><div class="n-title">Network Optimization</div><div class="n-desc">Smart routing</div></div>
           <div class="node-box node-comp" data-tip="Automated content moderation for BChat groups using on-device AI models"><div class="n-title">Content Moderation</div><div class="n-desc">Group safety</div></div>
@@ -346,7 +375,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
             <div class="pillar-group pillar-7">
         <div class="node-box node-pillar" data-tip="Active research initiatives at Beldex Research Labs. Driving the future of privacy technology, consensus, scalability, and quantum-resistant cryptography."><div class="n-emoji">🔬</div><div class="n-title">Research Lab</div><div class="n-desc">Cryptography &amp; R&amp;D</div></div>
         <div class="children-row">
-          <a href="tech/core/beldex-vrf-consensus.html" class="node-link" data-tip="VRF-based consensus to replace quorum selection. Two-thirds of eligible masternodes participate in dynamic, probabilistic consensus. Research paper planned for peer review Q1 2026."><div class="node-box node-comp"><div class="n-title">VRF Consensus</div><div class="n-desc">Validator randomization</div><div class="status progress">IN PROGRESS</div></div></a>
+          <a href="tech/core/beldex-vrf-consensus.html" class="node-link" target="_blank" data-tip="VRF-based consensus to replace quorum selection. Two-thirds of eligible masternodes participate in dynamic, probabilistic consensus. Research paper planned for peer review Q1 2026."><div class="node-box node-comp"><div class="n-title">VRF Consensus</div><div class="n-desc">Validator randomization</div><div class="status progress">IN PROGRESS</div></div></a>
           <a href="" class="node-link" data-tip="Fully Homomorphic Encryption enables encrypted data to be processed without decryption. Targeted for future integration into BChat for conversation-level privacy."><div class="node-box node-comp"><div class="n-title">FHE Research</div><div class="n-desc">Encrypted computation</div><div class="status roadmap">ROADMAP</div></div></a>
           <a href="" class="node-link" data-tip="Replacing elliptic-curve primitives with lattice-based quantum-resistant constructions. Protects against the harvest-now-decrypt-later threat model from future quantum computers."><div class="node-box node-comp"><div class="n-title">Post-Quantum Crypto</div><div class="n-desc">Lattice cryptography</div><div class="status roadmap">ROADMAP</div></div></a>
           <a href="" class="node-link" data-tip="Researching EVM compatibility to support private smart contracts on Beldex. Programmable execution without overloading the main chain."><div class="node-box node-comp"><div class="n-title">EVM Integration</div><div class="n-desc">Smart contract POC</div><div class="status roadmap">ROADMAP</div></div></a>
@@ -359,7 +388,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       <div class="pillar-group pillar-8">
         <div class="node-box node-pillar" data-tip="Strategic partnerships and integrations within the Beldex ecosystem"><div class="n-emoji">🤝</div><div class="n-title">Ecosystem Partner</div><div class="n-desc">Integrations &amp; Alliances</div></div>
         <div class="children-row">
-          <a href="tech/partners/beldex-partners.html" class="node-link" data-tip="Strategic partnerships and integrations within the Beldex ecosystem"><div class="node-box node-comp"><div class="n-title">Ecosystem Partners</div><div class="n-desc">Strategic Integrations & Collaborations</div></div></a>
+          <a href="tech/partners/beldex-partners.html" class="node-link" target="_blank" data-tip="Strategic partnerships and integrations within the Beldex ecosystem"><div class="node-box node-comp"><div class="n-title">Ecosystem Partners</div><div class="n-desc">Strategic Integrations & Collaborations</div></div></a>
         </div>
       </div>
 
@@ -373,6 +402,10 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
       <div class="legend-item"><span class="legend-badge progress">IN PROGRESS</span> Rolling out</div>
       <div class="legend-item"><span class="legend-badge roadmap">ROADMAP</span> Planned</div>
     </div>
+
+  <div class="tree-footer">
+    <p><span class="ft-brand">Beldex Visual Guide</span> &middot; Privacy Blockchain Ecosystem</p>
+  </div>
 
   </div><!-- /.tree-level -->
   </div><!-- /.tree-content -->
@@ -470,14 +503,51 @@ document.addEventListener('click', function(e) {
     return p;
   }
 
-  function makeDot(svg, x, y, color, r, opacity) {
+  function makeDot(svg, x, y, color, r, opacity, pulse) {
     var c = document.createElementNS(NS, 'circle');
     c.setAttribute('cx', String(x));
     c.setAttribute('cy', String(y));
     c.setAttribute('r', String(r || 3));
     c.setAttribute('fill', color);
     c.setAttribute('opacity', String(opacity || 0.7));
+    if (pulse) {
+      var anim = document.createElementNS(NS, 'animate');
+      anim.setAttribute('attributeName', 'opacity');
+      anim.setAttribute('values', '0.4;0.9;0.4');
+      anim.setAttribute('dur', '2.5s');
+      anim.setAttribute('repeatCount', 'indefinite');
+      c.appendChild(anim);
+    }
     svg.appendChild(c);
+  }
+
+  function makeTravelDot(svg, path, color, delay) {
+    try {
+      var len = path.getTotalLength();
+      if (len < 20) return;
+      var c = document.createElementNS(NS, 'circle');
+      c.setAttribute('r', '2.5');
+      c.setAttribute('fill', color);
+      c.setAttribute('opacity', '0');
+      svg.appendChild(c);
+      var dur = Math.max(2000, len * 8);
+      var startTime = null;
+      var delayMs = delay || 0;
+      function animate(ts) {
+        if (!startTime) startTime = ts;
+        var elapsed = ts - startTime - delayMs;
+        if (elapsed < 0) { requestAnimationFrame(animate); return; }
+        var t = (elapsed % dur) / dur;
+        var fadeIn = Math.min(t * 10, 1);
+        var fadeOut = t > 0.9 ? (1 - t) * 10 : 1;
+        var pt = path.getPointAtLength(t * len);
+        c.setAttribute('cx', String(pt.x));
+        c.setAttribute('cy', String(pt.y));
+        c.setAttribute('opacity', String(0.7 * fadeIn * fadeOut));
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    } catch(e) {}
   }
 
   function curveD(x1, y1, x2, y2) {
@@ -515,10 +585,11 @@ document.addEventListener('click', function(e) {
       var d = curveD(rp.cx, rp.bottom, pp.cx, pp.top);
       var glow = makePath(svg, d, color, 8, 0.1, 'glow');
       glow.style.filter = 'blur(6px)';
-      makePath(svg, d, color, 2, 0.6, 'conn');
-      makeDot(svg, pp.cx, pp.top, color, 3, 0.7);
+      var connPath = makePath(svg, d, color, 2, 0.6, 'conn');
+      makeDot(svg, pp.cx, pp.top, color, 3, 0.7, true);
+      makeTravelDot(svg, connPath, color, i * 400 + 2000);
     });
-    makeDot(svg, rp.cx, rp.bottom, rootColor, 4, 0.8);
+    makeDot(svg, rp.cx, rp.bottom, rootColor, 4, 0.8, true);
 
     // ── Pillar → Components (left-side rail) ──
     var railOffset = 12;
