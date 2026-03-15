@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BelNet   Level 1: Understand It in 5 Minutes</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Mega:wght@400;700;900&family=Nunito:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═════════════════════════════════════════════════
+   OPEN ROAD   Level 1 Beginner
+   Warm cream · Bold editorial · Story-driven
+═════════════════════════════════════════════════ */
+
+:root {
+  --cream:  #FAFAF5;
+  --warm:   #F3F0E8;
+  --warm2:  #EAE6DA;
+  --ink:    #0F0F14;
+  --ink2:   #2C2C38;
+  --ink3:   #5A576A;
+  --rule:   #DDDAD0;
+  --orange: #FF5722;
+  --or2:    #FF7043;
+  --or-pale:#FFF3F0;
+  --teal:   #00BCD4;
+  --tl2:    #00ACC1;
+  --tl-pale:#E0F7FA;
+  --yellow: #FFD600;
+  --yl-pale:#FFFDE7;
+  --green:  #2E7D32;
+  --gn-pale:#E8F5E9;
+  --red:    #C62828;
+  --rd-pale:#FFEBEE;
+  --r8:  8px;
+  --r16: 16px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  font-size:1.08rem;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+
+.w  {max-width:1100px;margin:0 auto;padding:0 2rem;}
+.wn {max-width:780px; margin:0 auto;padding:0 2rem;}
+
+/* ── TYPE ── */
+h1{font-family:'Lexend Mega',sans-serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:.9;letter-spacing:-.02em;}
+h2{font-family:'Lexend Mega',sans-serif;font-size:clamp(2rem,4.5vw,3.6rem);font-weight:700;line-height:.95;letter-spacing:-.01em;}
+h3{font-family:'Lexend Mega',sans-serif;font-size:1.5rem;font-weight:700;line-height:1.1;}
+p{font-size:1.08rem;line-height:1.85;}
+.orange{color:var(--orange);}
+.teal  {color:var(--teal);}
+.yellow{color:#C8A000;}
+
+/* ── PROGRESS ── */
+#pgbar{position:fixed;top:0;left:0;right:0;height:4px;background:var(--warm2);z-index:999;}
+#pgfill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--teal));transition:width .1s;}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;top:4px;left:0;right:0;z-index:900;
+  background:rgba(250,250,245,.96);border-bottom:2px solid var(--ink);
+  backdrop-filter:blur(12px);
+}
+.nav-row{max-width:1100px;margin:0 auto;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Lexend Mega',sans-serif;font-size:1.2rem;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.02em;}
+.nav-logo span{color:var(--orange);}
+.nav-badge{font-family:'Fira Code',monospace;font-size:.68rem;font-weight:700;padding:.28rem .85rem;background:var(--yellow);color:var(--ink);border-radius:99px;letter-spacing:.05em;}
+.nav-dl{font-family:'Lexend Mega',sans-serif;font-size:.72rem;font-weight:700;padding:.52rem 1.2rem;background:var(--orange);color:#fff;border-radius:var(--r8);text-decoration:none;transition:background .2s;}
+.nav-dl:hover{background:var(--or2);}
+
+/* ── SCROLL REVEAL ── */
+.sr{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.sr.on{opacity:1;transform:none;}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}.d4{transition-delay:.4s;}
+/* Hero children visible immediately */
+.hero-instant{opacity:1 !important;transform:none !important;}
+
+/* ── SECTIONS ── */
+.section{padding:6.5rem 0;position:relative;}
+.section+.section{border-top:2.5px solid var(--ink);}
+.section-warm  {background:var(--warm);}
+.section-teal  {background:var(--tl-pale);}
+.section-yellow{background:var(--yl-pale);}
+.section-orange{background:var(--or-pale);}
+.section-green {background:var(--gn-pale);}
+.section-ink   {background:var(--ink);}
+
+/* chapter label */
+.ch-label{
+  font-family:'Fira Code',monospace;font-size:.72rem;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.3rem;
+}
+.ch-label::before{content:'';flex:0 0 32px;height:2.5px;background:currentColor;}
+.ch-num-bg{
+  position:absolute;right:1.5rem;top:1.5rem;
+  font-family:'Lexend Mega',sans-serif;font-weight:900;font-size:11rem;line-height:1;
+  color:transparent;-webkit-text-stroke:2px rgba(15,15,20,.04);
+  pointer-events:none;user-select:none;
+}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'Lexend Mega',sans-serif;font-size:.82rem;font-weight:700;
+  padding:.75rem 1.75rem;border-radius:var(--r8);cursor:pointer;
+  border:2.5px solid;transition:all .2s;text-decoration:none;letter-spacing:.02em;
+}
+.btn-orange{background:var(--orange);color:#fff;border-color:var(--orange);}
+.btn-orange:hover{background:var(--or2);border-color:var(--or2);}
+.btn-teal{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn-teal:hover{background:var(--tl2);border-color:var(--tl2);}
+.btn-white{background:#fff;color:var(--ink);border-color:var(--ink);}
+.btn-white:hover{background:var(--yellow);border-color:var(--yellow);}
+
+/* ── CALLOUT ── */
+.callout{padding:1.3rem 1.6rem;border-radius:var(--r16);border-left:5px solid;margin:1.75rem 0;}
+.callout-orange{border-color:var(--orange);background:var(--or-pale);}
+.callout-teal  {border-color:var(--teal); background:var(--tl-pale);}
+.callout-yellow{border-color:var(--yellow);background:var(--yl-pale);}
+.callout-ink   {border-color:var(--ink);background:var(--warm2);}
+.callout p{font-size:.98rem;color:var(--ink2);line-height:1.75;}
+.callout-head{font-weight:800;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;}
+
+/* ── LAYOUT GRIDS ── */
+.two-col  {display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:5.5rem 0 3rem;background:var(--ink);color:#fff;overflow:hidden;position:relative;
+}
+
+/* Animated dots background */
+.hero-bg-dots{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.hbd{position:absolute;border-radius:50%;animation:dotRise linear infinite;opacity:.12;}
+@keyframes dotRise{0%{transform:translateY(110vh);}100%{transform:translateY(-20vh);}}
+
+.hero-grid{
+  display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:center;overflow:hidden;
+  position:relative;z-index:1;
+}
+
+/* Left column */
+.hero-eyebrow{
+  font-family:'Fira Code',monospace;font-size:.72rem;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--yellow);
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem;
+}
+.hero-eyebrow::before{content:'';width:28px;height:2px;background:var(--yellow);}
+.hero-h1{margin-bottom:1.3rem;}
+.line-gray {color:rgba(255,255,255,.38);}
+.line-white{color:#fff;}
+.line-or   {color:var(--orange);}
+.hero-desc{font-size:1.15rem;color:rgba(255,255,255,.65);line-height:1.9;max-width:520px;margin-bottom:2.5rem;}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;}
+
+.hero-chapters{
+  display:flex;overflow-x:auto;scrollbar-width:none;
+  border:1.5px solid rgba(255,255,255,.1);border-radius:var(--r16);
+}
+.hero-chapters::-webkit-scrollbar{display:none;}
+.hch{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.4rem;border-right:1px solid rgba(255,255,255,.08);flex-shrink:0;text-decoration:none;transition:background .2s;}
+.hch:last-child{border-right:none;}
+.hch:hover{background:rgba(255,255,255,.06);}
+.hch-n{font-family:'Fira Code',monospace;font-size:.58rem;color:var(--orange);}
+.hch-t{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap;}
+
+/* ── Right side: Surveillance visualization ── */
+.hero-right{
+  position:relative;
+  width:340px;height:340px;
+  flex-shrink:0;
+  clip-path:inset(0);
+  --hero-viz-scale:.78;
+}
+.hero-visual{
+  position:absolute;
+  top:50%;left:50%;
+  width:420px;height:420px;
+  transform:translate(-50%,-50%) scale(var(--hero-viz-scale));
+  transform-origin:center;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Pulsing rings   all anchored dead-center with negative margins */
+.pulse-ring{
+  position:absolute;
+  border-radius:50%;border:1.5px solid;
+  animation:pulseExpand 3.2s ease-out infinite;
+  pointer-events:none;
+}
+.pulse-ring:nth-child(1){width:96px; height:96px; top:calc(50% - 48px); left:calc(50% - 48px); border-color:rgba(255,87,34,.9); animation-delay:0s;}
+.pulse-ring:nth-child(2){width:180px;height:180px;top:calc(50% - 90px); left:calc(50% - 90px); border-color:rgba(255,87,34,.55);animation-delay:.8s;}
+.pulse-ring:nth-child(3){width:270px;height:270px;top:calc(50% - 135px);left:calc(50% - 135px);border-color:rgba(255,87,34,.28);animation-delay:1.6s;}
+.pulse-ring:nth-child(4){width:360px;height:360px;top:calc(50% - 180px);left:calc(50% - 180px);border-color:rgba(255,87,34,.1); animation-delay:2.4s;}
+@keyframes pulseExpand{
+  0%  {opacity:1;transform:scale(.82);}
+  60% {opacity:.5;}
+  100%{opacity:0;transform:scale(1.06);}
+}
+
+/* Center phone device */
+.hero-device{
+  width:78px;height:106px;
+  background:rgba(255,255,255,.1);
+  border:2px solid rgba(255,255,255,.28);border-radius:18px;
+  position:relative;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  box-shadow:0 0 32px rgba(255,87,34,.28),0 0 64px rgba(255,87,34,.1);
+  flex-shrink:0;
+}
+.hd-notch{width:26px;height:5px;background:rgba(255,255,255,.18);border-radius:3px;}
+.hd-screen{width:54px;height:40px;background:rgba(255,87,34,.18);border-radius:7px;border:1px solid rgba(255,87,34,.45);}
+.hd-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--orange);
+  animation:dotBlink 1.8s ease-in-out infinite;
+}
+@keyframes dotBlink{
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,87,34,.6);}
+  50%    {opacity:.55;box-shadow:0 0 0 7px rgba(255,87,34,0);}
+}
+
+/* Spy icons   6 positions on a 150px radius around center (210,210)
+   calc: top = 210 + 150*sin(angle) - 18,  left = 210 + 150*cos(angle) - 18
+   angle 0=right 60=bottom-right 120=bottom-left 180=left 240=top-left 300=top-right */
+.spy-icon-fixed{
+  position:absolute;font-size:1.75rem;z-index:6;
+  animation:siFloat 3s ease-in-out infinite;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.6));
+}
+@keyframes siFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+/* top = 210 + 150*sin - 18,  left = 210 + 150*cos - 18  */
+.si-0{top:172px;left:302px;animation-delay:0s;}
+.si-1{top:285px;left:237px;animation-delay:.5s;}
+.si-2{top:285px;left:107px;animation-delay:1.0s;}
+.si-3{top:172px;left: 42px;animation-delay:1.5s;}
+.si-4{top: 59px;left:107px;animation-delay:2.0s;}
+.si-5{top: 59px;left:237px;animation-delay:2.5s;}
+
+/* Floating data leaks */
+.data-leak{
+  position:absolute;font-family:'Fira Code',monospace;font-size:.62rem;
+  color:rgba(255,87,34,.85);white-space:nowrap;pointer-events:none;
+  animation:leakFloat 5s ease-in-out infinite;z-index:7;
+}
+@keyframes leakFloat{
+  0%  {opacity:0;transform:translateY(0);}
+  15% {opacity:1;}
+  75% {opacity:.6;}
+  100%{opacity:0;transform:translateY(-55px) translateX(8px);}
+}
+
+/* Warning label */
+.hero-label{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(255,87,34,.6);white-space:nowrap;
+}
+
+/* Hero chapters bottom strip */
+.hero-strip{
+  position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.08);
+  background:rgba(10,10,16,.6);margin-top:3rem;
+}
+
+/* ═══════════════════════════════════════════════
+   CH1   IP ADDRESS
+═══════════════════════════════════════════════ */
+.ip-analogy{
+  display:flex;flex-direction:column;gap:1.1rem;
+  padding:2rem;background:var(--warm2);border-radius:var(--r16);border:2px solid var(--rule);
+}
+.analogy-row{display:flex;align-items:center;gap:1.25rem;}
+.analogy-icon{font-size:2.5rem;flex-shrink:0;}
+.analogy-arrow{font-size:1.6rem;color:var(--ink3);flex-shrink:0;}
+.analogy-label{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:.2rem;}
+.analogy-sub  {font-size:.88rem;color:var(--ink3);}
+
+.ip-demo{
+  background:var(--ink);color:#fff;border-radius:var(--r16);
+  padding:1.75rem;border:3px solid var(--ink);
+}
+.ip-demo-header{font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:1.1rem;}
+.ip-demo-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem .9rem;border-radius:8px;margin-bottom:.5rem;transition:all .4s;}
+.ip-demo-row.revealed{background:rgba(255,87,34,.12);border:1px solid rgba(255,87,34,.25);}
+.ip-demo-row.hidden-row{background:rgba(0,188,212,.1);border:1px solid rgba(0,188,212,.3);}
+.idr-key{font-family:'Fira Code',monospace;font-size:.68rem;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;}
+.idr-val{font-weight:800;font-size:.95rem;}
+.idr-val.exposed{color:var(--orange);}
+.idr-val.hidden {color:var(--teal);}
+.toggle-btn{
+  display:block;width:100%;margin-top:1.1rem;
+  padding:.7rem;background:var(--orange);color:#fff;
+  border:none;border-radius:8px;font-family:'Lexend Mega',sans-serif;
+  font-size:.8rem;font-weight:700;cursor:pointer;letter-spacing:.02em;transition:background .2s;
+}
+.toggle-btn:hover{background:var(--or2);}
+.toggle-btn.on{background:var(--teal);}
+
+/* ═══════════════════════════════════════════════
+   CH2   WHO IS WATCHING
+═══════════════════════════════════════════════ */
+.watcher-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.35rem;margin-top:2rem;}
+.watcher-card{border-radius:var(--r16);border:2.5px solid var(--ink);overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;background:#fff;}
+.watcher-card:hover{transform:translateY(-5px);box-shadow:6px 6px 0 var(--ink);}
+.watcher-card.active{box-shadow:6px 6px 0 var(--orange);}
+.wc-head{padding:1.25rem 1.3rem;display:flex;align-items:center;gap:.9rem;}
+.wc-icon{font-size:2rem;flex-shrink:0;}
+.wc-name{font-family:'Lexend Mega',sans-serif;font-size:1.05rem;font-weight:700;}
+.wc-sub{font-size:.78rem;color:var(--ink3);margin-top:.1rem;}
+.wc-body{padding:0 1.3rem 1.4rem;display:none;}
+.wc-body.show{display:block;}
+.wc-item{display:flex;align-items:flex-start;gap:.55rem;padding:.5rem .6rem;border-radius:6px;margin-bottom:.4rem;font-size:.9rem;font-weight:600;}
+.wc-item.bad{background:var(--rd-pale);color:var(--red);}
+.wc-desc{font-size:.85rem;color:var(--ink3);margin-top:.7rem;line-height:1.65;}
+
+/* ═══════════════════════════════════════════════
+   CH3   WHAT IS BELNET (TUNNEL)
+═══════════════════════════════════════════════ */
+.tunnel-viz{
+  position:relative;height:200px;border-radius:var(--r16);
+  overflow:hidden;background:var(--ink);border:2px solid var(--ink);
+}
+.tunnel-wall-top,.tunnel-wall-bot{position:absolute;left:0;right:0;height:44px;background:rgba(255,255,255,.04);}
+.tunnel-wall-top{top:0;border-bottom:2px solid rgba(255,255,255,.1);}
+.tunnel-wall-bot{bottom:0;border-top:2px solid rgba(255,255,255,.1);}
+.tunnel-label{font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;}
+.tunnel-label.top{position:absolute;top:12px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.35);}
+.tunnel-label.bot{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.35);}
+.tunnel-entry,.tunnel-exit{position:absolute;top:50%;transform:translateY(-50%);font-size:.78rem;font-weight:700;color:rgba(255,255,255,.45);font-family:'Fira Code',monospace;}
+.tunnel-entry{left:1.25rem;text-align:left;}
+.tunnel-exit{right:1.25rem;text-align:right;}
+.tunnel-packet{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:52px;height:52px;border-radius:50%;
+  background:var(--orange);display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;z-index:2;
+  animation:packetSlide 4.5s linear infinite;
+  box-shadow:0 0 20px rgba(255,87,34,.5);
+}
+@keyframes packetSlide{0%{left:-60px;}100%{left:calc(100% + 60px);}}
+
+/* ═══════════════════════════════════════════════
+   CH4   ENVELOPE (ONION) STORY
+═══════════════════════════════════════════════ */
+.envelope-stage{
+  display:flex;flex-direction:column;gap:1.25rem;
+  padding:2.25rem;background:var(--warm2);border-radius:var(--r16);border:2px solid var(--rule);
+}
+.env-row{display:flex;align-items:flex-start;gap:1rem;width:100%;}
+.env-indent-1{padding-left:1.75rem;}
+.env-indent-2{padding-left:3.5rem;}
+.env-box{
+  flex:1;border-radius:12px;border:2.5px solid;padding:1rem 1.1rem;
+  cursor:pointer;transition:all .3s;background:#fff;position:relative;
+  display:flex;align-items:center;gap:.75rem;
+}
+.env-box.layer-outer{border-color:var(--red);}
+.env-box.layer-mid  {border-color:var(--teal);}
+.env-box.layer-inner{border-color:var(--orange);}
+.env-box.layer-data {border-color:var(--green);cursor:default;}
+.env-box.opened{opacity:.25;transform:scale(.96);pointer-events:none;}
+.env-num{
+  width:26px;height:26px;border-radius:50%;
+  font-size:.65rem;font-weight:800;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+}
+.env-text-wrap{flex:1;}
+.env-label{font-weight:800;font-size:.95rem;margin-bottom:.15rem;}
+.env-sub  {font-size:.8rem;color:var(--ink3);}
+.env-cta  {font-family:'Fira Code',monospace;font-size:.6rem;color:var(--ink3);margin-left:auto;flex-shrink:0;}
+.env-info{
+  background:var(--ink);color:#fff;border-radius:10px;
+  padding:1rem 1.2rem;width:100%;font-size:.92rem;line-height:1.65;
+  display:none;animation:fadeDown .3s ease;
+}
+.env-info.show{display:block;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+.env-arrow-down{font-size:1.4rem;color:var(--ink3);flex-shrink:0;padding-top:.25rem;}
+
+/* ═══════════════════════════════════════════════
+   CH5   RELAY NODES (PEOPLE STORY)
+   COMPLETELY REDESIGNED
+═══════════════════════════════════════════════ */
+/* Journey track */
+.journey-container{
+  background:var(--ink);border-radius:20px;border:3px solid var(--ink);
+  overflow:hidden;margin-top:2.5rem;
+}
+.journey-header{
+  background:rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.1);
+  padding:1rem 1.75rem;display:flex;align-items:center;gap:1rem;
+}
+.journey-status{font-family:'Fira Code',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);flex:1;}
+.journey-controls-bar{display:flex;gap:.65rem;}
+.jc-btn{
+  font-family:'Lexend Mega',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.05em;
+  padding:.45rem 1rem;border-radius:6px;border:none;cursor:pointer;transition:all .2s;
+}
+.jc-btn.primary{background:var(--orange);color:#fff;}
+.jc-btn.primary:hover{background:var(--or2);}
+.jc-btn.ghost{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);}
+.jc-btn.ghost:hover{background:rgba(255,255,255,.18);}
+
+/* The actual journey track */
+.journey-track{
+  padding:2rem 1.75rem;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:0;
+  position:relative;
+}
+/* Connecting line behind the track */
+.journey-track::before{
+  content:'';position:absolute;
+  top:70px;left:10%;right:10%;height:3px;
+  background:rgba(255,255,255,.1);z-index:0;
+}
+.journey-track::after{
+  content:'';position:absolute;
+  top:70px;left:10%;height:3px;
+  background:linear-gradient(90deg,var(--orange),var(--teal));z-index:1;
+  width:0;transition:width 1.2s ease;
+}
+.journey-track.progress-1::after{width:18%;}
+.journey-track.progress-2::after{width:38%;}
+.journey-track.progress-3::after{width:58%;}
+.journey-track.progress-4::after{width:78%;}
+.journey-track.progress-5::after{width:80%;}
+
+/* Each person node */
+.jnode{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;z-index:2;cursor:pointer;
+  transition:all .25s;
+}
+.jnode:hover .jn-avatar{transform:scale(1.08);}
+.jn-avatar{
+  width:78px;height:78px;border-radius:50%;border:3px solid;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin-bottom:.7rem;transition:all .3s;position:relative;
+  background:rgba(255,255,255,.08);
+}
+.jn-avatar.idle{border-color:rgba(255,255,255,.2);}
+.jn-avatar.active{border-color:var(--orange);background:rgba(255,87,34,.15);box-shadow:0 0 0 4px rgba(255,87,34,.2);}
+.jn-avatar.done  {border-color:var(--teal);  background:rgba(0,188,212,.15); box-shadow:0 0 0 4px rgba(0,188,212,.15);}
+.jn-emoji{font-size:2rem;line-height:1;}
+.jn-name {font-family:'Lexend Mega',sans-serif;font-size:.68rem;font-weight:700;color:#fff;margin-bottom:.2rem;text-align:center;}
+.jn-role {font-family:'Fira Code',monospace;font-size:.58rem;color:rgba(255,255,255,.45);text-align:center;}
+/* Packet indicator on avatar */
+.jn-packet{
+  position:absolute;top:-8px;right:-8px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--orange);border:2px solid var(--ink);
+  font-size:.55rem;display:flex;align-items:center;justify-content:center;
+  display:none;
+}
+.jn-avatar.active .jn-packet{display:flex;}
+
+/* Info bubble below each node */
+.jn-bubble{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;padding:.7rem .8rem;margin-top:.6rem;
+  width:100%;min-height:80px;
+  transition:all .3s;
+}
+.jnode.speaking .jn-bubble{border-color:var(--yellow);background:rgba(255,214,0,.07);}
+.jnb-knows{font-size:.75rem;font-weight:800;color:var(--teal);line-height:1.5;margin-bottom:.3rem;}
+.jnb-blind{font-size:.75rem;font-weight:600;color:rgba(255,107,71,.85);line-height:1.5;}
+/* Tap hint */
+.jn-tap{
+  font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.25);text-align:center;margin-top:.45rem;
+  transition:color .2s;
+}
+.jnode:hover .jn-tap{color:var(--orange);}
+
+/* Speech bubble   shown INSIDE step panel, not floating above */
+.jn-speech{display:none;}
+/* Click highlight on active node */
+.jnode.speaking .jn-avatar{
+  border-color:var(--yellow) !important;
+  box-shadow:0 0 0 5px rgba(255,214,0,.25) !important;
+}
+/* Person card click hint */
+.jnode{cursor:pointer;}
+.jnode:hover .jn-name{color:var(--orange);}
+
+/* Packet traveling visualization */
+.packet-traveler{
+  position:absolute;top:52px;z-index:5;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--orange);border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;
+  transition:left 0.8s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+
+/* Step info panel */
+.step-panel{
+  background:rgba(255,255,255,.05);border-top:1px solid rgba(255,255,255,.08);
+  padding:1.35rem 1.75rem;min-height:80px;
+}
+.sp-step{font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:.35rem;}
+.sp-title{font-family:'Lexend Mega',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.sp-desc{font-size:.95rem;color:rgba(255,255,255,.65);line-height:1.7;}
+
+/* ═══════════════════════════════════════════════
+   CH6   BEFORE / AFTER
+═══════════════════════════════════════════════ */
+.ba-split{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ink);border:3px solid var(--ink);border-radius:var(--r16);overflow:hidden;}
+.ba-col{padding:2.25rem;}
+.ba-col.before{background:var(--rd-pale);}
+.ba-col.after {background:var(--gn-pale);}
+.ba-title{font-family:'Lexend Mega',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:1.3rem;}
+.ba-col.before .ba-title{color:var(--red);}
+.ba-col.after  .ba-title{color:var(--green);}
+.ba-item{display:flex;align-items:flex-start;gap:.65rem;padding:.7rem .9rem;border-radius:8px;margin-bottom:.5rem;font-size:.95rem;}
+.ba-item.bad {background:rgba(198,40,40,.08);border:1px solid rgba(198,40,40,.2);color:var(--red);font-weight:600;}
+.ba-item.good{background:rgba(46,125,50,.08); border:1px solid rgba(46,125,50,.2); color:var(--green);font-weight:600;}
+.ba-item .ico{flex-shrink:0;margin-top:.08rem;}
+
+/* ═══════════════════════════════════════════════
+   CH7   SPLIT TUNNELING
+═══════════════════════════════════════════════ */
+.split-demo{background:#fff;border-radius:var(--r16);border:3px solid var(--ink);overflow:hidden;margin-top:2rem;}
+.split-bar{background:var(--ink);padding:.9rem 1.4rem;display:flex;align-items:center;gap:.5rem;}
+.sdot{width:9px;height:9px;border-radius:50%;}
+.split-btitle{font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-left:.25rem;}
+.split-body{padding:1.5rem;}
+.split-intro{font-size:.95rem;color:var(--ink2);margin-bottom:1.25rem;line-height:1.7;}
+.split-apps{display:flex;flex-direction:column;gap:.55rem;}
+.sa-row{display:flex;align-items:center;gap:1rem;padding:.8rem 1.1rem;border-radius:10px;border:2px solid var(--rule);transition:all .3s;background:var(--warm);}
+.sa-icon{font-size:1.5rem;flex-shrink:0;}
+.sa-name{font-weight:700;font-size:1rem;flex:1;}
+.sa-status{font-size:.8rem;font-weight:700;padding:.28rem .7rem;border-radius:99px;flex-shrink:0;}
+.sa-row.protected{border-color:var(--teal);background:var(--tl-pale);}
+.sa-row.protected .sa-status{background:var(--teal);color:#fff;}
+.sa-row.direct   {border-color:var(--orange);background:var(--or-pale);}
+.sa-row.direct   .sa-status{background:var(--orange);color:#fff;}
+.sa-toggle{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;}
+.sa-toggle.on {background:var(--teal);}
+.sa-toggle.off{background:var(--rule);}
+.sa-toggle::after{content:'';position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .3s;}
+.sa-toggle.on::after{left:23px;}
+.sa-toggle.off::after{left:3px;}
+.split-summary{margin-top:1.1rem;padding:1rem 1.2rem;background:var(--ink);color:#fff;border-radius:10px;font-size:.95rem;line-height:1.65;}
+
+/* ── DOWNLOAD ── */
+#download{padding:6rem 0;}
+.dl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;}
+.dl-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);border-radius:var(--r16);padding:1.5rem 1rem;text-align:center;text-decoration:none;color:#fff;display:flex;flex-direction:column;align-items:center;gap:.6rem;transition:all .22s;}
+.dl-card:hover{background:rgba(255,255,255,.12);border-color:var(--orange);transform:translateY(-3px);}
+.dl-card.soon{opacity:.4;cursor:not-allowed;}
+.dl-card.soon:hover{transform:none;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);}
+.dl-ico{font-size:2.2rem;}
+.dl-name{font-family:'Lexend Mega',sans-serif;font-size:1rem;font-weight:700;}
+.dl-sub{font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .hero-grid{grid-template-columns:1fr 300px;gap:1.5rem;}
+  .hero-right{width:300px;height:300px;--hero-viz-scale:.7;}
+}
+@media(max-width:1000px){
+  .hero-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .hero-right{width:300px;height:300px;margin:0 auto;--hero-viz-scale:.7;}
+  .two-col,.ba-split{grid-template-columns:1fr;}
+  .watcher-grid{grid-template-columns:1fr 1fr;}
+  .journey-track{grid-template-columns:repeat(3,1fr);row-gap:2rem;}
+  .dl-grid{grid-template-columns:1fr 1fr;}
+  .three-col{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:640px){
+  .w,.wn{padding:0 1.25rem;}
+  .nav-badge{display:none;}
+  .hero-right{width:240px;height:240px;--hero-viz-scale:.55;}
+  .watcher-grid{grid-template-columns:1fr;}
+  .journey-track{grid-template-columns:1fr 1fr;}
+  .dl-grid{grid-template-columns:1fr 1fr;}
+  .three-col{grid-template-columns:1fr;}
+  .ba-split{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="pgbar"><div id="pgfill"></div></div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <div class="nav-row">
+    <a class="nav-logo" href="#">Bel<span>Net</span></a>
+    <div class="nav-badge">Level 1</div>
+    <a class="nav-dl" href="#download">Download Free</a>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg-dots" id="heroDots"></div>
+
+  <div class="w">
+    <div class="hero-grid">
+
+      <!-- Left col -->
+      <div>
+        <div class="hero-eyebrow">For complete beginners · No tech knowledge needed</div>
+        <h1 class="hero-h1">
+          <span class="line-gray">Right now,</span><br>
+          <span class="line-white">someone can</span><br>
+          <span class="line-or">see you.</span>
+        </h1>
+        <p class="hero-desc">Every time you go online, you leave a trail. Your internet provider, the websites you visit, and advertisers all know who you are, where you are, and what you are doing. BelNet makes you invisible. Here is how.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-orange" href="#ch1">Start Learning</a>
+          <a class="btn btn-white" href="#download">Download BelNet</a>
+        </div>
+        <div class="hero-chapters">
+          <a class="hch" href="#ch1"><span class="hch-n">01</span><span class="hch-t">IP Address</span></a>
+          <a class="hch" href="#ch2"><span class="hch-n">02</span><span class="hch-t">Who Watches</span></a>
+          <a class="hch" href="#ch3"><span class="hch-n">03</span><span class="hch-t">The Tunnel</span></a>
+          <a class="hch" href="#ch4"><span class="hch-n">04</span><span class="hch-t">Onion Layers</span></a>
+          <a class="hch" href="#ch5"><span class="hch-n">05</span><span class="hch-t">The Relay People</span></a>
+          <a class="hch" href="#ch6"><span class="hch-n">06</span><span class="hch-t">Before vs After</span></a>
+          <a class="hch" href="#ch7"><span class="hch-n">07</span><span class="hch-t">Your Control</span></a>
+        </div>
+      </div>
+
+      <!-- Right col   SURVEILLANCE VIZ (always visible, no sr class) -->
+      <div class="hero-right">
+        <div class="hero-visual">
+
+        <!-- Pulsing threat rings   all anchored at center via transform -->
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+
+        <!-- Center phone device -->
+        <div class="hero-device">
+          <div class="hd-notch"></div>
+          <div class="hd-screen"></div>
+          <div class="hd-dot"></div>
+        </div>
+
+        <!-- 6 spy icons at evenly spaced positions on a 150px radius -->
+        <!-- hero-right center = 210,210. Radius=150. Icons ~36px so offset 18px -->
+        <!-- Angles: 0°=right, 60°=bottom-right, 120°=bottom-left, 180°=left, 240°=top-left, 300°=top-right -->
+        <div class="spy-icon-fixed si-0">🏛️</div><!-- 0°   top=192 left=342 -->
+        <div class="spy-icon-fixed si-1">📊</div><!-- 60°  top=312 left=267 -->
+        <div class="spy-icon-fixed si-2">🏢</div><!-- 120° top=312 left=117 -->
+        <div class="spy-icon-fixed si-3">📡</div><!-- 180° top=192 left= 42 -->
+        <div class="spy-icon-fixed si-4">🕵️</div><!-- 240° top= 72 left=117 -->
+        <div class="spy-icon-fixed si-5">👁️</div><!-- 300° top= 72 left=267 -->
+
+        <!-- Floating data leaks from center zone (pixel values for 420x420 box) -->
+        <div class="data-leak" style="top:145px;left:200px;animation-delay:.3s;">IP: 103.47.22.91</div>
+        <div class="data-leak" style="top:200px;left:168px;animation-delay:1.9s;">Location: Chennai</div>
+        <div class="data-leak" style="top:128px;left:185px;animation-delay:3.2s;">Device: Android</div>
+        <div class="data-leak" style="top:228px;left:195px;animation-delay:1.2s;">ISP: BSNL</div>
+        <div class="data-leak" style="top:170px;left:155px;animation-delay:2.5s;">User: Suhail</div>
+
+        <div class="hero-label">⚠ You are exposed right now</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH1   WHAT IS AN IP ADDRESS
+═══════════════════════════════════════════════ -->
+<section id="ch1" class="section section-warm">
+  <div class="ch-num-bg">01</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:var(--orange);">Chapter 01 · Start Here</div>
+    <h2 class="sr d1">First: what is an<br><span class="orange">IP address?</span></h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:640px;margin:.9rem 0 2.5rem;">Before we explain BelNet, you need to understand one thing: your IP address. It is something every device on the internet has   and it reveals more about you than you probably think.</p>
+
+    <div class="two-col sr d2">
+      <div>
+        <div class="ip-analogy">
+          <div style="font-weight:800;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.5rem;">The simple analogy</div>
+          <div class="analogy-row">
+            <div class="analogy-icon">🏠</div>
+            <div class="analogy-arrow">→</div>
+            <div>
+              <div class="analogy-label">Your home address</div>
+              <div class="analogy-sub">Tells the post office exactly where you live so packages can find you</div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:1.6rem;color:var(--ink3);padding:.25rem 0;">↕</div>
+          <div style="text-align:center;font-weight:800;font-size:.85rem;color:var(--ink3);letter-spacing:.08em;">same idea as</div>
+          <div style="text-align:center;font-size:1.6rem;color:var(--ink3);padding:.25rem 0;">↕</div>
+          <div class="analogy-row">
+            <div class="analogy-icon">📱</div>
+            <div class="analogy-arrow">→</div>
+            <div>
+              <div class="analogy-label">Your IP address</div>
+              <div class="analogy-sub">Tells the internet where your device is, so websites can send data back to you</div>
+            </div>
+          </div>
+          <div class="callout callout-orange" style="margin-bottom:0;margin-top:.75rem;">
+            <div class="callout-head" style="color:var(--orange);">The real problem</div>
+            <p>Anyone can look up an IP address and immediately know your city, your internet provider, and sometimes your exact neighbourhood. Every website you visit receives your IP address automatically   without asking.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ip-demo">
+          <div class="ip-demo-header">What a website automatically sees when Suhail visits it</div>
+          <div class="ip-demo-row revealed">
+            <span class="idr-key">IP Address</span>
+            <span class="idr-val exposed" id="ipDemoIp">103.47.22.91</span>
+          </div>
+          <div class="ip-demo-row revealed">
+            <span class="idr-key">City</span>
+            <span class="idr-val exposed" id="ipDemoCity">Chennai, India</span>
+          </div>
+          <div class="ip-demo-row revealed">
+            <span class="idr-key">Provider</span>
+            <span class="idr-val exposed" id="ipDemoIsp">BSNL Broadband</span>
+          </div>
+          <div class="ip-demo-row revealed">
+            <span class="idr-key">Device</span>
+            <span class="idr-val exposed" id="ipDemoDev">Android · Chrome 120</span>
+          </div>
+          <div class="ip-demo-row revealed">
+            <span class="idr-key">Visit Time</span>
+            <span class="idr-val exposed" id="ipDemoTime">14:23:07 IST</span>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.1);margin:1.1rem 0;"></div>
+          <div style="font-size:.85rem;color:rgba(255,255,255,.5);text-align:center;margin-bottom:.8rem;">Press the button to see what BelNet does to this data</div>
+          <button class="toggle-btn" id="ipToggleBtn" onclick="toggleIpDemo()">Connect BelNet   Hide This Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH2   WHO IS WATCHING
+═══════════════════════════════════════════════ -->
+<section id="ch2" class="section">
+  <div class="ch-num-bg">02</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:var(--teal);">Chapter 02</div>
+    <h2 class="sr d1">Three groups that watch<br>your <span class="teal">every move online.</span></h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:640px;margin:.9rem 0 .65rem;">You might think browsing the internet is private. It is not. These three groups can see exactly what you do online right now, without BelNet running.</p>
+    <p class="sr d2" style="color:var(--ink3);margin-bottom:2rem;font-size:.95rem;">Tap each card to see exactly what they know about you.</p>
+
+    <div class="watcher-grid sr d1">
+      <div class="watcher-card" id="wcard0" onclick="toggleWatcher(0)">
+        <div class="wc-head" style="background:var(--rd-pale);">
+          <div class="wc-icon">📡</div>
+          <div>
+            <div class="wc-name" style="color:var(--red);">Your ISP</div>
+            <div class="wc-sub">Your internet provider (Jio, BSNL, Airtel...)</div>
+          </div>
+        </div>
+        <div class="wc-body" id="wbody0">
+          <div class="wc-item bad">✕ Every website Jothi visits</div>
+          <div class="wc-item bad">✕ Exact time and how long they stayed</div>
+          <div class="wc-item bad">✕ Files downloaded</div>
+          <div class="wc-item bad">✕ Apps and services used</div>
+          <p class="wc-desc">Your internet provider sees everything that passes through their network. In many countries they legally store this data for months. They can share it with governments or advertisers on request   without telling you.</p>
+        </div>
+      </div>
+
+      <div class="watcher-card" id="wcard1" onclick="toggleWatcher(1)">
+        <div class="wc-head" style="background:var(--yl-pale);">
+          <div class="wc-icon">💻</div>
+          <div>
+            <div class="wc-name" style="color:#8B6900;">Websites</div>
+            <div class="wc-sub">Every site you visit collects this</div>
+          </div>
+        </div>
+        <div class="wc-body" id="wbody1">
+          <div class="wc-item bad">✕ Bhava's IP address and location</div>
+          <div class="wc-item bad">✕ Device type, browser, screen size</div>
+          <div class="wc-item bad">✕ How long they stayed on each page</div>
+          <div class="wc-item bad">✕ Every button and link they clicked</div>
+          <p class="wc-desc">Even sites you have never signed up for collect this data automatically. They use it to build a detailed profile of your interests, habits, and behaviour   which is then sold.</p>
+        </div>
+      </div>
+
+      <div class="watcher-card" id="wcard2" onclick="toggleWatcher(2)">
+        <div class="wc-head" style="background:var(--tl-pale);">
+          <div class="wc-icon">📊</div>
+          <div>
+            <div class="wc-name" style="color:var(--tl2);">Advertisers</div>
+            <div class="wc-sub">Google Ads, Meta, tracking networks</div>
+          </div>
+        </div>
+        <div class="wc-body" id="wbody2">
+          <div class="wc-item bad">✕ Paru's full browsing history across ALL websites</div>
+          <div class="wc-item bad">✕ Shopping interests and purchase intent</div>
+          <div class="wc-item bad">✕ Political and religious views (inferred)</div>
+          <div class="wc-item bad">✕ Health searches and medical interests</div>
+          <p class="wc-desc">Ad networks embed invisible trackers on millions of websites. They follow you everywhere you go on the internet and build profiles worth billions. Your data is their product.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-ink sr d3">
+      <div class="callout-head">Why this all happens</div>
+      <p>All of this surveillance is possible because every device has a visible IP address. When Suhail, Jothi, Bhava or anyone goes online, their IP address is like walking into a room wearing a name badge   everyone in the room immediately knows exactly who they are and where they came from. BelNet removes the badge.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH3   WHAT IS BELNET
+═══════════════════════════════════════════════ -->
+<section id="ch3" class="section section-teal">
+  <div class="ch-num-bg">03</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:var(--tl2);">Chapter 03 · The Solution</div>
+    <h2 class="sr d1">BelNet is a <span class="teal">protected tunnel</span><br>for your internet traffic.</h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:680px;margin:.9rem 0 2.5rem;">Think of your internet traffic as a package being delivered. Normally it travels in an open truck   everyone on the road can see who sent it and what is inside. BelNet wraps it in multiple sealed containers and routes it through private stops so nobody can trace it back to you.</p>
+
+    <div class="tunnel-viz sr d1">
+      <div class="tunnel-wall-top"></div>
+      <div class="tunnel-wall-bot"></div>
+      <div class="tunnel-label top">BELNET ENCRYPTED TUNNEL   YOUR DATA INSIDE</div>
+      <div class="tunnel-label bot">Nobody can see inside or trace who sent it</div>
+      <div class="tunnel-entry">SUHAIL'S<br>DEVICE</div>
+      <div class="tunnel-exit">THE<br>INTERNET</div>
+      <div class="tunnel-packet">📦</div>
+    </div>
+
+    <div class="three-col sr d2" style="margin-top:2rem;">
+      <div style="padding:1.6rem;background:#fff;border-radius:var(--r16);border:2.5px solid var(--rule);">
+        <div style="font-size:2.2rem;margin-bottom:.65rem;">🔒</div>
+        <h3 style="font-size:1.05rem;margin-bottom:.45rem;">Encrypted</h3>
+        <p style="font-size:.9rem;color:var(--ink3);line-height:1.65;">Your data is scrambled before it leaves your device. No one can read it, even if they intercept it.</p>
+      </div>
+      <div style="padding:1.6rem;background:#fff;border-radius:var(--r16);border:2.5px solid var(--rule);">
+        <div style="font-size:2.2rem;margin-bottom:.65rem;">🔀</div>
+        <h3 style="font-size:1.05rem;margin-bottom:.45rem;">Multi-hop</h3>
+        <p style="font-size:.9rem;color:var(--ink3);line-height:1.65;">Your traffic bounces through several independent relay computers before reaching the internet. The origin is untraceable.</p>
+      </div>
+      <div style="padding:1.6rem;background:#fff;border-radius:var(--r16);border:2.5px solid var(--rule);">
+        <div style="font-size:2.2rem;margin-bottom:.65rem;">🌐</div>
+        <h3 style="font-size:1.05rem;margin-bottom:.45rem;">Decentralized</h3>
+        <p style="font-size:.9rem;color:var(--ink3);line-height:1.65;">No single company runs BelNet. 2200+ community-run computers worldwide power it   it cannot be shut down.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH4   THE ONION LAYERS
+═══════════════════════════════════════════════ -->
+<section id="ch4" class="section section-yellow">
+  <div class="ch-num-bg">04</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:#A07800;">Chapter 04 · The Clever Part</div>
+    <h2 class="sr d1">The three-layer trick<br>that makes you <span class="yellow">untraceable.</span></h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:680px;margin:.9rem 0 2.5rem;">Here is exactly how BelNet hides your identity. Imagine Kisore wants to send a message privately. BelNet wraps it in three sealed envelopes. Click each envelope below to open it and see what each relay actually sees.</p>
+
+    <div class="two-col sr d1">
+      <!-- Envelope interactive -->
+      <div class="envelope-stage">
+        <div style="font-weight:800;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);">Open each layer in order ↓</div>
+
+        <div class="env-row">
+          <div class="env-box layer-outer" id="env0" onclick="openEnvelope(0)">
+            <div class="env-num" style="background:var(--red);">1</div>
+            <div class="env-text-wrap">
+              <div class="env-label" style="color:var(--red);">Outer Envelope   Layer 1</div>
+              <div class="env-sub">Addressed to: Relay Node 1 only</div>
+            </div>
+            <div class="env-cta">tap to open →</div>
+          </div>
+        </div>
+        <div class="env-info" id="envInfo0">
+          <strong style="color:var(--or2);">Relay Node 1 opens this and sees:</strong> "A sealed package arrived. I know who sent it   but I have no idea what is inside or where it ultimately needs to go. My only job is to pass it to Node 2."
+        </div>
+
+        <div class="env-row env-indent-1">
+          <div class="env-arrow-down">↓</div>
+          <div class="env-box layer-mid" id="env1" onclick="openEnvelope(1)">
+            <div class="env-num" style="background:var(--teal);">2</div>
+            <div class="env-text-wrap">
+              <div class="env-label" style="color:var(--teal);">Middle Envelope   Layer 2</div>
+              <div class="env-sub">Addressed to: Relay Node 2 only</div>
+            </div>
+            <div class="env-cta">tap to open →</div>
+          </div>
+        </div>
+        <div class="env-info" id="envInfo1">
+          <strong style="color:var(--tl2);">Relay Node 2 opens this and sees:</strong> "I got this from Node 1. I do not know the original sender. I do not know the final destination. I can only see the next relay address. I pass it to Node 3."
+        </div>
+
+        <div class="env-row env-indent-2">
+          <div class="env-arrow-down">↓</div>
+          <div class="env-box layer-inner" id="env2" onclick="openEnvelope(2)">
+            <div class="env-num" style="background:var(--orange);">3</div>
+            <div class="env-text-wrap">
+              <div class="env-label" style="color:var(--orange);">Inner Envelope   Layer 3</div>
+              <div class="env-sub">Addressed to: Exit Node (Node 3)</div>
+            </div>
+            <div class="env-cta">tap to open →</div>
+          </div>
+        </div>
+        <div class="env-info" id="envInfo2">
+          <strong style="color:var(--orange);">Exit Node 3 opens this and sees:</strong> "Now I can see the destination website. I will send the request on behalf of Kisore. But I have no idea who the original sender is   I only know it came from Node 2."
+        </div>
+
+        <div class="env-row">
+          <div class="env-box layer-data">
+            <div class="env-num" style="background:var(--green);">✓</div>
+            <div class="env-text-wrap">
+              <div class="env-label" style="color:var(--green);">Kisore's actual request reaches the website</div>
+              <div class="env-sub">Website sees only the exit node IP   never Kisore's real IP</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-orange" onclick="resetEnvelopes()" style="font-size:.78rem;padding:.6rem 1.4rem;">Reset All Layers</button>
+      </div>
+
+      <!-- Explanation panel -->
+      <div>
+        <div style="background:#fff;border-radius:var(--r16);border:2.5px solid var(--rule);padding:1.85rem;">
+          <h3 style="margin-bottom:1.1rem;font-size:1.1rem;">Why each layer matters</h3>
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+            <div style="display:flex;gap:.85rem;align-items:flex-start;">
+              <div style="font-size:1.3rem;flex-shrink:0;">🎯</div>
+              <div>
+                <div style="font-weight:800;font-size:.95rem;margin-bottom:.25rem;">Each node sees only ONE step</div>
+                <p style="font-size:.88rem;color:var(--ink3);">No single relay ever knows both who sent it and where it is going. These two pieces of information are always kept apart.</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:.85rem;align-items:flex-start;">
+              <div style="font-size:1.3rem;flex-shrink:0;">🛡️</div>
+              <div>
+                <div style="font-weight:800;font-size:.95rem;margin-bottom:.25rem;">Compromising one node reveals nothing</div>
+                <p style="font-size:.88rem;color:var(--ink3);">Even if an attacker controlled one relay, they still could not identify you. They would need to control all three at the same time   nearly impossible across 2200+ community-run nodes.</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:.85rem;align-items:flex-start;">
+              <div style="font-size:1.3rem;flex-shrink:0;">🌍</div>
+              <div>
+                <div style="font-weight:800;font-size:.95rem;margin-bottom:.25rem;">Websites see an exit node, not you</div>
+                <p style="font-size:.88rem;color:var(--ink3);">When the website responds, it sends data to the exit node's IP address   not yours. You are completely invisible to every destination.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-teal" style="margin-top:1.3rem;">
+          <div class="callout-head" style="color:var(--tl2);">Why it is called "onion routing"</div>
+          <p>Just like peeling an onion layer by layer   BelNet wraps your data in layers of encryption. Each relay peels exactly one layer, sees only their step, and passes the rest forward. Nobody ever sees all the layers at once.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH5   THE RELAY PEOPLE   COMPLETELY REDESIGNED
+     Names: Suhail (sender), Jothi (Node 1), Bhava (Node 2), Paru (Node 3), Kisore (recipient)
+═══════════════════════════════════════════════ -->
+<section id="ch5" class="section">
+  <div class="ch-num-bg">05</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:var(--orange);">Chapter 05 · Meet the Relay People</div>
+    <h2 class="sr d1">Five people. One journey.<br><span class="orange">Nobody</span> knows the whole story.</h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:720px;margin:.9rem 0 2rem;">When Suhail sends a message through BelNet, it passes through three relay operators before reaching Kisore. Each person below is a real type of Beldex masternode operator. Click any person to hear their side of the story   especially what they do NOT know.</p>
+
+    <div class="journey-container sr d1">
+      <!-- Header with controls -->
+      <div class="journey-header">
+        <span class="journey-status" id="journeyStatus">Press "Send Message" to watch the journey</span>
+        <div class="journey-controls-bar">
+          <button class="jc-btn primary" onclick="startJourney()">▶ Send Message</button>
+          <button class="jc-btn ghost" onclick="resetJourney()">Reset</button>
+        </div>
+      </div>
+
+      <!-- The five people track -->
+      <div class="journey-track" id="journeyTrack">
+        <!-- Packet traveler -->
+        <div class="packet-traveler" id="journeyPacket" style="left:-30px;display:none;">📦</div>
+
+        <!-- Person 0: SUHAIL (Sender) -->
+        <div class="jnode" id="jnode0" onclick="nodeSpeak(0)">
+          <div class="jn-speech" id="jspeech0">I want to send a message to Kisore. BelNet wraps it in 3 sealed envelopes and off it goes!</div>
+          <div class="jn-avatar idle" id="javatar0">
+            <div class="jn-packet">📦</div>
+            <div class="jn-emoji">🧑‍💻</div>
+          </div>
+          <div class="jn-name">SUHAIL</div>
+          <div class="jn-role">Sender</div>
+          <div class="jn-bubble" id="jbubble0">
+            <div class="jnb-knows">✓ Knows: What he wants to send and to whom</div>
+            <div class="jnb-blind">✗ Cannot: Choose which nodes handle it</div>
+          </div>
+          <div class="jn-tap">tap to hear</div>
+        </div>
+
+        <!-- Person 1: JOTHI (Entry Node) -->
+        <div class="jnode" id="jnode1" onclick="nodeSpeak(1)">
+          <div class="jn-speech" id="jspeech1">A package arrived from Suhail. I have no idea what is inside or where it ultimately goes. I just pass it to Bhava.</div>
+          <div class="jn-avatar idle" id="javatar1">
+            <div class="jn-packet">📦</div>
+            <div class="jn-emoji">👨‍🔧</div>
+          </div>
+          <div class="jn-name">JOTHI</div>
+          <div class="jn-role">Entry Relay</div>
+          <div class="jn-bubble" id="jbubble1">
+            <div class="jnb-knows">✓ Sees: Suhail sent something</div>
+            <div class="jnb-blind">✗ Blind: Content and final destination</div>
+          </div>
+          <div class="jn-tap">tap to hear</div>
+        </div>
+
+        <!-- Person 2: BHAVA (Middle Node) -->
+        <div class="jnode" id="jnode2" onclick="nodeSpeak(2)">
+          <div class="jn-speech" id="jspeech2">Got this from Jothi. No idea who originally sent it or where it ends up. I just pass it to Paru and mind my own business.</div>
+          <div class="jn-avatar idle" id="javatar2">
+            <div class="jn-packet">📦</div>
+            <div class="jn-emoji">👩‍💼</div>
+          </div>
+          <div class="jn-name">BHAVA</div>
+          <div class="jn-role">Middle Relay</div>
+          <div class="jn-bubble" id="jbubble2">
+            <div class="jnb-knows">✓ Sees: Package from Jothi</div>
+            <div class="jnb-blind">✗ Blind: Origin AND destination both</div>
+          </div>
+          <div class="jn-tap">tap to hear</div>
+        </div>
+
+        <!-- Person 3: PARU (Exit Node) -->
+        <div class="jnode" id="jnode3" onclick="nodeSpeak(3)">
+          <div class="jn-speech" id="jspeech3">I can see the destination website. I will deliver the request. But I have no idea who originally sent this   I only know Bhava handed it to me.</div>
+          <div class="jn-avatar idle" id="javatar3">
+            <div class="jn-packet">📦</div>
+            <div class="jn-emoji">🧑‍🚀</div>
+          </div>
+          <div class="jn-name">PARU</div>
+          <div class="jn-role">Exit Relay</div>
+          <div class="jn-bubble" id="jbubble3">
+            <div class="jnb-knows">✓ Sees: Destination website address</div>
+            <div class="jnb-blind">✗ Blind: Who Suhail is or what he sent</div>
+          </div>
+          <div class="jn-tap">tap to hear</div>
+        </div>
+
+        <!-- Person 4: KISORE (Recipient) -->
+        <div class="jnode" id="jnode4" onclick="nodeSpeak(4)">
+          <div class="jn-speech" id="jspeech4">Message arrived! I can read it because only I have the private key to unlock it. Nobody else along the way could read it.</div>
+          <div class="jn-avatar idle" id="javatar4">
+            <div class="jn-packet">📦</div>
+            <div class="jn-emoji">🙋</div>
+          </div>
+          <div class="jn-name">KISORE</div>
+          <div class="jn-role">Recipient</div>
+          <div class="jn-bubble" id="jbubble4">
+            <div class="jnb-knows">✓ Receives: The decrypted message</div>
+            <div class="jnb-blind">✗ Cannot: See the relay path taken</div>
+          </div>
+          <div class="jn-tap">tap to hear</div>
+        </div>
+      </div>
+
+      <!-- Step info panel -->
+      <div class="step-panel" id="stepPanel">
+        <div class="sp-step" id="spStep">Waiting</div>
+        <div class="sp-title" id="spTitle">Click Send Message to start the journey</div>
+        <div class="sp-desc" id="spDesc">Watch how Suhail's message travels through Jothi, Bhava, and Paru before reaching Kisore   and see exactly what each person knows (and does not know) at each step.</div>
+      </div>
+    </div>
+
+    <!-- Summary insight -->
+    <div class="callout callout-orange sr d3">
+      <div class="callout-head" style="color:var(--orange);">The key insight</div>
+      <p>Jothi knows Suhail sent something   but not where it goes. Paru knows where it is going   but not that Suhail sent it. Bhava knows neither. Even if all three relays reported to the same authority, they still could not piece together the full picture. That is privacy by design, not by promise.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH6   BEFORE VS AFTER
+═══════════════════════════════════════════════ -->
+<section id="ch6" class="section section-warm">
+  <div class="ch-num-bg">06</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:var(--teal);">Chapter 06 · The Difference</div>
+    <h2 class="sr d1">Your internet,<br><span class="teal">before and after</span> BelNet.</h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:640px;margin:.9rem 0 2.5rem;">A clear side-by-side look at what browsing looks like for Paru without BelNet compared to with BelNet running.</p>
+
+    <div class="ba-split sr d1">
+      <div class="ba-col before">
+        <div class="ba-title">Without BelNet ✗</div>
+        <div class="ba-item bad"><span class="ico">✕</span>Real IP address visible to every website</div>
+        <div class="ba-item bad"><span class="ico">✕</span>City and internet provider exposed</div>
+        <div class="ba-item bad"><span class="ico">✕</span>Advertisers track you across every website</div>
+        <div class="ba-item bad"><span class="ico">✕</span>ISP sees every website you visit</div>
+        <div class="ba-item bad"><span class="ico">✕</span>Geo-blocked content cannot be accessed</div>
+        <div class="ba-item bad"><span class="ico">✕</span>Censored websites cannot be reached</div>
+        <div class="ba-item bad"><span class="ico">✕</span>Full activity trail exists on central servers</div>
+      </div>
+      <div class="ba-col after">
+        <div class="ba-title">With BelNet ✓</div>
+        <div class="ba-item good"><span class="ico">✓</span>Websites see only an exit node IP, never yours</div>
+        <div class="ba-item good"><span class="ico">✓</span>Real location completely hidden</div>
+        <div class="ba-item good"><span class="ico">✓</span>Trackers cannot follow you across sites</div>
+        <div class="ba-item good"><span class="ico">✓</span>ISP sees only encrypted traffic, nothing readable</div>
+        <div class="ba-item good"><span class="ico">✓</span>Access any content from any region</div>
+        <div class="ba-item good"><span class="ico">✓</span>Reach any website regardless of censorship</div>
+        <div class="ba-item good"><span class="ico">✓</span>Zero activity logs by design, not just policy</div>
+      </div>
+    </div>
+
+    <div class="three-col sr d2" style="margin-top:2rem;">
+      <div style="background:var(--warm2);border:2.5px solid var(--rule);border-radius:var(--r16);padding:1.5rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:.55rem;">🌍</div>
+        <div style="font-family:'Lexend Mega',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;">Global Access</div>
+        <p style="font-size:.88rem;color:var(--ink3);">Connect through exit nodes worldwide to reach content blocked in your country.</p>
+      </div>
+      <div style="background:var(--warm2);border:2.5px solid var(--rule);border-radius:var(--r16);padding:1.5rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:.55rem;">🏛️</div>
+        <div style="font-family:'Lexend Mega',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;">No Authority</div>
+        <p style="font-size:.88rem;color:var(--ink3);">There is no BelNet company to receive legal demands. Nobody can force data handovers.</p>
+      </div>
+      <div style="background:var(--warm2);border:2.5px solid var(--rule);border-radius:var(--r16);padding:1.5rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:.55rem;">📋</div>
+        <div style="font-family:'Lexend Mega',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;">Zero Logs</div>
+        <p style="font-size:.88rem;color:var(--ink3);">Not a policy promise. The protocol itself cannot log your activity. Nothing exists to hand over.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CH7   SPLIT TUNNELING
+═══════════════════════════════════════════════ -->
+<section id="ch7" class="section section-orange">
+  <div class="ch-num-bg">07</div>
+  <div class="w">
+    <div class="ch-label sr" style="color:var(--or2);">Chapter 07 · Your Control</div>
+    <h2 class="sr d1">You choose exactly which<br>apps <span class="orange">get protected.</span></h2>
+    <p class="sr d2" style="color:var(--ink2);max-width:680px;margin:.9rem 0 .65rem;">Not everything needs to go through the encrypted tunnel. Streaming videos through a VPN can slow them down. Banking through BelNet is smart. BelNet's <strong>split tunneling</strong> lets Kisore decide per-app   some through BelNet, some direct. Toggle the apps below:</p>
+
+    <div class="split-demo sr d1">
+      <div class="split-bar">
+        <div class="sdot" style="background:#ff5f57;"></div>
+        <div class="sdot" style="background:#febc2e;"></div>
+        <div class="sdot" style="background:#28c840;"></div>
+        <div class="split-btitle">Kisore's Split Tunneling Settings   Toggle each app</div>
+      </div>
+      <div class="split-body">
+        <p class="split-intro">Toggle each app below. Green = routes through BelNet (encrypted, anonymous). Orange = connects directly (full speed, not protected).</p>
+        <div class="split-apps">
+          <div class="sa-row protected" id="sa-browser"><span class="sa-icon">🌐</span><span class="sa-name">Web Browser</span><span class="sa-status" id="ss-browser">Via BelNet</span><button class="sa-toggle on" id="st-browser" onclick="splitToggle('browser')"></button></div>
+          <div class="sa-row protected" id="sa-email"><span class="sa-icon">📧</span><span class="sa-name">Email App</span><span class="sa-status" id="ss-email">Via BelNet</span><button class="sa-toggle on" id="st-email" onclick="splitToggle('email')"></button></div>
+          <div class="sa-row direct" id="sa-youtube"><span class="sa-icon">▶️</span><span class="sa-name">YouTube</span><span class="sa-status" id="ss-youtube">Direct</span><button class="sa-toggle off" id="st-youtube" onclick="splitToggle('youtube')"></button></div>
+          <div class="sa-row direct" id="sa-music"><span class="sa-icon">🎵</span><span class="sa-name">Music Streaming</span><span class="sa-status" id="ss-music">Direct</span><button class="sa-toggle off" id="st-music" onclick="splitToggle('music')"></button></div>
+          <div class="sa-row protected" id="sa-bank"><span class="sa-icon">🏦</span><span class="sa-name">Banking App</span><span class="sa-status" id="ss-bank">Via BelNet</span><button class="sa-toggle on" id="st-bank" onclick="splitToggle('bank')"></button></div>
+          <div class="sa-row direct" id="sa-games"><span class="sa-icon">🎮</span><span class="sa-name">Online Games</span><span class="sa-status" id="ss-games">Direct</span><button class="sa-toggle off" id="st-games" onclick="splitToggle('games')"></button></div>
+        </div>
+        <div class="split-summary" id="splitSummary"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     DOWNLOAD
+═══════════════════════════════════════════════ -->
+<section id="download" class="section section-ink">
+  <div class="w">
+    <div style="text-align:center;margin-bottom:2.5rem;" class="sr">
+      <div style="font-family:'Fira Code',monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;">Download BelNet Free</div>
+      <h2 style="color:#fff;margin-bottom:1rem;">Ready to go invisible?</h2>
+      <p style="font-size:1.1rem;color:rgba(255,255,255,.6);max-width:500px;margin:0 auto;line-height:1.85;">No account. No email. No subscription. Suhail, Jothi, anyone   download, press Connect, and your IP disappears. That is it.</p>
+    </div>
+    <div class="dl-grid sr d1">
+      <a class="dl-card" href="https://github.com/Beldex-Coin/belnet-app/releases/download/v1.3.1/Belnet-1.3.1.apk" target="_blank">
+        <div class="dl-ico">🤖</div><div class="dl-name">Android</div><div class="dl-sub">APK v1.3.1</div>
+        <div style="font-size:.7rem;color:var(--orange);">↗</div>
+      </a>
+      <a class="dl-card" href="https://deb.beldex.io/Beldex-projects/belnet-gui/belnet-gui-1.1.1-win64.exe" target="_blank">
+        <div class="dl-ico">🪟</div><div class="dl-name">Windows</div><div class="dl-sub">v1.1.1</div>
+        <div style="font-size:.7rem;color:var(--orange);">↗</div>
+      </a>
+      <a class="dl-card" href="https://belnet.beldex.io/belnet-linux-installation" target="_blank">
+        <div class="dl-ico">🐧</div><div class="dl-name">Linux</div><div class="dl-sub">Install Guide</div>
+        <div style="font-size:.7rem;color:var(--orange);">↗</div>
+      </a>
+      <div class="dl-card soon">
+        <div class="dl-ico">🍏</div><div class="dl-name">macOS</div>
+        <div class="dl-sub" style="color:var(--orange);">Coming soon</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.1);padding-top:2rem;" class="sr d2">
+      <p style="font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.18);">BelNet · Built on Beldex Blockchain · Open Source · belnet.beldex.io</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═════════════════════════════════════════════
+     JAVASCRIPT
+═════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ── Progress bar ── */
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var pct = (window.scrollY / (h.scrollHeight - window.innerHeight)) * 100;
+  var b = document.getElementById('pgfill');
+  if(b) b.style.width = Math.min(100, pct) + '%';
+}, {passive:true});
+
+/* ── Scroll reveal ── */
+var revObs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('on'); });
+}, {threshold: 0.06});
+document.querySelectorAll('.sr').forEach(function(el){ revObs.observe(el); });
+
+/* ── Hero animated dots ── */
+(function(){
+  var c = document.getElementById('heroDots');
+  if(!c) return;
+  var palette = ['#FF5722','#00BCD4','#FFD600','#ffffff'];
+  for(var i = 0; i < 48; i++){
+    var d = document.createElement('div');
+    d.className = 'hbd';
+    var s = 3 + Math.random() * 11;
+    d.style.cssText = [
+      'width:' + s + 'px',
+      'height:' + s + 'px',
+      'left:' + (Math.random() * 100) + '%',
+      'background:' + palette[Math.floor(Math.random() * palette.length)],
+      'animation-duration:' + (7 + Math.random() * 9) + 's',
+      'animation-delay:-' + (Math.random() * 12) + 's'
+    ].join(';');
+    c.appendChild(d);
+  }
+})();
+
+/* ── CH1: IP Demo toggle ── */
+var ipConnected = false;
+var ORIG = ['103.47.22.91','Chennai, India','BSNL Broadband','Android · Chrome 120','14:23:07 IST'];
+var HIDN = ['185.220.xxx.xxx','[Hidden by BelNet]','[Hidden by BelNet]','[Protected]','[Not logged]'];
+var IDS  = ['ipDemoIp','ipDemoCity','ipDemoIsp','ipDemoDev','ipDemoTime'];
+
+function toggleIpDemo(){
+  ipConnected = !ipConnected;
+  IDS.forEach(function(id, i){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = ipConnected ? HIDN[i] : ORIG[i];
+    el.className   = 'idr-val ' + (ipConnected ? 'hidden' : 'exposed');
+  });
+  document.querySelectorAll('.ip-demo-row').forEach(function(r){
+    r.className = 'ip-demo-row ' + (ipConnected ? 'hidden-row' : 'revealed');
+  });
+  var btn = document.getElementById('ipToggleBtn');
+  btn.textContent = ipConnected ? 'Disconnect BelNet   Show Exposed Data' : 'Connect BelNet   Hide This Data';
+  btn.className = 'toggle-btn' + (ipConnected ? ' on' : '');
+}
+
+/* ── CH2: Watcher cards ── */
+var watchOpen = -1;
+function toggleWatcher(n){
+  var bodies = document.querySelectorAll('.wc-body');
+  var cards  = document.querySelectorAll('.watcher-card');
+  var isOpen = watchOpen === n;
+  bodies.forEach(function(b){ b.classList.remove('show'); });
+  cards.forEach(function(c) { c.classList.remove('active'); });
+  if(!isOpen){
+    bodies[n].classList.add('show');
+    cards[n].classList.add('active');
+    watchOpen = n;
+  } else {
+    watchOpen = -1;
+  }
+}
+
+/* ── CH4: Envelope layers ── */
+var envOpened = [false,false,false];
+function openEnvelope(n){
+  if(envOpened[n]) return;
+  if(n > 0 && !envOpened[n-1]) return;
+  envOpened[n] = true;
+  var box  = document.getElementById('env' + n);
+  var info = document.getElementById('envInfo' + n);
+  if(box)  box.classList.add('opened');
+  if(info) info.classList.add('show');
+}
+function resetEnvelopes(){
+  envOpened = [false,false,false];
+  [0,1,2].forEach(function(i){
+    var b = document.getElementById('env'+i);
+    var f = document.getElementById('envInfo'+i);
+    if(b) b.classList.remove('opened');
+    if(f) f.classList.remove('show');
+  });
+}
+
+/* ── CH5: Journey animation ── */
+var JOURNEY_STEPS = [
+  {
+    node:0,progress:'progress-1',
+    step:'Step 1 / 5',
+    title:'Suhail presses Send',
+    desc:'BelNet wraps the message in 3 encrypted layers on Suhail\'s device. The route is chosen randomly from 2200+ masternodes. Suhail does not pick who handles it.'
+  },
+  {
+    node:1,progress:'progress-2',
+    step:'Step 2 / 5',
+    title:'Jothi receives the outer layer',
+    desc:'Jothi (Entry Relay) peels the first encryption layer. He can see Suhail\'s IP address but cannot read the message and cannot see where it is ultimately going. He passes it to Bhava.'
+  },
+  {
+    node:2,progress:'progress-3',
+    step:'Step 3 / 5',
+    title:'Bhava handles the middle layer',
+    desc:'Bhava (Middle Relay) peels the second layer. She knows the package came from Jothi, but does not know it was originally from Suhail. She has no idea about the destination. She passes it to Paru.'
+  },
+  {
+    node:3,progress:'progress-4',
+    step:'Step 4 / 5',
+    title:'Paru exits to the internet',
+    desc:'Paru (Exit Relay) peels the final layer and can now see the destination website. She sends the request on behalf of Suhail. The website receives a request from Paru\'s IP address, not Suhail\'s.'
+  },
+  {
+    node:4,progress:'progress-5',
+    step:'Step 5 / 5',
+    title:'Kisore receives the message',
+    desc:'The message arrives at Kisore\'s device encrypted. Only Kisore\'s private key can unlock it. The message is readable only to Kisore. No relay, no node, and no eavesdropper ever saw its contents.'
+  }
+];
+
+var journeyStep = -1;
+var journeyRunning = false;
+var journeyTimer = null;
+
+function resetJourney(){
+  clearTimeout(journeyTimer);
+  journeyRunning = false;
+  journeyStep = -1;
+  var track = document.getElementById('journeyTrack');
+  if(track){ track.className = 'journey-track'; }
+  for(var i = 0; i < 5; i++){
+    var av = document.getElementById('javatar'+i);
+    if(av) av.className = 'jn-avatar idle';
+    var sp = document.getElementById('jspeech'+i);
+    if(sp) sp.parentElement && sp.parentElement.classList.remove('speaking');
+  }
+  var pkt = document.getElementById('journeyPacket');
+  if(pkt){ pkt.style.display = 'none'; pkt.style.left = '-30px'; }
+  document.getElementById('spStep').textContent  = 'Waiting';
+  document.getElementById('spTitle').textContent = 'Click Send Message to start the journey';
+  document.getElementById('spDesc').textContent  = 'Watch how Suhail\'s message travels through Jothi, Bhava, and Paru before reaching Kisore   and see exactly what each person knows at each step.';
+  document.getElementById('journeyStatus').textContent = 'Press "Send Message" to watch the journey';
+}
+
+function startJourney(){
+  clearTimeout(journeyTimer);
+  resetJourney();
+  journeyRunning = true;
+  var pkt = document.getElementById('journeyPacket');
+  if(pkt) pkt.style.display = 'flex';
+  runJourneyStep(0);
+}
+
+function runJourneyStep(n){
+  if(n >= JOURNEY_STEPS.length){ journeyRunning = false; return; }
+  journeyStep = n;
+  var data = JOURNEY_STEPS[n];
+  var track = document.getElementById('journeyTrack');
+  var nodeW = track ? track.offsetWidth / 5 : 200;
+
+  /* Update progress line */
+  if(track){
+    track.className = 'journey-track ' + data.progress;
+  }
+
+  /* Animate packet to node position */
+  var pkt = document.getElementById('journeyPacket');
+  if(pkt){
+    var targetLeft = (n * nodeW) + (nodeW / 2) - 14;
+    pkt.style.left = targetLeft + 'px';
+  }
+
+  /* Activate node avatar */
+  for(var i = 0; i < 5; i++){
+    var av = document.getElementById('javatar'+i);
+    if(!av) continue;
+    if(i < n)       av.className = 'jn-avatar done';
+    else if(i === n) av.className = 'jn-avatar active';
+    else             av.className = 'jn-avatar idle';
+  }
+
+  /* Update step panel */
+  document.getElementById('spStep').textContent  = data.step;
+  document.getElementById('spTitle').textContent = data.title;
+  document.getElementById('spDesc').textContent  = data.desc;
+  document.getElementById('journeyStatus').textContent = data.step + ' · ' + data.title;
+
+  /* Auto-advance */
+  journeyTimer = setTimeout(function(){ runJourneyStep(n + 1); }, 2200);
+}
+
+/* Node click   advance journey to this person's step AND show their speech in panel */
+var PERSON_SPEECH = [
+  'I want to send a message to Kisore. BelNet wraps it in 3 sealed envelopes automatically. I just press send   BelNet handles the rest. My real IP address never leaves my device.',
+  'A sealed package just arrived from Suhail. I can see his IP address, but I have absolutely no idea what is inside this package or where it ultimately needs to go. My only job is to pass it to Bhava and nothing more.',
+  'I received this from Jothi. I do not know it originally came from Suhail. I cannot read the contents. I have no idea what the final destination is. I just pass it along to Paru. I am completely in the dark.',
+  'I can finally see the destination website address in this layer. I will send the request to the internet on Suhail\'s behalf. The website will see my IP address   not Suhail\'s. But I have no idea who originally sent this to me.',
+  'The encrypted message arrived! I am the only person who has the private key to unlock it. I read it. Nobody else along the entire journey   not Jothi, not Bhava, not Paru   could ever read what Suhail sent me.'
+];
+
+function nodeSpeak(n){
+  /* Stop auto-advance, let user explore manually */
+  clearTimeout(journeyTimer);
+  journeyRunning = false;
+
+  /* Show packet */
+  var pkt = document.getElementById('journeyPacket');
+  if(pkt){ pkt.style.display = 'flex'; }
+
+  /* Update progress track */
+  var track = document.getElementById('journeyTrack');
+  var progressClasses = ['progress-1','progress-2','progress-3','progress-4','progress-5'];
+  if(track) track.className = 'journey-track ' + progressClasses[n];
+
+  /* Move packet to this node */
+  var nodeW = track ? track.offsetWidth / 5 : 200;
+  if(pkt){ pkt.style.left = ((n * nodeW) + (nodeW / 2) - 14) + 'px'; }
+
+  /* Update avatar states */
+  for(var i = 0; i < 5; i++){
+    var av = document.getElementById('javatar'+i);
+    if(!av) continue;
+    av.className = 'jn-avatar ' + (i < n ? 'done' : i === n ? 'active' : 'idle');
+  }
+
+  /* Highlight clicked node */
+  for(var j = 0; j < 5; j++){ document.getElementById('jnode'+j).classList.remove('speaking'); }
+  document.getElementById('jnode'+n).classList.add('speaking');
+  setTimeout(function(){ var el=document.getElementById('jnode'+n);if(el)el.classList.remove('speaking'); }, 3000);
+
+  /* Show speech in step panel */
+  var stepData = JOURNEY_STEPS[n];
+  document.getElementById('spStep').textContent   = stepData.step + '   ' + ['Suhail','Jothi','Bhava','Paru','Kisore'][n] + ' speaks';
+  document.getElementById('spTitle').textContent  = stepData.title;
+  document.getElementById('spDesc').innerHTML     =
+    '<span style="color:var(--yellow);font-weight:700">In ' + ['Suhail\'s','Jothi\'s','Bhava\'s','Paru\'s','Kisore\'s'][n] + ' words:</span> "' + PERSON_SPEECH[n] + '"<br><br>' +
+    '<span style="color:rgba(255,255,255,.55);font-size:.9rem">' + stepData.desc + '</span>';
+  document.getElementById('journeyStatus').textContent = 'Viewing ' + ['Suhail','Jothi','Bhava','Paru','Kisore'][n] + ' · Click Send Message to replay';
+}
+
+/* ── CH7: Split tunneling ── */
+var splitState = {browser:true, email:true, youtube:false, music:false, bank:true, games:false};
+var splitLabels = {browser:'Browser', email:'Email', youtube:'YouTube', music:'Music', bank:'Banking', games:'Games'};
+
+function splitToggle(app){
+  splitState[app] = !splitState[app];
+  var on = splitState[app];
+  document.getElementById('sa-'+app).className = 'sa-row ' + (on ? 'protected' : 'direct');
+  document.getElementById('st-'+app).className = 'sa-toggle ' + (on ? 'on' : 'off');
+  document.getElementById('ss-'+app).textContent = on ? 'Via BelNet' : 'Direct';
+  updateSplitSummary();
+}
+function updateSplitSummary(){
+  var p = [], d = [];
+  Object.keys(splitState).forEach(function(k){ splitState[k] ? p.push(splitLabels[k]) : d.push(splitLabels[k]); });
+  var el = document.getElementById('splitSummary');
+  if(!el) return;
+  el.innerHTML = '<span style="color:var(--teal);font-weight:800">' + p.length + ' app' + (p.length!==1?'s':'') + ' protected via BelNet:</span> ' + p.join(', ') +
+    '<br><span style="color:var(--orange);font-weight:800">' + d.length + ' app' + (d.length!==1?'s':'') + ' connecting directly:</span> ' + d.join(', ');
+}
+updateSplitSummary();
+</script>
+</body>
+</html>
