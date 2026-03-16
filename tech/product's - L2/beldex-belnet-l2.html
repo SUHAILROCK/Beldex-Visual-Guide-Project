@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BelNet Level 2   Complete Deep Dive</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════
+   SIGNAL   BelNet Level 2 Deep Dive
+   Deep ocean · Sky blue · Emerald · Amber
+   DM Serif Display + Nunito + JetBrains Mono
+════════════════════════════════════════════════ */
+:root{
+  --bg:    #040810;
+  --s1:    #070D1A;
+  --s2:    #0A1224;
+  --s3:    #0F1A32;
+  --s4:    #162040;
+
+  --br:    #1A2A4A;
+  --br2:   #203460;
+
+  --bl:    #38BDF8;
+  --bl2:   #0EA5E9;
+  --bl3:   #7DD3FC;
+  --bl-g:  rgba(56,189,248,.1);
+
+  --em:    #34D399;
+  --em2:   #059669;
+  --em-g:  rgba(52,211,153,.1);
+
+  --am:    #FBBF24;
+  --am2:   rgba(251,191,36,.1);
+
+  --rs:    #F87171;
+  --rs2:   rgba(248,113,113,.1);
+
+  --tx:    #F0F9FF;
+  --tx2:   #94A3B8;
+  --tx3:   #334155;
+  --txm:   #CBD5E1;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--tx);
+  font-family:'Nunito',sans-serif;
+  font-size:1rem;line-height:1.8;overflow-x:hidden;
+}
+.display{font-family:'DM Serif Display',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+h1{font-family:'DM Serif Display',serif;font-size:clamp(2.6rem,5.5vw,5rem);line-height:1.0;font-weight:400;}
+h2{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,3.5rem);line-height:1.05;font-weight:400;}
+h3{font-family:'DM Serif Display',serif;font-size:1.6rem;line-height:1.15;font-weight:400;}
+p{color:var(--txm);line-height:1.85;}
+strong{color:var(--tx);font-weight:700;}
+.bl{color:var(--bl);} .em{color:var(--em);} .am{color:var(--am);} .rs{color:var(--rs);}
+
+/* ── Layout ── */
+.w{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.wn{max-width:820px;margin:0 auto;padding:0 2rem;}
+
+/* ── Progress ── */
+#pg{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;background:var(--s3);}
+#pf{height:100%;width:0;background:linear-gradient(90deg,var(--bl),var(--em));transition:width .1s;}
+
+/* ── Nav ── */
+#nav{
+  position:fixed;top:3px;left:0;right:0;z-index:900;
+  background:rgba(4,8,16,.92);border-bottom:1px solid var(--br);
+  backdrop-filter:blur(16px);
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;padding:0 2rem;
+  height:54px;display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--tx);text-decoration:none;}
+.nav-logo span{color:var(--bl);}
+.nav-badge{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:.25rem .75rem;background:var(--bl-g);color:var(--bl);border:1px solid rgba(56,189,248,.25);border-radius:3px;}
+.nav-links{display:flex;gap:.1rem;}
+.nl{font-size:.82rem;font-weight:600;color:var(--tx2);text-decoration:none;padding:.3rem .65rem;border-radius:4px;transition:all .18s;}
+.nl:hover{color:var(--bl);background:var(--bl-g);}
+
+/* ── Reveal ── */
+.ri{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+.ri.on{opacity:1;transform:none;}
+.d1{transition-delay:.08s;} .d2{transition-delay:.16s;} .d3{transition-delay:.24s;} .d4{transition-delay:.32s;}
+
+/* ── Section shell ── */
+.sec{padding:5.5rem 0;border-top:1px solid var(--br);position:relative;overflow:hidden;}
+.sec-dark{background:var(--s1);}
+.sec-mid{background:var(--s2);}
+
+/* ── Section label ── */
+.sec-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--bl);
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;
+}
+.sec-tag::before{content:'';width:24px;height:1.5px;background:var(--bl);}
+
+/* ── Two column ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+
+/* ── Card ── */
+.card{background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:1.5rem;transition:border-color .2s;}
+.card:hover{border-color:rgba(56,189,248,.3);}
+.card-icon{font-size:1.75rem;margin-bottom:.65rem;}
+.card-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--tx);margin-bottom:.35rem;}
+.card-body{font-size:.92rem;color:var(--tx2);line-height:1.65;}
+
+/* ── Info callout ── */
+.note{padding:1.2rem 1.5rem;border-radius:10px;border-left:4px solid;margin:1.5rem 0;}
+.note-bl{border-color:var(--bl);background:var(--bl-g);}
+.note-em{border-color:var(--em);background:var(--em-g);}
+.note-am{border-color:var(--am);background:var(--am2);}
+.note-rs{border-color:var(--rs);background:var(--rs2);}
+.note-head{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin-bottom:.35rem;}
+.note-bl .note-head{color:var(--bl);}
+.note-em .note-head{color:var(--em);}
+.note-am .note-head{color:var(--am);}
+.note-rs .note-head{color:var(--rs);}
+.note p{font-size:.92rem;line-height:1.7;}
+
+/* ── Code box ── */
+.cbox{background:var(--bg);border:1px solid var(--br2);border-radius:10px;overflow:hidden;margin:1.25rem 0;}
+.cbox-bar{background:var(--s3);border-bottom:1px solid var(--br);padding:.65rem 1.2rem;display:flex;align-items:center;gap:.5rem;}
+.cdot{width:9px;height:9px;border-radius:50%;}
+.cbox-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);margin-left:.3rem;}
+.cbox-body{padding:1.2rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.9;overflow-x:auto;}
+.ck{color:var(--bl);} .cv{color:var(--em);} .cs{color:var(--am);} .cc{color:var(--tx3);}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:0;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(56,189,248,.07) 0%,transparent 60%);
+}
+.hero-grid{display:grid;grid-template-columns:1fr 340px;gap:4rem;align-items:center;}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--bl);display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;}
+.hero-tag::before{content:'';width:24px;height:1.5px;background:var(--bl);}
+.hero-sub{font-size:1.1rem;color:var(--txm);line-height:1.9;max-width:520px;margin:1.25rem 0 2.25rem;}
+.hero-btns{display:flex;gap:.85rem;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;padding:.7rem 1.65rem;border-radius:8px;text-decoration:none;cursor:pointer;border:none;transition:all .2s;}
+.btn-bl{background:var(--bl);color:var(--bg);}
+.btn-bl:hover{background:var(--bl3);}
+.btn-out{background:transparent;color:var(--bl);border:1.5px solid rgba(56,189,248,.4);}
+.btn-out:hover{border-color:var(--bl);background:var(--bl-g);}
+
+/* Architecture mini diagram */
+.arch-diagram{background:var(--s2);border:1px solid var(--br2);border-radius:14px;padding:1.5rem;overflow:hidden;}
+.ad-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);margin-bottom:1.1rem;}
+.ad-row{display:flex;align-items:center;gap:.75rem;padding:.75rem .9rem;border-radius:8px;margin-bottom:.5rem;transition:all .2s;cursor:default;}
+.ad-row:last-child{margin-bottom:0;}
+.ad-bar{width:4px;height:32px;border-radius:2px;flex-shrink:0;}
+.ad-name{font-weight:700;font-size:.9rem;color:var(--tx);}
+.ad-desc{font-size:.75rem;color:var(--tx2);margin-top:.1rem;font-family:'JetBrains Mono',monospace;}
+.adr-0{background:rgba(56,189,248,.07);}
+.adr-1{background:rgba(52,211,153,.07);}
+.adr-2{background:rgba(251,191,36,.07);}
+.ad-arrow{color:var(--tx3);font-size:.7rem;text-align:center;margin-bottom:.3rem;font-family:'JetBrains Mono',monospace;}
+
+/* Hero stat row */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--br);border:1px solid var(--br);border-radius:10px;overflow:hidden;margin-top:2.5rem;}
+.hst{background:var(--s1);padding:.9rem 1.1rem;}
+.hst-n{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;}
+.hst-l{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-top:.2rem;}
+
+/* Chapter nav strip */
+.ch-strip{border-top:1px solid var(--br);background:var(--s1);margin-top:0;}
+.chs-inner{max-width:1100px;margin:0 auto;padding:0 2rem;display:flex;overflow-x:auto;scrollbar-width:none;}
+.chs-inner::-webkit-scrollbar{display:none;}
+.ch-item{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.4rem;border-right:1px solid var(--br);flex-shrink:0;text-decoration:none;transition:background .18s;}
+.ch-item:hover{background:var(--bl-g);}
+.ch-n{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--bl);}
+.ch-t{font-size:.78rem;font-weight:700;color:var(--tx2);white-space:nowrap;}
+
+/* ═══════════════════════════════════════
+   S1   WHAT BELNET IS
+   Interactive: Normal internet vs BelNet toggle
+═══════════════════════════════════════ */
+.compare-toggle{display:flex;gap:.65rem;margin-bottom:1.5rem;}
+.ct-btn{font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;padding:.5rem 1.2rem;border-radius:8px;cursor:pointer;border:2px solid;transition:all .22s;}
+.ct-btn.bad {border-color:var(--rs);color:var(--rs);background:transparent;}
+.ct-btn.bad.active{background:var(--rs2);}
+.ct-btn.good{border-color:var(--em);color:var(--em);background:transparent;}
+.ct-btn.good.active{background:var(--em-g);}
+
+.compare-stage{
+  background:var(--bg);border:1.5px solid var(--br2);border-radius:14px;
+  padding:1.75rem;position:relative;overflow:hidden;min-height:320px;
+}
+.cs-title{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.25rem;}
+.cs-title.bad{color:var(--rs);}
+.cs-title.good{color:var(--em);}
+.cs-path{display:flex;flex-direction:column;gap:.6rem;}
+.cs-hop{display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;border-radius:8px;font-size:.9rem;border:1px solid;}
+.cs-hop.exposed{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.06);color:var(--rs);}
+.cs-hop.safe{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.06);color:var(--em);}
+.cs-hop.neutral{border-color:var(--br2);background:var(--s2);color:var(--txm);}
+.cs-hop-icon{font-size:1.2rem;flex-shrink:0;}
+
+/* ═══════════════════════════════════════
+   S2   MASTERNODE NETWORK
+   Interactive: Animated network canvas
+═══════════════════════════════════════ */
+#nodeCanvas{display:block;width:100%;border:1px solid var(--br2);border-radius:14px;background:var(--bg);cursor:pointer;}
+.nc-hint{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);text-align:center;margin-top:.65rem;}
+
+/* ═══════════════════════════════════════
+   S3   LLARP PROTOCOL
+   Interactive: UDP vs TCP animation
+═══════════════════════════════════════ */
+.race-track{
+  background:var(--bg);border:1px solid var(--br2);border-radius:14px;
+  padding:1.5rem;margin-top:1.5rem;
+}
+.rt-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:1rem;}
+.rt-lane{display:flex;align-items:center;gap:1rem;margin-bottom:.85rem;}
+.rt-lane:last-child{margin-bottom:0;}
+.rt-name{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;width:60px;flex-shrink:0;}
+.rt-track{flex:1;height:32px;background:var(--s2);border-radius:6px;position:relative;overflow:hidden;border:1px solid var(--br);}
+.rt-packet{
+  position:absolute;top:4px;height:24px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+  padding:0 .6rem;white-space:nowrap;
+  transition:left .1s linear;
+}
+.rt-ms{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;width:60px;text-align:right;flex-shrink:0;}
+.race-btn{margin-top:1rem;padding:.55rem 1.2rem;background:var(--bl);color:var(--bg);border:none;border-radius:7px;font-weight:700;font-size:.85rem;font-family:'Nunito',sans-serif;cursor:pointer;transition:background .18s;}
+.race-btn:hover{background:var(--bl3);}
+
+/* ═══════════════════════════════════════
+   S4   ONION ROUTING
+   Interactive: Layer unwrapping visual
+═══════════════════════════════════════ */
+.onion-wrapper{display:grid;grid-template-columns:360px 1fr;gap:2.5rem;align-items:start;}
+/* SVG-based onion viz */
+.onion-viz{position:relative;width:360px;height:360px;flex-shrink:0;}
+.onion-ring-el{position:absolute;border-radius:50%;border:2.5px solid;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .4s ease;}
+.onion-ring-el:hover{filter:brightness(1.2);}
+.onion-ring-el.peeled{opacity:.12;transform:scale(1.06)!important;pointer-events:none;}
+.onion-center{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;}
+.oc-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;line-height:1.3;}
+.ring-label-text{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3;pointer-events:none;}
+
+.onion-info{background:var(--s2);border:1.5px solid var(--br);border-radius:12px;padding:1.25rem;min-height:120px;transition:border-color .3s;}
+.onion-info.active{border-color:var(--bl);}
+.oi-step{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bl);margin-bottom:.35rem;}
+.oi-title{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--tx);margin-bottom:.4rem;}
+.oi-desc{font-size:.92rem;color:var(--txm);line-height:1.7;}
+.oi-key{display:inline-flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;padding:.25rem .75rem;border-radius:5px;margin-top:.65rem;}
+.onion-controls{display:flex;gap:.65rem;margin-top:1rem;}
+.oc-btn{font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;padding:.52rem 1.1rem;border-radius:7px;cursor:pointer;border:none;transition:all .2s;}
+.oc-primary{background:var(--bl);color:var(--bg);}
+.oc-primary:hover{background:var(--bl3);}
+.oc-secondary{background:var(--s3);color:var(--txm);border:1.5px solid var(--br);}
+.oc-secondary:hover{border-color:var(--bl);color:var(--bl);}
+
+/* ═══════════════════════════════════════
+   S5   THE JOURNEY (People story)
+   Interactive: Animated step-by-step canvas
+═══════════════════════════════════════ */
+.journey-box{background:var(--s1);border:1.5px solid var(--br);border-radius:16px;overflow:hidden;}
+.jb-header{background:var(--s2);border-bottom:1px solid var(--br);padding:.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.jb-status{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--bl);letter-spacing:.1em;flex:1;}
+.jb-controls{display:flex;gap:.55rem;}
+.jb-btn{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.45rem 1rem;border-radius:5px;border:none;cursor:pointer;transition:all .2s;font-weight:600;}
+.jbb-primary{background:var(--bl);color:var(--bg);}
+.jbb-primary:hover{background:var(--bl3);}
+.jbb-ghost{background:var(--s3);color:var(--txm);border:1px solid var(--br);}
+.jbb-ghost:hover{border-color:var(--bl);color:var(--bl);}
+#journeyCanvas{display:block;width:100%;background:var(--s1);}
+.jb-panel{background:var(--bg);border-top:1px solid var(--br);padding:1.25rem 1.5rem;min-height:90px;}
+.jp-step{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--am);margin-bottom:.3rem;}
+.jp-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--tx);margin-bottom:.35rem;}
+.jp-desc{font-size:.92rem;color:var(--txm);line-height:1.7;}
+.jp-quote{color:var(--am);font-weight:700;}
+
+/* ═══════════════════════════════════════
+   S6   EXIT NODES
+   Interactive: Region selector
+═══════════════════════════════════════ */
+.exit-demo{background:var(--bg);border:1px solid var(--br2);border-radius:14px;padding:1.5rem;}
+.ed-regions{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.ed-region{padding:.45rem .95rem;border-radius:6px;border:1.5px solid var(--br2);background:var(--s2);font-size:.82rem;font-weight:700;color:var(--txm);cursor:pointer;transition:all .22s;font-family:'Nunito',sans-serif;}
+.ed-region:hover{border-color:var(--bl);color:var(--bl);}
+.ed-region.sel{border-color:var(--em);background:var(--em-g);color:var(--em);}
+.ed-result{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:1.1rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.8;}
+.edr-row{display:flex;gap:.65rem;margin-bottom:.35rem;}
+.edr-row:last-child{margin-bottom:0;}
+.edr-k{color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;width:100px;flex-shrink:0;}
+.edr-v{color:var(--tx);}
+.edr-v.bl{color:var(--bl);}
+.edr-v.em{color:var(--em);}
+.edr-v.am{color:var(--am);}
+.edr-v.rs{color:var(--rs);}
+
+/* ═══════════════════════════════════════
+   S7   BNS DOMAINS
+   Interactive: Domain resolver terminal
+═══════════════════════════════════════ */
+.bns-terminal{background:#020408;border:1px solid rgba(56,189,248,.2);border-radius:14px;overflow:hidden;box-shadow:0 0 40px rgba(56,189,248,.06);}
+.bt-bar{background:#080C14;border-bottom:1px solid rgba(56,189,248,.1);padding:.75rem 1.2rem;display:flex;align-items:center;gap:.5rem;}
+.bt-dot{width:9px;height:9px;border-radius:50%;}
+.bt-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(56,189,248,.5);margin-left:.3rem;}
+.bt-body{padding:1.25rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.9;}
+.bt-line{display:flex;gap:.5rem;}
+.bt-prompt{color:rgba(56,189,248,.5);flex-shrink:0;}
+.bt-cmd{color:var(--em);}
+.bt-out{color:var(--txm);margin-left:1rem;display:block;}
+.bt-out.ok{color:var(--em);}
+.bt-out.info{color:var(--bl);}
+.bt-out.warn{color:var(--am);}
+.bt-input-row{display:flex;gap:.5rem;align-items:center;margin-top:.75rem;border-top:1px solid rgba(56,189,248,.08);padding-top:.75rem;}
+.bt-input{
+  flex:1;background:transparent;border:none;color:var(--em);
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  outline:none;caret-color:var(--bl);
+}
+.bt-run{
+  padding:.35rem .9rem;background:var(--bl);color:var(--bg);
+  border:none;border-radius:4px;font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;
+}
+.bt-run:hover{background:var(--bl3);}
+.bt-output{margin-top:.75rem;padding:.75rem;background:rgba(52,211,153,.04);border:1px solid rgba(52,211,153,.15);border-radius:6px;display:none;}
+.bt-output.show{display:block;}
+
+/* ═══════════════════════════════════════
+   S8   MNAPP VS NORMAL SITE
+   Interactive: Side-by-side attack demo
+═══════════════════════════════════════ */
+.attack-demo{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--br);border:1.5px solid var(--br);border-radius:14px;overflow:hidden;}
+.ad-col{padding:1.75rem;}
+.ad-col.normal{background:var(--rs2);}
+.ad-col.mnapp{background:var(--em-g);}
+.ad-col-title{font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:1.1rem;}
+.ad-col.normal .ad-col-title{color:var(--rs);}
+.ad-col.mnapp  .ad-col-title{color:var(--em);}
+.attack-btn{
+  display:block;width:100%;margin-bottom:.55rem;
+  padding:.65rem .9rem;border-radius:8px;border:none;
+  font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;
+  cursor:pointer;text-align:left;transition:all .22s;
+}
+.atk-btn-normal{background:rgba(248,113,113,.15);color:var(--rs);border:1px solid rgba(248,113,113,.25);}
+.atk-btn-normal:hover{background:rgba(248,113,113,.25);}
+.atk-btn-mnapp{background:rgba(52,211,153,.1);color:var(--em);border:1px solid rgba(52,211,153,.2);}
+.atk-btn-mnapp:hover{background:rgba(52,211,153,.18);}
+.attack-result{padding:.75rem;border-radius:8px;font-size:.88rem;line-height:1.6;margin-top:.5rem;display:none;font-weight:600;}
+.attack-result.show{display:block;}
+.ar-fail{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--rs);}
+.ar-success{background:var(--em-g);border:1px solid rgba(52,211,153,.3);color:var(--em);}
+
+/* ═══════════════════════════════════════
+   S9   SPLIT TUNNELING
+   Interactive: App router toggles + bandwidth viz
+═══════════════════════════════════════ */
+.split-app-list{display:flex;flex-direction:column;gap:.5rem;margin-top:1.25rem;}
+.sap{display:flex;align-items:center;gap:1rem;padding:.8rem 1.1rem;border-radius:10px;border:2px solid var(--br);background:var(--s2);transition:all .3s;}
+.sap.protected{border-color:var(--em);background:var(--em-g);}
+.sap.direct{border-color:rgba(248,113,113,.3);background:var(--rs2);}
+.sap-icon{font-size:1.4rem;flex-shrink:0;}
+.sap-name{font-weight:700;font-size:.95rem;flex:1;}
+.sap-status{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:600;padding:.2rem .6rem;border-radius:4px;flex-shrink:0;letter-spacing:.06em;text-transform:uppercase;}
+.sap.protected .sap-status{background:var(--em);color:var(--bg);}
+.sap.direct    .sap-status{background:var(--rs);color:#fff;}
+.sap-toggle{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;}
+.sap-toggle.on{background:var(--em);}
+.sap-toggle.off{background:var(--br2);}
+.sap-toggle::after{content:'';position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .25s;}
+.sap-toggle.on::after{left:23px;}
+.sap-toggle.off::after{left:3px;}
+.split-summary{margin-top:1.1rem;padding:1rem 1.2rem;background:var(--bg);border:1px solid var(--br);border-radius:10px;font-size:.9rem;color:var(--txm);line-height:1.7;}
+
+/* ═══════════════════════════════════════
+   S10   SECURITY MODEL
+   Interactive: Attack scenario simulator
+═══════════════════════════════════════ */
+.threat-cards{display:flex;flex-direction:column;gap:.55rem;margin-top:1.5rem;}
+.threat-card{
+  background:var(--s2);border:1.5px solid var(--br);border-radius:10px;
+  cursor:pointer;transition:all .22s;overflow:hidden;
+}
+.threat-card:hover{border-color:rgba(56,189,248,.3);}
+.threat-card.open{border-color:var(--bl);}
+.tc-head{display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;}
+.tc-icon{font-size:1.2rem;flex-shrink:0;}
+.tc-name{font-size:.95rem;font-weight:700;color:var(--tx);flex:1;}
+.tc-risk{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.2rem .6rem;border-radius:4px;flex-shrink:0;letter-spacing:.08em;text-transform:uppercase;}
+.risk-low{background:var(--em-g);color:var(--em);border:1px solid rgba(52,211,153,.3);}
+.risk-med{background:var(--am2);color:var(--am);border:1px solid rgba(251,191,36,.3);}
+.risk-none{background:var(--bl-g);color:var(--bl);border:1px solid rgba(56,189,248,.3);}
+.tc-chevron{color:var(--tx3);font-size:.75rem;flex-shrink:0;transition:transform .25s;}
+.threat-card.open .tc-chevron{transform:rotate(90deg);}
+.tc-body{display:none;padding:0 1.1rem 1rem;font-size:.9rem;color:var(--txm);line-height:1.75;border-top:1px solid var(--br);}
+.tc-body.show{display:block;padding-top:.85rem;}
+.tc-mitigation{display:flex;align-items:flex-start;gap:.65rem;padding:.75rem;background:var(--em-g);border:1px solid rgba(52,211,153,.2);border-radius:8px;margin-top:.65rem;font-size:.88rem;color:var(--em);font-weight:600;}
+
+/* ═══════════════════════════════════════
+   S11   COMPARISON TABLE
+═══════════════════════════════════════ */
+.comp-table{width:100%;border-collapse:collapse;border:1px solid var(--br);border-radius:12px;overflow:hidden;margin-top:1.5rem;}
+.comp-table th{background:var(--s3);padding:.85rem 1.1rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);border-bottom:2px solid var(--br);}
+.comp-table th.hl{background:var(--bl-g);color:var(--bl);}
+.comp-table td{padding:.8rem 1.1rem;border-bottom:1px solid var(--br);font-size:.9rem;color:var(--tx2);}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table tr:hover td{background:rgba(255,255,255,.015);}
+.comp-table td.hl{background:rgba(56,189,248,.04);}
+.yes{color:var(--em);font-weight:700;}
+.no{color:var(--rs);font-weight:700;}
+.part{color:var(--am);}
+
+/* ═══════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════ */
+#s12{background:var(--s1);}
+.dl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+.dlc{background:var(--s2);border:1.5px solid var(--br);border-radius:12px;padding:1.4rem 1rem;text-align:center;text-decoration:none;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:.55rem;transition:all .22s;}
+.dlc:hover{background:var(--bl-g);border-color:var(--bl);transform:translateY(-3px);}
+.dlc.soon{opacity:.4;cursor:not-allowed;}
+.dlc.soon:hover{transform:none;background:var(--s2);border-color:var(--br);}
+.dlc-ico{font-size:2rem;}
+.dlc-name{font-weight:700;font-size:.9rem;}
+.dlc-sub{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);}
+
+/* ── Responsive ── */
+@media(max-width:1000px){.hero-grid,.two,.onion-wrapper{grid-template-columns:1fr;}.hero-arch,.hero-canvas-wrap{display:none;}.four{grid-template-columns:1fr 1fr;}.hero-stats{grid-template-columns:1fr 1fr;}.attack-demo{grid-template-columns:1fr;}.onion-viz{width:100%;max-width:320px;height:320px;margin:0 auto;}.dl-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.w,.wn{padding:0 1.25rem;}.nav-links{display:none;}.three{grid-template-columns:1fr;}.four{grid-template-columns:1fr;}.hero-stats{grid-template-columns:1fr 1fr;}.dl-grid{grid-template-columns:1fr 1fr;}}
+
+/* ════ S5 Journey Knowledge Grid ════ */
+.jk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;}
+.jk-card{background:var(--s2);border:1.5px solid var(--br);border-radius:10px;padding:.85rem;transition:all .3s;cursor:pointer;}
+.jk-card:hover{border-color:rgba(56,189,248,.3);}
+.jk-card.active{border-color:var(--bl);background:rgba(56,189,248,.07);transform:translateY(-2px);}
+.jk-card.done{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.04);}
+.jk-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;padding-bottom:.6rem;border-bottom:1px solid var(--br);}
+.jk-emoji{font-size:1.35rem;}
+.jk-name{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx);}
+.jk-card.active .jk-name{color:var(--bl);}
+.jk-card.done .jk-name{color:var(--em);}
+.jk-role{font-size:.72rem;color:var(--tx3);margin-top:.1rem;}
+.jk-item{display:flex;align-items:flex-start;gap:.35rem;font-size:.74rem;line-height:1.45;margin-bottom:.28rem;}
+.jk-item.know{color:var(--em);}
+.jk-item.blind{color:var(--rs);}
+.jk-dot{flex-shrink:0;font-size:.7rem;margin-top:.05rem;}
+@media(max-width:800px){.jk-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:500px){.jk-grid{grid-template-columns:1fr 1fr;}}
+
+/* ════ S8 Attack Battlefield ════ */
+.atk-battlefield{display:grid;grid-template-columns:220px 1fr;gap:1.5rem;align-items:stretch;}
+.atk-command{background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:.85rem;}
+.atk-cmd-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);}
+.atk-btns{display:flex;flex-direction:column;gap:.5rem;}
+.atk-cmd-btn{
+  padding:.65rem .8rem;border-radius:8px;border:1.5px solid var(--br);
+  background:var(--bg);cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:.6rem;
+}
+.atk-cmd-btn:hover{border-color:var(--rs);background:var(--rs2);}
+.atk-cmd-btn.sel{border-color:var(--rs);background:rgba(248,113,113,.12);}
+.acb-icon{font-size:1.1rem;flex-shrink:0;}
+.acb-name{font-size:.85rem;font-weight:700;color:var(--tx);}
+.acb-sub{font-size:.72rem;color:var(--tx3);}
+.atk-fire-btn{
+  padding:.7rem;background:var(--rs);color:#fff;border:none;border-radius:8px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;cursor:pointer;
+  transition:all .22s;letter-spacing:.04em;
+}
+.atk-fire-btn:hover{background:#ef4444;}
+.atk-fire-btn:disabled{background:var(--br2);cursor:not-allowed;}
+.atk-results{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--br);border-radius:0 0 12px 12px;overflow:hidden;}
+.atr-col{padding:1rem 1.25rem;min-height:90px;}
+.atr-col.fail{background:var(--rs2);}
+.atr-col.success{background:var(--em-g);}
+.atr-target{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem;}
+.atr-col.fail .atr-target{color:var(--rs);}
+.atr-col.success .atr-target{color:var(--em);}
+.atr-status{font-size:.9rem;font-weight:600;line-height:1.55;color:var(--txm);}
+@media(max-width:700px){.atk-battlefield{grid-template-columns:1fr;}.atk-command{flex-direction:row;flex-wrap:wrap;}.atk-btns{flex-direction:row;}.atk-cmd-btn{flex:1;min-width:120px;}}
+
+/* ════ S10 Threat Radar ════ */
+.threat-radar-wrap{display:grid;grid-template-columns:360px 1fr;gap:2.5rem;align-items:start;}
+.trd-panel{background:var(--s2);border:1.5px solid var(--br);border-radius:12px;padding:1.5rem;min-height:340px;}
+.trd-hint{text-align:center;padding:1.5rem 1rem;}
+.trd-loaded{animation:fadeIn .3s ease;}
+.trd-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.22rem .65rem;border-radius:4px;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.65rem;letter-spacing:.08em;text-transform:uppercase;}
+.trd-name{font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--tx);margin-bottom:.75rem;line-height:1.1;}
+.trd-section{margin-top:.9rem;}
+.trd-sh{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.4rem;}
+.trd-sh.atk{color:var(--rs);}
+.trd-sh.def{color:var(--em);}
+.trd-text{font-size:.9rem;color:var(--txm);line-height:1.75;}
+@media(max-width:900px){.threat-radar-wrap{grid-template-columns:1fr;}.trd-panel{min-height:auto;}}
+
+/* ════ Hero Canvas ════ */
+.hero-canvas-wrap{position:relative;flex-shrink:0;}
+.hero-canvas-legend{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  margin-top:.7rem;justify-content:flex-end;
+}
+.hcl-item{display:flex;align-items:center;gap:.4rem;font-family:"JetBrains Mono",monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.hcl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+</style>
+</head>
+<body>
+
+<div id="pg"><div id="pf"></div></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">Bel<span>Net</span></a>
+    <div class="nav-badge">Level 2 · Deep Dive</div>
+    <div class="nav-links">
+      <a class="nl" href="#s1">Architecture</a>
+      <a class="nl" href="#s3">LLARP</a>
+      <a class="nl" href="#s4">Onion Routing</a>
+      <a class="nl" href="#s5">Journey</a>
+      <a class="nl" href="#s10">Security</a>
+    </div>
+    <a class="btn btn-bl" href="#s12" style="font-size:.78rem;padding:.5rem 1.1rem;">Download</a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════
+     HERO
+══════════════════════════════ -->
+<section id="hero">
+<div class="w" style="padding-top:5.5rem;padding-bottom:3rem;">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag ri">Beldex Ecosystem · Decentralized VPN · Level 2 Deep Dive</div>
+      <h1 class="ri d1">How <span class="bl">BelNet</span><br>actually works.</h1>
+      <p class="hero-sub ri d2">BelNet is a decentralized VPN built on the Beldex blockchain. It hides your IP, encrypts your traffic through multiple relays, and has no central server to hack or subpoena. This is a complete technical walkthrough   from the protocol layer to the security model   explained clearly from first principles.</p>
+      <div class="hero-btns ri d3">
+        <a class="btn btn-bl" href="#s1">Read the Deep Dive</a>
+        <a class="btn btn-out" href="#s12">Download BelNet</a>
+      </div>
+      <div class="hero-stats ri d4">
+        <div class="hst"><div class="hst-n" style="color:var(--bl)">2200+</div><div class="hst-l">Masternodes</div></div>
+        <div class="hst"><div class="hst-n" style="color:var(--em)">LLARP</div><div class="hst-l">Protocol</div></div>
+        <div class="hst"><div class="hst-n" style="color:var(--am)">3+</div><div class="hst-l">Onion Hops</div></div>
+        <div class="hst"><div class="hst-n" style="color:var(--bl3)">0</div><div class="hst-l">Logs Kept</div></div>
+      </div>
+    </div>
+    <div class="hero-canvas-wrap ri d2">
+      <canvas id="heroCanvas" style="display:block;width:100%;border-radius:14px;border:1px solid rgba(56,189,248,.12);"></canvas>
+      <div class="hero-canvas-legend">
+        <div class="hcl-item"><span class="hcl-dot" style="background:var(--bl)"></span><span>Your Device</span></div>
+        <div class="hcl-item"><span class="hcl-dot" style="background:var(--am)"></span><span>Relay Node</span></div>
+        <div class="hcl-item"><span class="hcl-dot" style="background:var(--em)"></span><span>Exit Node</span></div>
+        <div class="hcl-item"><span class="hcl-dot" style="background:var(--rs)"></span><span>Threat (blocked)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ch-strip">
+  <div class="chs-inner">
+    <a class="ch-item" href="#s1"><span class="ch-n">01</span><span class="ch-t">What BelNet Is</span></a>
+    <a class="ch-item" href="#s2"><span class="ch-n">02</span><span class="ch-t">Masternode Network</span></a>
+    <a class="ch-item" href="#s3"><span class="ch-n">03</span><span class="ch-t">LLARP Protocol</span></a>
+    <a class="ch-item" href="#s4"><span class="ch-n">04</span><span class="ch-t">Onion Routing</span></a>
+    <a class="ch-item" href="#s5"><span class="ch-n">05</span><span class="ch-t">The Full Journey</span></a>
+    <a class="ch-item" href="#s6"><span class="ch-n">06</span><span class="ch-t">Exit Nodes</span></a>
+    <a class="ch-item" href="#s7"><span class="ch-n">07</span><span class="ch-t">BNS Domains</span></a>
+    <a class="ch-item" href="#s8"><span class="ch-n">08</span><span class="ch-t">MNApps</span></a>
+    <a class="ch-item" href="#s9"><span class="ch-n">09</span><span class="ch-t">Split Tunneling</span></a>
+    <a class="ch-item" href="#s10"><span class="ch-n">10</span><span class="ch-t">Security Model</span></a>
+    <a class="ch-item" href="#s11"><span class="ch-n">11</span><span class="ch-t">Comparison</span></a>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S1   WHAT BELNET IS
+     Interactive: Toggle Normal vs BelNet path
+═══════════════════════════════════════ -->
+<section id="s1" class="sec sec-dark">
+<div class="w">
+  <div class="sec-tag ri">Section 01</div>
+  <h2 class="ri d1">What exactly is <span class="bl">BelNet?</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">BelNet is a decentralized VPN   but that description alone misses what makes it different. A normal VPN replaces one problem (your ISP sees everything) with a different problem (the VPN company sees everything). BelNet eliminates the problem entirely by removing any central server from the equation.</p>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin-bottom:2.5rem;">Switch between the two views below to see exactly what your internet traffic looks like with and without BelNet running.</p>
+
+  <div class="two ri d2">
+    <div>
+      <div class="compare-toggle">
+        <button class="ct-btn bad active" id="toggleBad" onclick="switchCompare('bad')">Without BelNet</button>
+        <button class="ct-btn good" id="toggleGood" onclick="switchCompare('good')">With BelNet</button>
+      </div>
+      <div class="compare-stage" id="compareStage">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:1rem;">Why "decentralized" matters</h3>
+      <p style="margin-bottom:1rem;">A centralized VPN is like a security guard you hire   they can still read everything you give them. If the guard is corrupt, forced by law, or hacked, your data is exposed. BelNet is different in three fundamental ways:</p>
+      <div style="display:flex;flex-direction:column;gap:.7rem;">
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--bl);flex-shrink:0;margin-top:.65rem;"></div>
+          <div><strong style="color:var(--tx)">No central server.</strong> <span style="color:var(--txm)">Your traffic is routed through 2200+ independent community-run masternodes. There is no single server to hack, seize, or compel to hand over data.</span></div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--em);flex-shrink:0;margin-top:.65rem;"></div>
+          <div><strong style="color:var(--tx)">No company to pressure.</strong> <span style="color:var(--txm)">There is no BelNet corporation that can receive a court order or be pressured into revealing user data.</span></div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--am);flex-shrink:0;margin-top:.65rem;"></div>
+          <div><strong style="color:var(--tx)">Zero logs by architecture.</strong> <span style="color:var(--txm)">The LLARP protocol does not log connection data. Not by policy   by design. There is nothing to hand over because nothing is stored.</span></div>
+        </div>
+      </div>
+      <div class="note note-bl" style="margin-top:1.25rem;">
+        <div class="note-head">The key difference from Tor</div>
+        <p>Tor runs on volunteer nodes with no economic incentive to stay online or behave honestly. BelNet nodes are economically staked   every node operator has locked 10,000 BDX as collateral. Misbehaving nodes can be penalized. This creates a fundamentally more reliable and trustworthy network.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S2   MASTERNODE NETWORK
+     Interactive: Live animated node canvas
+═══════════════════════════════════════ -->
+<section id="s2" class="sec">
+<div class="w">
+  <div class="sec-tag ri">Section 02</div>
+  <h2 class="ri d1">The <span class="em">Masternode</span> Network</h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 2rem;">BelNet is powered by Beldex masternodes   the backbone of the entire Beldex ecosystem. These are computers run by community operators worldwide. Each masternode operator stakes 10,000 BDX as collateral. In return they earn BDX rewards for routing your traffic. This economic model is what separates BelNet from volunteer-based networks like Tor.</p>
+
+  <canvas id="nodeCanvas" height="320" onclick="flashNodeCanvas()"></canvas>
+  <div class="nc-hint">Click the canvas to simulate traffic routing through the network</div>
+
+  <div class="three ri d2" style="margin-top:2.5rem;">
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <div class="card-title">10,000 BDX Stake</div>
+      <div class="card-body">Each operator locks 10,000 BDX as collateral to join the network. This economic commitment makes Sybil attacks extremely expensive   flooding the network with fake nodes would require millions of dollars in staked BDX.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">BDX Rewards</div>
+      <div class="card-body">Masternodes earn 90% of every Beldex block reward. This is a strong incentive to maintain good uptime, fast bandwidth, and honest behavior. Poor-performing nodes earn less; excellent nodes earn more.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔗</div>
+      <div class="card-title">Dual Function</div>
+      <div class="card-body">The same masternode simultaneously validates Beldex blockchain transactions, stores BChat message swarms, and routes BelNet traffic. This shared infrastructure makes running a node economically efficient for operators.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S3   LLARP PROTOCOL
+     Interactive: UDP vs TCP packet race
+═══════════════════════════════════════ -->
+<section id="s3" class="sec sec-dark">
+<div class="w">
+  <div class="sec-tag ri">Section 03</div>
+  <h2 class="ri d1">The <span class="bl">LLARP</span> Protocol</h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1rem;">LLARP stands for <strong>Low Latency Anonymous Routing Protocol</strong>. It is the technical heart of BelNet   the rulebook that says exactly how data should be encrypted, wrapped, and sent through the network. Think of it as the postal system's delivery rules, except every package is sealed in multiple envelopes, and each delivery driver only knows the next stop.</p>
+
+  <div class="two ri d2">
+    <div>
+      <h3 style="margin-bottom:.85rem;font-size:1.3rem;">Why LLARP uses UDP, not TCP</h3>
+      <p style="margin-bottom:1rem;">Most internet protocols use TCP, which adds "delivery confirmation" to every packet. This confirmation adds latency. For a VPN that already adds multiple relay hops, TCP latency compounds   making it unpleasantly slow for real-time apps like video calls.</p>
+      <p style="margin-bottom:1rem;">LLARP uses UDP   it sends packets without waiting for confirmation, achieving much lower latency. Watch the race below. Press "Start Race" to see the difference.</p>
+      <div class="race-track ri d3">
+        <div class="rt-label">Simulated packet delivery speed through a 3-hop VPN tunnel</div>
+        <div class="rt-lane">
+          <div class="rt-name" style="color:var(--bl)">LLARP<br>UDP</div>
+          <div class="rt-track">
+            <div class="rt-packet" id="rtBelNet" style="background:var(--bl);color:var(--bg);left:4px;">📦 BelNet</div>
+          </div>
+          <div class="rt-ms" id="rtMsBelNet" style="color:var(--em)"> </div>
+        </div>
+        <div class="rt-lane">
+          <div class="rt-name" style="color:var(--txm)">Tor<br>TCP</div>
+          <div class="rt-track">
+            <div class="rt-packet" id="rtTor" style="background:var(--tx3);color:var(--tx);left:4px;">📦 Tor</div>
+          </div>
+          <div class="rt-ms" id="rtMsTor" style="color:var(--rs)"> </div>
+        </div>
+        <div class="rt-lane">
+          <div class="rt-name" style="color:var(--txm)">Normal<br>VPN</div>
+          <div class="rt-track">
+            <div class="rt-packet" id="rtVPN" style="background:var(--s4);color:var(--txm);left:4px;">📦 VPN</div>
+          </div>
+          <div class="rt-ms" id="rtMsVPN" style="color:var(--txm)"> </div>
+        </div>
+        <button class="race-btn" onclick="startRace()">Start Race</button>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:.85rem;font-size:1.3rem;">What makes LLARP unique</h3>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.25rem;">
+        <div style="padding:.85rem 1rem;background:var(--s2);border-radius:10px;border:1px solid var(--br);border-left:3px solid var(--bl);">
+          <div style="font-weight:700;font-size:.95rem;margin-bottom:.2rem;">Router List from Blockchain</div>
+          <div style="font-size:.88rem;color:var(--tx2);">Tor relies on centralized "directory authorities" to tell nodes who else is on the network. LLARP gets this list from the Beldex blockchain   fully decentralized, no single point of failure.</div>
+        </div>
+        <div style="padding:.85rem 1rem;background:var(--s2);border-radius:10px;border:1px solid var(--br);border-left:3px solid var(--em);">
+          <div style="font-weight:700;font-size:.95rem;margin-bottom:.2rem;">Built-in NAT Traversal</div>
+          <div style="font-size:.88rem;color:var(--tx2);">Works on mobile devices, behind routers with CGNAT, without any port forwarding or configuration. Most VPN protocols fail in these environments.</div>
+        </div>
+        <div style="padding:.85rem 1rem;background:var(--s2);border-radius:10px;border:1px solid var(--br);border-left:3px solid var(--am);">
+          <div style="font-weight:700;font-size:.95rem;margin-bottom:.2rem;">Path Rotation Every 10 Minutes</div>
+          <div style="font-size:.88rem;color:var(--tx2);">Every 10 minutes, LLARP automatically builds a new circuit through different nodes. This prevents traffic analysis attacks where someone might try to correlate your long-term patterns.</div>
+        </div>
+      </div>
+      <div class="cbox ri d3">
+        <div class="cbox-bar"><div class="cdot" style="background:#ff5f57"></div><div class="cdot" style="background:#febc2e"></div><div class="cdot" style="background:#28c840"></div><div class="cbox-label">LLARP Config</div></div>
+        <div class="cbox-body">
+<span class="ck">paths</span> {
+  <span class="ck">hops</span>: <span class="cs">3</span>          <span class="cc">// 3-hop circuit</span>
+  <span class="ck">lifetime</span>: <span class="cs">"10min"</span> <span class="cc">// auto-rotate</span>
+  <span class="ck">transport</span>: <span class="cs">"udp"</span>  <span class="cc">// low latency</span>
+}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S4   ONION ROUTING
+     Interactive: Click-to-peel layers
+═══════════════════════════════════════ -->
+<section id="s4" class="sec">
+<div class="w">
+  <div class="sec-tag ri">Section 04</div>
+  <h2 class="ri d1">Onion Routing   <span class="am">Layer by Layer</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 2rem;">The name "onion routing" comes from the idea of wrapping your message in multiple layers of encryption   like an onion. Each relay node in the network can only peel one layer. After peeling, it sees only the address of the next relay and nothing else. It then passes the remaining layers forward. Click each ring below to peel it and see exactly what each relay learns.</p>
+
+  <div class="onion-wrapper ri d1">
+    <canvas id="onionViz" width="360" height="360" style="cursor:pointer;flex-shrink:0;border-radius:12px;"></canvas>
+    <div>
+      <div class="onion-info" id="onionInfo">
+        <div class="oi-step">Start here</div>
+        <div class="oi-title">Click any ring to begin peeling</div>
+        <div class="oi-desc">Each ring represents one layer of encryption. Peel from the outside in   just like a real onion. Watch what each relay node sees, and more importantly, what it cannot see.</div>
+      </div>
+      <div class="onion-controls">
+        <button class="oc-btn oc-primary" onclick="peelNext()">Peel Next Layer →</button>
+        <button class="oc-btn oc-secondary" onclick="resetPeel()">Reset</button>
+      </div>
+      <div style="margin-top:1.75rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--bl);margin-bottom:.85rem;">Why this design is brilliant</div>
+        <div style="display:flex;flex-direction:column;gap:.65rem;">
+          <div style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;">
+            <div style="color:var(--em);flex-shrink:0;margin-top:.1rem;">→</div>
+            <div><strong>No node knows the full picture.</strong> <span style="color:var(--txm)">Entry knows who sent it. Exit knows the destination. Neither knows both. The middle node knows neither.</span></div>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;">
+            <div style="color:var(--em);flex-shrink:0;margin-top:.1rem;">→</div>
+            <div><strong>Keys are derived independently.</strong> <span style="color:var(--txm)">Each relay's encryption key is negotiated directly with your device using Diffie-Hellman key exchange. No relay shares a key with another.</span></div>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;">
+            <div style="color:var(--em);flex-shrink:0;margin-top:.1rem;">→</div>
+            <div><strong>Compromising one node reveals nothing.</strong> <span style="color:var(--txm)">An attacker controlling one relay still cannot identify you. They would need all three relays simultaneously.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S5   THE FULL JOURNEY
+     Interactive: Animated canvas journey (Suhail→Kisore via Jothi, Bhava, Paru)
+═══════════════════════════════════════ -->
+<section id="s5" class="sec sec-dark">
+<div class="w">
+  <div class="sec-tag ri">Section 05</div>
+  <h2 class="ri d1">The Complete <span class="bl">5-Stop Journey</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 2rem;">When Suhail sends a message to Kisore through BelNet, the message passes through three independent relay operators   Jothi, Bhava, and Paru. Press Send Message to watch the animated journey. Click any person to hear exactly what they see at their step   and crucially, what they cannot see.</p>
+
+  <div class="journey-box ri d1">
+    <div class="jb-header">
+      <div class="jb-status" id="jbStatus">Press "Send Message" to begin the journey</div>
+      <div class="jb-controls">
+        <button class="jb-btn jbb-primary" onclick="journeyStart()">▶ Send Message</button>
+        <button class="jb-btn jbb-ghost" onclick="journeyReset()">Reset</button>
+      </div>
+    </div>
+    <canvas id="journeyCanvas" height="300"></canvas>
+    <div class="jb-panel">
+      <div class="jp-step" id="jpStep">Waiting</div>
+      <div class="jp-title" id="jpTitle">Click a person to hear their side, or press Send Message</div>
+      <div class="jp-desc" id="jpDesc">Watch how Suhail's message travels through Jothi (entry relay), Bhava (middle relay), and Paru (exit relay) before reaching Kisore. Each person knows only their one step.</div>
+    </div>
+  </div>
+
+  <!-- Knowledge Grid   what each person sees -->
+  <div style="margin-top:1.5rem;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--bl);margin-bottom:1rem;display:flex;align-items:center;gap:.65rem;"><span style="width:20px;height:1.5px;background:var(--bl);display:inline-block;"></span>What each person knows at their step</div>
+    <div class="jk-grid" id="jkGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S6   EXIT NODES
+     Interactive: Region selector
+═══════════════════════════════════════ -->
+<section id="s6" class="sec">
+<div class="w">
+  <div class="sec-tag ri">Section 06</div>
+  <h2 class="ri d1">Exit <span class="em">Nodes</span>   Your Internet Gateway</h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">After traveling through three encrypted hops, your traffic needs to exit into the regular internet. This is done by a specialized masternode called an <strong>exit node</strong>. The exit node forwards your request to the destination website   using its own IP address, not yours. The website sees only the exit node.</p>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin-bottom:2rem;">Exit nodes are globally distributed. By selecting different exit node regions you can appear to be browsing from different countries   unlocking geo-restricted content. Try selecting a region below:</p>
+
+  <div class="two ri d1">
+    <div class="exit-demo">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:.85rem;">Select exit node region</div>
+      <div class="ed-regions" id="edRegions">
+        <div class="ed-region" onclick="selectRegion('Singapore',this)">🇸🇬 Singapore</div>
+        <div class="ed-region" onclick="selectRegion('Germany',this)">🇩🇪 Germany</div>
+        <div class="ed-region" onclick="selectRegion('USA East',this)">🇺🇸 USA East</div>
+        <div class="ed-region" onclick="selectRegion('Japan',this)">🇯🇵 Japan</div>
+        <div class="ed-region" onclick="selectRegion('Netherlands',this)">🇳🇱 Netherlands</div>
+        <div class="ed-region" onclick="selectRegion('India',this)">🇮🇳 India</div>
+      </div>
+      <div class="ed-result" id="edResult">
+        <div class="edr-row"><div class="edr-k">Status</div><div class="edr-v">← Select a region above</div></div>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:1rem;font-size:1.25rem;">How exit nodes protect you</h3>
+      <div style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:1.25rem;">
+        <div style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;">
+          <div style="font-size:1.2rem;flex-shrink:0;">🌐</div>
+          <div><strong>Website sees only the exit node IP.</strong> <span style="color:var(--txm)">When Suhail visits a website through BelNet, the website's server log records Paru's exit node IP   not Suhail's home IP in Chennai.</span></div>
+        </div>
+        <div style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;">
+          <div style="font-size:1.2rem;flex-shrink:0;">🔒</div>
+          <div><strong>Exit node cannot identify you.</strong> <span style="color:var(--txm)">The exit node knows where traffic is going but only sees that it came from the previous relay (Bhava). It has no way to trace back to Suhail.</span></div>
+        </div>
+        <div style="display:flex;gap:.75rem;align-items:flex-start;font-size:.9rem;">
+          <div style="font-size:1.2rem;flex-shrink:0;">💰</div>
+          <div><strong>Exit nodes earn higher BDX rewards.</strong> <span style="color:var(--txm)">Running an exit node requires more bandwidth   so exit node operators earn additional BDX for this contribution.</span></div>
+        </div>
+      </div>
+      <div class="note note-am">
+        <div class="note-head">What if an exit node is compromised?</div>
+        <p>Even if an attacker controls an exit node, they learn only the destination website   not who sent the request. They cannot trace backwards through the circuit because Bhava (middle relay) only told them the traffic came from Jothi (entry relay). Without also controlling Jothi, the attacker knows nothing about the sender.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S7   BNS DOMAINS
+     Interactive: .bdx domain terminal
+═══════════════════════════════════════ -->
+<section id="s7" class="sec sec-dark">
+<div class="w">
+  <div class="sec-tag ri">Section 07</div>
+  <h2 class="ri d1">BNS   The <span class="bl">.bdx</span> Domain System</h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">The Beldex Name System (BNS) is a naming layer built on the Beldex blockchain. Just like DNS translates "google.com" into an IP address, BNS translates a short human-readable name like <strong>kisore.bdx</strong> into a BelNet service address or a BChat ID. The key difference: BNS is fully on-chain. There is no registrar to comply with takedown orders.</p>
+
+  <div class="two ri d1">
+    <div>
+      <h3 style="margin-bottom:1rem;font-size:1.25rem;">Why on-chain DNS matters</h3>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;">
+        <div style="padding:.9rem 1rem;background:var(--s2);border-radius:10px;border:1px solid var(--br);border-left:3px solid var(--bl);">
+          <div style="font-weight:700;margin-bottom:.2rem;">Regular DNS is censored everywhere</div>
+          <div style="font-size:.88rem;color:var(--tx2);">Governments regularly order domain registrars to "unpublish" websites. The registrar complies, and suddenly example.com no longer resolves. Your website is gone with no recourse.</div>
+        </div>
+        <div style="padding:.9rem 1rem;background:var(--s2);border-radius:10px;border:1px solid var(--br);border-left:3px solid var(--em);">
+          <div style="font-weight:700;margin-bottom:.2rem;">BNS registration is permanent</div>
+          <div style="font-size:.88rem;color:var(--tx2);">When Bhava registers bhava.bdx on the Beldex blockchain, that record is written permanently. No authority can remove it   only Bhava's private key can modify it.</div>
+        </div>
+        <div style="padding:.9rem 1rem;background:var(--s2);border-radius:10px;border:1px solid var(--br);border-left:3px solid var(--am);">
+          <div style="font-weight:700;margin-bottom:.2rem;">One name, multiple uses</div>
+          <div style="font-size:.88rem;color:var(--tx2);">The same .bdx name links to both a BelNet service address (for website hosting) and a Beldex wallet address (for payments). Friends can message and pay using just one name.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="bns-terminal ri d2">
+        <div class="bt-bar">
+          <div class="bt-dot" style="background:#ff5f57"></div>
+          <div class="bt-dot" style="background:#febc2e"></div>
+          <div class="bt-dot" style="background:#28c840"></div>
+          <div class="bt-title">BNS Resolution Terminal</div>
+        </div>
+        <div class="bt-body">
+          <div class="bt-line"><span class="bt-prompt">$</span><span class="bt-cmd">belnet-resolve --status</span></div>
+          <span class="bt-out ok">Connected to BelNet · Blockchain synced</span>
+          <span class="bt-out info">Ready to resolve .bdx names</span>
+          <span class="bt-out" style="margin-top:.4rem;color:var(--tx3);">Lookup a .bdx name:</span>
+        </div>
+        <div style="padding:0 1.5rem 1.2rem;">
+          <div class="bt-input-row">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:rgba(56,189,248,.5);">$ </span>
+            <input class="bt-input" id="bnsInput" placeholder="e.g. kisore.bdx" maxlength="30">
+            <button class="bt-run" onclick="bnsResolve()">Resolve</button>
+          </div>
+          <div class="bt-output" id="bnsOutput"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S8   MNAPP VS NORMAL SITE
+     Interactive: Attack simulation
+═══════════════════════════════════════ -->
+<section id="s8" class="sec">
+<div class="w">
+  <div class="sec-tag ri">Section 08</div>
+  <h2 class="ri d1">MNApps   Websites That <span class="em">Cannot Be Taken Down</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">MNApps (Masternode Applications) are websites hosted inside the BelNet network on .bdx domains. They are invisible to the regular internet and accessible only to BelNet users. Because they use both BNS (blockchain domain) and BelNet (decentralized hosting), they are immune to every conventional method of censorship.</p>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin-bottom:2rem;">Try every attack below against a regular website and against an MNApp:</p>
+
+  <!-- Attack Battlefield -->
+  <div class="atk-battlefield ri d1">
+    <div class="atk-command">
+      <div class="atk-cmd-title">Choose Attack Type</div>
+      <div class="atk-btns" id="atkBtns">
+        <div class="atk-cmd-btn sel" id="atkBtn-seize" onclick="selectAttack('seize',this)"><div class="acb-icon">🏛️</div><div class="acb-name">Seize Server</div><div class="acb-sub">Physical confiscation</div></div>
+        <div class="atk-cmd-btn" id="atkBtn-dns" onclick="selectAttack('dns',this)"><div class="acb-icon">🌐</div><div class="acb-name">Pull DNS</div><div class="acb-sub">Domain removal</div></div>
+        <div class="atk-cmd-btn" id="atkBtn-isp" onclick="selectAttack('isp',this)"><div class="acb-icon">📡</div><div class="acb-name">ISP Block</div><div class="acb-sub">IP-level filter</div></div>
+        <div class="atk-cmd-btn" id="atkBtn-court" onclick="selectAttack('court',this)"><div class="acb-icon">⚖️</div><div class="acb-name">Court Order</div><div class="acb-sub">Legal takedown</div></div>
+      </div>
+      <button class="atk-fire-btn" id="atkFireBtn" onclick="fireAttack()">⚡ LAUNCH ATTACK</button>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <canvas id="battleCanvas" height="260" style="display:block;width:100%;border-radius:12px 12px 0 0;cursor:default;"></canvas>
+      <div class="atk-results">
+        <div class="atr-col fail" id="atrNormal">
+          <div class="atr-target">example.com</div>
+          <div class="atr-status" id="atrNormalStatus">Waiting for attack...</div>
+        </div>
+        <div class="atr-col success" id="atrMN">
+          <div class="atr-target">news.bdx (MNApp)</div>
+          <div class="atr-status" id="atrMNStatus">Waiting for attack...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S9   SPLIT TUNNELING
+     Interactive: Toggle apps
+═══════════════════════════════════════ -->
+<section id="s9" class="sec sec-dark">
+<div class="w">
+  <div class="sec-tag ri">Section 09</div>
+  <h2 class="ri d1">Split Tunneling   <span class="am">Your Traffic, Your Rules</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">BelNet's split tunneling works at the application level   not the network level. This means you choose exactly which apps route through the encrypted BelNet tunnel and which connect directly to the internet. Sensitive apps (banking, browser) get full privacy. Bandwidth-heavy apps (streaming, gaming) connect directly at full speed.</p>
+
+  <div class="two ri d1">
+    <div>
+      <h3 style="margin-bottom:.85rem;font-size:1.25rem;">Application-level vs Network-level</h3>
+      <p style="margin-bottom:1rem;">Most VPN split tunneling works by modifying your device's routing table   routing some IP ranges through the VPN and others directly. This can leak traffic if rules are misconfigured. BelNet intercepts at the socket level   each app's connections are individually handled before they ever touch the routing table.</p>
+      <div class="note note-em">
+        <div class="note-head">Result: zero leak risk</div>
+        <p>Because the decision happens at the app level (not the IP level), there is no routing table gap that traffic can accidentally fall through. Direct apps are simply never handed to the VPN stack.</p>
+      </div>
+      <div class="cbox ri d3" style="margin-top:1.25rem;">
+        <div class="cbox-bar"><div class="cdot" style="background:#ff5f57"></div><div class="cdot" style="background:#febc2e"></div><div class="cdot" style="background:#28c840"></div><div class="cbox-label">Kisore's Split Config</div></div>
+        <div class="cbox-body">
+<span class="cc">// Apps routed through BelNet</span>
+<span class="ck">protected</span>: [<span class="cs">"browser"</span>, <span class="cs">"email"</span>, <span class="cs">"banking"</span>]
+
+<span class="cc">// Apps connecting directly</span>
+<span class="ck">direct</span>: [<span class="cs">"youtube"</span>, <span class="cs">"gaming"</span>, <span class="cs">"music"</span>]
+
+<span class="cc">// Per-app exit node override</span>
+<span class="ck">exit_override</span>: {
+  <span class="cs">"banking"</span>: <span class="cs">"EU-exit"</span>
+}
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:800;font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2);margin-bottom:.85rem;">Paru's app routing   toggle each one:</div>
+      <div class="split-app-list" id="splitApps">
+        <div class="sap protected" id="sapBrowser"><span class="sap-icon">🌐</span><span class="sap-name">Web Browser</span><span class="sap-status" id="ssBrowser">Via BelNet</span><button class="sap-toggle on" id="stBrowser" onclick="sapToggle('Browser')"></button></div>
+        <div class="sap protected" id="sapEmail"><span class="sap-icon">📧</span><span class="sap-name">Email</span><span class="sap-status" id="ssEmail">Via BelNet</span><button class="sap-toggle on" id="stEmail" onclick="sapToggle('Email')"></button></div>
+        <div class="sap direct" id="sapYoutube"><span class="sap-icon">▶️</span><span class="sap-name">YouTube</span><span class="sap-status" id="ssYoutube">Direct</span><button class="sap-toggle off" id="stYoutube" onclick="sapToggle('Youtube')"></button></div>
+        <div class="sap protected" id="sapBank"><span class="sap-icon">🏦</span><span class="sap-name">Banking App</span><span class="sap-status" id="ssBank">Via BelNet</span><button class="sap-toggle on" id="stBank" onclick="sapToggle('Bank')"></button></div>
+        <div class="sap direct" id="sapGames"><span class="sap-icon">🎮</span><span class="sap-name">Online Games</span><span class="sap-status" id="ssGames">Direct</span><button class="sap-toggle off" id="stGames" onclick="sapToggle('Games')"></button></div>
+        <div class="sap direct" id="sapMusic"><span class="sap-icon">🎵</span><span class="sap-name">Music Streaming</span><span class="sap-status" id="ssMusic">Direct</span><button class="sap-toggle off" id="stMusic" onclick="sapToggle('Music')"></button></div>
+      </div>
+      <div class="split-summary" id="splitSummary"></div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S10   SECURITY MODEL
+     Interactive: Expandable threat cards
+═══════════════════════════════════════ -->
+<section id="s10" class="sec">
+<div class="w">
+  <div class="sec-tag ri">Section 10</div>
+  <h2 class="ri d1">The <span class="em">Security Model</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">No privacy system is perfect. The right question is: which attacks are realistic, and what resources do they require? BelNet is designed so that all practical attacks either require an implausibly large amount of resources, or are mathematically impossible by design. Click each threat to see the analysis.</p>
+
+  <div class="threat-radar-wrap ri d1">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);text-align:center;margin-bottom:.65rem;">Click any threat to see full analysis</div>
+      <canvas id="threatRadar" width="340" height="340" style="display:block;margin:0 auto;cursor:pointer;border-radius:12px;"></canvas>
+      <div id="radarLegend" style="display:flex;gap:1rem;justify-content:center;margin-top:.85rem;flex-wrap:wrap;"></div>
+    </div>
+    <div class="trd-panel" id="trdPanel">
+      <div class="trd-hint">
+        <div style="font-size:2.5rem;margin-bottom:.65rem;">🎯</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);">Select a threat from the radar</div>
+        <p style="margin-top:.5rem;font-size:.88rem;color:var(--tx3);">Each dot represents a different attack vector. Color = risk level. Click to see the technical breakdown of the attack and how BelNet's architecture defeats it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note note-bl ri d2" style="margin-top:2rem;">
+    <div class="note-head">Why 3 hops is the right number</div>
+    <p>With 2 hops: if an adversary controls both the entry and exit node, they can link sender to destination. With 3 hops: even controlling both entry and exit still leaves the middle relay unknown. An attacker would need to control all three simultaneously across 2200+ randomly selected nodes which requires enormous capital (at 10,000 BDX per node) and is statistically near-impossible.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     S11   COMPARISON
+═══════════════════════════════════════ -->
+<section id="s11" class="sec sec-dark">
+<div class="w">
+  <div class="sec-tag ri">Section 11</div>
+  <h2 class="ri d1">BelNet vs <span class="bl">Everything Else</span></h2>
+  <p class="ri d2" style="font-size:1.05rem;max-width:700px;margin:.85rem 0 1.5rem;">How does BelNet compare to Tor, I2P, WireGuard, and other blockchain VPNs? Every major property is covered below.</p>
+  <table class="comp-table ri d1">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th class="hl">BelNet</th>
+        <th>Tor</th>
+        <th>I2P</th>
+        <th>WireGuard</th>
+        <th>Other dVPN</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Routing protocol</td><td class="hl" style="color:var(--bl)">LLARP / UDP</td><td>Tor / TCP</td><td>SSU / UDP</td><td>WG / UDP</td><td>Various</td></tr>
+      <tr><td>Low latency (real-time apps)</td><td class="hl"><span class="yes">Yes</span></td><td><span class="no">No</span></td><td><span class="no">No</span></td><td><span class="yes">Yes</span></td><td><span class="part">Moderate</span></td></tr>
+      <tr><td>Sybil attack resistance</td><td class="hl"><span class="yes">10k BDX stake</span></td><td><span class="part">Partial</span></td><td><span class="no">No</span></td><td><span class="no">No</span></td><td><span class="part">Varies</span></td></tr>
+      <tr><td>Decentralized router list</td><td class="hl"><span class="yes">Blockchain</span></td><td><span class="no">Centralized</span></td><td><span class="yes">DHT</span></td><td><span class="no">Central server</span></td><td><span class="yes">Blockchain</span></td></tr>
+      <tr><td>Native UDP routing</td><td class="hl"><span class="yes">Yes</span></td><td><span class="no">No</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="no">Mostly no</span></td></tr>
+      <tr><td>.bdx decentralized domains</td><td class="hl"><span class="yes">Yes (BNS)</span></td><td><span class="part">.onion (hash)</span></td><td><span class="no">No</span></td><td><span class="no">No</span></td><td><span class="no">No</span></td></tr>
+      <tr><td>Hidden website hosting</td><td class="hl"><span class="yes">MNApps</span></td><td><span class="yes">Onion sites</span></td><td><span class="yes">Eepsites</span></td><td><span class="no">No</span></td><td><span class="no">No</span></td></tr>
+      <tr><td>Incentivized nodes</td><td class="hl"><span class="yes">BDX rewards</span></td><td><span class="no">Volunteer</span></td><td><span class="no">Volunteer</span></td><td><span class="no">Paid service</span></td><td><span class="yes">Token rewards</span></td></tr>
+      <tr><td>App-level split tunneling</td><td class="hl"><span class="yes">Yes</span></td><td><span class="no">No</span></td><td><span class="no">No</span></td><td><span class="part">Network only</span></td><td><span class="part">Varies</span></td></tr>
+      <tr><td>No account required</td><td class="hl"><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="no">Required</span></td><td><span class="part">Usually yes</span></td></tr>
+      <tr><td>Zero-log by architecture</td><td class="hl"><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span></td><td><span class="no">Policy only</span></td><td><span class="part">Policy only</span></td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+
+<!-- DOWNLOAD -->
+<section id="s12" class="sec">
+<div class="w">
+  <div style="text-align:center;margin-bottom:2.25rem;" class="ri">
+    <div class="sec-tag ri" style="justify-content:center;">Download</div>
+    <h2 style="margin:.5rem 0 1rem;">Get BelNet.<br><span class="bl">No account needed.</span></h2>
+    <p style="max-width:500px;margin:0 auto;">Available on Android, Windows, and Linux. Open, install, connect. Your IP disappears in seconds.</p>
+  </div>
+  <div class="dl-grid ri d1">
+    <a class="dlc" href="https://github.com/Beldex-Coin/belnet-app/releases/download/v1.3.1/Belnet-1.3.1.apk" target="_blank"><div class="dlc-ico">🤖</div><div class="dlc-name">Android</div><div class="dlc-sub">APK v1.3.1</div><div style="color:var(--bl);font-size:.7rem;">↗</div></a>
+    <a class="dlc" href="https://deb.beldex.io/Beldex-projects/belnet-gui/belnet-gui-1.1.1-win64.exe" target="_blank"><div class="dlc-ico">🪟</div><div class="dlc-name">Windows</div><div class="dlc-sub">v1.1.1</div><div style="color:var(--bl);font-size:.7rem;">↗</div></a>
+    <a class="dlc" href="https://belnet.beldex.io/belnet-linux-installation" target="_blank"><div class="dlc-ico">🐧</div><div class="dlc-name">Linux</div><div class="dlc-sub">Install Guide</div><div style="color:var(--bl);font-size:.7rem;">↗</div></a>
+    <div class="dlc soon"><div class="dlc-ico">🍏</div><div class="dlc-name">macOS</div><div class="dlc-sub" style="color:var(--am);">Coming soon</div></div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;border-top:1px solid var(--br);padding-top:2rem;" class="ri d2">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);">BelNet · Beldex Blockchain · Open Source · belnet.beldex.io · github.com/Beldex-Coin</p>
+  </div>
+</div>
+</section>
+
+
+<script>
+'use strict';
+var HX='0123456789abcdef';
+function rh(n){var s='';for(var i=0;i<n;i++)s+=HX[Math.floor(Math.random()*16)];return s;}
+function lcg(seed){var s=seed;return function(){s=(s*1664525+1013904223)&0xffffffff;return Math.abs(s);};}
+
+/* ── scroll reveal + progress ── */
+var sObs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('on');});},{threshold:0.06});
+document.querySelectorAll('.ri').forEach(function(el){sObs.observe(el);});
+window.addEventListener('scroll',function(){
+  var h=document.documentElement;
+  var p=(window.scrollY/(h.scrollHeight-window.innerHeight))*100;
+  var b=document.getElementById('pf');if(b)b.style.width=Math.min(100,p)+'%';
+},{passive:true});
+
+/* ══ S1   Compare toggle ══ */
+var COMP={
+  bad:{
+    title:'WITHOUT BELNET',
+    hops:[
+      {cls:'exposed',icon:'📱',text:'Your device   IP address fully visible'},
+      {cls:'exposed',icon:'📡',text:'Your ISP   sees every website you visit, logs your activity'},
+      {cls:'neutral',icon:'🌐',text:'Internet   your real IP reaches every website'},
+      {cls:'exposed',icon:'💻',text:'Website   records your real IP, location, device, and timing'},
+    ]
+  },
+  good:{
+    title:'WITH BELNET',
+    hops:[
+      {cls:'safe',icon:'📱',text:'Your device   message encrypted in 3 layers before it leaves'},
+      {cls:'safe',icon:'🔐',text:'Entry relay (Jothi)   sees your IP, cannot read the message, does not know destination'},
+      {cls:'safe',icon:'🔄',text:'Middle relay (Bhava)   knows neither origin nor destination, just passes it forward'},
+      {cls:'safe',icon:'🚪',text:'Exit relay (Paru)   knows destination, sends request. Website sees Paru\'s IP, not yours.'},
+    ]
+  }
+};
+function switchCompare(mode){
+  document.getElementById('toggleBad').classList.toggle('active',mode==='bad');
+  document.getElementById('toggleGood').classList.toggle('active',mode==='good');
+  var d=COMP[mode];
+  var html='<div class="cs-title '+(mode==='bad'?'bad':'good')+'">'+d.title+'</div><div class="cs-path">';
+  d.hops.forEach(function(h){
+    html+='<div class="cs-hop '+h.cls+'"><span class="cs-hop-icon">'+h.icon+'</span><span>'+h.text+'</span></div>';
+  });
+  html+='</div>';
+  document.getElementById('compareStage').innerHTML=html;
+}
+switchCompare('bad');
+
+/* ══ S2   Node network canvas ══ */
+var nodes=[];var nodeAF=null;
+function sizeNodeCanvas(){
+  var c=document.getElementById('nodeCanvas');if(!c)return;
+  c.width=c.parentElement.clientWidth||900;
+  if(!nodes.length)initNodes();
+  else drawNodes();
+}
+function initNodes(){
+  var c=document.getElementById('nodeCanvas');if(!c)return;
+  var W=c.width,H=c.height;
+  nodes=[];
+  for(var i=0;i<80;i++){
+    nodes.push({x:Math.random()*W,y:Math.random()*H,r:1.5+Math.random()*2.5,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      col:Math.random()>.6?0:Math.random()>.5?1:2,phase:Math.random()*Math.PI*2,
+      speed:.007+Math.random()*.01,flash:0});
+  }
+  animNodes();
+}
+function drawNodes(){
+  var c=document.getElementById('nodeCanvas');if(!c)return;
+  var ctx=c.getContext('2d');var W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#040810';ctx.fillRect(0,0,W,H);
+  nodes.forEach(function(n){
+    n.x+=n.vx;n.y+=n.vy;
+    if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;
+    n.phase+=n.speed;if(n.flash>0)n.flash--;
+  });
+  /* edges */
+  for(var i=0;i<nodes.length;i++){
+    for(var j=i+1;j<nodes.length;j++){
+      var dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y;
+      var d=Math.sqrt(dx*dx+dy*dy);
+      if(d<80){var a=(1-d/80)*.1;ctx.strokeStyle='rgba(56,189,248,'+a+')';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke();}
+    }
+  }
+  /* nodes */
+  var cols=['rgba(56,189,248,','rgba(52,211,153,','rgba(251,191,36,'];
+  nodes.forEach(function(n){
+    var pulse=Math.sin(n.phase)*.3+.7;
+    var isF=n.flash>0;
+    var c2=isF?'rgba(56,189,248,':'('+cols[n.col];
+    if(isF){var g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*3);g.addColorStop(0,'rgba(56,189,248,.4)');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(n.x,n.y,n.r*3,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=(isF?'rgba(56,189,248,'+pulse+')':cols[n.col]+pulse+')');
+    ctx.beginPath();ctx.arc(n.x,n.y,isF?n.r*2:n.r,0,Math.PI*2);ctx.fill();
+  });
+}
+function animNodes(){nodeAF=requestAnimationFrame(function(){drawNodes();animNodes();});}
+function flashNodeCanvas(){
+  var cnt=Math.floor(nodes.length*.35);
+  for(var i=0;i<cnt;i++)nodes[Math.floor(Math.random()*nodes.length)].flash=35;
+}
+
+/* ══ S3   Packet race ══ */
+var raceRunning=false;
+function startRace(){
+  if(raceRunning)return;
+  raceRunning=true;
+  var packets=['rtBelNet','rtTor','rtVPN'];
+  var ms=['rtMsBelNet','rtMsTor','rtMsVPN'];
+  var speeds=[1.8,0.7,1.2]; /* relative speeds */
+  var track=document.querySelector('.rt-track');
+  var tW=track?track.offsetWidth:300;
+  var maxLefts=packets.map(function(id){var el=document.getElementById(id);var pw=el?el.offsetWidth:80;return tW-pw-8;});
+  packets.forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el){el.style.left='4px';}
+  });
+  ms.forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='...';});
+  var start=Date.now();
+  var done=[false,false,false];
+  var interval=setInterval(function(){
+    var elapsed=(Date.now()-start)/1000;
+    var allDone=true;
+    packets.forEach(function(id,i){
+      if(done[i])return;
+      var el=document.getElementById(id);if(!el)return;
+      var pct=Math.min(1,elapsed*speeds[i]*0.35);
+      var left=4+pct*maxLefts[i];
+      el.style.left=left+'px';
+      if(pct>=1){
+        done[i]=true;
+        var latencies=[42,180,95];
+        var msEl=document.getElementById(ms[i]);
+        if(msEl)msEl.textContent=latencies[i]+'ms';
+      } else {allDone=false;}
+    });
+    if(allDone){clearInterval(interval);raceRunning=false;}
+  },30);
+}
+
+/* ══ S4  Onion peeling (canvas) ══ */
+var ONION_DATA=[
+  {r:152,col:'#F87171',name:'LAYER 3',sub:'OUTER',who:'Jothi',
+   step:'Layer 3 · Entry Relay (Jothi)',
+   title:'Jothi peels the outer layer',
+   desc:'Jothi opens the outermost envelope. Inside is one instruction: forward to the middle relay. That is all Jothi sees. He knows the traffic came from Suhail, but cannot read the message and has no idea where it ultimately goes.',
+   key:'Knows: Suhail sent something · Blind to: content and destination'},
+  {r:102,col:'#FBBF24',name:'LAYER 2',sub:'MIDDLE',who:'Bhava',
+   step:'Layer 2 · Middle Relay (Bhava)',
+   title:'Bhava peels the middle layer',
+   desc:'Bhava opens the second envelope and sees: forward to the exit relay. She knows this came from Jothi, not from Suhail directly. She has zero knowledge of the original sender or the final destination.',
+   key:'Knows: Came from Jothi · Blind to: origin, content, destination'},
+  {r:58, col:'#34D399',name:'LAYER 1',sub:'EXIT',who:'Paru',
+   step:'Layer 1 · Exit Relay (Paru)',
+   title:'Paru peels the final layer',
+   desc:'Paru opens the innermost envelope and sees the destination website address. She sends the request on behalf of Suhail. The website receives a request from Paru\'s IP address, not Suhail\'s. Paru knows where it is going but has no idea who originally sent it.',
+   key:'Knows: Destination website · Blind to: Suhail\'s identity'},
+];
+var peeled=0;
+
+function drawOnionCanvas(){
+  var c=document.getElementById('onionViz');if(!c||!c.getContext)return;
+  var ctx=c.getContext('2d');
+  var W=360,H=360,cx=180,cy=192;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#040810';ctx.fillRect(0,0,W,H);
+  /* faint grid */
+  ctx.strokeStyle='rgba(56,189,248,.03)';ctx.lineWidth=1;
+  for(var gi=0;gi<=W;gi+=28){ctx.beginPath();ctx.moveTo(gi,0);ctx.lineTo(gi,H);ctx.stroke();}
+  for(var gj=0;gj<=H;gj+=28){ctx.beginPath();ctx.moveTo(0,gj);ctx.lineTo(W,gj);ctx.stroke();}
+
+  /* rings outside-in */
+  ONION_DATA.forEach(function(l,i){
+    var isPeeled=peeled>i;
+    /* fill */
+    ctx.save();ctx.globalAlpha=isPeeled?0.025:0.08;
+    ctx.fillStyle=l.col;
+    ctx.beginPath();ctx.arc(cx,cy,l.r,0,Math.PI*2);ctx.fill();ctx.restore();
+    /* border */
+    ctx.save();ctx.globalAlpha=isPeeled?0.15:0.85;
+    ctx.strokeStyle=l.col;ctx.lineWidth=isPeeled?1.5:2.5;
+    if(isPeeled)ctx.setLineDash([6,5]);
+    ctx.beginPath();ctx.arc(cx,cy,l.r,0,Math.PI*2);ctx.stroke();
+    ctx.setLineDash([]);ctx.restore();
+
+    if(!isPeeled){
+      /* Label positioned ABOVE each ring   no overlap because y = cy - r - N */
+      var lbY=cy-l.r-9;
+      /* tick line from ring top up to label */
+      ctx.save();ctx.strokeStyle=l.col;ctx.lineWidth=1.5;ctx.globalAlpha=.45;
+      ctx.beginPath();ctx.moveTo(cx,cy-l.r);ctx.lineTo(cx,lbY-2);ctx.stroke();ctx.restore();
+      /* label text */
+      ctx.save();ctx.globalAlpha=.9;ctx.textAlign='center';
+      ctx.font='bold 10px "JetBrains Mono",monospace';ctx.fillStyle=l.col;
+      ctx.fillText(l.name+'  '+l.sub,cx,lbY);ctx.restore();
+      /* relay name at 8-oclock position inside ring */
+      var ang=Math.PI*1.22;
+      var nx=cx+Math.cos(ang)*(l.r-18);var ny=cy+Math.sin(ang)*(l.r-18);
+      ctx.save();ctx.font='8px "JetBrains Mono",monospace';ctx.fillStyle=l.col;
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=.5;
+      ctx.fillText(l.who,nx,ny);ctx.restore();
+      /* tap hint for active ring */
+      if(i===peeled){
+        ctx.save();ctx.font='bold 8px sans-serif';
+        ctx.fillStyle='rgba(255,255,255,.35)';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText('tap to peel',cx,cy-l.r+15);ctx.restore();
+      }
+    } else {
+      /* peeled ✓ badge */
+      ctx.save();ctx.font='13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.globalAlpha=.25;
+      ctx.fillText('✓',cx+Math.cos(0.8)*l.r,cy+Math.sin(0.8)*l.r);ctx.restore();
+    }
+  });
+
+  /* Center message bubble */
+  var cR=30;
+  var grd=ctx.createRadialGradient(cx,cy,0,cx,cy,cR);
+  grd.addColorStop(0,'rgba(56,189,248,.28)');grd.addColorStop(1,'rgba(56,189,248,.04)');
+  ctx.fillStyle=grd;ctx.beginPath();ctx.arc(cx,cy,cR,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(56,189,248,.65)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(cx,cy,cR,0,Math.PI*2);ctx.stroke();
+  ctx.font='15px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('💬',cx,cy-7);
+  ctx.font='bold 7px "JetBrains Mono",monospace';ctx.fillStyle='rgba(56,189,248,.85)';ctx.textBaseline='top';
+  ctx.fillText("SUHAIL'S MSG",cx,cy+7);ctx.textBaseline='alphabetic';
+
+  /* All peeled success state */
+  if(peeled>=ONION_DATA.length){
+    ctx.save();ctx.strokeStyle='rgba(52,211,153,.5)';ctx.lineWidth=2.5;ctx.setLineDash([8,5]);
+    ctx.beginPath();ctx.arc(cx,cy,168,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='bold 9px "JetBrains Mono",monospace';ctx.fillStyle='rgba(52,211,153,.7)';ctx.textAlign='center';
+    ctx.fillText('ANONYMOUS  ALL LAYERS PEELED',cx,H-10);ctx.restore();
+  }
+}
+
+function buildOnionViz(){
+  var c=document.getElementById('onionViz');if(!c||!c.getContext)return;
+  c.onclick=function(e){
+    var rect=c.getBoundingClientRect();
+    var scX=360/rect.width,scY=360/rect.height;
+    var mx=(e.clientX-rect.left)*scX;
+    var my=(e.clientY-rect.top)*scY;
+    var dx=mx-180,dy=my-192;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    for(var i=0;i<ONION_DATA.length;i++){
+      var innerR=(i<ONION_DATA.length-1)?ONION_DATA[i+1].r+3:0;
+      if(dist>=innerR&&dist<=ONION_DATA[i].r+5){if(i===peeled)peelLayer(i);break;}
+    }
+  };
+  drawOnionCanvas();
+}
+
+function peelLayer(n){
+  if(n!==peeled)return;
+  var l=ONION_DATA[n];
+  var info=document.getElementById('onionInfo');
+  if(info){
+    info.classList.add('active');
+    info.innerHTML='<div class="oi-step">'+l.step+'</div>'
+      +'<div class="oi-title">'+l.title+'</div>'
+      +'<div class="oi-desc">'+l.desc+'</div>'
+      +'<div class="oi-key" style="background:rgba(56,189,248,.08);color:var(--bl);margin-top:.75rem;padding:.55rem .8rem;border-radius:6px;font-family:JetBrains Mono,monospace;font-size:.7rem;">'+l.key+'</div>';
+  }
+  peeled=n+1;drawOnionCanvas();
+  if(peeled>=ONION_DATA.length&&info){
+    info.innerHTML+='<div style="margin-top:.75rem;padding:.55rem .8rem;border-radius:6px;background:var(--em-g);color:var(--em);font-family:JetBrains Mono,monospace;font-size:.72rem;">All 3 layers removed. Suhail is completely anonymous.</div>';
+  }
+}
+function peelNext(){if(peeled<ONION_DATA.length)peelLayer(peeled);}
+function resetPeel(){
+  peeled=0;drawOnionCanvas();
+  var info=document.getElementById('onionInfo');
+  if(info){info.classList.remove('active');info.innerHTML='<div class="oi-step">Start here</div><div class="oi-title">Click any ring to begin peeling</div><div class="oi-desc">Each ring is one encryption layer. Peel from outside in. See exactly what each relay node knows and cannot know.</div>';}
+}
+
+/* ══ S5  Journey canvas (improved) ══ */
+var PERSONS=[
+  {name:'SUHAIL',  role:'Sender',      emoji:'🧑‍💻',col:'#38BDF8'},
+  {name:'JOTHI',   role:'Entry Relay', emoji:'👨‍🔧',col:'#F87171'},
+  {name:'BHAVA',   role:'Middle Relay',emoji:'👩‍💼',col:'#FBBF24'},
+  {name:'PARU',    role:'Exit Relay',  emoji:'🧑‍🚀',col:'#34D399'},
+  {name:'KISORE',  role:'Recipient',   emoji:'🙋', col:'#38BDF8'},
+];
+var PERSON_DATA=[
+  {knows:['Sending to Kisore','Chose BelNet routing'],blind:['Which nodes are selected','Their identities']},
+  {knows:['Received from Suhail','Next hop is Bhava'],blind:['Message content','Final destination']},
+  {knows:['Received from Jothi','Next hop is Paru'],blind:['Original sender','Final destination']},
+  {knows:['Received from Bhava','Destination website'],blind:['Original sender','Message content']},
+  {knows:['Private key for decryption','Final message from Suhail'],blind:['Relay path used','Nodes\' identities']},
+];
+var JSTEPS=[
+  {step:'Step 1/5',title:'Suhail presses Send',
+   desc:'BelNet wraps the message in 3 nested encryption layers on Suhail\'s device. A circuit of 3 masternodes is randomly selected from 2200+ available nodes. Suhail has no control over which nodes are chosen   this randomness prevents targeted surveillance.',
+   quote:'"I just pressed send. BelNet handled everything automatically."'},
+  {step:'Step 2/5',title:'Jothi receives Layer 3',
+   desc:'Jothi (Entry Relay) peels the outer encryption layer. He can see Suhail\'s IP (the connection source), but cannot read the message content and has no idea what the final destination is. He forwards the remaining two layers to Bhava.',
+   quote:'"A packet arrived from Suhail. I removed my layer and passed the rest to Bhava. That is all I know."'},
+  {step:'Step 3/5',title:'Bhava passes Layer 2',
+   desc:'Bhava (Middle Relay) peels the second layer. She knows it came from Jothi, not from Suhail directly. She cannot see the original sender, the message content, or the final destination. She is completely in the dark about both ends.',
+   quote:'"Got this from Jothi. No idea who originally sent it or where it is going. Passed it to Paru."'},
+  {step:'Step 4/5',title:'Paru exits to the internet',
+   desc:'Paru (Exit Relay) peels the final layer and sees the destination website. She sends the request to the internet using her own IP address. The website receives a request from Paru   not from Suhail. The website sees Paru\'s IP and nothing else.',
+   quote:'"I can see the destination. I sent the request. The website sees my IP. I have no idea who Suhail is."'},
+  {step:'Step 5/5',title:'Kisore receives the message',
+   desc:'The encrypted message arrives at Kisore\'s device. Kisore\'s private key is the only key in the world that can decrypt it. No relay node along the path ever had access to this key. The message is readable only by Kisore   not by Jothi, Bhava, or Paru.',
+   quote:'"Message arrived! Only my private key can open it. None of the relays could ever read what Suhail sent me."'},
+];
+var jStep=-1,jRunning=false,jTimer=null;
+
+function buildKnowledgeCards(){
+  var grid=document.getElementById('jkGrid');if(!grid)return;
+  grid.innerHTML='';
+  PERSONS.forEach(function(p,i){
+    var d=PERSON_DATA[i];
+    var card=document.createElement('div');
+    card.className='jk-card';card.id='jkCard'+i;
+    var knowsHtml=d.knows.map(function(k){return '<div class="jk-item know"><span class="jk-dot">✓</span><span>'+k+'</span></div>';}).join('');
+    var blindHtml=d.blind.map(function(b){return '<div class="jk-item blind"><span class="jk-dot">✗</span><span>'+b+'</span></div>';}).join('');
+    card.innerHTML='<div class="jk-head"><div class="jk-emoji">'+p.emoji+'</div><div class="jk-info"><div class="jk-name">'+p.name+'</div><div class="jk-role">'+p.role+'</div></div></div>'+knowsHtml+blindHtml;
+    card.onclick=(function(idx){return function(){clearTimeout(jTimer);jRunning=false;jStep=idx;updateJPanel(idx);drawJourney(idx,0);updateKnowledgeCards(idx);};})(i);
+    grid.appendChild(card);
+  });
+}
+
+function updateKnowledgeCards(active){
+  for(var i=0;i<PERSONS.length;i++){
+    var c=document.getElementById('jkCard'+i);if(!c)continue;
+    c.className='jk-card'+(i===active?' active':i<active?' done':'');
+  }
+}
+
+function sizeJCanvas(){
+  var c=document.getElementById('journeyCanvas');if(!c)return;
+  c.width=c.parentElement.clientWidth||900;
+  drawJourney(-1,0);
+}
+
+function drawJourney(activeStep,packetX){
+  var c=document.getElementById('journeyCanvas');if(!c)return;
+  var ctx=c.getContext('2d');var W=c.width,H=c.height;
+  var CY=H*0.44;
+  ctx.clearRect(0,0,W,H);
+  /* bg gradient */
+  var bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#070D1A');bg.addColorStop(1,'#050A14');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  var positions=PERSONS.map(function(p,i){return{x:(i/(PERSONS.length-1))*W*0.84+W*0.08};});
+
+  /* Dashed track */
+  for(var ti=0;ti<positions.length-1;ti++){
+    ctx.strokeStyle='#1A2A4A';ctx.lineWidth=2;ctx.setLineDash([5,6]);
+    ctx.beginPath();ctx.moveTo(positions[ti].x,CY);ctx.lineTo(positions[ti+1].x,CY);ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  /* Active track (glowing blue) */
+  var maxLine=Math.min(activeStep,positions.length-1);
+  for(var ai=0;ai<maxLine;ai++){
+    ctx.strokeStyle='rgba(56,189,248,.55)';ctx.lineWidth=2.5;
+    ctx.shadowColor='rgba(56,189,248,.4)';ctx.shadowBlur=6;
+    ctx.beginPath();ctx.moveTo(positions[ai].x,CY);ctx.lineTo(positions[ai+1].x,CY);ctx.stroke();
+    ctx.shadowBlur=0;
+  }
+
+  /* Lock icons between relays (encryption layers) */
+  if(activeStep>=0){
+    for(var li=0;li<Math.min(activeStep,positions.length-1);li++){
+      var lx=(positions[li].x+positions[li+1].x)/2;
+      var ly=CY-28;
+      var layerColor=['#F87171','#FBBF24','#34D399','rgba(56,189,248,.5)'][li]||'var(--br2)';
+      ctx.save();
+      ctx.fillStyle=layerColor;ctx.globalAlpha=0.7;
+      ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(li<3?'🔑':'📨',lx,ly);ctx.restore();
+    }
+  }
+
+  /* People nodes */
+  PERSONS.forEach(function(p,i){
+    var px=positions[i].x;
+    var lit=(i<=activeStep);
+    var isCurrent=(i===activeStep);
+    var r=isCurrent?30:lit?24:18;
+
+    /* glow for active */
+    if(isCurrent){
+      var g=ctx.createRadialGradient(px,CY,0,px,CY,r+22);
+      g.addColorStop(0,'rgba(56,189,248,.22)');g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,CY,r+22,0,Math.PI*2);ctx.fill();
+    }
+
+    /* circle background */
+    ctx.fillStyle=lit?'rgba(56,189,248,.14)':'rgba(26,42,68,.8)';
+    ctx.strokeStyle=lit?p.col:'#1A2A4A';
+    ctx.lineWidth=lit?2.5:1.5;
+    if(isCurrent){ctx.shadowColor=p.col;ctx.shadowBlur=12;}
+    ctx.beginPath();ctx.arc(px,CY,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;
+
+    /* emoji */
+    ctx.font=Math.round(r*0.78)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(p.emoji,px,CY);
+
+    /* name */
+    ctx.fillStyle=lit?'#F0F9FF':'#2A4060';
+    ctx.font=(isCurrent?'800 ':'600 ')+Math.round(H*0.068)+'px Nunito,sans-serif';
+    ctx.textBaseline='top';ctx.fillText(p.name,px,CY+r+10);
+
+    /* role */
+    ctx.fillStyle=lit?'#334155':'#1A2A4A';
+    ctx.font=Math.round(H*0.054)+'px Nunito,sans-serif';
+    ctx.fillText(p.role,px,CY+r+24);
+
+    /* step number badge */
+    if(lit&&!isCurrent){
+      ctx.save();ctx.fillStyle='rgba(52,211,153,.15)';ctx.strokeStyle='rgba(52,211,153,.5)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(px+r-3,CY-r+3,8,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.font='bold 8px sans-serif';ctx.fillStyle='#34D399';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✓',px+r-3,CY-r+3);ctx.restore();
+    }
+  });
+
+  /* Packet */
+  if(packetX>0&&packetX<W){
+    /* trail */
+    var tg=ctx.createLinearGradient(packetX-35,CY,packetX,CY);
+    tg.addColorStop(0,'transparent');tg.addColorStop(1,'rgba(56,189,248,.4)');
+    ctx.fillStyle=tg;ctx.fillRect(packetX-35,CY-4,35,8);
+    /* glow */
+    var pg=ctx.createRadialGradient(packetX,CY,0,packetX,CY,22);
+    pg.addColorStop(0,'rgba(56,189,248,1)');pg.addColorStop(0.4,'rgba(56,189,248,.5)');pg.addColorStop(1,'transparent');
+    ctx.fillStyle=pg;ctx.beginPath();ctx.arc(packetX,CY,22,0,Math.PI*2);ctx.fill();
+    /* core dot */
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(packetX,CY,7,0,Math.PI*2);ctx.fill();
+  }
+}
+
+function journeyStart(){
+  clearTimeout(jTimer);jRunning=true;jStep=-1;
+  var c=document.getElementById('journeyCanvas');if(!c)return;
+  var W=c.width;
+  var positions=PERSONS.map(function(p,i){return(i/(PERSONS.length-1))*W*0.84+W*0.08;});
+  var frame=0,totalFrames=280;
+  function tick(){
+    var prog=frame/totalFrames;
+    var px=positions[0]+(positions[PERSONS.length-1]-positions[0])*prog;
+    var curStep=Math.min(Math.floor(prog*(PERSONS.length-1)),PERSONS.length-1);
+    if(curStep!==jStep){jStep=curStep;updateJPanel(jStep);updateKnowledgeCards(jStep);}
+    drawJourney(jStep,px);
+    frame++;
+    if(frame<=totalFrames)jTimer=requestAnimationFrame(tick);
+    else{jRunning=false;drawJourney(PERSONS.length-1,0);updateKnowledgeCards(PERSONS.length-1);}
+  }
+  jTimer=requestAnimationFrame(tick);
+}
+
+function journeyReset(){
+  clearTimeout(jTimer);jRunning=false;jStep=-1;
+  document.getElementById('jbStatus').textContent='Press "Send Message" to begin the journey';
+  document.getElementById('jpStep').textContent='Waiting';
+  document.getElementById('jpTitle').textContent='Click a person below or press Send Message';
+  document.getElementById('jpDesc').textContent='Watch Suhail\'s message travel through Jothi, Bhava, and Paru before reaching Kisore. Click any card below to jump to that person\'s perspective.';
+  updateKnowledgeCards(-1);sizeJCanvas();
+}
+
+function updateJPanel(n){
+  if(n<0||n>=JSTEPS.length)return;
+  var d=JSTEPS[n];
+  document.getElementById('jbStatus').textContent=d.step+' · '+d.title;
+  document.getElementById('jpStep').textContent=d.step;
+  document.getElementById('jpTitle').textContent=d.title;
+  document.getElementById('jpDesc').innerHTML=d.desc+'<br><br><span class="jp-quote">'+PERSONS[n].emoji+' '+d.quote+'</span>';
+}
+
+/* Click on canvas person */
+document.getElementById('journeyCanvas').addEventListener('click',function(e){
+  var c=document.getElementById('journeyCanvas');if(!c)return;
+  var rect=c.getBoundingClientRect();
+  var mx=(e.clientX-rect.left)*(c.width/rect.width);
+  var W=c.width;
+  PERSONS.forEach(function(p,i){
+    var px=(i/(PERSONS.length-1))*W*0.84+W*0.08;
+    if(Math.abs(mx-px)<40){clearTimeout(jTimer);jRunning=false;jStep=i;updateJPanel(i);drawJourney(i,0);updateKnowledgeCards(i);}
+  });
+});
+
+/* ══ S6   Exit node selector ══ */
+var REGIONS={
+  'Singapore':{ip:'203.177.xx.xx',latency:'28ms',node:'belnet-sg-01.beldex.io',status:'Online',useCase:'Best for Asia-Pacific. Low latency for users in South and Southeast Asia.'},
+  'Germany':{ip:'185.244.xx.xx',latency:'45ms',node:'belnet-de-02.beldex.io',status:'Online',useCase:'Excellent for EU content. GDPR-friendly jurisdiction.'},
+  'USA East':{ip:'104.244.xx.xx',latency:'95ms',node:'belnet-us-east.beldex.io',status:'Online',useCase:'Best for US streaming, news, and regional content.'},
+  'Japan':{ip:'43.207.xx.xx',latency:'35ms',node:'belnet-jp-03.beldex.io',status:'Online',useCase:'Fast for East Asia. Good for Japanese content access.'},
+  'Netherlands':{ip:'194.165.xx.xx',latency:'42ms',node:'belnet-nl-01.beldex.io',status:'Online',useCase:'Strong privacy laws. Good middle ground for EU privacy.'},
+  'India':{ip:'103.229.xx.xx',latency:'12ms',node:'belnet-in-01.beldex.io',status:'Online',useCase:'Lowest latency for Indian users browsing local content.'},
+};
+function selectRegion(name,btn){
+  document.querySelectorAll('.ed-region').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  var r=REGIONS[name];
+  var html='<div class="edr-row"><div class="edr-k">Region</div><div class="edr-v bl">'+name+'</div></div>';
+  html+='<div class="edr-row"><div class="edr-k">Exit IP</div><div class="edr-v">'+r.ip+'</div></div>';
+  html+='<div class="edr-row"><div class="edr-k">Latency</div><div class="edr-v em">'+r.latency+'</div></div>';
+  html+='<div class="edr-row"><div class="edr-k">Node</div><div class="edr-v" style="font-size:.68rem">'+r.node+'</div></div>';
+  html+='<div class="edr-row"><div class="edr-k">Status</div><div class="edr-v em">● '+r.status+'</div></div>';
+  html+='<div class="edr-row"><div class="edr-k">Use</div><div class="edr-v txm" style="color:var(--txm)">'+r.useCase+'</div></div>';
+  document.getElementById('edResult').innerHTML=html;
+}
+
+/* ══ S7   BNS Terminal ══ */
+document.getElementById('bnsInput').addEventListener('keydown',function(e){if(e.key==='Enter')bnsResolve();});
+function bnsResolve(){
+  var name=document.getElementById('bnsInput').value.trim().toLowerCase()||'unknown.bdx';
+  if(!name.endsWith('.bdx'))name=name+'.bdx';
+  var seed=0;for(var i=0;i<name.length;i++)seed+=name.charCodeAt(i)*(i+1)*31;
+  var r=lcg(seed);
+  var chatId='bd'+Array.from({length:62},function(){return HX[r()%16];}).join('');
+  var wallet='bx'+Array.from({length:94},function(){return HX[r()%16];}).join('');
+  var out=document.getElementById('bnsOutput');
+  out.style.display='block';
+  out.innerHTML='<div style="font-family:JetBrains Mono,monospace;font-size:.72rem;line-height:1.9;">'
+    +'<div style="color:var(--tx3)">Querying Beldex blockchain...</div>'
+    +'<div style="color:var(--em)">✓ Record found for '+name+'</div>'
+    +'<div style="color:var(--tx2)">BChat ID : <span style="color:var(--bl)">'+chatId.slice(0,24)+'...</span></div>'
+    +'<div style="color:var(--tx2)">Wallet   : <span style="color:var(--am)">'+wallet.slice(0,24)+'...</span></div>'
+    +'<div style="color:var(--em)">Status   : Active · Immutable on-chain record</div>'
+    +'<div style="color:var(--tx3)">No DNS server contacted. No registrar. Cannot be censored.</div>'
+    +'</div>';
+  document.getElementById('bnsInput').value='';
+}
+
+/* ══ S8  Attack battlefield ══ */
+var ATK_DATA={
+  seize:{
+    label:'Seize Server',
+    normalResult:'✕ Server seized. Website offline immediately. All data confiscated.',
+    mnResult:'✓ No physical server exists. The host\'s location is hidden inside BelNet. Nothing to seize.',
+    beamAngle:0.3
+  },
+  dns:{
+    label:'Pull DNS Registration',
+    normalResult:'✕ DNS registrar complies with order. Domain unpublished. Site completely unreachable.',
+    mnResult:'✓ .bdx is on the Beldex blockchain   no registrar to contact. The record is cryptographically permanent.',
+    beamAngle:0.5
+  },
+  isp:{
+    label:'Block at ISP Level',
+    normalResult:'✕ ISP blocks the server IP range. Users in the country cannot reach the site.',
+    mnResult:'✓ All BelNet traffic is encrypted and indistinguishable. ISPs see only opaque data streams they cannot decode or block.',
+    beamAngle:0.2
+  },
+  court:{
+    label:'Court Order to Host',
+    normalResult:'✕ Hosting provider shuts it down within 24 hours under legal obligation.',
+    mnResult:'✓ No hosting company exists. The site runs through 2200+ globally distributed, individually owned community nodes.',
+    beamAngle:0.7
+  }
+};
+var selectedAtk='seize';
+var atkAnimating=false;
+
+function selectAttack(type,btn){
+  selectedAtk=type;
+  document.querySelectorAll('.atk-cmd-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  /* reset results */
+  document.getElementById('atrNormalStatus').textContent='Waiting for attack...';
+  document.getElementById('atrMNStatus').textContent='Waiting for attack...';
+  document.getElementById('atrNormal').style.background='';
+  document.getElementById('atrMN').style.background='';
+  drawBattleCanvas(0,0,false,false);
+}
+
+function fireAttack(){
+  if(atkAnimating)return;
+  atkAnimating=true;
+  var btn=document.getElementById('atkFireBtn');
+  btn.disabled=true;btn.textContent='Attacking...';
+  var d=ATK_DATA[selectedAtk];
+  var frame=0,totalF=120;
+  function tick(){
+    var prog=frame/totalF;
+    var beamProg=Math.min(1,prog*2);
+    var normalHit=prog>0.48;
+    var mnHit=prog>0.48;
+    drawBattleCanvas(beamProg,d.beamAngle,normalHit,false);
+    frame++;
+    if(frame<=totalF)requestAnimationFrame(tick);
+    else{
+      /* Show results */
+      document.getElementById('atrNormalStatus').innerHTML='<span style="color:var(--rs)">'+d.normalResult+'</span>';
+      document.getElementById('atrMNStatus').innerHTML='<span style="color:var(--em)">'+d.mnResult+'</span>';
+      drawBattleCanvas(1,d.beamAngle,true,true);
+      atkAnimating=false;
+      btn.disabled=false;btn.textContent='⚡ LAUNCH ATTACK';
+    }
+  }
+  tick();
+}
+
+function drawBattleCanvas(beamProg,beamY,normalDead,mnAlive){
+  var c=document.getElementById('battleCanvas');if(!c||!c.getContext)return;
+  c.width=c.parentElement?c.parentElement.clientWidth:800;
+  var ctx=c.getContext('2d');var W=c.width,H=260;
+  ctx.clearRect(0,0,W,H);
+  /* bg */
+  ctx.fillStyle='#040810';ctx.fillRect(0,0,W,H);
+  /* grid */
+  ctx.strokeStyle='rgba(56,189,248,.025)';ctx.lineWidth=1;
+  for(var gi=0;gi<=W;gi+=32){ctx.beginPath();ctx.moveTo(gi,0);ctx.lineTo(gi,H);ctx.stroke();}
+  for(var gj=0;gj<=H;gj+=32){ctx.beginPath();ctx.moveTo(0,gj);ctx.lineTo(W,gj);ctx.stroke();}
+
+  /* Divider line */
+  ctx.strokeStyle='rgba(56,189,248,.12)';ctx.lineWidth=1;ctx.setLineDash([6,5]);
+  ctx.beginPath();ctx.moveTo(W/2,20);ctx.lineTo(W/2,H-20);ctx.stroke();ctx.setLineDash([]);
+  ctx.font='9px "JetBrains Mono",monospace';ctx.textAlign='center';
+  ctx.fillStyle='rgba(56,189,248,.3)';ctx.fillText('vs',W/2,H/2);
+
+  /* Left: Normal Server */
+  var sx=W*0.22;var sy=H*0.45;
+  /* server shape */
+  ctx.save();
+  if(normalDead){ctx.globalAlpha=0.3;}
+  ctx.fillStyle='#1A2A4A';ctx.strokeStyle=normalDead?'#F87171':'#38BDF8';ctx.lineWidth=2;
+  ctx.beginPath();ctx.roundRect(sx-22,sy-45,44,85,5);ctx.fill();ctx.stroke();
+  for(var ri=0;ri<3;ri++){
+    ctx.fillStyle=normalDead?'rgba(248,113,113,.3)':'rgba(56,189,248,.2)';
+    ctx.fillRect(sx-16,sy-35+ri*22,32,14);
+    ctx.fillStyle=normalDead?'#F87171':'#38BDF8';ctx.globalAlpha=normalDead?0.3:0.8;
+    ctx.beginPath();ctx.arc(sx+10,sy-28+ri*22,4,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+  ctx.textAlign='center';ctx.font='bold 10px "JetBrains Mono",monospace';
+  ctx.fillStyle=normalDead?'rgba(248,113,113,.7)':'rgba(56,189,248,.7)';
+  ctx.fillText(normalDead?'✕ TAKEN DOWN':'example.com',sx,sy+52);
+  ctx.font='9px "JetBrains Mono",monospace';ctx.fillStyle='rgba(255,255,255,.35)';
+  ctx.fillText('Regular Server',sx,sy+64);
+  if(normalDead){
+    ctx.save();ctx.font='bold 28px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(248,113,113,.9)';ctx.fillText('💥',sx,sy-10);ctx.restore();
+  }
+
+  /* Right: MNApp nodes */
+  var nx=W*0.78;var ny=H*0.45;
+  var nPoints=[[0,-52],[45,-28],[45,28],[0,52],[-45,28],[-45,-28]];
+  if(mnAlive){
+    /* shield ring */
+    ctx.save();ctx.strokeStyle='rgba(52,211,153,.5)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+    ctx.shadowColor='rgba(52,211,153,.5)';ctx.shadowBlur=12;
+    ctx.beginPath();ctx.arc(nx,ny,72,0,Math.PI*2);ctx.stroke();
+    ctx.setLineDash([]);ctx.shadowBlur=0;ctx.restore();
+  }
+  nPoints.forEach(function(np){
+    ctx.save();
+    ctx.fillStyle=mnAlive?'rgba(52,211,153,.25)':'rgba(56,189,248,.15)';
+    ctx.strokeStyle=mnAlive?'#34D399':'#38BDF8';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(nx+np[0]*0.7,ny+np[1]*0.7,10,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.font='9px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🖥️',nx+np[0]*0.7,ny+np[1]*0.7);ctx.restore();
+    /* connection lines */
+    ctx.save();ctx.strokeStyle=mnAlive?'rgba(52,211,153,.25)':'rgba(56,189,248,.12)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(nx,ny);ctx.lineTo(nx+np[0]*0.7,ny+np[1]*0.7);ctx.stroke();ctx.restore();
+  });
+  /* center BDX logo */
+  ctx.save();ctx.fillStyle=mnAlive?'rgba(52,211,153,.2)':'rgba(56,189,248,.1)';
+  ctx.strokeStyle=mnAlive?'#34D399':'#38BDF8';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(nx,ny,16,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle=mnAlive?'#34D399':'#38BDF8';ctx.fillText('BDX',nx,ny);ctx.restore();
+  ctx.textAlign='center';ctx.font='bold 10px "JetBrains Mono",monospace';
+  ctx.fillStyle=mnAlive?'rgba(52,211,153,.8)':'rgba(56,189,248,.7)';
+  ctx.fillText(mnAlive?'✓ DEFENDED':'news.bdx',nx,ny+80);
+  ctx.font='9px "JetBrains Mono",monospace';ctx.fillStyle='rgba(255,255,255,.35)';
+  ctx.fillText('BelNet MNApp',nx,ny+92);
+
+  /* Attack beam */
+  if(beamProg>0){
+    var startX=20,startY=H*0.3;
+    /* toward normal server */
+    var nEndX=sx,nEndY=sy;
+    var nCurX=startX+(nEndX-startX)*Math.min(1,beamProg*2);
+    var nCurY=startY+(nEndY-startY)*Math.min(1,beamProg*2);
+    if(!normalDead){
+      ctx.save();ctx.strokeStyle='rgba(248,113,113,0.85)';ctx.lineWidth=2.5;
+      ctx.shadowColor='rgba(248,113,113,.8)';ctx.shadowBlur=10;
+      ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(nCurX,nCurY);ctx.stroke();
+      ctx.beginPath();ctx.arc(nCurX,nCurY,5,0,Math.PI*2);ctx.fillStyle='#F87171';ctx.fill();
+      ctx.shadowBlur=0;ctx.restore();
+    }
+    /* toward MNApp */
+    var mnEndX=nx,mnEndY=ny;
+    var mnCurX=startX+(mnEndX-startX)*Math.min(1,beamProg*2);
+    var mnCurY=startY+(mnEndY-startY)*Math.min(1,beamProg*2);
+    ctx.save();ctx.strokeStyle='rgba(248,113,113,.75)';ctx.lineWidth=2;
+    ctx.setLineDash([8,5]);
+    ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(mnCurX,mnCurY);ctx.stroke();
+    ctx.setLineDash([]);
+    if(mnAlive&&beamProg>=1){
+      /* deflected spark */
+      ctx.fillStyle='rgba(52,211,153,.9)';ctx.beginPath();ctx.arc(mnEndX-18,mnEndY-18,6,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+
+/* initial draw */
+setTimeout(function(){drawBattleCanvas(0,0,false,false);},100);
+
+/* ══ S9   Split tunneling ══ */
+var splitState={Browser:true,Email:true,Youtube:false,Bank:true,Games:false,Music:false};
+function sapToggle(app){
+  splitState[app]=!splitState[app];
+  var on=splitState[app];
+  var row=document.getElementById('sap'+app);
+  var tog=document.getElementById('st'+app);
+  var stat=document.getElementById('ss'+app);
+  if(row)row.className='sap '+(on?'protected':'direct');
+  if(tog)tog.className='sap-toggle '+(on?'on':'off');
+  if(stat)stat.textContent=on?'Via BelNet':'Direct';
+  updateSplitSummary();
+}
+function updateSplitSummary(){
+  var p=[],d=[];
+  var labels={Browser:'Browser',Email:'Email',Youtube:'YouTube',Bank:'Banking',Games:'Games',Music:'Music'};
+  Object.keys(splitState).forEach(function(k){splitState[k]?p.push(labels[k]):d.push(labels[k]);});
+  var el=document.getElementById('splitSummary');
+  if(!el)return;
+  el.innerHTML='<span style="color:var(--em);font-weight:700">'+p.length+' app'+(p.length!==1?'s':'')+' protected via BelNet:</span> '+p.join(', ')
+    +'<br><span style="color:var(--rs);font-weight:700">'+d.length+' app'+(d.length!==1?'s':'')+' connecting directly:</span> '+d.join(', ');
+}
+updateSplitSummary();
+
+/* ══ S10  Threat Radar ══ */
+var THREATS_DATA=[
+  {id:0,angle:0,      risk:0.50,riskLabel:'LOW',col:'#34D399',
+   name:'Sybil Attack',icon:'⚡',
+   attack:'An adversary floods the network with masternodes they control, hoping your circuit is routed entirely through their nodes.',
+   defense:'Each masternode requires 10,000 BDX staked as collateral. Controlling 10% of 2,200 nodes requires 2,200,000 BDX. This capital requirement makes large-scale Sybil attacks economically infeasible.',
+   result:'ELIMINATED  Costs billions to execute'},
+  {id:1,angle:60,     risk:0.82,riskLabel:'MEDIUM',col:'#FBBF24',
+   name:'Traffic Correlation',icon:'🔍',
+   attack:'A global adversary simultaneously observes traffic entering and leaving the BelNet network, trying to correlate timing patterns to link sender and recipient.',
+   defense:'Circuit rotation every 10 minutes, traffic padding, and parallel paths break correlation. A sustained timing attack requires a global adversary with access to most internet infrastructure worldwide.',
+   result:'MITIGATED  Requires global resources'},
+  {id:2,angle:120,    risk:0.55,riskLabel:'LOW',col:'#34D399',
+   name:'Exit Node Compromise',icon:'🚪',
+   attack:'An attacker controls an exit node and can observe destination addresses. Can they identify users from this?',
+   defense:'The exit node sees the destination but never the origin. Without also controlling the entry node, the attacker cannot link a user to their request. The 10-minute circuit rotation further limits exposure.',
+   result:'LOW RISK  Origin remains hidden'},
+  {id:3,angle:180,    risk:0.22,riskLabel:'ELIMINATED',col:'#38BDF8',
+   name:'Man-in-the-Middle',icon:'👻',
+   attack:'An attacker intercepts communication between relay nodes and tries to read or modify traffic.',
+   defense:'ECDH key exchange derives keys independently. The shared secret is never transmitted. A MITM cannot forge the shared secret without knowing the node\'s private key. Node keys are anchored to the Beldex blockchain.',
+   result:'ELIMINATED  Cryptographically impossible'},
+  {id:4,angle:240,    risk:0.18,riskLabel:'ELIMINATED',col:'#38BDF8',
+   name:'Legal Demand for Logs',icon:'📋',
+   attack:'A government or court orders BelNet to produce user connection logs.',
+   defense:'There are no logs to produce. The LLARP protocol does not log connection metadata by design, not by policy. No node stores user identity data. Even if every operator was compelled, the records contain only encrypted packet routing with no user identifiers.',
+   result:'ELIMINATED  Nothing to hand over'},
+  {id:5,angle:300,    risk:0.40,riskLabel:'VERY LOW',col:'#34D399',
+   name:'Blockchain Linkability',icon:'🔗',
+   attack:'An attacker tries to link BDX staking transactions or node reward payments back to individual operator identities.',
+   defense:'Beldex uses RingCT (Ring Confidential Transactions) and stealth addresses. Ring signatures hide which UTXO is spent. Stealth addresses create unique one-time receive addresses per transaction. Financial activity cannot be linked to operator identity.',
+   result:'VERY LOW  RingCT breaks the chain'},
+];
+
+var selectedThreat=-1;
+
+function drawThreatRadar(){
+  var c=document.getElementById('threatRadar');if(!c||!c.getContext)return;
+  var ctx=c.getContext('2d');
+  var W=340,H=340,cx=170,cy=170,maxR=130;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#040810';ctx.fillRect(0,0,W,H);
+
+  /* Web rings */
+  var rings=[0.25,0.5,0.75,1.0];
+  var ringLabels=['NONE','LOW','MED','HIGH'];
+  rings.forEach(function(f,ri){
+    ctx.strokeStyle='rgba(56,189,248,'+(0.06+ri*0.04)+')';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(cx,cy,maxR*f,0,Math.PI*2);ctx.stroke();
+    if(ri>0){
+      ctx.font='8px "JetBrains Mono",monospace';ctx.fillStyle='rgba(56,189,248,.3)';ctx.textAlign='center';
+      ctx.fillText(ringLabels[ri],cx+maxR*f+18,cy);
+    }
+  });
+
+  /* Spoke lines */
+  THREATS_DATA.forEach(function(t){
+    var rad=(t.angle-90)*Math.PI/180;
+    ctx.strokeStyle='rgba(56,189,248,.08)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(rad)*maxR,cy+Math.sin(rad)*maxR);ctx.stroke();
+  });
+
+  /* BelNet defense polygon */
+  ctx.save();ctx.beginPath();
+  THREATS_DATA.forEach(function(t,i){
+    var rad=(t.angle-90)*Math.PI/180;
+    /* defense pushes threat toward 0 */
+    var defR=maxR*t.risk*0.9;
+    var x=cx+Math.cos(rad)*defR,y=cy+Math.sin(rad)*defR;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle='rgba(52,211,153,.06)';ctx.fill();
+  ctx.strokeStyle='rgba(52,211,153,.35)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.stroke();
+  ctx.setLineDash([]);ctx.restore();
+
+  /* Threat dots */
+  THREATS_DATA.forEach(function(t){
+    var rad=(t.angle-90)*Math.PI/180;
+    var r=maxR*t.risk;
+    var x=cx+Math.cos(rad)*r;
+    var y=cy+Math.sin(rad)*r;
+    var isSel=(t.id===selectedThreat);
+
+    if(isSel){
+      ctx.save();ctx.strokeStyle=t.col;ctx.lineWidth=1.5;ctx.globalAlpha=0.3;
+      ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.stroke();
+      ctx.setLineDash([]);ctx.restore();
+    }
+
+    /* dot glow */
+    var g=ctx.createRadialGradient(x,y,0,x,y,isSel?18:12);
+    g.addColorStop(0,t.col.replace(')',',0.5)').replace('rgb','rgba'));
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,isSel?18:12,0,Math.PI*2);ctx.fill();
+    /* dot */
+    ctx.fillStyle=t.col;ctx.strokeStyle=isSel?'#fff':t.col;ctx.lineWidth=isSel?2.5:1.5;
+    ctx.beginPath();ctx.arc(x,y,isSel?8:6,0,Math.PI*2);ctx.fill();ctx.stroke();
+
+    /* Label outside ring */
+    var labR=maxR+28;
+    var lx=cx+Math.cos(rad)*labR;
+    var ly=cy+Math.sin(rad)*labR;
+    ctx.font=(isSel?'bold ':'')+'9px "JetBrains Mono",monospace';
+    ctx.fillStyle=isSel?t.col:'rgba(255,255,255,.45)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    /* word wrap for label */
+    var words=t.name.split(' ');
+    var line1=words.slice(0,Math.ceil(words.length/2)).join(' ');
+    var line2=words.slice(Math.ceil(words.length/2)).join(' ');
+    ctx.fillText(t.icon+' '+line1,lx,ly-6);
+    if(line2)ctx.fillText(line2,lx,ly+6);
+  });
+
+  /* Center label */
+  ctx.font='bold 8px "JetBrains Mono",monospace';ctx.fillStyle='rgba(52,211,153,.6)';ctx.textAlign='center';
+  ctx.fillText('BELNET',cx,cy-6);ctx.fillText('DEFENSE',cx,cy+6);
+}
+
+function buildRadarLegend(){
+  var el=document.getElementById('radarLegend');if(!el)return;
+  var items=[
+    {col:'#38BDF8',label:'Eliminated'},
+    {col:'#34D399',label:'Low Risk'},
+    {col:'#FBBF24',label:'Medium Risk'},
+  ];
+  items.forEach(function(item){
+    var d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:5px;font-family:"JetBrains Mono",monospace;font-size:.58rem;color:rgba(255,255,255,.5);';
+    d.innerHTML='<span style="width:10px;height:10px;border-radius:50%;background:'+item.col+';display:inline-block;"></span>'+item.label;
+    el.appendChild(d);
+  });
+}
+
+document.getElementById('threatRadar').addEventListener('click',function(e){
+  var c=document.getElementById('threatRadar');if(!c)return;
+  var rect=c.getBoundingClientRect();
+  var scX=340/rect.width,scY=340/rect.height;
+  var mx=(e.clientX-rect.left)*scX-170;
+  var my=(e.clientY-rect.top)*scY-170;
+  var clicked=-1,minD=28;
+  THREATS_DATA.forEach(function(t){
+    var rad=(t.angle-90)*Math.PI/180;
+    var tx=Math.cos(rad)*130*t.risk;
+    var ty=Math.sin(rad)*130*t.risk;
+    var d=Math.sqrt((mx-tx)*(mx-tx)+(my-ty)*(my-ty));
+    if(d<minD){minD=d;clicked=t.id;}
+  });
+  if(clicked>=0){selectedThreat=clicked;showThreatDetail(clicked);drawThreatRadar();}
+});
+
+function showThreatDetail(id){
+  var t=THREATS_DATA[id];var panel=document.getElementById('trdPanel');if(!panel)return;
+  var riskColors={'LOW':'var(--em)','VERY LOW':'var(--em)','MEDIUM':'var(--am)','ELIMINATED':'var(--bl)'};
+  var col=riskColors[t.riskLabel]||'var(--tx2)';
+  panel.innerHTML='<div class="trd-loaded">'
+    +'<div class="trd-tag" style="background:rgba(56,189,248,.08);color:'+col+';border:1px solid currentColor">'+t.riskLabel+'</div>'
+    +'<div class="trd-name">'+t.icon+' '+t.name+'</div>'
+    +'<div class="trd-section"><div class="trd-sh atk">Attack Vector</div><div class="trd-text">'+t.attack+'</div></div>'
+    +'<div class="trd-section"><div class="trd-sh def">BelNet Defense</div><div class="trd-text">'+t.defense+'</div></div>'
+    +'<div style="margin-top:1rem;padding:.65rem .85rem;border-radius:8px;background:var(--em-g);border:1px solid rgba(52,211,153,.25);font-family:JetBrains Mono,monospace;font-size:.72rem;color:var(--em);">'+t.result+'</div>'
+    +'</div>';
+}
+
+/* ══ Hero canvas   animated BelNet network ══ */
+var hcAF=null;var hcNodes=[];var hcPackets=[];var hcW=0,hcH=0;var hcFrame=0;
+function sizeHeroCanvas(){
+  var c=document.getElementById('heroCanvas');if(!c)return;
+  var dpr=window.devicePixelRatio||1;
+  var par=c.parentElement;
+  var W=par?par.clientWidth:380;var H=Math.round(W*0.68);
+  c.style.width=W+'px';c.style.height=H+'px';
+  c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);
+  hcW=W;hcH=H;var ctx=c.getContext('2d');ctx.scale(dpr,dpr);initHeroNodes();
+}
+function initHeroNodes(){
+  hcNodes=[];hcPackets=[];
+  hcNodes.push({x:hcW*0.1,y:hcH*0.5,type:'device',r:9,label:'YOU',phase:0,speed:.018});
+  hcNodes.push({x:hcW*0.9,y:hcH*0.5,type:'exit',r:10,label:'EXIT',phase:1.2,speed:.015});
+  [[0.3,0.22],[0.52,0.15],[0.7,0.3],[0.4,0.75],[0.62,0.82],[0.27,0.62],[0.5,0.5],[0.38,0.38],[0.65,0.55]].forEach(function(p,i){
+    hcNodes.push({x:hcW*p[0],y:hcH*p[1],type:'relay',r:6,phase:i*.7,speed:.008+i*.003});
+  });
+  [[0.18,0.15],[0.8,0.2],[0.15,0.82],[0.75,0.78]].forEach(function(p,i){
+    hcNodes.push({x:hcW*p[0],y:hcH*p[1],type:'threat',r:5,phase:i*1.1,speed:.02,blocked:false,blockTimer:0});
+  });
+  for(var i=0;i<3;i++)spawnHcPacket();
+}
+function spawnHcPacket(){
+  var relays=hcNodes.filter(function(n){return n.type==='relay';});
+  var r1=relays[Math.floor(Math.random()*relays.length)];
+  var r2=relays[Math.floor(Math.random()*relays.length)];
+  var r3=relays[Math.floor(Math.random()*relays.length)];
+  hcPackets.push({path:[hcNodes[0],r1,r2,r3,hcNodes[1]],t:0,speed:.004+Math.random()*.003});
+}
+function drawHeroCanvas(){
+  var c=document.getElementById('heroCanvas');if(!c)return;
+  var ctx=c.getContext('2d');var dpr=window.devicePixelRatio||1;
+  ctx.save();ctx.setTransform(dpr,0,0,dpr,0,0);
+  var W=hcW,H=hcH;ctx.clearRect(0,0,W,H);
+  var bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#040810');bg.addColorStop(1,'#070D1A');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(56,189,248,.04)';
+  for(var gi=0;gi<W;gi+=22)for(var gj=0;gj<H;gj+=22){ctx.beginPath();ctx.arc(gi,gj,.8,0,Math.PI*2);ctx.fill();}
+  var relays=hcNodes.filter(function(n){return n.type==='relay';});
+  var device=hcNodes[0],exit=hcNodes[1];
+  relays.forEach(function(a){relays.forEach(function(b){
+    var d=Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+    if(d<hcW*.28&&d>0){ctx.strokeStyle='rgba(56,189,248,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  });});
+  relays.slice(0,3).forEach(function(r){
+    ctx.strokeStyle='rgba(56,189,248,.1)';ctx.lineWidth=1;ctx.setLineDash([4,6]);
+    ctx.beginPath();ctx.moveTo(device.x,device.y);ctx.lineTo(r.x,r.y);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(exit.x,exit.y);ctx.lineTo(r.x,r.y);ctx.stroke();
+    ctx.setLineDash([]);
+  });
+  hcPackets.forEach(function(p){
+    if(p.t>=1)return;
+    var seg=p.t*(p.path.length-1);var si=Math.floor(seg);var sf=seg-si;
+    if(si>=p.path.length-1)si=p.path.length-2;
+    var ax=p.path[si].x,ay=p.path[si].y,bx=p.path[si+1].x,by=p.path[si+1].y;
+    var px=ax+(bx-ax)*sf,py=ay+(by-ay)*sf;
+    var trl=ctx.createLinearGradient(ax,ay,px,py);trl.addColorStop(0,'transparent');trl.addColorStop(1,'rgba(56,189,248,.3)');
+    ctx.strokeStyle=trl;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(px,py);ctx.stroke();
+    var g=ctx.createRadialGradient(px,py,0,px,py,9);g.addColorStop(0,'rgba(56,189,248,.9)');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,9,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px,py,3.5,0,Math.PI*2);ctx.fill();
+  });
+  hcNodes.filter(function(n){return n.type==='threat';}).forEach(function(n){
+    n.phase+=n.speed;if(n.blockTimer>0){n.blockTimer--;n.blocked=true;}else{n.blocked=false;if(Math.random()<.002)n.blockTimer=60;}
+    if(!n.blocked){ctx.strokeStyle='rgba(248,113,113,.07)';ctx.lineWidth=1;ctx.setLineDash([3,5]);ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(W/2,H/2);ctx.stroke();ctx.setLineDash([]);}
+    else{ctx.strokeStyle='rgba(52,211,153,.4)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(W/2,H/2);ctx.stroke();var mx=(n.x+W/2)/2,my=(n.y+H/2)/2;ctx.strokeStyle='rgba(52,211,153,.9)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mx-6,my-6);ctx.lineTo(mx+6,my+6);ctx.stroke();ctx.beginPath();ctx.moveTo(mx+6,my-6);ctx.lineTo(mx-6,my+6);ctx.stroke();}
+    var a=.5+Math.sin(n.phase)*.3;var tg=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r+4);tg.addColorStop(0,n.blocked?'rgba(52,211,153,.3)':'rgba(248,113,113,.2)');tg.addColorStop(1,'transparent');ctx.fillStyle=tg;ctx.beginPath();ctx.arc(n.x,n.y,n.r+4,0,Math.PI*2);ctx.fill();ctx.fillStyle=n.blocked?'#34D399':'#F87171';ctx.globalAlpha=a;ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+  });
+  relays.forEach(function(n){
+    n.phase+=n.speed;var a=.6+Math.sin(n.phase)*.3;var g2=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r+6);g2.addColorStop(0,'rgba(251,191,36,.15)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.beginPath();ctx.arc(n.x,n.y,n.r+6,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(251,191,36,'+a+')';ctx.strokeStyle='rgba(251,191,36,.6)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fill();ctx.stroke();
+  });
+  device.phase+=device.speed;var dp=.8+Math.sin(device.phase)*.2;var dg=ctx.createRadialGradient(device.x,device.y,0,device.x,device.y,18);dg.addColorStop(0,'rgba(56,189,248,.28)');dg.addColorStop(1,'transparent');ctx.fillStyle=dg;ctx.beginPath();ctx.arc(device.x,device.y,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(56,189,248,'+dp+')';ctx.strokeStyle='#38BDF8';ctx.lineWidth=2;ctx.beginPath();ctx.arc(device.x,device.y,device.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.font='bold 7px "JetBrains Mono",monospace';ctx.fillStyle='rgba(56,189,248,.8)';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('YOU',device.x,device.y+device.r+13);
+  exit.phase+=exit.speed;var ep=.8+Math.sin(exit.phase)*.2;var eg=ctx.createRadialGradient(exit.x,exit.y,0,exit.x,exit.y,18);eg.addColorStop(0,'rgba(52,211,153,.25)');eg.addColorStop(1,'transparent');ctx.fillStyle=eg;ctx.beginPath();ctx.arc(exit.x,exit.y,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(52,211,153,'+ep+')';ctx.strokeStyle='#34D399';ctx.lineWidth=2;ctx.beginPath();ctx.arc(exit.x,exit.y,exit.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.font='bold 7px "JetBrains Mono",monospace';ctx.fillStyle='rgba(52,211,153,.8)';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('EXIT',exit.x,exit.y+exit.r+13);
+  ctx.font='bold 8px "JetBrains Mono",monospace';ctx.fillStyle='rgba(56,189,248,.2)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('ENCRYPTED \xb7 ANONYMOUS \xb7 DECENTRALIZED',W/2,H-10);
+  ctx.restore();
+  hcPackets.forEach(function(p){p.t+=p.speed;});hcPackets=hcPackets.filter(function(p){return p.t<1.05;});while(hcPackets.length<4)spawnHcPacket();
+  hcAF=requestAnimationFrame(drawHeroCanvas);
+}
+function startHeroCanvas(){if(hcAF)cancelAnimationFrame(hcAF);sizeHeroCanvas();drawHeroCanvas();}
+
+/* ══ INIT ══ */
+window.addEventListener('load',function(){
+  sizeNodeCanvas();
+  buildOnionViz();
+  sizeJCanvas();
+  buildKnowledgeCards();
+  switchCompare('bad');
+  setTimeout(function(){
+    drawThreatRadar();
+    buildRadarLegend();
+    drawBattleCanvas(0,0,false,false);
+    startHeroCanvas();
+  },200);
+});
+window.addEventListener('resize',function(){sizeNodeCanvas();sizeJCanvas();drawBattleCanvas(0,0,false,false);sizeHeroCanvas();},{passive:true});
+</script>
+</body>
+</html>
