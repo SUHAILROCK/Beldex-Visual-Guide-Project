@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beldex Browser   Level 1: Your Private Window to the Internet</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   GLASS CITY   Beldex Browser Level 1
+   Pearl base · Deep navy · Electric violet · Amber
+   Syne + Nunito + JetBrains Mono
+═══════════════════════════════════════════════════ */
+:root{
+  --bg:    #F8F6F0;
+  --bg2:   #F0EDE6;
+  --bg3:   #E8E3D9;
+  --ink:   #0F1428;
+  --ink2:  #2D3557;
+  --ink3:  #6B7099;
+  --br:    #DDD9D0;
+
+  --vl:    #7C3AED;
+  --vl2:   #6D28D9;
+  --vl3:   #A78BFA;
+  --vl-g:  rgba(124,58,237,.1);
+  --vl-gs: rgba(124,58,237,.06);
+
+  --am:    #F59E0B;
+  --am2:   rgba(245,158,11,.1);
+  --am3:   #FCD34D;
+
+  --tl:    #0891B2;
+  --tl2:   rgba(8,145,178,.1);
+
+  --gr:    #059669;
+  --gr2:   rgba(5,150,105,.1);
+
+  --rs:    #DC2626;
+  --rs2:   rgba(220,38,38,.1);
+
+  --tx:    #0F1428;
+  --tx2:   #4A5080;
+  --txm:   #6B7099;
+
+  --r8:  8px;
+  --r12: 12px;
+  --r16: 16px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Nunito',sans-serif;
+  font-size:1rem;line-height:1.8;
+  overflow-x:hidden;
+}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,5.5vw,5rem);font-weight:800;line-height:.95;letter-spacing:-.02em;}
+h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.0;letter-spacing:-.01em;}
+h3{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;line-height:1.1;}
+p{color:var(--tx2);line-height:1.85;}
+strong{color:var(--ink);font-weight:700;}
+.vl{color:var(--vl);}
+.am{color:var(--am);}
+.tl{color:var(--tl);}
+.gr{color:var(--gr);}
+
+/* ── Layout ── */
+.w{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+
+/* ── Progress bar ── */
+#pg{position:fixed;top:0;left:0;right:0;height:3px;z-index:999;background:var(--br);}
+#pf{height:100%;width:0;background:linear-gradient(90deg,var(--vl),var(--am));transition:width .1s;}
+
+/* ── Nav ── */
+#nav{
+  position:fixed;top:3px;left:0;right:0;z-index:900;
+  background:rgba(248,246,240,.94);border-bottom:1px solid var(--br);
+  backdrop-filter:blur(16px);
+}
+.nav-row{max-width:1100px;margin:0 auto;padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--ink);text-decoration:none;letter-spacing:-.02em;}
+.nav-logo span{color:var(--vl);}
+.nav-badge{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:.25rem .75rem;background:var(--vl-g);color:var(--vl);border:1px solid rgba(124,58,237,.25);border-radius:4px;}
+.nav-dl{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;padding:.55rem 1.35rem;background:var(--vl);color:#fff;border-radius:var(--r8);text-decoration:none;transition:background .2s;}
+.nav-dl:hover{background:var(--vl2);}
+
+/* ── Scroll reveal ── */
+.si{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.si.on{opacity:1;transform:none;}
+.d1{transition-delay:.1s;} .d2{transition-delay:.2s;} .d3{transition-delay:.3s;} .d4{transition-delay:.4s;}
+
+/* ── Sections ── */
+.sec{padding:5.5rem 0;border-top:1px solid var(--br);}
+.sec-pearl{background:var(--bg);}
+.sec-sand{background:var(--bg2);}
+.sec-deep{background:var(--ink);color:#fff;}
+.sec-deep p{color:rgba(255,255,255,.65);}
+
+.sec-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--vl);
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;
+}
+.sec-tag::before{content:'';width:24px;height:2px;background:var(--vl);}
+
+/* ── Callout ── */
+.callout{padding:1.2rem 1.5rem;border-radius:var(--r12);border-left:4px solid;margin:1.5rem 0;}
+.cl-vl{border-color:var(--vl);background:var(--vl-gs);}
+.cl-am{border-color:var(--am);background:var(--am2);}
+.cl-tl{border-color:var(--tl);background:var(--tl2);}
+.cl-gr{border-color:var(--gr);background:var(--gr2);}
+.cl-rs{border-color:var(--rs);background:var(--rs2);}
+.cl-head{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.35rem;}
+.cl-vl .cl-head{color:var(--vl);}
+.cl-am .cl-head{color:var(--am);}
+.cl-tl .cl-head{color:var(--tl);}
+.cl-gr .cl-head{color:var(--gr);}
+.cl-rs .cl-head{color:var(--rs);}
+.callout p{font-size:.95rem;line-height:1.75;}
+
+/* ── Card ── */
+.card{background:#fff;border:1.5px solid var(--br);border-radius:var(--r16);padding:1.5rem;transition:border-color .2s,box-shadow .2s;}
+.card:hover{border-color:rgba(124,58,237,.35);box-shadow:0 4px 20px rgba(124,58,237,.08);}
+.card-icon{font-size:2rem;margin-bottom:.65rem;}
+.card-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.35rem;color:var(--ink);}
+.card-body{font-size:.9rem;color:var(--tx2);line-height:1.65;}
+
+/* ── Button ── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;padding:.7rem 1.65rem;border-radius:var(--r8);text-decoration:none;cursor:pointer;border:none;transition:all .2s;letter-spacing:-.01em;}
+.btn-vl{background:var(--vl);color:#fff;}
+.btn-vl:hover{background:var(--vl2);}
+.btn-am{background:var(--am);color:var(--ink);}
+.btn-am:hover{background:var(--am3);}
+.btn-out{background:transparent;color:var(--vl);border:2px solid var(--vl);}
+.btn-out:hover{background:var(--vl-g);}
+.btn-out-ink{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3);}
+.btn-out-ink:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.6);}
+
+/* ═══════════════════════════
+   HERO   DARK INTERCEPT
+═══════════════════════════ */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:5.5rem 0 3rem;position:relative;overflow:hidden;
+  background:#070B1A;
+}
+.hero-bg-grid{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(124,58,237,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(124,58,237,.07) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(ellipse 90% 80% at 60% 50%,black 30%,transparent 100%);
+}
+.hero-glow{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 50% at 68% 50%,rgba(124,58,237,.18) 0%,transparent 70%);
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 500px;gap:3.5rem;
+  align-items:center;position:relative;z-index:1;
+}
+.hero-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--vl3);
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;
+}
+.hero-tag::before{content:'';width:24px;height:2px;background:var(--vl3);}
+#hero h1{color:#fff;}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,.6);line-height:1.9;max-width:520px;margin:1.25rem 0 2.25rem;}
+.hero-btns{display:flex;gap:.85rem;flex-wrap:wrap;margin-bottom:2.75rem;}
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--r12);overflow:hidden;
+}
+.hst{background:rgba(255,255,255,.03);padding:.9rem 1.1rem;overflow:hidden;}
+.hst-n{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;line-height:1;white-space:nowrap;}
+.hst-l{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.2rem;white-space:nowrap;}
+
+/* Hero intercept canvas */
+.hero-canvas-area{
+  position:relative;border-radius:16px;overflow:hidden;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(124,58,237,.2);
+  box-shadow:0 0 60px rgba(124,58,237,.15),inset 0 0 40px rgba(124,58,237,.03);
+}
+#heroCanvas{display:block;width:100%;}
+.hero-live-bar{
+  position:absolute;top:0;left:0;right:0;
+  background:rgba(10,15,38,.85);border-bottom:1px solid rgba(124,58,237,.2);
+  backdrop-filter:blur(8px);
+  padding:.5rem 1rem;display:flex;align-items:center;gap:1.25rem;
+}
+.hlb-dot{width:7px;height:7px;border-radius:50%;background:#34D399;box-shadow:0 0 6px #34D399;animation:pulse-dot 1.4s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hlb-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(52,211,153,.8);}
+.hlb-counter{margin-left:auto;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#F87171;}
+.hlb-counter-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:rgba(248,113,113,.6);letter-spacing:.1em;text-transform:uppercase;}
+.hero-url-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(10,15,38,.85);border-top:1px solid rgba(124,58,237,.15);
+  backdrop-filter:blur(8px);
+  padding:.45rem .9rem;display:flex;align-items:center;gap:.65rem;
+}
+.hub-lock{font-size:.75rem;color:#34D399;}
+.hub-url{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(56,189,248,.8);}
+.hub-shield{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:600;padding:.18rem .55rem;border-radius:4px;background:rgba(52,211,153,.12);color:#34D399;margin-left:auto;}
+
+/* bm-* still used nowhere in hero now   remove below if they cause confusion */
+
+
+/* Chapter strip */
+.ch-strip{border-top:1px solid rgba(255,255,255,.08);background:rgba(15,20,40,.95);backdrop-filter:blur(12px);}
+.chs-inner{max-width:1100px;margin:0 auto;padding:0;display:flex;justify-content:center;overflow-x:auto;scrollbar-width:none;}
+.chs-inner::-webkit-scrollbar{display:none;}
+.ch-item{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.4rem;border-right:1px solid rgba(255,255,255,.08);flex-shrink:0;text-decoration:none;transition:background .18s;}
+.ch-item:first-child{border-left:1px solid rgba(255,255,255,.08);}
+.ch-item:hover{background:rgba(124,58,237,.15);}
+.ch-n{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--vl3);}
+.ch-t{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;}
+
+/* ═══════════════════════════
+   S1   REGULAR BROWSER PROBLEM
+   Interactive: Tracker counter
+═══════════════════════════ */
+.tracker-demo{
+  background:var(--ink);border-radius:var(--r16);overflow:hidden;
+  box-shadow:0 8px 32px rgba(15,20,40,.2);
+}
+.td-header{
+  background:#1A2038;border-bottom:1px solid rgba(255,255,255,.08);
+  padding:.85rem 1.25rem;display:flex;align-items:center;gap:.65rem;
+}
+.td-dots{display:flex;gap:.35rem;}
+.td-dot{width:9px;height:9px;border-radius:50%;}
+.td-url{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.45);letter-spacing:.06em;}
+.td-body{padding:1.5rem;}
+.td-counter{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.75rem 1rem;background:rgba(255,255,255,.04);border-radius:8px;
+  border:1px solid rgba(255,255,255,.08);margin-bottom:.6rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;
+}
+.td-name{color:rgba(255,255,255,.55);}
+.td-count{font-weight:700;padding:.18rem .6rem;border-radius:4px;font-size:.7rem;}
+.count-red{background:rgba(220,38,38,.2);color:#F87171;}
+.count-amber{background:rgba(245,158,11,.15);color:#FCD34D;}
+.count-green{background:rgba(5,150,105,.15);color:#34D399;}
+.td-total{
+  margin-top:.85rem;padding:.9rem 1rem;background:rgba(220,38,38,.08);
+  border:1px solid rgba(220,38,38,.2);border-radius:8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.td-total-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(248,113,113,.8);}
+.td-total-num{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#F87171;}
+.td-visit-btn{
+  display:block;width:100%;margin-top:1rem;padding:.65rem;
+  background:var(--vl);color:#fff;border:none;border-radius:8px;
+  font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;
+  cursor:pointer;transition:background .2s;
+}
+.td-visit-btn:hover{background:var(--vl2);}
+.td-hint{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:center;margin-top:.65rem;}
+
+/* ═══════════════════════════
+   S2   PROTECTION FEATURES
+   Interactive: Feature toggle list
+═══════════════════════════ */
+.feature-list{display:flex;flex-direction:column;gap:.55rem;}
+.feat-row{
+  display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;
+  border-radius:var(--r12);border:2px solid var(--br);background:#fff;
+  transition:all .25s;
+}
+.feat-row.on{border-color:rgba(124,58,237,.3);background:var(--vl-gs);}
+.feat-icon{font-size:1.4rem;flex-shrink:0;}
+.feat-name{font-weight:700;font-size:.95rem;flex:1;color:var(--ink);}
+.feat-desc{font-size:.82rem;color:var(--txm);margin-top:.1rem;}
+.feat-status{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:600;padding:.22rem .6rem;border-radius:4px;flex-shrink:0;letter-spacing:.06em;text-transform:uppercase;}
+.feat-row.on  .feat-status{background:rgba(5,150,105,.12);color:var(--gr);}
+.feat-row.off .feat-status{background:rgba(220,38,38,.1);color:var(--rs);}
+.feat-toggle{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .25s;flex-shrink:0;}
+.feat-toggle.on{background:var(--vl);}
+.feat-toggle.off{background:var(--br);}
+.feat-toggle::after{content:'';position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .22s;}
+.feat-toggle.on::after{left:23px;}
+.feat-toggle.off::after{left:3px;}
+.feat-summary{margin-top:1rem;padding:1rem 1.2rem;background:var(--bg2);border-radius:var(--r12);border:1px solid var(--br);font-size:.92rem;}
+
+/* ═══════════════════════════
+   S3   BUILT-IN WALLET
+   Interactive: Send / receive tabs
+═══════════════════════════ */
+.wallet-mock{
+  background:var(--ink);border-radius:var(--r16);overflow:hidden;
+  box-shadow:0 8px 40px rgba(15,20,40,.25);
+}
+.wm-header{
+  background:linear-gradient(135deg,#1A1060,#2D1080);
+  padding:1.5rem 1.5rem 1.25rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.wm-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.4rem;}
+.wm-balance{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:.2rem;}
+.wm-usd{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:rgba(255,255,255,.45);}
+.wm-tabs{display:flex;gap:.5rem;margin-top:1rem;}
+.wm-tab{
+  font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;
+  padding:.45rem 1.1rem;border-radius:6px;cursor:pointer;border:none;
+  transition:all .2s;
+}
+.wm-tab.active{background:var(--vl);color:#fff;}
+.wm-tab.inactive{background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);}
+.wm-tab.inactive:hover{background:rgba(255,255,255,.14);}
+.wm-body{padding:1.25rem 1.5rem;}
+.wm-panel{display:none;}
+.wm-panel.show{display:block;animation:fadeWm .25s ease;}
+@keyframes fadeWm{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.wm-addr{
+  padding:.75rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.6);
+  word-break:break-all;line-height:1.6;margin-bottom:.75rem;
+}
+.wm-input{
+  display:block;width:100%;padding:.7rem .9rem;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);border-radius:8px;font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;color:#fff;margin-bottom:.6rem;outline:none;transition:border-color .2s;
+}
+.wm-input::placeholder{color:rgba(255,255,255,.3);}
+.wm-input:focus{border-color:rgba(124,58,237,.6);}
+.wm-send-btn{
+  display:block;width:100%;padding:.7rem;background:var(--vl);color:#fff;border:none;
+  border-radius:8px;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;
+  cursor:pointer;transition:background .2s;
+}
+.wm-send-btn:hover{background:var(--vl2);}
+.wm-tx{
+  display:flex;align-items:center;gap:.75rem;padding:.65rem .75rem;
+  background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:.45rem;
+}
+.wm-tx:last-child{margin-bottom:0;}
+.wm-tx-icon{font-size:1.1rem;flex-shrink:0;}
+.wm-tx-desc{flex:1;}
+.wm-tx-label{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.08rem;}
+.wm-tx-date{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.35);}
+.wm-tx-amount{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;flex-shrink:0;}
+.wm-tx-amount.in{color:#34D399;}
+.wm-tx-amount.out{color:#F87171;}
+.wm-result{margin-top:.75rem;padding:.75rem;border-radius:8px;display:none;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.7;}
+.wm-result.show{display:block;}
+.wm-result.ok{background:rgba(5,150,105,.12);border:1px solid rgba(52,211,153,.25);color:#34D399;}
+.wm-result.err{background:rgba(220,38,38,.1);border:1px solid rgba(248,113,113,.25);color:#F87171;}
+
+/* ═══════════════════════════
+   S4   .bdx DOMAINS
+   Interactive: Address bar simulator
+═══════════════════════════ */
+.addr-sim{
+  background:#fff;border-radius:var(--r16);border:1.5px solid var(--br);
+  overflow:hidden;box-shadow:0 4px 20px rgba(15,20,40,.08);
+}
+.as-chrome-bar{
+  background:var(--bg2);border-bottom:1px solid var(--br);
+  padding:.7rem 1.1rem;display:flex;align-items:center;gap:.75rem;
+}
+.asc-dots{display:flex;gap:.35rem;}
+.asc-dot{width:9px;height:9px;border-radius:50%;}
+.asc-nav{display:flex;gap:.5rem;}
+.asc-navbtn{font-size:.8rem;color:var(--ink3);cursor:pointer;padding:.15rem .3rem;border-radius:3px;}
+.asc-navbtn:hover{background:var(--br);}
+.asc-addr-wrap{flex:1;position:relative;}
+.asc-addr{
+  width:100%;padding:.35rem 1rem .35rem 2rem;background:#fff;border:1px solid var(--br);
+  border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--tl);
+  outline:none;transition:border-color .2s;
+}
+.asc-addr:focus{border-color:var(--vl);}
+.asc-lock{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.7rem;}
+.as-page-content{padding:0;}
+.as-loading{padding:1.5rem;text-align:center;display:none;}
+.as-loading.show{display:block;}
+.as-spinner{width:32px;height:32px;border:3px solid var(--br);border-top-color:var(--vl);border-radius:50%;margin:0 auto .75rem;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.as-result{display:none;padding:1.5rem;}
+.as-result.show{display:block;animation:fadeWm .3s ease;}
+.as-error{display:none;padding:1.5rem;text-align:center;}
+.as-error.show{display:block;}
+.as-site-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+.as-site-icon{font-size:2rem;}
+.as-site-name{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);}
+.as-site-bdx{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--tl);}
+.as-verified{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;padding:.2rem .65rem;background:var(--gr2);color:var(--gr);border-radius:4px;margin-bottom:.85rem;}
+.as-line{height:10px;background:var(--br);border-radius:4px;margin-bottom:.45rem;}
+.as-line.s{width:60%;}
+.as-line.m{width:80%;}
+.as-line.f{width:100%;}
+.as-site-content-block{background:var(--bg2);border-radius:8px;padding:1rem 1.1rem;}
+.as-site-content-block h4{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:.45rem;}
+.as-site-content-block p{font-size:.82rem;color:var(--tx2);line-height:1.65;margin-bottom:.5rem;}
+.as-site-content-block p:last-child{margin-bottom:0;}
+.as-site-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:600;letter-spacing:.08em;padding:.15rem .5rem;border-radius:4px;margin-right:.35rem;margin-bottom:.3rem;}
+.as-site-stat{display:flex;align-items:center;gap:.5rem;padding:.45rem .65rem;background:#fff;border-radius:6px;border:1px solid var(--br);margin-bottom:.35rem;font-size:.8rem;}
+.as-site-stat:last-child{margin-bottom:0;}
+.as-site-stat-icon{font-size:.9rem;}
+.as-site-stat-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--ink);margin-left:auto;font-size:.85rem;}
+.bdx-examples{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.bdx-ex-btn{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;
+  padding:.35rem .85rem;background:var(--vl-g);color:var(--vl);border:1px solid rgba(124,58,237,.2);
+  border-radius:6px;cursor:pointer;transition:all .2s;
+}
+.bdx-ex-btn:hover{background:var(--vl);color:#fff;}
+
+/* ═══════════════════════════
+   S5   BELNET INSIDE BROWSER
+   Interactive: Privacy level toggle
+═══════════════════════════ */
+.privacy-meter{
+  background:var(--ink);border-radius:var(--r16);overflow:hidden;
+  box-shadow:0 8px 40px rgba(15,20,40,.3);
+}
+.pm-header{
+  background:#1A2038;border-bottom:1px solid rgba(255,255,255,.08);
+  padding:1.1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;
+}
+.pm-title{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.pm-level{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;}
+.pm-body{padding:1.5rem;}
+.pm-modes{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.25rem;}
+.pm-mode{
+  display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;
+  border-radius:10px;border:2px solid;cursor:pointer;transition:all .22s;
+}
+.pm-mode.sel{border-color:var(--vl);background:rgba(124,58,237,.12);}
+.pm-mode.unsel{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03);}
+.pm-mode:hover.unsel{border-color:rgba(124,58,237,.3);}
+.pm-radio{width:18px;height:18px;border-radius:50%;border:2.5px solid;flex-shrink:0;}
+.pm-mode.sel  .pm-radio{border-color:var(--vl);background:var(--vl);}
+.pm-mode.unsel .pm-radio{border-color:rgba(255,255,255,.25);}
+.pm-mode-icon{font-size:1.3rem;flex-shrink:0;}
+.pm-mode-title{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:#fff;}
+.pm-mode-desc{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:.1rem;}
+.pm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;}
+.pm-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.75rem .85rem;text-align:center;}
+.pm-stat-val{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:.18rem;}
+.pm-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+
+/* ═══════════════════════════
+   DOWNLOAD SECTION
+═══════════════════════════ */
+.dl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+.dlc{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:var(--r16);padding:1.5rem 1rem;text-align:center;text-decoration:none;color:#fff;display:flex;flex-direction:column;align-items:center;gap:.55rem;transition:all .22s;}
+.dlc:hover{background:rgba(124,58,237,.15);border-color:var(--vl3);transform:translateY(-3px);}
+.dlc.soon{opacity:.35;cursor:not-allowed;}
+.dlc.soon:hover{transform:none;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);}
+.dlc-ico{font-size:2.2rem;}
+.dlc-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;}
+.dlc-sub{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+
+/* ── Responsive ── */
+@media(max-width:1000px){.hero-grid,.two{grid-template-columns:1fr;}.browser-mock,.hero-arch{order:2;}.four{grid-template-columns:1fr 1fr;}.dl-grid{grid-template-columns:1fr 1fr;}.hero-stats{grid-template-columns:1fr 1fr;}.pm-stats{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.w{padding:0 1.25rem;}.three,.four{grid-template-columns:1fr;}.dl-grid{grid-template-columns:1fr 1fr;}.pm-stats{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="pg"><div id="pf"></div></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-row">
+    <a class="nav-logo" href="#">Beldex<span>Browser</span></a>
+    <div class="nav-badge">Level 1</div>
+    <a class="nav-dl" href="#download">Download Free</a>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════
+     HERO
+═══════════════════════════════════ -->
+<section id="hero">
+<div class="hero-bg-grid"></div>
+<div class="hero-glow"></div>
+<div class="w">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag">Privacy Browser · Built on Chromium · Level 1 Guide</div>
+      <h1>Your browser is<br>watching <span class="vl">everything.</span></h1>
+      <p class="hero-sub">Chrome, Firefox, and Safari are built to collect data about you. Every website you visit, every search you make, every ad you see is tracked, stored, and sold. Beldex Browser works the same way but does the complete opposite: it blocks tracking, hides your identity, and gives you a built-in crypto wallet. No setup needed.</p>
+      <div class="hero-btns">
+        <a class="btn btn-vl" href="#s1">Show Me How</a>
+        <a class="btn btn-out-ink" href="#download">Download Free</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hst"><div class="hst-n" style="color:var(--vl3)">0</div><div class="hst-l">Ads Shown</div></div>
+        <div class="hst"><div class="hst-n" style="color:#F87171">0</div><div class="hst-l">Trackers Loaded</div></div>
+        <div class="hst"><div class="hst-n" style="color:#34D399;font-size:1.1rem;">Built-in</div><div class="hst-l">BDX Wallet</div></div>
+        <div class="hst"><div class="hst-n" style="color:var(--am3)">0</div><div class="hst-l">Google Telemetry</div></div>
+      </div>
+    </div>
+
+    <!-- Animated intercept canvas -->
+    <div class="hero-canvas-area">
+      <div class="hero-live-bar">
+        <div class="hlb-dot"></div>
+        <div class="hlb-label">Live interception active</div>
+        <div style="margin-left:auto;display:flex;align-items:baseline;gap:.35rem;">
+          <div class="hlb-counter" id="heroBlockCount">0</div>
+          <div class="hlb-counter-label">blocked</div>
+        </div>
+      </div>
+      <canvas id="heroCanvas" height="360"></canvas>
+      <div class="hero-url-bar">
+        <span class="hub-lock">🔒</span>
+        <span class="hub-url" id="hubUrl">privacynews.bdx</span>
+        <div class="hub-shield">🛡 Protected</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ch-strip">
+  <div class="chs-inner">
+    <a class="ch-item" href="#s1"><span class="ch-n">01</span><span class="ch-t">Why Browsers Track You</span></a>
+    <a class="ch-item" href="#s2"><span class="ch-n">02</span><span class="ch-t">How It Protects You</span></a>
+    <a class="ch-item" href="#s3"><span class="ch-n">03</span><span class="ch-t">Built-in Wallet</span></a>
+    <a class="ch-item" href="#s4"><span class="ch-n">04</span><span class="ch-t">.bdx Websites</span></a>
+    <a class="ch-item" href="#s5"><span class="ch-n">05</span><span class="ch-t">BelNet Inside</span></a>
+    <a class="ch-item" href="#download"><span class="ch-n">06</span><span class="ch-t">Download</span></a>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     S1   WHY REGULAR BROWSERS TRACK YOU
+     Interactive: Click a site to see its trackers
+═══════════════════════════════════ -->
+<section id="s1" class="sec sec-sand">
+<div class="w">
+  <div class="sec-tag si">Section 01</div>
+  <h2 class="si d1">Every website you visit<br>sends <span class="vl">your data</span> to dozens<br>of other companies.</h2>
+  <p class="si d2" style="font-size:1.05rem;max-width:680px;margin:.9rem 0 2.5rem;">You visit one website. But that website secretly loads tracking scripts from Google, Facebook, advertising networks, and data brokers   all without your knowledge. Each of those companies now knows you visited that site. Over time, they build a complete profile of your life.</p>
+
+  <div class="two si d1">
+    <div>
+      <h3 style="margin-bottom:.85rem;">Click a website to see what it loads on your device</h3>
+      <div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem;" id="siteButtons">
+        <button class="td-visit-btn" style="background:var(--ink);margin:0;border-radius:8px;" onclick="visitSite('news')">📰 Visit a news website</button>
+        <button class="td-visit-btn" style="background:var(--ink);margin:0;border-radius:8px;" onclick="visitSite('shop')">🛍 Visit an online shop</button>
+        <button class="td-visit-btn" style="background:var(--ink);margin:0;border-radius:8px;" onclick="visitSite('social')">💬 Visit a social media site</button>
+        <button class="td-visit-btn" style="background:var(--ink);margin:0;border-radius:8px;" onclick="visitSite('health')">🏥 Visit a health information site</button>
+      </div>
+      <div class="callout cl-rs">
+        <div class="cl-head">Why does this happen?</div>
+        <p>Websites earn money by showing you targeted ads. To target ads at you, advertising companies need to know who you are and what you are interested in. So they pay websites to secretly embed tracking scripts that follow you around the internet. You never agreed to this. You never see it happening. It runs automatically the moment the page loads.</p>
+      </div>
+    </div>
+    <div class="tracker-demo si d2">
+      <div class="td-header">
+        <div class="td-dots">
+          <div class="td-dot" style="background:#FF5F57"></div>
+          <div class="td-dot" style="background:#FEBC2E"></div>
+          <div class="td-dot" style="background:#28C840"></div>
+        </div>
+        <div class="td-url" id="tdUrl">Click a website on the left</div>
+      </div>
+      <div class="td-body" id="tdBody">
+        <div style="text-align:center;padding:2rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(255,255,255,.25);">
+          Select a website to see<br>what loads in your browser
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     S2   HOW IT PROTECTS YOU
+     Interactive: Feature toggles
+═══════════════════════════════════ -->
+<section id="s2" class="sec sec-pearl">
+<div class="w">
+  <div class="sec-tag si">Section 02</div>
+  <h2 class="si d1">Beldex Browser blocks all of<br>this <span class="vl">by default.</span></h2>
+  <p class="si d2" style="font-size:1.05rem;max-width:680px;margin:.9rem 0 2.5rem;">No extensions to install. No settings to configure. Every protection below is turned on the moment you open Beldex Browser for the first time. Toggle each protection off below to see what life looks like without it   and why it matters.</p>
+
+  <div class="two si d1">
+    <div>
+      <div class="feature-list" id="featList">
+        <div class="feat-row on" id="fr-adblock">
+          <div class="feat-icon">🚫</div>
+          <div style="flex:1;">
+            <div class="feat-name">Ad Blocker</div>
+            <div class="feat-desc">Removes all advertisements from every website you visit</div>
+          </div>
+          <div class="feat-status">Active</div>
+          <button class="feat-toggle on" onclick="toggleFeat('adblock',this)"></button>
+        </div>
+        <div class="feat-row on" id="fr-tracker">
+          <div class="feat-icon">🕵️</div>
+          <div style="flex:1;">
+            <div class="feat-name">Tracker Blocker</div>
+            <div class="feat-desc">Stops Google Analytics, Facebook Pixel, and hundreds of other tracking scripts from loading</div>
+          </div>
+          <div class="feat-status">Active</div>
+          <button class="feat-toggle on" onclick="toggleFeat('tracker',this)"></button>
+        </div>
+        <div class="feat-row on" id="fr-fingerprint">
+          <div class="feat-icon">🎭</div>
+          <div style="flex:1;">
+            <div class="feat-name">Fingerprint Protection</div>
+            <div class="feat-desc">Prevents websites from identifying your device by its unique technical characteristics</div>
+          </div>
+          <div class="feat-status">Active</div>
+          <button class="feat-toggle on" onclick="toggleFeat('fingerprint',this)"></button>
+        </div>
+        <div class="feat-row on" id="fr-https">
+          <div class="feat-icon">🔒</div>
+          <div style="flex:1;">
+            <div class="feat-name">HTTPS Everywhere</div>
+            <div class="feat-desc">Forces all connections to use encrypted HTTPS instead of unencrypted HTTP</div>
+          </div>
+          <div class="feat-status">Active</div>
+          <button class="feat-toggle on" onclick="toggleFeat('https',this)"></button>
+        </div>
+        <div class="feat-row on" id="fr-cookies">
+          <div class="feat-icon">🍪</div>
+          <div style="flex:1;">
+            <div class="feat-name">Cookie Control</div>
+            <div class="feat-desc">Blocks third-party cookies that track you across different websites</div>
+          </div>
+          <div class="feat-status">Active</div>
+          <button class="feat-toggle on" onclick="toggleFeat('cookies',this)"></button>
+        </div>
+      </div>
+      <div class="feat-summary si d3" id="featSummary"></div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:1rem;">What makes this different from Chrome?</h3>
+      <p style="margin-bottom:1rem;">Chrome is made by Google. Google is the world's largest advertising company. Chrome's privacy protections are deliberately limited because blocking too much tracking hurts Google's core business. Every "privacy feature" in Chrome has exceptions that still allow Google to track you.</p>
+      <p style="margin-bottom:1rem;">Beldex Browser is built on Chromium (the open-source code that Chrome is based on)   so all your existing websites, extensions, and bookmarks work exactly the same. The difference is that all Google services and telemetry have been removed and replaced with genuine privacy protections.</p>
+      <div class="callout cl-vl">
+        <div class="cl-head">Built on Chromium   works with everything</div>
+        <p>Since Beldex Browser uses the same Chromium engine as Chrome, every website that works in Chrome works identically in Beldex Browser. You do not lose any functionality. You only gain privacy.</p>
+      </div>
+      <div class="callout cl-am">
+        <div class="cl-head">What about Brave Browser?</div>
+        <p>Brave is also a privacy browser built on Chromium. Beldex Browser goes further by integrating natively with the Beldex ecosystem: a built-in BDX wallet, .bdx domain resolution through BNS, and optional BelNet routing   all features that Brave does not have.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     S3   BUILT-IN CRYPTO WALLET
+     Interactive: Wallet send/receive/history
+═══════════════════════════════════ -->
+<section id="s3" class="sec sec-sand">
+<div class="w">
+  <div class="sec-tag si">Section 03</div>
+  <h2 class="si d1">No separate app needed.<br>Your <span class="am">BDX wallet</span> lives<br>inside the browser.</h2>
+  <p class="si d2" style="font-size:1.05rem;max-width:680px;margin:.9rem 0 2.5rem;">Most crypto wallets require a separate app or browser extension. Beldex Browser has a full BDX wallet built directly into the browser toolbar. Send and receive BDX without leaving the page you are reading. Try the interactive wallet below.</p>
+
+  <div class="two si d1">
+    <div>
+      <h3 style="margin-bottom:.85rem;">Why a browser wallet makes sense</h3>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;">
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="font-size:1.25rem;flex-shrink:0;">🔐</div>
+          <div>
+            <strong>Your keys stay on your device.</strong>
+            <p style="font-size:.9rem;margin-top:.15rem;">Your private key is stored locally in the browser, encrypted with your password. It never leaves your device and is never sent to any server   not even Beldex servers.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="font-size:1.25rem;flex-shrink:0;">🌐</div>
+          <div>
+            <strong>Pay on any .bdx website directly.</strong>
+            <p style="font-size:.9rem;margin-top:.15rem;">When you visit a BelNet-hosted website at a .bdx address, the built-in wallet lets you pay instantly without copying addresses between apps.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:.85rem;align-items:flex-start;">
+          <div style="font-size:1.25rem;flex-shrink:0;">🔒</div>
+          <div>
+            <strong>Privacy-preserving transactions.</strong>
+            <p style="font-size:.9rem;margin-top:.15rem;">BDX transactions use ring signatures and stealth addresses. Nobody can look up your wallet address and see your balance or transaction history   not even on the blockchain.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout cl-am">
+        <div class="cl-head">Important: Back up your seed phrase</div>
+        <p>When you create a wallet, you get a 25-word seed phrase. Write it down and keep it safe offline. This is the only way to recover your wallet if you lose access to your device. Nobody can help you recover it if you lose this phrase.</p>
+      </div>
+    </div>
+
+    <div class="wallet-mock si d2">
+      <div class="wm-header">
+        <div class="wm-label">Paru's Beldex Browser Wallet</div>
+        <div class="wm-balance">2,450.00 <span style="font-size:1.1rem;font-weight:500;opacity:.7">BDX</span></div>
+        <div class="wm-usd">≈ $245.00 USD · Balance is private on-chain</div>
+        <div class="wm-tabs">
+          <button class="wm-tab active" onclick="wmTab('send',this)">Send</button>
+          <button class="wm-tab inactive" onclick="wmTab('receive',this)">Receive</button>
+          <button class="wm-tab inactive" onclick="wmTab('history',this)">History</button>
+        </div>
+      </div>
+      <div class="wm-body">
+        <!-- Send -->
+        <div class="wm-panel show" id="wm-send">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.5rem;">Recipient address</div>
+          <input class="wm-input" id="wmAddr" placeholder="bx... (paste BDX address here)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.5rem;">Amount (BDX)</div>
+              <input class="wm-input" id="wmAmt" placeholder="10.00" type="number">
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.5rem;">Fee (BDX)</div>
+              <input class="wm-input" value="0.001" readonly style="opacity:.5;">
+            </div>
+          </div>
+          <button class="wm-send-btn" onclick="wmSend()">Send BDX →</button>
+          <div class="wm-result" id="wmResult"></div>
+        </div>
+        <!-- Receive -->
+        <div class="wm-panel" id="wm-receive">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.55rem;">Your BDX address (one-time stealth address)</div>
+          <div class="wm-addr">bxKisore9xaQcPpT7pQi4AJh3vFnN2UqTR5rYWzBdHm1SrKL9nEtPcXvD7jMo4...</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.35);line-height:1.65;margin-top:.65rem;">Each transaction generates a fresh stealth address. Nobody scanning the blockchain can link two payments to the same wallet.</div>
+        </div>
+        <!-- History -->
+        <div class="wm-panel" id="wm-history">
+          <div class="wm-tx">
+            <div class="wm-tx-icon">↗</div>
+            <div class="wm-tx-desc">
+              <div class="wm-tx-label">Sent to Suhail</div>
+              <div class="wm-tx-date">Today 14:23 · bxSuhail9xQcPp...</div>
+            </div>
+            <div class="wm-tx-amount out">-50 BDX</div>
+          </div>
+          <div class="wm-tx">
+            <div class="wm-tx-icon">↙</div>
+            <div class="wm-tx-desc">
+              <div class="wm-tx-label">Received from Jothi</div>
+              <div class="wm-tx-date">Yesterday 09:11 · bxJothi4xRcMm...</div>
+            </div>
+            <div class="wm-tx-amount in">+200 BDX</div>
+          </div>
+          <div class="wm-tx">
+            <div class="wm-tx-icon">↗</div>
+            <div class="wm-tx-desc">
+              <div class="wm-tx-label">Paid privacynews.bdx subscription</div>
+              <div class="wm-tx-date">2 days ago · via BNS payment</div>
+            </div>
+            <div class="wm-tx-amount out">-25 BDX</div>
+          </div>
+          <div class="wm-tx">
+            <div class="wm-tx-icon">↙</div>
+            <div class="wm-tx-desc">
+              <div class="wm-tx-label">Received from Bhava</div>
+              <div class="wm-tx-date">5 days ago · bxBhava3xMcNn...</div>
+            </div>
+            <div class="wm-tx-amount in">+500 BDX</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     S4   .bdx WEBSITES
+     Interactive: Address bar demo
+═══════════════════════════════════ -->
+<section id="s4" class="sec sec-pearl">
+<div class="w">
+  <div class="sec-tag si">Section 04</div>
+  <h2 class="si d1">Regular browsers cannot<br>open <span class="tl">.bdx websites.</span><br>Beldex Browser can.</h2>
+  <p class="si d2" style="font-size:1.05rem;max-width:680px;margin:.9rem 0 2.5rem;">A .bdx domain is a website address registered on the Beldex blockchain. It cannot be censored, taken down, or seized by any authority. Regular browsers like Chrome cannot open these addresses   they have no way to resolve a blockchain domain. Beldex Browser has the Beldex Name System (BNS) built in, so .bdx addresses work exactly like normal website URLs.</p>
+
+  <div class="two si d1">
+    <div>
+      <h3 style="margin-bottom:1rem;">Why .bdx websites are different</h3>
+      <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;">
+        <div style="padding:.9rem 1rem;background:#fff;border-radius:var(--r12);border:1px solid var(--br);border-left:3px solid var(--vl);">
+          <strong style="font-size:.95rem;">Regular domain (google.com)</strong>
+          <p style="font-size:.88rem;margin-top:.2rem;color:var(--txm);">Registered through ICANN-authorized registrars. Can be suspended, seized, or redirected by governments and courts. When the registrar complies with a takedown order, the domain disappears.</p>
+        </div>
+        <div style="padding:.9rem 1rem;background:#fff;border-radius:var(--r12);border:1px solid var(--br);border-left:3px solid var(--tl);">
+          <strong style="font-size:.95rem;">.bdx domain (privacynews.bdx)</strong>
+          <p style="font-size:.88rem;margin-top:.2rem;color:var(--txm);">Registered on the Beldex blockchain for 5 BDX. The record is cryptographically permanent   no registrar, no takedown authority, no ICANN. The domain exists as long as the Beldex network exists.</p>
+        </div>
+      </div>
+      <p style="font-size:.95rem;color:var(--tx2);margin-bottom:1.25rem;">Try typing any .bdx address in the browser bar below. Beldex Browser uses BNS (Beldex Name System) to look up the address directly on the blockchain and open the website.</p>
+      <div class="bdx-examples">
+        <div class="bdx-ex-btn" onclick="tryBdx('privacynews.bdx')">privacynews.bdx</div>
+        <div class="bdx-ex-btn" onclick="tryBdx('bhava-blog.bdx')">bhava-blog.bdx</div>
+        <div class="bdx-ex-btn" onclick="tryBdx('kisore-shop.bdx')">kisore-shop.bdx</div>
+        <div class="bdx-ex-btn" onclick="tryBdx('bdx-market.bdx')">bdx-market.bdx</div>
+        <div class="bdx-ex-btn" onclick="tryBdx('paru-radio.bdx')">paru-radio.bdx</div>
+      </div>
+    </div>
+
+    <div class="addr-sim si d2">
+      <div class="as-chrome-bar">
+        <div class="asc-dots">
+          <div class="asc-dot" style="background:#FF5F57"></div>
+          <div class="asc-dot" style="background:#FEBC2E"></div>
+          <div class="asc-dot" style="background:#28C840"></div>
+        </div>
+        <div class="asc-nav">
+          <span class="asc-navbtn">←</span>
+          <span class="asc-navbtn">→</span>
+          <span class="asc-navbtn">↻</span>
+        </div>
+        <div class="asc-addr-wrap">
+          <span class="asc-lock">🔒</span>
+          <input class="asc-addr" id="bdxInput" placeholder="Type any .bdx address and press Enter" value="privacynews.bdx" onkeydown="if(event.key==='Enter')openBdx()">
+        </div>
+      </div>
+      <div class="as-loading" id="bdxLoading">
+        <div class="as-spinner"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--txm);">Resolving BNS record on Beldex blockchain...</div>
+      </div>
+      <div class="as-result" id="bdxResult">
+        <!-- filled by JS -->
+      </div>
+      <div class="as-error" id="bdxError">
+        <div style="font-size:1.5rem;margin-bottom:.5rem;">⚠️</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--rs);">This address is not registered on the BNS. Try one of the example addresses.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout cl-tl si d3" style="margin-top:1.5rem;">
+    <div class="cl-head">How does BNS resolution work inside the browser?</div>
+    <p>When Suhail types <strong>privacynews.bdx</strong> in Beldex Browser, the browser sends a query directly to the Beldex blockchain (not to any DNS server). The blockchain returns the BelNet service address registered under that name. The browser then connects to that address through BelNet. The entire process happens automatically   from Suhail's perspective, it works exactly like typing a normal URL.</p>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     S5   BELNET INSIDE THE BROWSER
+     Interactive: Privacy mode selector
+═══════════════════════════════════ -->
+<section id="s5" class="sec sec-sand">
+<div class="w">
+  <div class="sec-tag si">Section 05</div>
+  <h2 class="si d1">Go fully invisible with<br><span class="vl">BelNet routing</span><br>inside the browser.</h2>
+  <p class="si d2" style="font-size:1.05rem;max-width:680px;margin:.9rem 0 2.5rem;">Beldex Browser includes optional BelNet integration. When you enable BelNet routing, all your browser traffic is automatically routed through the BelNet decentralized VPN   through 3 relay nodes   before reaching the internet. No separate BelNet app required. Switch between privacy levels below to see how your protection changes.</p>
+
+  <div class="two si d1">
+    <div>
+      <h3 style="margin-bottom:1rem;">Three privacy levels   you choose</h3>
+      <div style="display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.5rem;">
+        <div style="padding:1rem;background:#fff;border-radius:var(--r12);border:1.5px solid var(--br);border-left:3px solid var(--gr);">
+          <strong>Level 1   Standard Privacy</strong>
+          <p style="font-size:.88rem;margin-top:.25rem;color:var(--txm);">Ads and trackers blocked. HTTPS enforced. Cookie control active. Your IP address is still visible to websites. Good for everyday browsing where speed matters.</p>
+        </div>
+        <div style="padding:1rem;background:#fff;border-radius:var(--r12);border:1.5px solid var(--br);border-left:3px solid var(--vl);">
+          <strong>Level 2   Private Window Mode</strong>
+          <p style="font-size:.88rem;margin-top:.25rem;color:var(--txm);">Everything in Level 1 plus no browsing history saved, no cookies retained after the session, and enhanced fingerprint protection. Your IP is still visible. Good for private sessions on shared devices.</p>
+        </div>
+        <div style="padding:1rem;background:#fff;border-radius:var(--r12);border:1.5px solid var(--br);border-left:3px solid var(--am);">
+          <strong>Level 3   BelNet Routing Active</strong>
+          <p style="font-size:.88rem;margin-top:.25rem;color:var(--txm);">Everything in Level 2 plus your traffic routes through the BelNet decentralized VPN. Your real IP address is completely hidden from every website you visit. Maximum privacy   some speed reduction.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="privacy-meter si d2">
+      <div class="pm-header">
+        <div class="pm-title">Privacy level simulator</div>
+        <div class="pm-level" id="pmLevelLabel" style="color:var(--am3)">BelNet Active</div>
+      </div>
+      <div class="pm-body">
+        <div class="pm-modes">
+          <div class="pm-mode unsel" id="pm-std" onclick="setPm('std')">
+            <div class="pm-radio"></div>
+            <div class="pm-mode-icon">🛡️</div>
+            <div>
+              <div class="pm-mode-title">Standard Privacy</div>
+              <div class="pm-mode-desc">Trackers blocked · Your IP visible</div>
+            </div>
+          </div>
+          <div class="pm-mode unsel" id="pm-priv" onclick="setPm('priv')">
+            <div class="pm-radio"></div>
+            <div class="pm-mode-icon">🔒</div>
+            <div>
+              <div class="pm-mode-title">Private Window</div>
+              <div class="pm-mode-desc">No history · Your IP visible</div>
+            </div>
+          </div>
+          <div class="pm-mode sel" id="pm-belnet" onclick="setPm('belnet')">
+            <div class="pm-radio"></div>
+            <div class="pm-mode-icon">🌐</div>
+            <div>
+              <div class="pm-mode-title">BelNet Routing</div>
+              <div class="pm-mode-desc">3-hop VPN · IP completely hidden</div>
+            </div>
+          </div>
+        </div>
+        <div class="pm-stats" id="pmStats">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════════════
+     DOWNLOAD
+═══════════════════════════════════ -->
+<section id="download" class="sec sec-deep">
+<div class="w">
+  <div style="text-align:center;margin-bottom:2.5rem;" class="si">
+    <div class="sec-tag si" style="justify-content:center;color:rgba(124,58,237,.8);">Download Beldex Browser Free</div>
+    <h2 style="color:#fff;margin:.5rem 0 1rem;">Switch in 2 minutes.<br><span style="color:var(--vl3)">Keep all your bookmarks.</span></h2>
+    <p style="max-width:500px;margin:0 auto;color:rgba(255,255,255,.6);line-height:1.85;">Beldex Browser is based on Chromium   so all your Chrome extensions, bookmarks, and websites work identically. The only difference is that nobody is watching anymore.</p>
+  </div>
+  <div class="dl-grid si d1">
+    <a class="dlc" href="https://github.com/Beldex-Coin/beldex-browser/releases" target="_blank">
+      <div class="dlc-ico">🪟</div>
+      <div class="dlc-name">Windows</div>
+      <div class="dlc-sub">Installer</div>
+      <div style="color:var(--vl3);font-size:.7rem;">↗</div>
+    </a>
+    <a class="dlc" href="https://github.com/Beldex-Coin/beldex-browser/releases" target="_blank">
+      <div class="dlc-ico">🍏</div>
+      <div class="dlc-name">macOS</div>
+      <div class="dlc-sub">DMG</div>
+      <div style="color:var(--vl3);font-size:.7rem;">↗</div>
+    </a>
+    <a class="dlc" href="https://github.com/Beldex-Coin/beldex-browser/releases" target="_blank">
+      <div class="dlc-ico">🐧</div>
+      <div class="dlc-name">Linux</div>
+      <div class="dlc-sub">AppImage / DEB</div>
+      <div style="color:var(--vl3);font-size:.7rem;">↗</div>
+    </a>
+    <a class="dlc" href="https://github.com/Beldex-Coin/beldex-browser/releases" target="_blank">
+      <div class="dlc-ico">🤖</div>
+      <div class="dlc-name">Android</div>
+      <div class="dlc-sub">APK</div>
+      <div style="color:var(--vl3);font-size:.7rem;">↗</div>
+    </a>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem;" class="si d2">
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r12);padding:1.25rem;">
+      <div style="font-size:1.5rem;margin-bottom:.5rem;">⚡</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.35rem;">Works with Chrome extensions</div>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.5);">Because it is built on Chromium, the Chrome Web Store extensions work in Beldex Browser too.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r12);padding:1.25rem;">
+      <div style="font-size:1.5rem;margin-bottom:.5rem;">📦</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.35rem;">Import bookmarks instantly</div>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.5);">One-click import from Chrome, Firefox, or any other browser. Your bookmarks and passwords come with you.</p>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r12);padding:1.25rem;">
+      <div style="font-size:1.5rem;margin-bottom:.5rem;">🔓</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.35rem;">Free and open source</div>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.5);">The full source code is publicly available on GitHub. Anyone can inspect it and verify the privacy claims.</p>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;" class="si d3">
+    <p style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.18);">Beldex Browser · Built on Chromium · Open Source · beldex.io · github.com/Beldex-Coin</p>
+  </div>
+</div>
+</section>
+
+
+<script>
+'use strict';
+
+/* ── Progress bar ── */
+window.addEventListener('scroll',function(){
+  var h=document.documentElement;
+  var p=(window.scrollY/(h.scrollHeight-window.innerHeight))*100;
+  var b=document.getElementById('pf');if(b)b.style.width=Math.min(100,p)+'%';
+},{passive:true});
+
+/* ── Scroll reveal ── */
+var sObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});
+},{threshold:0.06});
+document.querySelectorAll('.si').forEach(function(el){sObs.observe(el);});
+/* Immediately reveal above-fold elements */
+window.addEventListener('load',function(){
+  document.querySelectorAll('.si').forEach(function(el){
+    var r=el.getBoundingClientRect();
+    if(r.top<window.innerHeight)el.classList.add('on');
+  });
+  updateFeatSummary();
+  setPm('belnet');
+});
+
+/* ═══════════════════════════════
+   S1   Tracker demo
+═══════════════════════════════ */
+var SITE_DATA={
+  news:{
+    url:'bbc.com · front page',
+    trackers:[
+      {name:'Google Analytics',type:'Analytics',count:'count-red',n:3},
+      {name:'Chartbeat',type:'Analytics',count:'count-red',n:1},
+      {name:'DoubleClick',type:'Advertising',count:'count-red',n:8},
+      {name:'Facebook Pixel',type:'Social',count:'count-amber',n:1},
+      {name:'Nielsen / Comscore',type:'Analytics',count:'count-amber',n:2},
+      {name:'Scorecard Research',type:'Analytics',count:'count-red',n:1},
+    ],total:16
+  },
+  shop:{
+    url:'amazon.com · product page',
+    trackers:[
+      {name:'Google Analytics',type:'Analytics',count:'count-red',n:5},
+      {name:'Amazon Advertising',type:'Advertising',count:'count-red',n:12},
+      {name:'Facebook Pixel',type:'Social',count:'count-red',n:2},
+      {name:'Pinterest Tag',type:'Social',count:'count-amber',n:1},
+      {name:'Criteo (retargeting)',type:'Advertising',count:'count-red',n:4},
+      {name:'DoubleClick',type:'Advertising',count:'count-red',n:9},
+      {name:'Hotjar session recording',type:'Behaviour',count:'count-amber',n:1},
+    ],total:34
+  },
+  social:{
+    url:'twitter.com · home timeline',
+    trackers:[
+      {name:'Twitter Analytics',type:'Analytics',count:'count-red',n:6},
+      {name:'Google Analytics',type:'Analytics',count:'count-red',n:2},
+      {name:'MoPub (Twitter ads)',type:'Advertising',count:'count-red',n:11},
+      {name:'Amplitude (behaviour)',type:'Behaviour',count:'count-red',n:3},
+      {name:'Adjust (app tracking)',type:'Attribution',count:'count-amber',n:2},
+    ],total:24
+  },
+  health:{
+    url:'webmd.com · symptoms page',
+    trackers:[
+      {name:'Google Analytics',type:'Analytics',count:'count-red',n:4},
+      {name:'DoubleClick',type:'Advertising',count:'count-red',n:7},
+      {name:'Ezoic (ad platform)',type:'Advertising',count:'count-red',n:5},
+      {name:'Mediavine',type:'Advertising',count:'count-red',n:3},
+      {name:'Facebook Pixel',type:'Social',count:'count-red',n:1},
+      {name:'Full Story (session)',type:'Behaviour',count:'count-red',n:1},
+      {name:'Heap Analytics',type:'Analytics',count:'count-amber',n:1},
+      {name:'Bing Ads UET tag',type:'Advertising',count:'count-amber',n:1},
+    ],total:23,
+    warning:'This health website sent your visit data to 8 different companies. They now know you searched for this medical topic. This data can affect insurance premiums, targeted ads, and credit scores.'
+  }
+};
+
+function visitSite(type){
+  var d=SITE_DATA[type];
+  var tdUrl=document.getElementById('tdUrl');
+  var tdBody=document.getElementById('tdBody');
+  if(tdUrl)tdUrl.textContent=d.url;
+  var html='';
+  d.trackers.forEach(function(t){
+    html+='<div class="td-counter"><span class="td-name">'+t.name+' <span style="opacity:.45">('+t.type+')</span></span><span class="td-count '+t.count+'">'+t.n+' requests</span></div>';
+  });
+  html+='<div class="td-total"><span class="td-total-label">Total external trackers loaded</span><span class="td-total-num">'+d.total+'</span></div>';
+  if(d.warning){
+    html+='<div style="margin-top:.85rem;padding:.75rem;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:8px;font-family:\'JetBrains Mono\',monospace;font-size:.65rem;color:#FCD34D;line-height:1.65;">⚠ '+d.warning+'</div>';
+  }
+  html+='<div class="td-hint">In a regular browser, all of this runs automatically and invisibly</div>';
+  if(tdBody)tdBody.innerHTML=html;
+}
+
+/* ═══════════════════════════════
+   S2   Feature toggles
+═══════════════════════════════ */
+var featState={adblock:true,tracker:true,fingerprint:true,https:true,cookies:true};
+var featInfo={
+  adblock:'Ad Blocker is ON',
+  tracker:'Tracker Blocker is ON',
+  fingerprint:'Fingerprint Protection is ON',
+  https:'HTTPS Everywhere is ON',
+  cookies:'Cookie Control is ON'
+};
+var featOffWarn={
+  adblock:'Ad Blocker is OFF   you will see all advertisements',
+  tracker:'Tracker Blocker is OFF   Google Analytics, Facebook Pixel, and hundreds of other tracking scripts will run on every page',
+  fingerprint:'Fingerprint Protection is OFF   websites can identify your device by its unique combination of screen size, fonts, plugins, and hardware characteristics',
+  https:'HTTPS Everywhere is OFF   some connections may be unencrypted',
+  cookies:'Cookie Control is OFF   third-party cookies will track you across different websites'
+};
+
+function toggleFeat(id,btn){
+  featState[id]=!featState[id];
+  var on=featState[id];
+  var row=document.getElementById('fr-'+id);
+  if(row){
+    row.className='feat-row '+(on?'on':'off');
+    row.querySelector('.feat-status').textContent=on?'Active':'Disabled';
+  }
+  btn.className='feat-toggle '+(on?'on':'off');
+  updateFeatSummary();
+}
+function updateFeatSummary(){
+  var el=document.getElementById('featSummary');if(!el)return;
+  var on=Object.keys(featState).filter(function(k){return featState[k];}).length;
+  var off=Object.keys(featState).filter(function(k){return !featState[k];}).length;
+  var html='<strong style="color:var(--ink)">';
+  if(off===0){
+    html+='<span style="color:var(--gr)">All 5 protections are active.</span></strong> Beldex Browser is running at full privacy.';
+  } else {
+    html+='<span style="color:var(--rs)">'+off+' protection'+(off>1?'s':'')+' disabled.</span></strong> ';
+    var warns=Object.keys(featState).filter(function(k){return !featState[k];}).map(function(k){return featOffWarn[k];});
+    html+=warns[0];
+  }
+  el.innerHTML=html;
+}
+
+/* ═══════════════════════════════
+   S3   Wallet tabs
+═══════════════════════════════ */
+function wmTab(tab,btn){
+  document.querySelectorAll('.wm-tab').forEach(function(b){b.className='wm-tab inactive';});
+  btn.className='wm-tab active';
+  document.querySelectorAll('.wm-panel').forEach(function(p){p.className='wm-panel';});
+  var panel=document.getElementById('wm-'+tab);
+  if(panel)panel.className='wm-panel show';
+}
+function wmSend(){
+  var addr=document.getElementById('wmAddr').value.trim();
+  var amt=document.getElementById('wmAmt').value.trim();
+  var res=document.getElementById('wmResult');
+  if(!res)return;
+  if(!addr){res.className='wm-result show err';res.textContent='Please enter a recipient BDX address.';return;}
+  if(!amt||isNaN(parseFloat(amt))||parseFloat(amt)<=0){res.className='wm-result show err';res.textContent='Please enter a valid BDX amount.';return;}
+  if(parseFloat(amt)>2450){res.className='wm-result show err';res.textContent='Insufficient balance. You have 2,450 BDX.';return;}
+  res.className='wm-result show ok';
+  res.innerHTML='Transaction broadcast to Beldex network.\nAmount: '+parseFloat(amt).toFixed(3)+' BDX\nFee: 0.001 BDX\nEstimated confirmation: ~2 minutes\nTransaction is private   amount and recipient hidden on-chain.';
+}
+
+/* ═══════════════════════════════
+   S4   .bdx address bar
+═══════════════════════════════ */
+var BDX_SITES={
+  'privacynews.bdx':{icon:'📰',name:'Privacy News Network',desc:'Censorship-resistant journalism',color:'var(--tl)',
+    content:'<div class="as-site-content-block"><h4>Breaking: Government Surveillance Bill Defeated</h4><p>The proposed Digital Surveillance Act was voted down today after widespread protests. Privacy advocates say this victory proves that public pressure works, but warn that similar legislation will return.</p><div style="display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.5rem;"><span class="as-site-tag" style="background:rgba(8,145,178,.1);color:var(--tl);">Privacy</span><span class="as-site-tag" style="background:rgba(124,58,237,.1);color:var(--vl);">Legislation</span><span class="as-site-tag" style="background:rgba(245,158,11,.1);color:var(--am);">Breaking</span></div></div><div class="as-site-content-block" style="margin-top:.5rem;"><h4>How VPNs Compare to Decentralized Networks</h4><p>Traditional VPNs route your traffic through a single company. Decentralized networks like BelNet split your traffic across independent nodes, so no single entity can see both who you are and what you access.</p></div>'},
+  'bhava-blog.bdx': {icon:'✍️',name:'Bhava\'s Personal Blog',desc:'Tech writing, free of tracking',color:'var(--vl)',
+    content:'<div class="as-site-content-block"><h4>Why I Moved My Blog to BelNet</h4><p>After years of paying for hosting that came with mandatory analytics, I decided to host my blog on BelNet. Zero tracking, zero ads, and my readers connect through encrypted tunnels. Here is how I set it up in under 30 minutes.</p><div style="display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.5rem;"><span class="as-site-tag" style="background:rgba(124,58,237,.1);color:var(--vl);">Tutorial</span><span class="as-site-tag" style="background:rgba(5,150,105,.1);color:var(--gr);">BelNet</span></div></div><div class="as-site-content-block" style="margin-top:.5rem;"><h4>Recent Posts</h4><div class="as-site-stat"><span class="as-site-stat-icon">📝</span><span>Setting up BNS domains</span><span class="as-site-stat-val">Mar 12</span></div><div class="as-site-stat"><span class="as-site-stat-icon">🔐</span><span>End-to-end encryption explained</span><span class="as-site-stat-val">Mar 8</span></div><div class="as-site-stat"><span class="as-site-stat-icon">💡</span><span>My privacy toolkit for 2026</span><span class="as-site-stat-val">Mar 1</span></div></div>'},
+  'kisore-shop.bdx':{icon:'🛒',name:'Kisore\'s Marketplace',desc:'Peer-to-peer store, pay with BDX',color:'var(--am)',
+    content:'<div class="as-site-content-block"><h4>Featured Products</h4><div class="as-site-stat"><span class="as-site-stat-icon">🔑</span><span>Hardware Wallet Pro</span><span class="as-site-stat-val" style="color:var(--am);">45 BDX</span></div><div class="as-site-stat"><span class="as-site-stat-icon">📱</span><span>Privacy Screen Protector</span><span class="as-site-stat-val" style="color:var(--am);">12 BDX</span></div><div class="as-site-stat"><span class="as-site-stat-icon">🛡️</span><span>Faraday Bag (Phone)</span><span class="as-site-stat-val" style="color:var(--am);">18 BDX</span></div><div class="as-site-stat"><span class="as-site-stat-icon">📡</span><span>USB Data Blocker</span><span class="as-site-stat-val" style="color:var(--am);">5 BDX</span></div></div><div class="as-site-content-block" style="margin-top:.5rem;"><p style="font-size:.78rem;color:var(--txm);">All payments processed privately via BDX. No credit cards, no payment processors, no purchase history tracked.</p></div>'},
+  'bdx-market.bdx': {icon:'📊',name:'BDX Exchange',desc:'Decentralized BDX trading',color:'var(--gr)',
+    content:'<div class="as-site-content-block"><h4>BDX / USDT Market</h4><div class="as-site-stat"><span class="as-site-stat-icon">💰</span><span>BDX Price</span><span class="as-site-stat-val" style="color:var(--gr);">$0.1002</span></div><div class="as-site-stat"><span class="as-site-stat-icon">📈</span><span>24h Change</span><span class="as-site-stat-val" style="color:var(--gr);">+3.4%</span></div><div class="as-site-stat"><span class="as-site-stat-icon">🔄</span><span>24h Volume</span><span class="as-site-stat-val">$1.2M</span></div><div class="as-site-stat"><span class="as-site-stat-icon">🏦</span><span>Market Cap</span><span class="as-site-stat-val">$142M</span></div></div><div class="as-site-content-block" style="margin-top:.5rem;"><p style="font-size:.78rem;color:var(--txm);">Trade directly from your Beldex Browser wallet. No account creation, no KYC, no trading history stored.</p></div>'},
+  'paru-radio.bdx': {icon:'📻',name:'Paru\'s Radio Station',desc:'Music streaming via BelNet',color:'#EF4444',
+    content:'<div class="as-site-content-block"><h4>Now Playing</h4><div class="as-site-stat" style="border-color:rgba(239,68,68,.2);"><span class="as-site-stat-icon">🎵</span><span style="font-weight:600;">Midnight Signal</span><span class="as-site-stat-val" style="color:#EF4444;">LIVE</span></div><div style="margin-top:.5rem;"><h4 style="font-size:.85rem;margin-bottom:.35rem;">Up Next</h4><div class="as-site-stat"><span class="as-site-stat-icon">🎶</span><span>Encrypted Dreams</span><span class="as-site-stat-val">3:42</span></div><div class="as-site-stat"><span class="as-site-stat-icon">🎶</span><span>Ghost Protocol</span><span class="as-site-stat-val">4:15</span></div><div class="as-site-stat"><span class="as-site-stat-icon">🎶</span><span>Zero Knowledge</span><span class="as-site-stat-val">2:58</span></div></div></div><div class="as-site-content-block" style="margin-top:.5rem;"><p style="font-size:.78rem;color:var(--txm);">Streaming through BelNet. No listener tracking, no algorithm, no data collection. Just music.</p></div>'},
+};
+function tryBdx(name){
+  var inp=document.getElementById('bdxInput');
+  if(inp)inp.value=name;
+  openBdx();
+}
+function openBdx(){
+  var inp=document.getElementById('bdxInput');
+  if(!inp)return;
+  var name=inp.value.trim().toLowerCase();
+  if(!name.endsWith('.bdx'))name=name+'.bdx';
+  document.getElementById('bdxLoading').className='as-loading show';
+  document.getElementById('bdxResult').className='as-result';
+  document.getElementById('bdxError').className='as-error';
+  setTimeout(function(){
+    document.getElementById('bdxLoading').className='as-loading';
+    var site=BDX_SITES[name];
+    if(site){
+      var resEl=document.getElementById('bdxResult');
+      resEl.innerHTML='<div class="as-site-header"><div class="as-site-icon">'+site.icon+'</div><div><div class="as-site-name">'+site.name+'</div><div class="as-site-bdx">'+name+'</div></div></div><div class="as-verified">✓ BNS verified · On-chain record · Cannot be censored</div>'+site.content;
+      resEl.className='as-result show';
+    } else {
+      document.getElementById('bdxError').className='as-error show';
+    }
+  },1200);
+}
+setTimeout(function(){openBdx();},600);
+
+/* ═══════════════════════════════
+   S5   Privacy mode selector
+═══════════════════════════════ */
+var PM_DATA={
+  std:{
+    label:'Standard Privacy',
+    col:'#34D399',
+    stats:[
+      {val:'12 blocked',lbl:'Trackers/page',col:'#34D399'},
+      {val:'Visible',lbl:'Your IP',col:'#F87171'},
+      {val:'Off',lbl:'BelNet VPN',col:'#94A3B8'},
+    ]
+  },
+  priv:{
+    label:'Private Window',
+    col:'var(--vl3)',
+    stats:[
+      {val:'12 blocked',lbl:'Trackers/page',col:'#34D399'},
+      {val:'Visible',lbl:'Your IP',col:'#F87171'},
+      {val:'Off',lbl:'BelNet VPN',col:'#94A3B8'},
+    ]
+  },
+  belnet:{
+    label:'BelNet Active',
+    col:'#FCD34D',
+    stats:[
+      {val:'All blocked',lbl:'Trackers/page',col:'#34D399'},
+      {val:'Hidden',lbl:'Your IP',col:'#34D399'},
+      {val:'3-hop VPN',lbl:'BelNet routing',col:'#FCD34D'},
+    ]
+  }
+};
+function setPm(mode){
+  ['std','priv','belnet'].forEach(function(m){
+    var el=document.getElementById('pm-'+m);
+    if(el)el.className='pm-mode '+(m===mode?'sel':'unsel');
+  });
+  var d=PM_DATA[mode];
+  var lbl=document.getElementById('pmLevelLabel');
+  if(lbl){lbl.textContent=d.label;lbl.style.color=d.col;}
+  var statsEl=document.getElementById('pmStats');
+  if(!statsEl)return;
+  statsEl.innerHTML=d.stats.map(function(s){
+    return '<div class="pm-stat"><div class="pm-stat-val" style="color:'+s.col+'">'+s.val+'</div><div class="pm-stat-lbl">'+s.lbl+'</div></div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   Hero Canvas   Live Tracker Intercept
+═══════════════════════════════════════ */
+(function(){
+  var canvas = document.getElementById('heroCanvas');
+  if(!canvas) return;
+
+  var dpr = window.devicePixelRatio||1;
+  var W=0, H=0;
+  var ctx;
+  var trackers=[], particles=[], contentPkts=[], shieldRings=[];
+  var blocked=0;
+  var afId=null;
+  var frame=0;
+
+  var TRACKER_NAMES=[
+    'google-analytics','facebook-pixel','doubleclick','hotjar',
+    'criteo','bing-ads','comscore','chartbeat','mixpanel',
+    'scorecard','nielsen','amazon-ads','twitter-pixel','tiktok-pixel'
+  ];
+  var TRACKER_COLS=[
+    '#F87171','#FCA5A5','#FBBF24','#FB923C',
+    '#F87171','#FCA5A5','#F87171','#FBBF24',
+    '#FCA5A5','#F87171','#FBBF24','#FB923C','#F87171','#FCA5A5'
+  ];
+
+  function resize(){
+    var par = canvas.parentElement;
+    W = par.clientWidth;
+    H = Math.round(W * 0.68);
+    canvas.style.width = W+'px';
+    canvas.style.height = H+'px';
+    canvas.width = Math.round(W*dpr);
+    canvas.height = Math.round(H*dpr);
+    ctx = canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+  }
+
+  /* Shield position   center of canvas */
+  function sx(){ return W*0.5; }
+  function sy(){ return H*0.5 - 20; }
+  /* Browser icon pos   left side */
+  function bx(){ return W*0.12; }
+  function by(){ return H*0.5 - 20; }
+  /* Internet side   right */
+  function ix(){ return W*0.88; }
+
+  /* Spawn a tracker orb from the right */
+  function spawnTracker(){
+    var i = Math.floor(Math.random()*TRACKER_NAMES.length);
+    var vy = (Math.random()-0.5)*0.6;
+    trackers.push({
+      x: ix() + 20,
+      y: H*0.15 + Math.random()*H*0.7,
+      vx: -(1.4 + Math.random()*1.1),
+      vy: vy,
+      label: TRACKER_NAMES[i],
+      col: TRACKER_COLS[i],
+      r: 5,
+      alpha: 1,
+      dead: false
+    });
+  }
+
+  /* Spawn a clean content packet from shield to browser */
+  function spawnContent(){
+    contentPkts.push({
+      x: sx(),
+      y: sy() + (Math.random()-0.5)*30,
+      vx: -(2.2 + Math.random()*0.8),
+      vy: (Math.random()-0.5)*0.3,
+      alpha: 1,
+      r: 4,
+      arrived: false
+    });
+  }
+
+  /* Explosion particles */
+  function explode(x,y,col){
+    for(var i=0;i<18;i++){
+      var ang = (i/18)*Math.PI*2;
+      var spd = 1.5 + Math.random()*2.5;
+      particles.push({
+        x:x, y:y,
+        vx: Math.cos(ang)*spd,
+        vy: Math.sin(ang)*spd,
+        col:col, r:2+Math.random()*2,
+        life:1, decay:0.04+Math.random()*0.03
+      });
+    }
+    /* Shield ring pulse */
+    shieldRings.push({x:sx(),y:sy(),r:0,maxR:60,life:1});
+  }
+
+  /* URL typewriter */
+  var URLS = ['privacynews.bdx','bhava-blog.bdx','kisore-shop.bdx','bdx-market.bdx','paru-radio.bdx'];
+  var urlIdx=0, urlChar=0, urlTimer=0, urlEl=null;
+  function tickUrl(){
+    urlTimer++;
+    if(!urlEl) urlEl=document.getElementById('hubUrl');
+    if(!urlEl) return;
+    if(urlTimer % 4 === 0){
+      var target = URLS[urlIdx];
+      if(urlChar <= target.length){
+        urlEl.textContent = target.slice(0,urlChar);
+        urlChar++;
+      } else if(urlTimer % 200 === 0){
+        urlIdx = (urlIdx+1) % URLS.length;
+        urlChar = 0;
+      }
+    }
+  }
+
+  function drawShield(){
+    var x=sx(), y=sy();
+    var t=frame*0.02;
+    /* Outer glow */
+    var g = ctx.createRadialGradient(x,y,0,x,y,55);
+    g.addColorStop(0,'rgba(124,58,237,0.18)');
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;
+    ctx.beginPath();ctx.arc(x,y,55,0,Math.PI*2);ctx.fill();
+
+    /* Rotating hex rings */
+    for(var ri=0;ri<2;ri++){
+      var rot = t*(ri===0?1:-0.7) + ri*Math.PI/6;
+      var hexR = 38 + ri*10;
+      ctx.save();ctx.translate(x,y);ctx.rotate(rot);
+      ctx.strokeStyle='rgba(167,139,250,'+(0.3+ri*0.1)+')';
+      ctx.lineWidth=1.5;
+      ctx.beginPath();
+      for(var hi=0;hi<6;hi++){
+        var ha=hi*Math.PI/3;
+        var hx2=Math.cos(ha)*hexR, hy2=Math.sin(ha)*hexR;
+        if(hi===0)ctx.moveTo(hx2,hy2);else ctx.lineTo(hx2,hy2);
+      }
+      ctx.closePath();ctx.stroke();
+      ctx.restore();
+    }
+
+    /* Core shield */
+    ctx.save();
+    var sc = ctx.createRadialGradient(x,y-4,0,x,y,28);
+    sc.addColorStop(0,'rgba(167,139,250,0.6)');
+    sc.addColorStop(0.6,'rgba(124,58,237,0.4)');
+    sc.addColorStop(1,'rgba(109,40,217,0.15)');
+    ctx.fillStyle=sc;
+    /* Shield shape path */
+    ctx.beginPath();
+    ctx.moveTo(x, y-26);
+    ctx.bezierCurveTo(x+18,y-26, x+28,y-14, x+28,y);
+    ctx.bezierCurveTo(x+28,y+16, x+14,y+28, x,y+34);
+    ctx.bezierCurveTo(x-14,y+28, x-28,y+16, x-28,y);
+    ctx.bezierCurveTo(x-28,y-14, x-18,y-26, x,y-26);
+    ctx.fill();
+    ctx.strokeStyle='rgba(167,139,250,0.8)';ctx.lineWidth=2;ctx.stroke();
+    ctx.restore();
+
+    /* BDX label */
+    ctx.font='bold 9px "JetBrains Mono",monospace';
+    ctx.fillStyle='rgba(255,255,255,0.85)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('BDX',x,y);
+  }
+
+  function drawBrowser(){
+    var x=bx(), y=by();
+    /* Device glow */
+    var dg=ctx.createRadialGradient(x,y,0,x,y,36);
+    dg.addColorStop(0,'rgba(56,189,248,.18)');dg.addColorStop(1,'transparent');
+    ctx.fillStyle=dg;ctx.beginPath();ctx.arc(x,y,36,0,Math.PI*2);ctx.fill();
+    /* Screen outline */
+    ctx.strokeStyle='rgba(56,189,248,.55)';ctx.lineWidth=2;
+    ctx.fillStyle='rgba(56,189,248,.07)';
+    ctx.beginPath();
+    var rx=x-24,ry=y-18,rw=48,rh=36,rr=5;
+    ctx.moveTo(rx+rr,ry);ctx.lineTo(rx+rw-rr,ry);ctx.quadraticCurveTo(rx+rw,ry,rx+rw,ry+rr);
+    ctx.lineTo(rx+rw,ry+rh-rr);ctx.quadraticCurveTo(rx+rw,ry+rh,rx+rw-rr,ry+rh);
+    ctx.lineTo(rx+rr,ry+rh);ctx.quadraticCurveTo(rx,ry+rh,rx,ry+rh-rr);
+    ctx.lineTo(rx,ry+rr);ctx.quadraticCurveTo(rx,ry,rx+rr,ry);ctx.closePath();
+    ctx.fill();ctx.stroke();
+    /* Screen content lines */
+    ctx.fillStyle='rgba(56,189,248,.3)';
+    ctx.fillRect(x-16,y-10,28,3);
+    ctx.fillStyle='rgba(56,189,248,.18)';
+    ctx.fillRect(x-16,y-4,20,3);
+    ctx.fillRect(x-16,y+3,24,3);
+    /* Stand */
+    ctx.strokeStyle='rgba(56,189,248,.3)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(x,y+18);ctx.lineTo(x,y+26);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-10,y+26);ctx.lineTo(x+10,y+26);ctx.stroke();
+    /* Protected badge */
+    ctx.font='bold 7px "JetBrains Mono",monospace';
+    ctx.fillStyle='rgba(52,211,153,.8)';
+    ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.fillText('PROTECTED',x,y+30);
+  }
+
+  function drawInternetSide(){
+    var x=ix(), y=H*0.5;
+    /* Server nodes */
+    var nodes=[
+      {dy:-80,col:'#F87171',lbl:'trackers'},
+      {dy:-30,col:'#FBBF24',lbl:'ads'},
+      {dy: 30,col:'#FCA5A5',lbl:'spyware'},
+      {dy: 80,col:'#F87171',lbl:'cookies'},
+    ];
+    nodes.forEach(function(n,i){
+      var ny=y+n.dy;
+      var p=0.5+Math.sin(frame*0.025+i)*0.5;
+      ctx.strokeStyle='rgba(248,113,113,'+(0.1+p*0.12)+')';
+      ctx.lineWidth=1;ctx.setLineDash([4,6]);
+      ctx.beginPath();ctx.moveTo(x,ny);ctx.lineTo(sx()+32,sy());ctx.stroke();
+      ctx.setLineDash([]);
+      var g=ctx.createRadialGradient(x,ny,0,x,ny,14);
+      g.addColorStop(0,'rgba(248,113,113,.25)');g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,ny,14,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(248,113,113,.7)';ctx.strokeStyle='rgba(248,113,113,.5)';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(x,ny,7,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.font='7px "JetBrains Mono",monospace';
+      ctx.fillStyle='rgba(248,113,113,.55)';
+      ctx.textAlign='center';ctx.textBaseline='top';
+      ctx.fillText(n.lbl,x,ny+10);
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    /* Dark bg */
+    ctx.fillStyle='#070B1A';ctx.fillRect(0,0,W,H);
+    /* Subtle grid */
+    ctx.strokeStyle='rgba(124,58,237,.05)';ctx.lineWidth=1;
+    for(var gx=0;gx<W;gx+=44){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
+    for(var gy=0;gy<H;gy+=44){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+
+    /* Shield rings (explosion pulses) */
+    shieldRings.forEach(function(r){
+      ctx.strokeStyle='rgba(167,139,250,'+r.life*0.6+')';
+      ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke();
+    });
+
+    drawInternetSide();
+    drawBrowser();
+    drawShield();
+
+    /* Clean content packets: browser to user */
+    contentPkts.forEach(function(p){
+      if(p.dead)return;
+      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r+5);
+      g.addColorStop(0,'rgba(56,189,248,'+p.alpha+')');
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r+5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(56,189,248,'+p.alpha+')';
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+    });
+
+    /* Tracker orbs */
+    trackers.forEach(function(t){
+      if(t.dead)return;
+      /* Glow */
+      ctx.save();ctx.globalAlpha=t.alpha*0.35;
+      var g2=ctx.createRadialGradient(t.x,t.y,0,t.x,t.y,t.r+8);
+      g2.addColorStop(0,t.col);g2.addColorStop(1,'transparent');
+      ctx.fillStyle=g2;ctx.beginPath();ctx.arc(t.x,t.y,t.r+8,0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      /* Core dot */
+      ctx.fillStyle=t.col;ctx.globalAlpha=t.alpha;
+      ctx.beginPath();ctx.arc(t.x,t.y,t.r,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;
+      /* Label */
+      ctx.save();ctx.globalAlpha=t.alpha*0.85;
+      ctx.font='bold 7px "JetBrains Mono",monospace';
+      ctx.fillStyle=t.col;ctx.textAlign='left';ctx.textBaseline='middle';
+      ctx.fillText(t.label,t.x+t.r+4,t.y);
+      ctx.restore();
+    });
+
+    /* Particles */
+    particles.forEach(function(p){
+      ctx.globalAlpha=p.life;
+      ctx.fillStyle=p.col;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  }
+
+  function tick(){
+    frame++;
+
+    /* Spawn trackers */
+    if(frame % 55 === 0) spawnTracker();
+    if(frame % 55 === 28) spawnTracker();
+
+    /* Spawn content packets */
+    if(frame % 90 === 0) spawnContent();
+
+    /* Move trackers */
+    for(var ti=trackers.length-1;ti>=0;ti--){
+      var t=trackers[ti];
+      t.x+=t.vx;t.y+=t.vy;
+      /* Hit shield? */
+      var dx=t.x-sx(), dy=t.y-sy();
+      var dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist < 32){
+        /* BLOCKED */
+        explode(t.x,t.y,t.col);
+        trackers.splice(ti,1);
+        blocked++;
+        var el=document.getElementById('heroBlockCount');
+        if(el)el.textContent=blocked;
+        continue;
+      }
+      if(t.x < -60) trackers.splice(ti,1);
+    }
+
+    /* Move content packets */
+    for(var ci=contentPkts.length-1;ci>=0;ci--){
+      var cp=contentPkts[ci];
+      cp.x+=cp.vx;cp.y+=cp.vy;
+      if(cp.x < bx()-10){
+        cp.alpha-=0.05;
+        if(cp.alpha<=0)contentPkts.splice(ci,1);
+      }
+      if(cp.x < -20)contentPkts.splice(ci,1);
+    }
+
+    /* Update particles */
+    for(var pi=particles.length-1;pi>=0;pi--){
+      var p=particles[pi];
+      p.x+=p.vx;p.y+=p.vy;
+      p.vx*=0.92;p.vy*=0.92;
+      p.life-=p.decay;
+      if(p.life<=0)particles.splice(pi,1);
+    }
+
+    /* Update shield rings */
+    for(var sri=shieldRings.length-1;sri>=0;sri--){
+      var sr=shieldRings[sri];
+      sr.r+=2.5;sr.life-=0.04;
+      if(sr.life<=0)shieldRings.splice(sri,1);
+    }
+
+    tickUrl();
+    draw();
+    afId=requestAnimationFrame(tick);
+  }
+
+  function init(){
+    resize();
+    /* Pre-spawn a few trackers */
+    for(var i=0;i<3;i++){
+      spawnTracker();
+      if(trackers[i]){
+        trackers[i].x = ix() - (i+1)*120;
+      }
+    }
+    tick();
+  }
+
+  window.addEventListener('load', init);
+  window.addEventListener('resize', function(){
+    resize();
+  }, {passive:true});
+})();
+
+</script>
+</body>
+</html>

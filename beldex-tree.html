@@ -45,7 +45,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .node-root .n-desc{font-size:.9rem;color:#94a3b8;margin-top:6px;position:relative;z-index:1;}
 
 /* PILLAR */
-.node-pillar{background:linear-gradient(160deg,rgba(20,28,44,0.97),rgba(12,18,30,0.99));border:1.5px solid rgba(255,255,255,0.09);border-top-width:3px;border-left-width:3px;padding:20px 18px 16px;min-width:160px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 24px -6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,border-color .3s ease;}
+.node-pillar{background:linear-gradient(160deg,rgba(20,28,44,0.97),rgba(12,18,30,0.99));border:1.5px solid rgba(255,255,255,0.09);border-top-width:3px;border-left-width:3px;padding:20px 18px 16px;min-width:160px;margin-top:100px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 24px -6px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,border-color .3s ease;}
 .node-pillar::before{content:'';position:absolute;left:-16%;right:-16%;bottom:-52px;height:138px;opacity:.12;pointer-events:none;z-index:0;transform:translateY(12px) scale(.9);transform-origin:50% 100%;filter:blur(2px);transition:opacity .28s ease,transform .38s cubic-bezier(.16,1,.3,1);}
 .node-pillar:hover{transform:translateY(-6px) scale(1.015);}
 .node-pillar:hover::before{opacity:.42;transform:translateY(-10px) scale(1.08);}
@@ -96,7 +96,7 @@ a.node-link:hover .node-comp::after{opacity:1;right:10px;}
 /* LAYOUT */
 .tree-level{display:flex;flex-direction:column;align-items:center;}
 .pillars-row{display:flex;flex-wrap:nowrap;gap:24px;width:100%;align-items:flex-start;padding:0 16px 20px;max-width:none;}
-.pillar-group{display:flex;flex-direction:column;align-items:center;gap:0;padding:0;flex-shrink:0;width:220px;}
+.pillar-group{display:flex;flex-direction:column;align-items:center;gap:0;padding:0;flex-shrink:0;width:220px;margin-top:10px;}
 .pillar-group .node-pillar{margin-bottom:40px;width:100%;}
 .children-row{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:44px;width:100%;}
 .children-row .node-comp{width:100%;}
@@ -316,7 +316,7 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
           <div class="prod-node" onclick="toggleLevels(this,event)" data-tip="Privacy-focused web browser with built-in ad blocking, tracker prevention, and BelNet integration">
             <div class="node-box node-comp"><div class="n-title">🧭 Browser</div><div class="n-desc">Private browser</div></div>
             <div class="level-dropdown">
-              <a href="Products/beldex-browser-explained.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
+              <a href="tech/product's - L2/beldex-browser-l1.html" class="lvl-link" target="_blank"><span class="lvl-dot l1"></span><div class="lvl-info"><div class="lvl-label l1">Level 1</div><div class="lvl-name">Visual Overview</div></div><span class="lvl-arrow">&rarr;</span></a>
               <a href="#" class="lvl-link soon"><span class="lvl-dot l2"></span><div class="lvl-info"><div class="lvl-label l2">Level 2</div><div class="lvl-name">Coming Soon</div></div></a>
             </div>
           </div>
