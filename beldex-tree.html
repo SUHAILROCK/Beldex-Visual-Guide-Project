@@ -35,12 +35,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .node-box{border-radius:16px;padding:16px 24px;text-align:center;position:relative;overflow:visible;transition:box-shadow .3s ease,border-color .3s ease,transform .3s cubic-bezier(.4,0,.2,1);will-change:transform,box-shadow;}
 
 /* ROOT */
-.node-root{background:linear-gradient(135deg,#0d2418,#122c20,#0f2a1e);border:2px solid #38bd7e;box-shadow:0 0 60px rgba(56,189,126,0.12),0 0 120px rgba(56,189,126,0.06),inset 0 1px 0 rgba(255,255,255,0.06);padding:40px 56px;margin-bottom:50px;position:relative;overflow:hidden;}
-.node-root::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,126,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,126,0.04) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;opacity:0.5;}
+.node-root{background:linear-gradient(135deg,#0d2418,#122c20,#0f2a1e);border:2px solid #38bd7e;box-shadow:0 0 60px rgba(56,189,126,0.12),0 0 120px rgba(56,189,126,0.06),inset 0 1px 0 rgba(255,255,255,0.06);padding:40px 56px;margin-bottom:50px;position:relative;overflow:visible;}
+.node-root::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,126,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,126,0.04) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;opacity:0.5;border-radius:inherit;}
 .node-root::after{content:'';position:absolute;inset:-2px;border-radius:inherit;border:2px solid #38bd7e;opacity:0;animation:rootPulse 3s ease-in-out infinite;}
 @keyframes rootPulse{0%,100%{opacity:0;transform:scale(1);}50%{opacity:0.4;transform:scale(1.01);}}
 @keyframes dotPulse{0%,100%{r:3;opacity:0.5;}50%{r:5;opacity:0.9;}}
 .node-root:hover{transform:translateY(-5px);box-shadow:0 0 80px rgba(56,189,126,0.25),0 0 160px rgba(56,189,126,0.12),inset 0 1px 0 rgba(255,255,255,0.08);}
+.root-tip-wrap{position:relative;z-index:1;}
 .node-root .n-title{font-family:'IBM Plex Mono',monospace;font-size:1.45rem;font-weight:700;color:#38bd7e;letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,126,0.4);position:relative;z-index:1;}
 .node-root .n-desc{font-size:.9rem;color:#94a3b8;margin-top:6px;position:relative;z-index:1;}
 
@@ -241,15 +242,17 @@ body:not(.anim-ready) .header,body:not(.anim-ready) .node-root,body:not(.anim-re
   <div class="header">
     <a href="index.html" class="back-link">&larr; Back to Visual Guide</a>
     <div class="pill">Privacy Blockchain</div>
-    <h1>Beldex Ecosystem</h1>
+    <!-- <h1>Beldex Ecosystem</h1> -->
     <div class="sub">Complete hierarchy &middot; Top &rarr; Bottom</div>
   </div>
 
   <div class="tree-level">
 
-    <div class="node-box node-root" data-tip="The complete Beldex privacy blockchain ecosystem with confidential transactions, private communications, and decentralized services">
-      <div class="n-title">BELDEX ECOSYSTEM</div>
-      <div class="n-desc">Confidential Transactions &amp; Communications &middot; Monero Fork &middot; Conceptualized 2018</div>
+    <div class="node-box node-root">
+      <div class="root-tip-wrap" data-tip="The complete Beldex privacy blockchain ecosystem with confidential transactions, private communications, and decentralized services">
+        <div class="n-title">BELDEX ECOSYSTEM</div>
+        <div class="n-desc">Confidential Transactions &amp; Communications &middot; Monero Fork &middot; Conceptualized 2018</div>
+      </div>
     </div>
 
     <!-- <div class="level-tag"><span class="lt-dot" aria-hidden="true"></span>Level 1 — Eight Core Pillars</div> -->
