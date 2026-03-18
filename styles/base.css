@@ -50,7 +50,7 @@
   background: rgba(15, 16, 20, 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 100px;
+  border-radius: 12px;
   max-width: calc(100% - 20px);
   margin-left: auto;
   margin-right: auto;
@@ -112,7 +112,19 @@
 
 .tab-content {
   display: none;
-  animation: fadeUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: tabReveal 0.6s var(--ease-out-expo);
+}
+@keyframes tabReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.995);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .tab-content.active {
@@ -191,7 +203,7 @@
   margin: 0;
   font-weight: 500;
   letter-spacing: 0.2px;
-  font-family: "Inter", "Segoe UI", sans-serif;
+  font-family: var(--font-body);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 }
@@ -260,7 +272,7 @@
   padding: 30px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.3s var(--ease-out-expo), border-color 0.3s var(--ease-out-expo), box-shadow 0.3s var(--ease-out-expo), background 0.3s var(--ease-out-expo);
 }
 
 /* Hover Effects */
@@ -269,7 +281,7 @@
 .flow-box:hover,
 .ecosystem-item:hover {
   transform: translateY(-5px);
-  border-color: rgba(41, 224, 169, 0.3);
+  border-color: rgba(212, 168, 83, 0.2);
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
   background: var(--bg-card-hover);
 }
@@ -1450,7 +1462,7 @@
 }
 
 .timeline-event.current {
-  border-left: 4px solid #29e0a9;
+  border-left: 4px solid #22d9a0;
   background: linear-gradient(135deg, rgba(41, 224, 169, 0.08), transparent);
 }
 

@@ -3,21 +3,23 @@
 
 :root {
   color-scheme: dark;
-  /* Dark Mode Palette */
-  --bg-body: #050507;
-  --bg-card: #0f1014;
-  --bg-card-hover: #16181d;
+  /* Dark Mode Palette — Encrypted Luxury */
+  --bg-body: #030306;
+  --bg-card: #0a0b10;
+  --bg-card-hover: #111318;
 
   /* Beldex Brand Colors */
-  --primary: #29e0a9; /* Neon Mint */
-  --primary-dim: rgba(41, 224, 169, 0.1);
+  --primary: #22d9a0; /* Cooler Mint */
+  --primary-dim: rgba(34, 217, 160, 0.1);
   --secondary: #3b82f6; /* Electric Blue */
   --accent: #8b5cf6; /* Cyber Purple */
+  --accent-gold: #d4a853; /* Luxury Gold */
+  --accent-gold-dim: rgba(212, 168, 83, 0.12);
 
   /* Text */
-  --text-main: #ffffff;
-  --text-muted: #9ca3af;
-  --text-dark: #000000;
+  --text-main: #f0f0f5;
+  --text-muted: #6b7280;
+  --text-dark: #030306;
 
   /* Gradients */
   --gradient-main: linear-gradient(
@@ -27,19 +29,28 @@
   );
   --gradient-glow: radial-gradient(
     circle at top right,
-    rgba(41, 224, 169, 0.15),
+    rgba(34, 217, 160, 0.12),
     transparent 40%
+  );
+  --gradient-luxury: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--primary) 100%
   );
 
   /* Spacing & Radius */
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --radius-sm: 8px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 6px;
 
   /* Typography */
-  --font-head: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", "Courier New", monospace;
+  --font-head: "Syne", sans-serif;
+  --font-body: "Outfit", sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 * {
@@ -55,14 +66,19 @@ body {
   line-height: 1.6;
   background-image:
     radial-gradient(
-      circle at 15% 50%,
-      rgba(41, 224, 169, 0.03) 0%,
-      transparent 25%
+      ellipse 80% 50% at 10% 20%,
+      rgba(34, 217, 160, 0.05) 0%,
+      transparent 50%
     ),
     radial-gradient(
-      circle at 85% 30%,
-      rgba(59, 130, 246, 0.03) 0%,
-      transparent 25%
+      ellipse 60% 40% at 85% 75%,
+      rgba(59, 130, 246, 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      rgba(212, 168, 83, 0.02) 0%,
+      transparent 50%
     );
   min-height: 100vh;
 }

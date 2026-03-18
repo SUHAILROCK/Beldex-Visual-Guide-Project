@@ -23,11 +23,11 @@
   bottom: 40px;
   width: 4px;
   background: linear-gradient(180deg, 
-    rgba(41, 224, 169, 0.6) 0%,
+    rgba(34, 217, 160, 0.6) 0%,
     rgba(59, 130, 246, 0.5) 50%,
     rgba(139, 92, 246, 0.5) 100%);
   border-radius: 4px;
-  box-shadow: 0 0 15px rgba(41, 224, 169, 0.3);
+  box-shadow: 0 0 15px rgba(34, 217, 160, 0.3);
 }
 
 /* Timeline Event Card */
@@ -56,7 +56,7 @@
   background: var(--primary);
   border-radius: 50%;
   border: 3px solid rgba(13, 17, 23, 1);
-  box-shadow: 0 0 15px rgba(41, 224, 169, 0.5);
+  box-shadow: 0 0 15px rgba(34, 217, 160, 0.5);
   z-index: 10;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -68,15 +68,15 @@
 
 .timeline-event:hover {
   transform: translateY(-4px);
-  border-color: rgba(41, 224, 169, 0.25);
+  border-color: rgba(34, 217, 160, 0.25);
   box-shadow: 
     0 20px 50px -15px rgba(0, 0, 0, 0.5),
-    0 0 30px rgba(41, 224, 169, 0.1);
+    0 0 30px rgba(34, 217, 160, 0.1);
 }
 
 .timeline-event:hover::before {
   transform: scale(1.2);
-  box-shadow: 0 0 20px rgba(41, 224, 169, 0.7);
+  box-shadow: 0 0 20px rgba(34, 217, 160, 0.7);
 }
 
 /* Timeline Year Badge */
@@ -85,14 +85,14 @@
   font-size: 1.4rem;
   font-weight: 800;
   padding: 14px 20px;
-  background: linear-gradient(135deg, rgba(41, 224, 169, 0.15), rgba(41, 224, 169, 0.05));
-  border: 1px solid rgba(41, 224, 169, 0.3);
+  background: linear-gradient(135deg, rgba(34, 217, 160, 0.15), rgba(34, 217, 160, 0.05));
+  border: 1px solid rgba(34, 217, 160, 0.3);
   border-radius: 14px;
   color: var(--primary);
   text-align: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(41, 224, 169, 0.1);
+  box-shadow: 0 0 20px rgba(34, 217, 160, 0.1);
 }
 
 .timeline-year::before {
@@ -102,7 +102,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(41, 224, 169, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(34, 217, 160, 0.2), transparent);
   animation: shimmer 4s infinite;
 }
 
@@ -173,7 +173,7 @@
 .status-badge.status-testnet {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.08));
   border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #f59e0b;
+  color: var(--accent-gold);
   box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
 }
 
@@ -235,7 +235,7 @@
 .timeline-event.milestone {
   background: 
     linear-gradient(135deg, rgba(30, 40, 55, 0.98), rgba(20, 28, 40, 0.99));
-  border-color: rgba(41, 224, 169, 0.3);
+  border-color: rgba(34, 217, 160, 0.3);
 }
 
 .timeline-event.milestone::before {
@@ -246,11 +246,11 @@
 .timeline-event.milestone .timeline-year {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.1));
   border-color: rgba(245, 158, 11, 0.5);
-  color: #f59e0b;
+  color: var(--accent-gold);
 }
 
 .timeline-event.milestone::after {
-  background: linear-gradient(135deg, #f59e0b, #eab308);
+  background: linear-gradient(135deg, var(--accent-gold), #eab308);
   width: 26px;
   height: 26px;
 }
@@ -357,7 +357,7 @@
   transform: translateX(-50%);
   width: 600px;
   height: 400px;
-  background: radial-gradient(circle, rgba(41,224,169,.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(34,217,160,.08) 0%, transparent 70%);
   pointer-events: none;
 }
 .tl-hero-tag {
@@ -367,8 +367,8 @@
   letter-spacing: .15em;
   text-transform: uppercase;
   color: var(--primary);
-  background: rgba(41,224,169,.1);
-  border: 1px solid rgba(41,224,169,.25);
+  background: rgba(34,217,160,.1);
+  border: 1px solid rgba(34,217,160,.25);
   padding: 6px 18px;
   border-radius: 100px;
   margin-bottom: 18px;
@@ -404,7 +404,7 @@
   letter-spacing: .08em;
   margin-bottom: 32px;
   animation: tlBounce 2s ease-in-out infinite;
-  text-shadow: 0 0 10px rgba(41,224,169,.3);
+  text-shadow: 0 0 10px rgba(34,217,160,.3);
 }
 @keyframes tlBounce {
   0%, 100% { transform: translateY(0); }
@@ -437,7 +437,7 @@
   margin-right: 28px;
   white-space: nowrap;
   flex-shrink: 0;
-  text-shadow: 0 0 8px rgba(41,224,169,.25);
+  text-shadow: 0 0 8px rgba(34,217,160,.25);
 }
 .tl-stats-items {
   display: flex;
@@ -457,7 +457,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--primary);
-  text-shadow: 0 0 18px rgba(41,224,169,.35);
+  text-shadow: 0 0 18px rgba(34,217,160,.35);
   line-height: 1.1;
 }
 .tl-stat-label {
@@ -478,7 +478,7 @@
   color: rgba(255,255,255,.75);
   margin-bottom: 12px;
   text-align: center;
-  text-shadow: 0 0 8px rgba(41,224,169,.25);
+  text-shadow: 0 0 8px rgba(34,217,160,.25);
 }
 
 /* Filter row */
@@ -507,8 +507,8 @@
 .tl-filter-btn.active {
   color: #fff;
   border-color: var(--primary);
-  background: rgba(41,224,169,.12);
-  box-shadow: 0 0 16px rgba(41,224,169,.12);
+  background: rgba(34,217,160,.12);
+  box-shadow: 0 0 16px rgba(34,217,160,.12);
 }
 
 /* ── Hardfork filter button: orange accent ── */
@@ -544,18 +544,18 @@
   font-weight: 800;
   color: var(--primary);
   background: #0d1117;
-  border: 2px solid rgba(41,224,169,.5);
+  border: 2px solid rgba(34,217,160,.5);
   border-radius: 100px;
   padding: 9px 28px;
   white-space: nowrap;
   flex-shrink: 0;
-  text-shadow: 0 0 10px rgba(41,224,169,.35);
+  text-shadow: 0 0 10px rgba(34,217,160,.35);
 }
 .tl-year-group::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(41,224,169,.12);
+  background: rgba(34,217,160,.12);
 }
 
 /* Detail tags */
@@ -584,10 +584,10 @@
   box-shadow: 0 0 14px rgba(6,182,212,.15);
 }
 .status-badge.status-milestone {
-  background: rgba(41,224,169,.2);
-  border: 1px solid rgba(41,224,169,.45);
+  background: rgba(34,217,160,.2);
+  border: 1px solid rgba(34,217,160,.45);
   color: #fff;
-  box-shadow: 0 0 14px rgba(41,224,169,.2);
+  box-shadow: 0 0 14px rgba(34,217,160,.2);
 }
 .status-badge.status-future {
   background: rgba(148,163,184,.08);
@@ -630,7 +630,7 @@
 [data-theme="light"] .tl-filter-btn.active {
   color: var(--primary);
   border-color: var(--primary);
-  background: rgba(41,224,169,.1);
+  background: rgba(34,217,160,.1);
 }
 [data-theme="light"] .tl-filter-hardfork:hover,
 [data-theme="light"] .tl-filter-hardfork.active {
@@ -664,11 +664,11 @@
 .tl-hero {
   padding: 32px 0 44px;
   background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(41,224,169,.11) 0%, transparent 70%);
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(34,217,160,.11) 0%, transparent 70%);
 }
 .tl-hero-tag {
   animation: tlTagFade 1s ease both;
-  box-shadow: 0 0 20px rgba(41,224,169,.15);
+  box-shadow: 0 0 20px rgba(34,217,160,.15);
 }
 @keyframes tlTagFade {
   from { opacity:0; transform:translateY(-8px); }
@@ -724,7 +724,7 @@
   flex-shrink: 0;
 }
 .tl-filter-btn[data-tl-filter="completed"]::before { background: #22c55e; }
-.tl-filter-btn[data-tl-filter="milestone"]::before  { background: #f59e0b; }
+.tl-filter-btn[data-tl-filter="milestone"]::before  { background: var(--accent-gold); }
 .tl-filter-btn[data-tl-filter="live"]::before       { background: #06b6d4; }
 .tl-filter-btn[data-tl-filter="progress"]::before   { background: #3b82f6; }
 .tl-filter-btn[data-tl-filter="research"]::before   { background: #8b5cf6; }
@@ -741,17 +741,17 @@
   left: 32px !important;
   width: 3px !important;
   background: linear-gradient(180deg,
-    rgba(41,224,169,1)   0%,
-    rgba(41,224,169,.85) 25%,
+    rgba(34,217,160,1)   0%,
+    rgba(34,217,160,.85) 25%,
     rgba(59,130,246,.75) 55%,
     rgba(139,92,246,.6)  80%,
     rgba(100,116,139,.2) 100%) !important;
-  box-shadow: 0 0 18px rgba(41,224,169,.4), 0 0 50px rgba(59,130,246,.12) !important;
+  box-shadow: 0 0 18px rgba(34,217,160,.4), 0 0 50px rgba(59,130,246,.12) !important;
   animation: tlLineGlow 4s ease-in-out infinite !important;
 }
 @keyframes tlLineGlow {
-  0%,100% { box-shadow: 0 0 18px rgba(41,224,169,.4),  0 0 50px rgba(59,130,246,.12); }
-  50%     { box-shadow: 0 0 30px rgba(41,224,169,.65), 0 0 80px rgba(59,130,246,.22); }
+  0%,100% { box-shadow: 0 0 18px rgba(34,217,160,.4),  0 0 50px rgba(59,130,246,.12); }
+  50%     { box-shadow: 0 0 30px rgba(34,217,160,.65), 0 0 80px rgba(59,130,246,.22); }
 }
 
 /* ── Event card: column layout, colored top strip ── */
@@ -825,19 +825,19 @@
   box-shadow: 0 0 40px rgba(245,158,11,.07), 0 4px 24px rgba(0,0,0,.4) !important;
 }
 #tl-grid .timeline-event[data-status="milestone"]::before {
-  background: #f59e0b !important;
+  background: var(--accent-gold) !important;
   width: 17px !important; height: 17px !important;
   left: -53px !important; top: 21px !important;
   box-shadow: 0 0 0 3px #0b0f18, 0 0 22px rgba(245,158,11,.9) !important;
 }
-#tl-grid .timeline-event[data-status="milestone"] .timeline-year { color: #f59e0b !important; }
+#tl-grid .timeline-event[data-status="milestone"] .timeline-year { color: var(--accent-gold) !important; }
 #tl-grid .timeline-event[data-status="milestone"]:hover {
   border-color: rgba(245,158,11,.35) !important;
   box-shadow: 0 14px 45px rgba(245,158,11,.14), 0 2px 20px rgba(0,0,0,.4) !important;
 }
 /* Milestone title: white→gold gradient */
 #tl-grid .timeline-event[data-status="milestone"] .timeline-event-content h4 {
-  background: linear-gradient(135deg, #fff 30%, #f59e0b 100%) !important;
+  background: linear-gradient(135deg, #fff 30%, var(--accent-gold) 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
@@ -977,14 +977,14 @@
   font-size: 1.35rem !important;
   font-weight: 800 !important;
   padding: 10px 30px !important;
-  background: linear-gradient(135deg, rgba(41,224,169,.2), rgba(41,224,169,.08)) !important;
-  border: 2px solid rgba(41,224,169,.55) !important;
-  box-shadow: 0 0 30px rgba(41,224,169,.18), inset 0 1px 0 rgba(41,224,169,.2) !important;
+  background: linear-gradient(135deg, rgba(34,217,160,.2), rgba(34,217,160,.08)) !important;
+  border: 2px solid rgba(34,217,160,.55) !important;
+  box-shadow: 0 0 30px rgba(34,217,160,.18), inset 0 1px 0 rgba(34,217,160,.2) !important;
   letter-spacing: .1em !important;
-  text-shadow: 0 0 12px rgba(41,224,169,.4) !important;
+  text-shadow: 0 0 12px rgba(34,217,160,.4) !important;
 }
 #tl-grid .tl-year-group::after {
-  background: linear-gradient(to right, rgba(41,224,169,.25), transparent) !important;
+  background: linear-gradient(to right, rgba(34,217,160,.25), transparent) !important;
 }
 
 /* ── Future roadmap header: glowing section break ── */

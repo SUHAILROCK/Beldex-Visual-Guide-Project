@@ -52,7 +52,7 @@
 }
 .eco-root .eco-emoji { font-size: 1.6rem; margin-bottom: 6px; }
 .eco-root .eco-title {
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 1.15rem;
   font-weight: 700;
   color: #38bd7e;
@@ -137,7 +137,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.6rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -159,7 +159,7 @@
   width: 100%;
   gap: 12px;
   margin: 32px 0 0;
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.58rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -209,7 +209,7 @@
 }
 .eco-pillar .eco-emoji { font-size: 1.2rem; margin-bottom: 4px; }
 .eco-pillar .eco-title {
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.82rem;
   font-weight: 700;
   color: #e2e8f0;
@@ -320,7 +320,7 @@
   transform: translateY(-1px);
 }
 .eco-comp .eco-title {
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.7rem;
   font-weight: 600;
   color: #cbd5e1;
@@ -384,7 +384,7 @@
   background: rgba(56,189,126,0.1);
 }
 .eco-leaf .eco-title {
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.6rem;
   font-weight: 600;
   color: #38bd7e;
@@ -397,7 +397,7 @@
 
 /* ─── STATUS BADGES ─── */
 .eco-status {
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.48rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -417,7 +417,7 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 40px;
-  font-family: 'Space Grotesk', 'IBM Plex Mono', monospace, sans-serif;
+  font-family: var(--font-head);
   font-size: 0.62rem;
   color: #64748b;
 }

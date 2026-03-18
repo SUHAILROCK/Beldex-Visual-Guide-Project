@@ -10,7 +10,7 @@
 .fs-title {
   font-size: 1.8rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #29e0a9, #3b82f6);
+  background: linear-gradient(135deg, #22d9a0, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -34,7 +34,7 @@
 /* Donut chart panel */
 .fs-chart-panel {
   background: linear-gradient(145deg, rgba(12, 18, 30, 0.95), rgba(8, 12, 22, 0.98));
-  border: 1px solid rgba(41, 224, 169, 0.1);
+  border: 1px solid rgba(34, 217, 160, 0.1);
   border-radius: 20px;
   padding: 28px 20px;
   position: relative;
@@ -44,7 +44,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(41, 224, 169, 0.06), transparent 65%);
+  background: radial-gradient(circle at 50% 30%, rgba(34, 217, 160, 0.06), transparent 65%);
   pointer-events: none;
 }
 
@@ -70,8 +70,8 @@
 .fs-chart-amount {
   font-size: 2rem;
   font-weight: 800;
-  color: #29e0a9;
-  text-shadow: 0 0 24px rgba(41, 224, 169, 0.3);
+  color: #22d9a0;
+  text-shadow: 0 0 24px rgba(34, 217, 160, 0.3);
   letter-spacing: -0.5px;
 }
 .fs-chart-label {
@@ -105,7 +105,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: var(--inv-color, #29e0a9);
+  background: var(--inv-color, #22d9a0);
   border-radius: 3px 0 0 3px;
   opacity: 0.6;
   transition: opacity 0.3s ease;
@@ -171,7 +171,7 @@
   height: 100%;
   border-radius: 999px;
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(41, 224, 169, 0.15);
+  box-shadow: 0 0 10px rgba(34, 217, 160, 0.15);
 }
 
 .fs-inv-share {
@@ -188,8 +188,8 @@
   justify-content: space-between;
   padding: 16px 20px;
   border-radius: 14px;
-  background: rgba(41, 224, 169, 0.06);
-  border: 1px solid rgba(41, 224, 169, 0.15);
+  background: rgba(34, 217, 160, 0.06);
+  border: 1px solid rgba(34, 217, 160, 0.15);
   margin-top: 4px;
 }
 .fs-total-label {
@@ -197,13 +197,13 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: rgba(41, 224, 169, 0.7);
+  color: rgba(34, 217, 160, 0.7);
 }
 .fs-total-amount {
   font-size: 1.3rem;
   font-weight: 800;
-  color: #29e0a9;
-  text-shadow: 0 0 16px rgba(41, 224, 169, 0.2);
+  color: #22d9a0;
+  text-shadow: 0 0 16px rgba(34, 217, 160, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -224,17 +224,17 @@
 /* Light theme overrides for redesigned sections */
 [data-theme="light"] .rt-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
-  border-color: rgba(41, 224, 169, 0.15);
+  border-color: rgba(34, 217, 160, 0.15);
 }
 [data-theme="light"] .rt-card-title { color: #1e293b; }
 [data-theme="light"] .rt-info-value { color: #475569; }
 [data-theme="light"] .rt-info-row:nth-child(odd) { background: rgba(0, 0, 0, 0.02); }
-[data-theme="light"] .rt-info-row:hover { background: rgba(41, 224, 169, 0.05); }
+[data-theme="light"] .rt-info-row:hover { background: rgba(34, 217, 160, 0.05); }
 [data-theme="light"] .rt-card-glow { opacity: 0.4; }
 
 [data-theme="light"] .fs-chart-panel {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
-  border-color: rgba(41, 224, 169, 0.15);
+  border-color: rgba(34, 217, 160, 0.15);
 }
 [data-theme="light"] .fs-investor-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
@@ -243,6 +243,6 @@
 [data-theme="light"] .fs-inv-name { color: #1e293b; }
 [data-theme="light"] .fs-inv-amount { color: #1e293b; }
 [data-theme="light"] .fs-total-row {
-  background: rgba(41, 224, 169, 0.08);
-  border-color: rgba(41, 224, 169, 0.2);
+  background: rgba(34, 217, 160, 0.08);
+  border-color: rgba(34, 217, 160, 0.2);
 }

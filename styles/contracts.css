@@ -86,9 +86,9 @@
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .ca-copy-btn:hover {
-  background: rgba(41,224,169,0.1);
-  border-color: rgba(41,224,169,0.25);
-  color: #29e0a9;
+  background: rgba(34,217,160,0.1);
+  border-color: rgba(34,217,160,0.25);
+  color: #22d9a0;
 }
 .ca-copy-btn .icon-check { display: none; }
 .ca-copy-btn .icon-copy  { display: block; }
@@ -147,7 +147,7 @@
   color: aqua;
 }
 .funding-dot-dwf {
-  --dot: #29e0a9;
+  --dot: #22d9a0;
 }
 .funding-dot-bitgert {
   --dot: #3b82f6;
@@ -230,7 +230,7 @@
 .team-advisors-section {
   margin-top: 50px;
   padding-top: 30px;
-  border-top: 1px solid rgba(41, 224, 169, 0.2);
+  border-top: 1px solid rgba(34, 217, 160, 0.2);
 }
 .architecture-title {
   font-family: var(--font-head);
@@ -590,7 +590,7 @@
   inset: 0;
   border-radius: inherit;
   opacity: 0;
-  background: radial-gradient(circle at center, rgba(41, 224, 169, 0.12), transparent 70%);
+  background: radial-gradient(circle at center, rgba(34, 217, 160, 0.12), transparent 70%);
   transition: opacity 0.4s ease;
 }
 
@@ -610,8 +610,8 @@
 }
 
 @keyframes techGlowPulse {
-  0%, 100% { box-shadow: 0 0 30px rgba(41, 224, 169, 0.06); }
-  50% { box-shadow: 0 0 45px rgba(41, 224, 169, 0.12); }
+  0%, 100% { box-shadow: 0 0 30px rgba(34, 217, 160, 0.06); }
+  50% { box-shadow: 0 0 45px rgba(34, 217, 160, 0.12); }
 }
 
 @keyframes floatOrb {
@@ -621,8 +621,8 @@
 }
 
 @keyframes borderGlow {
-  0%, 100% { border-color: rgba(41, 224, 169, 0.15); }
-  50% { border-color: rgba(41, 224, 169, 0.3); }
+  0%, 100% { border-color: rgba(34, 217, 160, 0.15); }
+  50% { border-color: rgba(34, 217, 160, 0.3); }
 }
 
 /* Tech Page Layout */
@@ -637,8 +637,8 @@
 .tech-page-header {
   position: relative;
   padding: 50px 0 48px;
-  background: linear-gradient(180deg, rgba(41, 224, 169, 0.05) 0%, rgba(59, 130, 246, 0.02) 50%, transparent 100%);
-  border-bottom: 1px solid rgba(41, 224, 169, 0.08);
+  background: linear-gradient(180deg, rgba(34, 217, 160, 0.05) 0%, rgba(59, 130, 246, 0.02) 50%, transparent 100%);
+  border-bottom: 1px solid rgba(34, 217, 160, 0.08);
   animation: techPageFadeIn 0.6s ease-out;
   overflow: hidden;
 }
@@ -650,7 +650,7 @@
   right: -50px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(41, 224, 169, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(34, 217, 160, 0.06) 0%, transparent 70%);
   border-radius: 50%;
   animation: floatOrb 12s ease-in-out infinite;
   pointer-events: none;
@@ -683,31 +683,31 @@
   gap: 8px;
   color: var(--primary);
   text-decoration: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 28px;
   padding: 9px 18px;
-  border: 1px solid rgba(41, 224, 169, 0.18);
+  border: 1px solid rgba(34, 217, 160, 0.18);
   border-radius: 10px;
-  background: rgba(41, 224, 169, 0.04);
+  background: rgba(34, 217, 160, 0.04);
   transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   backdrop-filter: blur(8px);
 }
 
 .tech-page-header .back-link:hover {
-  background: rgba(41, 224, 169, 0.1);
-  border-color: rgba(41, 224, 169, 0.35);
+  background: rgba(34, 217, 160, 0.1);
+  border-color: rgba(34, 217, 160, 0.35);
   transform: translateX(-4px);
 }
 
 .tech-page-header .tech-badge {
   display: inline-block;
   padding: 6px 18px;
-  background: linear-gradient(135deg, rgba(41, 224, 169, 0.12), rgba(59, 130, 246, 0.08));
-  border: 1px solid rgba(41, 224, 169, 0.2);
+  background: linear-gradient(135deg, rgba(34, 217, 160, 0.12), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(34, 217, 160, 0.2);
   border-radius: 100px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--primary);
@@ -717,7 +717,7 @@
 }
 
 .tech-page-header h1 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 2.6rem;
   font-weight: 700;
   color: var(--text-main);
@@ -727,7 +727,7 @@
 }
 
 .tech-page-header .tech-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 1.05rem;
   color: var(--text-muted);
   line-height: 1.7;
@@ -751,7 +751,7 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   animation: techPageSlideUp 0.7s ease-out both;
 }
 
@@ -801,12 +801,12 @@
 .tech-content-card:nth-child(5) { animation-delay: 0.5s; }
 
 .tech-content-card:hover {
-  border-color: rgba(41, 224, 169, 0.1);
-  box-shadow: 0 0 40px rgba(41, 224, 169, 0.05);
+  border-color: rgba(34, 217, 160, 0.1);
+  box-shadow: 0 0 40px rgba(34, 217, 160, 0.05);
 }
 
 .tech-content-card h2 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 1.5rem;
   font-weight: 700;
   color: #f1f5f9;
@@ -815,12 +815,12 @@
   padding-left: 16px;
   border-left: 3px solid var(--primary);
 }
-.tech-content-card:nth-child(3n+1) h2 { border-left-color: #29e0a9; }
+.tech-content-card:nth-child(3n+1) h2 { border-left-color: #22d9a0; }
 .tech-content-card:nth-child(3n+2) h2 { border-left-color: #3b82f6; }
 .tech-content-card:nth-child(3n)   h2 { border-left-color: #a78bfa; }
 
 .tech-content-card h3 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 1.08rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);
@@ -828,7 +828,7 @@
 }
 
 .tech-content-card p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.93rem;
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.8;
@@ -849,7 +849,7 @@
 }
 
 .tech-content-card ul li {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.62);
   line-height: 1.75;
@@ -892,7 +892,7 @@
 }
 
 .tech-feature-item:hover {
-  border-color: rgba(41, 224, 169, 0.15);
+  border-color: rgba(34, 217, 160, 0.15);
 }
 
 .tech-feature-item .feature-icon {
@@ -902,7 +902,7 @@
 }
 
 .tech-feature-item h4 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 0.95rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
@@ -918,8 +918,8 @@
 
 /* Highlight Box */
 .tech-highlight {
-  background: linear-gradient(135deg, rgba(41, 224, 169, 0.06), rgba(59, 130, 246, 0.04));
-  border: 1px solid rgba(41, 224, 169, 0.12);
+  background: linear-gradient(135deg, rgba(34, 217, 160, 0.06), rgba(59, 130, 246, 0.04));
+  border: 1px solid rgba(34, 217, 160, 0.12);
   border-left: 3px solid var(--primary);
   border-radius: 0 12px 12px 0;
   padding: 20px 24px;
@@ -942,17 +942,17 @@
   border-collapse: separate;
   border-spacing: 0;
   margin: 20px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.88rem;
 }
 
 .tech-compare th {
-  background: rgba(41, 224, 169, 0.08);
+  background: rgba(34, 217, 160, 0.08);
   color: var(--primary);
   font-weight: 600;
   padding: 12px 18px;
   text-align: left;
-  border-bottom: 1px solid rgba(41, 224, 169, 0.15);
+  border-bottom: 1px solid rgba(34, 217, 160, 0.15);
 }
 
 .tech-compare th:first-child {
@@ -990,13 +990,13 @@
   border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 600;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
 }
 
 .tech-status.live {
-  background: rgba(41, 224, 169, 0.12);
-  color: #29e0a9;
-  border: 1px solid rgba(41, 224, 169, 0.2);
+  background: rgba(34, 217, 160, 0.12);
+  color: #22d9a0;
+  border: 1px solid rgba(34, 217, 160, 0.2);
 }
 
 .tech-status.dev {
@@ -1029,14 +1029,14 @@
   text-align: center;
   padding: 16px 20px;
   background: rgba(15, 16, 20, 0.8);
-  border: 1px solid rgba(41, 224, 169, 0.12);
+  border: 1px solid rgba(34, 217, 160, 0.12);
   border-radius: 12px;
   min-width: 120px;
 }
 
 .tech-flow-step .step-num {
   display: block;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--primary);
@@ -1047,7 +1047,7 @@
 }
 
 .tech-flow-step .step-label {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
@@ -1064,7 +1064,7 @@
   text-align: center;
   padding: 32px 40px;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.25);
 }

@@ -56,22 +56,25 @@ html.theme-transitioning *::after {
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg-body: #f5f7fa;
+  --bg-body: #fafbfc;
   --bg-card: #ffffff;
-  --bg-card-hover: #f0f4f8;
+  --bg-card-hover: #f5f7fa;
 
-  --primary: #0d9373;
-  --primary-dim: rgba(13, 147, 115, 0.1);
+  --primary: #0d8a6e;
+  --primary-dim: rgba(13, 138, 110, 0.1);
   --secondary: #2563eb;
   --accent: #7c3aed;
+  --accent-gold: #b8922e;
+  --accent-gold-dim: rgba(184, 146, 46, 0.1);
 
-  --text-main: #1a1a2e;
-  /* Text muted: #475569 ensures ≥4.5:1 contrast on #f5f7fa (WCAG AA) */
-  --text-muted: #475569;
+  --text-main: #111827;
+  /* Text muted: #4b5563 ensures ≥4.5:1 contrast on #fafbfc (WCAG AA) */
+  --text-muted: #4b5563;
   --text-dark: #ffffff;
 
   --gradient-main: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  --gradient-glow: radial-gradient(circle at top right, rgba(13, 147, 115, 0.08), transparent 40%);
+  --gradient-glow: radial-gradient(circle at top right, rgba(13, 138, 110, 0.08), transparent 40%);
+  --gradient-luxury: linear-gradient(135deg, var(--accent-gold) 0%, var(--primary) 100%);
 }
 
 /* ── Body ── */
@@ -79,9 +82,10 @@ html.theme-transitioning *::after {
   background-color: var(--bg-body);
   color: var(--text-main);
   background-image:
-    radial-gradient(circle at 10% 20%, rgba(13, 147, 115, 0.04) 0%, transparent 35%),
-    radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.04) 0%, transparent 35%),
-    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.02) 0%, transparent 50%);
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 10% 20%, rgba(13, 138, 110, 0.03) 0%, transparent 35%),
+    radial-gradient(ellipse at 90% 80%, rgba(37, 99, 235, 0.03) 0%, transparent 35%),
+    radial-gradient(ellipse at 50% 50%, rgba(184, 146, 46, 0.015) 0%, transparent 50%);
 }
 
 /* Dot-grid texture overlay on container */
@@ -91,13 +95,17 @@ html.theme-transitioning *::after {
 
 /* ── Header ── */
 [data-theme="light"] .header h1 {
-  background: linear-gradient(135deg, #1a1a2e 0%, #0d9373 55%, #2563eb 100%);
+  background: linear-gradient(135deg, #111827 0%, var(--primary) 60%, var(--accent-gold) 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
 [data-theme="light"] .header p {
-  color: var(--primary);
+  color: var(--accent-gold);
   opacity: 0.85;
+}
+[data-theme="light"] .header::after {
+  background: var(--accent-gold);
+  box-shadow: 0 0 15px rgba(184, 146, 46, 0.3);
 }
 
 /* ── Nav Tabs ── */
@@ -111,14 +119,14 @@ html.theme-transitioning *::after {
 }
 [data-theme="light"] .nav-tab:hover {
   color: var(--primary);
-  background: rgba(13, 147, 115, 0.08);
-  border-color: rgba(13, 147, 115, 0.2);
-  box-shadow: 0 0 12px rgba(13, 147, 115, 0.1);
+  background: rgba(13, 138, 110, 0.08);
+  border-color: rgba(13, 138, 110, 0.2);
+  box-shadow: 0 0 12px rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .nav-tab.active {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-gold) 100%);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(13, 147, 115, 0.25);
+  box-shadow: 0 4px 16px rgba(13, 138, 110, 0.25), 0 0 30px rgba(184, 146, 46, 0.08);
 }
 
 /* ── Cards (generic) ── */
@@ -132,7 +140,7 @@ html.theme-transitioning *::after {
 }
 [data-theme="light"] .card:hover,
 [data-theme="light"] .ecosystem-item:hover {
-  border-color: rgba(13, 147, 115, 0.2);
+  border-color: rgba(13, 138, 110, 0.2);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 [data-theme="light"] .card::before,
@@ -154,7 +162,7 @@ html.theme-transitioning *::after {
   color: #64748b;
 }
 [data-theme="light"] .eco-section-header h2 {
-  background: linear-gradient(135deg, #1a1a2e 30%, #0d9373 70%);
+  background: linear-gradient(135deg, #1a1a2e 30%, #0d8a6e 70%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -189,16 +197,16 @@ html.theme-transitioning *::after {
 /* ── Overview — Intro Card ── */
 [data-theme="light"] .beldex-intro-card {
   background:
-    radial-gradient(ellipse at 10% 10%, rgba(13, 147, 115, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 10% 10%, rgba(13, 138, 110, 0.06) 0%, transparent 40%),
     radial-gradient(ellipse at 90% 90%, rgba(124, 58, 237, 0.05) 0%, transparent 40%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.99) 100%);
-  border-color: rgba(13, 147, 115, 0.15);
+  border-color: rgba(13, 138, 110, 0.15);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
 }
 [data-theme="light"] .beldex-intro-card::before {
   background-image:
-    linear-gradient(rgba(13, 147, 115, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(13, 147, 115, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(13, 138, 110, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 138, 110, 0.03) 1px, transparent 1px);
 }
 [data-theme="light"] .beldex-intro {
   color: rgba(26, 26, 46, 0.9);
@@ -249,7 +257,7 @@ html.theme-transitioning *::after {
 }
 [data-theme="light"] .flow-box-beldex {
   background: linear-gradient(145deg, #effff8, #e0fff2) !important;
-  border-color: rgba(13, 147, 115, 0.3);
+  border-color: rgba(13, 138, 110, 0.3);
 }
 
 /* ── Tech Stack ── */
@@ -259,17 +267,17 @@ html.theme-transitioning *::after {
 }
 [data-theme="light"] .tech-item {
   background: #ffffff;
-  border: 1px solid rgba(13, 147, 115, 0.15);
+  border: 1px solid rgba(13, 138, 110, 0.15);
   color: rgba(26, 26, 46, 0.85);
 }
 [data-theme="light"] .tech-item:hover {
-  border-color: rgba(13, 147, 115, 0.35);
+  border-color: rgba(13, 138, 110, 0.35);
   color: var(--text-main);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 [data-theme="light"] .tech-item[data-tooltip]:hover::after {
   background: #ffffff;
-  border-color: rgba(13, 147, 115, 0.2);
+  border-color: rgba(13, 138, 110, 0.2);
   color: var(--text-main);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
@@ -279,8 +287,9 @@ html.theme-transitioning *::after {
   background: #ffffff;
 }
 [data-theme="light"] .comparison-table th {
-  background: linear-gradient(135deg, rgba(13, 147, 115, 0.08), rgba(37, 99, 235, 0.05));
-  border-bottom-color: rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, rgba(13, 138, 110, 0.08), rgba(184, 146, 46, 0.05));
+  color: var(--accent-gold);
+  border-bottom-color: rgba(184, 146, 46, 0.12);
 }
 [data-theme="light"] .comparison-table td {
   border-bottom-color: rgba(0, 0, 0, 0.04);
@@ -289,7 +298,7 @@ html.theme-transitioning *::after {
   background: rgba(0, 0, 0, 0.015);
 }
 [data-theme="light"] .comparison-table tr:hover td {
-  background: rgba(13, 147, 115, 0.04);
+  background: rgba(13, 138, 110, 0.04);
 }
 
 /* ── Timeline ── */
@@ -339,7 +348,7 @@ html.theme-transitioning *::after {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 [data-theme="light"] .connector-line {
-  background: rgba(13, 147, 115, 0.1);
+  background: rgba(13, 138, 110, 0.1);
 }
 
 /* ── Panels (Challenge Problem/Solution) ── */
@@ -363,7 +372,7 @@ html.theme-transitioning *::after {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 [data-theme="light"] .challenge-card::before {
-  background: radial-gradient(ellipse at top right, rgba(13, 147, 115, 0.04), transparent 70%);
+  background: radial-gradient(ellipse at top right, rgba(13, 138, 110, 0.04), transparent 70%);
 }
 [data-theme="light"] .challenge-header {
   border-bottom-color: rgba(0, 0, 0, 0.05);
@@ -381,8 +390,8 @@ html.theme-transitioning *::after {
   color: rgba(100, 116, 139, 0.85);
 }
 [data-theme="light"] .challenge-num-wrap {
-  background: rgba(13, 147, 115, 0.06);
-  border-color: rgba(13, 147, 115, 0.15);
+  background: rgba(13, 138, 110, 0.06);
+  border-color: rgba(13, 138, 110, 0.15);
 }
 [data-theme="light"] .ps-connector {
   color: rgba(0, 0, 0, 0.2);
@@ -394,18 +403,18 @@ html.theme-transitioning *::after {
 /* ── Team Section ── */
 [data-theme="light"] .team-grid {
   background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.9));
-  border-color: rgba(13, 147, 115, 0.1);
+  border-color: rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .team-member {
   background: #ffffff;
-  border-color: rgba(13, 147, 115, 0.12);
+  border-color: rgba(13, 138, 110, 0.12);
 }
 [data-theme="light"] .team-member::before {
-  background: radial-gradient(circle at 50% 30%, rgba(13, 147, 115, 0.04), transparent 70%);
+  background: radial-gradient(circle at 50% 30%, rgba(13, 138, 110, 0.04), transparent 70%);
 }
 [data-theme="light"] .team-member:hover {
   background: #ffffff;
-  border-color: rgba(13, 147, 115, 0.3);
+  border-color: rgba(13, 138, 110, 0.3);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 }
 [data-theme="light"] .member-name {
@@ -419,13 +428,13 @@ html.theme-transitioning *::after {
   color: rgba(26, 26, 46, 0.7);
 }
 [data-theme="light"] .team-advisors-section {
-  border-top-color: rgba(13, 147, 115, 0.12);
+  border-top-color: rgba(13, 138, 110, 0.12);
 }
 
 /* ── Team Cards ── */
 [data-theme="light"] .team-card {
   background: #ffffff;
-  border-color: rgba(13, 147, 115, 0.1);
+  border-color: rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .team-card h3 {
   color: #1a1a2e;
@@ -445,7 +454,7 @@ html.theme-transitioning *::after {
 /* ── Official Links ── */
 [data-theme="light"] .links-hero {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
-  border-color: rgba(13, 147, 115, 0.1);
+  border-color: rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .hero-title,
 [data-theme="light"] .hero-content h2 {
@@ -483,8 +492,8 @@ html.theme-transitioning *::after {
 
 /* Section Headers */
 [data-theme="light"] .section-header {
-  background: linear-gradient(135deg, rgba(13, 147, 115, 0.04), rgba(37, 99, 235, 0.03));
-  border-color: rgba(13, 147, 115, 0.1);
+  background: linear-gradient(135deg, rgba(13, 138, 110, 0.04), rgba(37, 99, 235, 0.03));
+  border-color: rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .section-header h3 {
   background: linear-gradient(135deg, #1a1a2e, rgba(26, 26, 46, 0.7));
@@ -514,10 +523,10 @@ html.theme-transitioning *::after {
 /* ── Exchanges ── */
 [data-theme="light"] .exchanges-hero {
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(13, 147, 115, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 0%, rgba(13, 138, 110, 0.06) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 100%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.99));
-  border-color: rgba(13, 147, 115, 0.15);
+  border-color: rgba(13, 138, 110, 0.15);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
 }
 [data-theme="light"] .exchanges-subtitle {
@@ -671,7 +680,7 @@ html.theme-transitioning *::after {
 
 /* ── Official Links Tab (Refreshed) ── */
 [data-theme="light"] #links .links-title {
-  background: linear-gradient(120deg, #1a1a2e 0%, #2563eb 38%, #0d9373 72%, #475569 100%);
+  background: linear-gradient(120deg, #1a1a2e 0%, #2563eb 38%, #0d8a6e 72%, #475569 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -680,7 +689,7 @@ html.theme-transitioning *::after {
   color: rgba(26, 26, 46, 0.6);
 }
 [data-theme="light"] #links .links-subtitle::after {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0), rgba(37, 99, 235, 0.5), rgba(13, 147, 115, 0));
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0), rgba(37, 99, 235, 0.5), rgba(13, 138, 110, 0));
 }
 [data-theme="light"] #links .section-header {
   border-color: rgba(0, 0, 0, 0.08);
@@ -755,17 +764,17 @@ html.theme-transitioning *::after {
   border-color: rgba(0, 0, 0, 0.1);
 }
 [data-theme="light"] .section-nav-link.active {
-  background: linear-gradient(135deg, rgba(13, 147, 115, 0.12), rgba(13, 147, 115, 0.06));
-  color: #0d9373;
-  border-color: rgba(13, 147, 115, 0.25);
-  box-shadow: 0 0 12px rgba(13, 147, 115, 0.08);
+  background: linear-gradient(135deg, rgba(13, 138, 110, 0.12), rgba(13, 138, 110, 0.06));
+  color: #0d8a6e;
+  border-color: rgba(13, 138, 110, 0.25);
+  box-shadow: 0 0 12px rgba(13, 138, 110, 0.08);
 }
 
 /* ── EVM Deep Dive — Narrative Bridge ── */
 [data-theme="light"] .narrative-bridge {
   color: rgba(26, 26, 46, 0.7);
-  border-left-color: rgba(13, 147, 115, 0.3);
-  background: rgba(13, 147, 115, 0.03);
+  border-left-color: rgba(13, 138, 110, 0.3);
+  background: rgba(13, 138, 110, 0.03);
 }
 
 /* ── Tech Page Styles ── */
@@ -773,7 +782,7 @@ html.theme-transitioning *::after {
   background: var(--bg-body);
 }
 [data-theme="light"] .tech-page-header {
-  background: linear-gradient(180deg, rgba(13, 147, 115, 0.03) 0%, rgba(37, 99, 235, 0.02) 50%, transparent 100%);
+  background: linear-gradient(180deg, rgba(13, 138, 110, 0.03) 0%, rgba(37, 99, 235, 0.02) 50%, transparent 100%);
   border-bottom-color: rgba(0, 0, 0, 0.06);
 }
 [data-theme="light"] .tech-stat {
@@ -785,7 +794,7 @@ html.theme-transitioning *::after {
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 [data-theme="light"] .tech-content-card:hover {
-  border-color: rgba(13, 147, 115, 0.1);
+  border-color: rgba(13, 138, 110, 0.1);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 [data-theme="light"] .tech-content-card h2 {
@@ -814,8 +823,8 @@ html.theme-transitioning *::after {
   color: rgba(26, 26, 46, 0.5);
 }
 [data-theme="light"] .tech-highlight {
-  background: linear-gradient(135deg, rgba(13, 147, 115, 0.04), rgba(37, 99, 235, 0.03));
-  border-color: rgba(13, 147, 115, 0.1);
+  background: linear-gradient(135deg, rgba(13, 138, 110, 0.04), rgba(37, 99, 235, 0.03));
+  border-color: rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .tech-highlight p {
   color: rgba(26, 26, 46, 0.7) !important;
@@ -833,7 +842,7 @@ html.theme-transitioning *::after {
 }
 [data-theme="light"] .tech-flow-step {
   background: #ffffff;
-  border-color: rgba(13, 147, 115, 0.1);
+  border-color: rgba(13, 138, 110, 0.1);
 }
 [data-theme="light"] .tech-flow-step .step-label {
   color: rgba(26, 26, 46, 0.8);
@@ -843,17 +852,17 @@ html.theme-transitioning *::after {
   color: rgba(26, 26, 46, 0.25);
 }
 [data-theme="light"] .tech-page-header .back-link {
-  border-color: rgba(13, 147, 115, 0.12);
-  background: rgba(13, 147, 115, 0.03);
+  border-color: rgba(13, 138, 110, 0.12);
+  background: rgba(13, 138, 110, 0.03);
 }
 
 /* ── Eco Tree (embedded) ── */
 [data-theme="light"] .eco-tree::before {
-  background-image: radial-gradient(rgba(13, 147, 115, 0.04) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(13, 138, 110, 0.04) 1px, transparent 1px);
 }
 [data-theme="light"] .eco-root {
   background: linear-gradient(135deg, #effff8, #e0fff2);
-  border-color: #0d9373;
+  border-color: #0d8a6e;
 }
 [data-theme="light"] .eco-pillar {
   background: #ffffff;
@@ -879,20 +888,20 @@ html.theme-transitioning *::after {
 [data-theme="light"] .eco-inner-trunk,
 [data-theme="light"] .eco-drop-line,
 [data-theme="light"] .eco-inner-drop-line {
-  background: rgba(13, 147, 115, 0.2);
+  background: rgba(13, 138, 110, 0.2);
 }
 [data-theme="light"] .eco-hbar::before,
 [data-theme="light"] .eco-inner-bar::before {
-  background: rgba(13, 147, 115, 0.15);
+  background: rgba(13, 138, 110, 0.15);
 }
 [data-theme="light"] .eco-row-sep {
-  color: rgba(13, 147, 115, 0.3);
+  color: rgba(13, 138, 110, 0.3);
 }
 [data-theme="light"] .eco-row-sep::before {
-  background: linear-gradient(to right, transparent, rgba(13, 147, 115, 0.1));
+  background: linear-gradient(to right, transparent, rgba(13, 138, 110, 0.1));
 }
 [data-theme="light"] .eco-row-sep::after {
-  background: linear-gradient(to left, transparent, rgba(13, 147, 115, 0.1));
+  background: linear-gradient(to left, transparent, rgba(13, 138, 110, 0.1));
 }
 
 /* ── Override hardcoded white text in various elements ── */

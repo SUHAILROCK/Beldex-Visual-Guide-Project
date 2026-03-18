@@ -13,9 +13,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Google Fonts (non-blocking) -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" /></noscript>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" /></noscript>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles/variables.css" />
     <link rel="stylesheet" href="styles/base.css" />
@@ -44,37 +44,37 @@
   <body>
     <!-- PASSWORD GATE START -->
     <style>
-      .pw-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#06090f;overflow:hidden;transition:opacity .6s cubic-bezier(.4,0,.2,1),visibility .6s}
+      .pw-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#030306;overflow:hidden;transition:opacity .6s cubic-bezier(.4,0,.2,1),visibility .6s}
       .pw-overlay.pw-hidden{opacity:0;visibility:hidden;pointer-events:none}
-      .pw-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,170,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.04) 1px,transparent 1px);background-size:60px 60px}
+      .pw-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(34,217,160,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,217,160,.04) 1px,transparent 1px);background-size:60px 60px}
       .pw-bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5}
-      .pw-bg-orb--1{width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,170,.12),transparent 70%);top:-200px;right:-150px;animation:pw-drift 12s ease-in-out infinite alternate}
-      .pw-bg-orb--2{width:500px;height:500px;background:radial-gradient(circle,rgba(74,100,255,.1),transparent 70%);bottom:-180px;left:-120px;animation:pw-drift 15s ease-in-out infinite alternate-reverse}
+      .pw-bg-orb--1{width:600px;height:600px;background:radial-gradient(circle,rgba(34,217,160,.12),transparent 70%);top:-200px;right:-150px;animation:pw-drift 12s ease-in-out infinite alternate}
+      .pw-bg-orb--2{width:500px;height:500px;background:radial-gradient(circle,rgba(212,168,83,.08),transparent 70%);bottom:-180px;left:-120px;animation:pw-drift 15s ease-in-out infinite alternate-reverse}
       @keyframes pw-drift{0%{transform:translate(0,0)}100%{transform:translate(40px,-30px)}}
-      @keyframes pw-enter{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+      @keyframes pw-enter{from{opacity:0;transform:translateY(24px) scale(.97) ;filter:blur(4px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
       @keyframes pw-shake{0%,100%{transform:translateX(0)}15%,45%,75%{transform:translateX(-8px)}30%,60%,90%{transform:translateX(8px)}}
-      .pw-card{position:relative;width:400px;max-width:90vw;padding:52px 44px 40px;background:linear-gradient(165deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 100%);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2);border:1px solid rgba(255,255,255,.08);border-radius:24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.2),0 32px 64px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.06);animation:pw-enter .7s cubic-bezier(.22,1,.36,1)}
+      .pw-card{position:relative;width:400px;max-width:90vw;padding:52px 44px 40px;background:linear-gradient(165deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 100%);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px) saturate(1.2);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.2),0 32px 64px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.06);animation:pw-enter .7s cubic-bezier(.16,1,.3,1)}
       .pw-card.pw-shake{animation:pw-shake .45s ease-in-out}
-      .pw-lock-svg{width:44px;height:44px;margin:0 auto 24px;color:rgba(0,212,170,.7)}
-      .pw-brand{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;color:#fff;margin-bottom:4px;letter-spacing:-.3px}
-      .pw-subtitle{font-family:'Inter',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,.3);margin-bottom:36px;letter-spacing:2px;text-transform:uppercase}
+      .pw-lock-svg{width:44px;height:44px;margin:0 auto 24px;color:rgba(212,168,83,.7)}
+      .pw-brand{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#f0f0f5;margin-bottom:4px;letter-spacing:-.3px}
+      .pw-subtitle{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;color:rgba(212,168,83,.4);margin-bottom:36px;letter-spacing:3px;text-transform:uppercase}
       .pw-field{position:relative;margin-bottom:16px}
       .pw-field-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:rgba(255,255,255,.2);pointer-events:none;transition:color .3s}
-      .pw-input{width:100%;box-sizing:border-box;padding:15px 46px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;letter-spacing:.5px;outline:none;transition:all .3s ease}
-      .pw-input:focus{background:rgba(255,255,255,.06);border-color:rgba(0,212,170,.4);box-shadow:0 0 0 3px rgba(0,212,170,.08)}
-      .pw-input:focus~.pw-field-icon{color:rgba(0,212,170,.5)}
+      .pw-input{width:100%;box-sizing:border-box;padding:15px 46px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;color:#f0f0f5;font-family:'Outfit',sans-serif;font-size:14px;letter-spacing:.5px;outline:none;transition:all .3s ease}
+      .pw-input:focus{background:rgba(255,255,255,.06);border-color:rgba(34,217,160,.4);box-shadow:0 0 0 3px rgba(34,217,160,.08)}
+      .pw-input:focus~.pw-field-icon{color:rgba(34,217,160,.5)}
       .pw-input::placeholder{color:rgba(255,255,255,.2);letter-spacing:.5px}
       .pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;transition:color .2s}
       .pw-toggle:hover{color:rgba(255,255,255,.5)}
       .pw-toggle svg{width:18px;height:18px}
-      .pw-btn{width:100%;padding:15px;background:linear-gradient(135deg,#00d4aa 0%,#00c49a 100%);border:none;border-radius:14px;color:#06090f;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden}
+      .pw-btn{width:100%;padding:15px;background:linear-gradient(135deg,#22d9a0 0%,#1ab88a 100%);border:none;border-radius:12px;color:#030306;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:all .25s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
       .pw-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,.15) 50%,transparent 100%);transform:translateX(-100%);transition:transform .5s}
-      .pw-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,212,170,.25)}
+      .pw-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,217,160,.25),0 0 40px rgba(212,168,83,.08)}
       .pw-btn:hover::after{transform:translateX(100%)}
       .pw-btn:active{transform:translateY(0);box-shadow:none}
-      .pw-error{font-family:'Inter',sans-serif;font-size:12px;color:#ff5c5c;margin-top:16px;min-height:18px;opacity:0;transition:opacity .3s}
+      .pw-error{font-family:'Outfit',sans-serif;font-size:12px;color:#ff5c5c;margin-top:16px;min-height:18px;opacity:0;transition:opacity .3s}
       .pw-error.pw-visible{opacity:1}
-      .pw-line{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:3px;border-radius:3px;background:linear-gradient(90deg,#00d4aa,#4a64ff);opacity:.4}
+      .pw-line{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:3px;border-radius:3px;background:linear-gradient(90deg,#22d9a0,#d4a853);opacity:.4}
     </style>
     <div class="pw-overlay" id="pwOverlay">
       <div class="pw-bg-grid"></div>
@@ -319,12 +319,6 @@
                 <p class="flow-text-small">Complete Privacy Ecosystem</p>
               </div>
             </div>
-          </div>
-
-          <div class="diagram">
-            <h2>Core Technology Stack</h2>
-            <p class="ts-section-subtitle">The foundational technologies powering Beldex's privacy blockchain ecosystem</p>
-            <div id="coreTechStack"></div>
           </div>
 
           <!-- ECOSYSTEM (Merged into Overview) -->
@@ -702,7 +696,7 @@
                       </filter>
                     </defs>
                     <!-- DWF Labs: 72.46% -->
-                    <circle cx="120" cy="120" r="80" fill="none" stroke="#29e0a9" stroke-width="50" stroke-dasharray="364.22 502.65" stroke-dashoffset="0" class="pie-segment pie-segment-1" filter="url(#chartGlow)"/>
+                    <circle cx="120" cy="120" r="80" fill="none" stroke="#22d9a0" stroke-width="50" stroke-dasharray="364.22 502.65" stroke-dashoffset="0" class="pie-segment pie-segment-1" filter="url(#chartGlow)"/>
                     <!-- Bitgert Ventures: 10.14% -->
                     <circle cx="120" cy="120" r="80" fill="none" stroke="#3b82f6" stroke-width="50" stroke-dasharray="50.97 502.65" stroke-dashoffset="-364.22" class="pie-segment pie-segment-2" filter="url(#chartGlow)"/>
                     <!-- Block Alpha: 8.70% -->
@@ -711,7 +705,7 @@
                     <circle cx="120" cy="120" r="80" fill="none" stroke="#f59e0b" stroke-width="50" stroke-dasharray="43.73 502.65" stroke-dashoffset="-458.92" class="pie-segment pie-segment-4" filter="url(#chartGlow)"/>
                     <!-- Center -->
                     <circle cx="120" cy="120" r="55" fill="#0c0f16"/>
-                    <circle cx="120" cy="120" r="55" fill="none" stroke="rgba(41,224,169,0.08)" stroke-width="1"/>
+                    <circle cx="120" cy="120" r="55" fill="none" stroke="rgba(34,217,160,0.08)" stroke-width="1"/>
                   </svg>
                   <div class="fs-chart-center">
                     <div class="fs-chart-amount">$34.5M</div>
@@ -722,9 +716,9 @@
 
               <!-- Investor Cards -->
               <div class="fs-investors">
-                <div class="fs-investor-card" style="--inv-color: #29e0a9;">
+                <div class="fs-investor-card" style="--inv-color: #22d9a0;">
                   <div class="fs-inv-header">
-                    <span class="fs-inv-dot" style="background: #29e0a9; box-shadow: 0 0 12px rgba(41,224,169,0.5);"></span>
+                    <span class="fs-inv-dot" style="background: #22d9a0; box-shadow: 0 0 12px rgba(34,217,160,0.5);"></span>
                     <div class="fs-inv-info">
                       <span class="fs-inv-name">DWF Labs</span>
                       <span class="fs-inv-type">Lead Investor</span>
@@ -732,7 +726,7 @@
                     <span class="fs-inv-amount">$25.0M</span>
                   </div>
                   <div class="fs-inv-bar-track">
-                    <div class="fs-inv-bar-fill" style="width: 72.46%; background: linear-gradient(90deg, #29e0a9, #20c997);"></div>
+                    <div class="fs-inv-bar-fill" style="width: 72.46%; background: linear-gradient(90deg, #22d9a0, #1ab88a);"></div>
                   </div>
                   <span class="fs-inv-share">72.46%</span>
                 </div>

@@ -26,27 +26,48 @@ function initPriceWidgetOnDemand() {
     });
 }
 
+function toggleWidgetVisibility(tab) {
+  var widget = document.getElementById('bdx-widget');
+  if (!widget) return;
+  var show = (tab === 'market' || tab === 'exchanges');
+  widget.style.display = show ? '' : 'none';
+}
+
 function setupPriceWidgetLazyLoad() {
+  var widget = document.getElementById('bdx-widget');
+  if (widget) widget.style.display = 'none';
+
   var marketTabButton = document.querySelector('.nav-tab[data-tab="market"]');
 
   if (marketTabButton) {
     marketTabButton.addEventListener('click', initPriceWidgetOnDemand, { once: true });
   }
 
+  var exchangesTabButton = document.querySelector('.nav-tab[data-tab="exchanges"]');
+  if (exchangesTabButton) {
+    exchangesTabButton.addEventListener('click', initPriceWidgetOnDemand, { once: true });
+  }
+
   window.addEventListener('beldex:tabchange', function (event) {
-    if (event && event.detail && event.detail.tab === 'market') {
+    var tab = event && event.detail && event.detail.tab;
+    if (tab === 'market' || tab === 'exchanges') {
       initPriceWidgetOnDemand();
     }
+    toggleWidgetVisibility(tab);
   });
 
   window.addEventListener('hashchange', function () {
-    if (location.hash === '#market') {
+    var hash = (location.hash || '').replace('#', '');
+    if (hash === 'market' || hash === 'exchanges') {
       initPriceWidgetOnDemand();
     }
+    toggleWidgetVisibility(hash);
   });
 
-  if (location.hash === '#market') {
+  var initialHash = (location.hash || '').replace('#', '');
+  if (initialHash === 'market' || initialHash === 'exchanges') {
     initPriceWidgetOnDemand();
+    toggleWidgetVisibility(initialHash);
   }
 }
 

@@ -1,7 +1,7 @@
 /* Core Technology Stack module */
 
 .ts-section-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.7;
@@ -15,7 +15,7 @@
 }
 
 .ts-group-label {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 0.7rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.3);
@@ -43,7 +43,7 @@
   flex-shrink: 0;
 }
 
-.ts-dot-privacy   { background: #29e0a9; box-shadow: 0 0 10px rgba(41,224,169,0.5); }
+.ts-dot-privacy   { background: #22d9a0; box-shadow: 0 0 10px rgba(34,217,160,0.5); }
 .ts-dot-consensus { background: #3b82f6; box-shadow: 0 0 10px rgba(59,130,246,0.5); }
 .ts-dot-network   { background: #22d3ee; box-shadow: 0 0 10px rgba(34,211,238,0.5); }
 .ts-dot-research  { background: #a78bfa; box-shadow: 0 0 10px rgba(167,139,250,0.5); }
@@ -55,7 +55,7 @@
 }
 
 .tsc {
-  --tsc-accent: #29e0a9;
+  --tsc-accent: #22d9a0;
   position: relative;
   display: flex;
   align-items: center;
@@ -101,7 +101,7 @@
   opacity: 1;
 }
 
-.tsc-privacy   { --tsc-accent: #29e0a9; }
+.tsc-privacy   { --tsc-accent: #22d9a0; }
 .tsc-consensus { --tsc-accent: #3b82f6; }
 .tsc-network   { --tsc-accent: #22d3ee; }
 .tsc-research  { --tsc-accent: #a78bfa; }
@@ -159,7 +159,7 @@
 }
 
 .tsc-body h3 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-head);
   font-size: 0.93rem;
   font-weight: 600;
   color: #f1f5f9;
@@ -174,7 +174,7 @@
 }
 
 .tsc-body p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.78rem;
   color: rgba(203, 213, 225, 0.45);
   margin: 0;
@@ -190,7 +190,7 @@
 }
 
 .tsc-tag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.6px;

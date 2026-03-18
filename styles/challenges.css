@@ -50,8 +50,8 @@
   box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.45);
 }
 .challenge-card:hover {
-  border-color: rgba(41, 224, 169, 0.18);
-  box-shadow: 0 14px 44px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(41,224,169,0.08);
+  border-color: rgba(34, 217, 160, 0.18);
+  box-shadow: 0 14px 44px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(34,217,160,0.08);
   transform: translateY(-3px);
 }
 /* Solved card accent */
@@ -69,7 +69,7 @@
   position: absolute;
   top: 0; right: 0;
   width: 200px; height: 120px;
-  background: radial-gradient(ellipse at top right, rgba(41,224,169,0.06), transparent 70%);
+  background: radial-gradient(ellipse at top right, rgba(34,217,160,0.06), transparent 70%);
   pointer-events: none;
 }
 
@@ -88,8 +88,8 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: rgba(41, 224, 169, 0.08);
-  border: 1px solid rgba(41, 224, 169, 0.2);
+  background: rgba(34, 217, 160, 0.08);
+  border: 1px solid rgba(34, 217, 160, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -179,7 +179,7 @@
   padding-top: 24px;
   color: rgba(156, 163, 175, 0.35);
 }
-.challenge-card:hover .ps-connector { color: rgba(41, 224, 169, 0.5); }
+.challenge-card:hover .ps-connector { color: rgba(34, 217, 160, 0.5); }
 
 /* Header row inside each panel */
 .ps-header {
@@ -328,10 +328,10 @@
   border-color: rgba(255, 255, 255, 0.14);
 }
 .section-nav-link.active {
-  background: linear-gradient(135deg, rgba(41, 224, 169, 0.2), rgba(41, 224, 169, 0.08));
-  color: #29e0a9;
-  border-color: rgba(41, 224, 169, 0.35);
-  box-shadow: 0 0 14px rgba(41, 224, 169, 0.12), inset 0 1px 0 rgba(41, 224, 169, 0.1);
+  background: linear-gradient(135deg, rgba(34, 217, 160, 0.2), rgba(34, 217, 160, 0.08));
+  color: #22d9a0;
+  border-color: rgba(34, 217, 160, 0.35);
+  box-shadow: 0 0 14px rgba(34, 217, 160, 0.12), inset 0 1px 0 rgba(34, 217, 160, 0.1);
   font-weight: 600;
 }
 
@@ -347,8 +347,8 @@
   color: rgba(156, 163, 175, 0.85);
   padding: 20px 24px;
   margin: 8px 0 8px;
-  border-left: 3px solid rgba(41, 224, 169, 0.25);
-  background: rgba(41, 224, 169, 0.03);
+  border-left: 3px solid rgba(34, 217, 160, 0.25);
+  background: rgba(34, 217, 160, 0.03);
   border-radius: 0 12px 12px 0;
   font-style: italic;
 }
@@ -377,7 +377,7 @@
   }
 
   #evm-deep-dive .section-nav-link.active {
-    box-shadow: 0 0 18px rgba(41, 224, 169, 0.14), inset 0 1px 0 rgba(41, 224, 169, 0.12);
+    box-shadow: 0 0 18px rgba(34, 217, 160, 0.14), inset 0 1px 0 rgba(34, 217, 160, 0.12);
   }
 }
 
