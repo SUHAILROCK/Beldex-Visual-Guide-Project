@@ -22,7 +22,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(56,189,126,0.06) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(34,217,160,0.06) 1px, transparent 1px);
   background-size: 28px 28px;
   pointer-events: none;
   border-radius: 16px;
@@ -38,24 +38,36 @@
 
 /* ─── ROOT NODE ─── */
 .eco-root {
-  background: linear-gradient(135deg, #143a28, #1a4a34);
-  border: 2px solid #38bd7e;
-  box-shadow: 0 0 40px rgba(56,189,126,0.12);
+  background: linear-gradient(135deg, #0a1f16, #0f2a1e);
+  border: 2px solid #22d9a0;
+  box-shadow: 0 0 40px rgba(34,217,160,0.1), 0 0 80px rgba(212,168,83,0.03);
   border-radius: 16px;
   padding: 24px 48px;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.eco-root::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #d4a853, #22d9a0);
+  border-radius: 0 2px 2px 0;
 }
 .eco-root:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(56,189,126,0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(34,217,160,0.15), 0 0 30px rgba(212,168,83,0.05);
 }
 .eco-root .eco-emoji { font-size: 1.6rem; margin-bottom: 6px; }
 .eco-root .eco-title {
   font-family: var(--font-head);
   font-size: 1.15rem;
   font-weight: 700;
-  color: #38bd7e;
+  color: #22d9a0;
   letter-spacing: 0.05em;
 }
 .eco-root .eco-desc {
@@ -68,7 +80,7 @@
 .eco-trunk {
   width: 2px;
   height: 28px;
-  background: linear-gradient(to bottom, #38bd7e, #1e3a2f);
+  background: linear-gradient(to bottom, #22d9a0, #1e3a2f);
   margin: 0 auto;
   flex-shrink: 0;
 }
@@ -129,7 +141,7 @@
   width: 0; height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 6px solid #38bd7e;
+  border-top: 6px solid #22d9a0;
 }
 
 /* ─── LEVEL TAG ─── */
@@ -141,9 +153,9 @@
   font-size: 0.6rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #38bd7e;
-  background: rgba(56,189,126,0.08);
-  border: 1px solid rgba(56,189,126,0.15);
+  color: #22d9a0;
+  background: rgba(34,217,160,0.08);
+  border: 1px solid rgba(34,217,160,0.15);
   padding: 4px 14px;
   border-radius: 50px;
   margin: 20px 0 14px;
@@ -194,18 +206,18 @@
 
 /* Pillar card — fills its grid column fully (no max-width cap) */
 .eco-pillar {
-  background: #151f30;
-  border: 1.5px solid #253349;
+  background: linear-gradient(160deg, rgba(15,20,32,0.97), rgba(10,12,20,0.99));
+  border: 1.5px solid rgba(255,255,255,0.06);
   border-radius: 14px;
   padding: 16px 20px;
   text-align: center;
-  width: 100%;          /* was capped at max-width: 220px */
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  transition: border-color 0.25s ease, transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease;
 }
 .eco-pillar:hover {
-  border-color: #38bd7e;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(56,189,126,0.12);
+  border-color: rgba(34,217,160,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(34,217,160,0.1), 0 0 0 1px rgba(212,168,83,0.04);
 }
 .eco-pillar .eco-emoji { font-size: 1.2rem; margin-bottom: 4px; }
 .eco-pillar .eco-title {
@@ -280,7 +292,7 @@
   width: 0; height: 0;
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
-  border-top: 4px solid #38bd7e;
+  border-top: 4px solid #22d9a0;
 }
 
 /* ─── 4-COLUMN OVERRIDES (Privacy Apps pillar has 4 children)
@@ -316,7 +328,7 @@
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .eco-comp:hover {
-  border-color: #38bd7e;
+  border-color: #22d9a0;
   transform: translateY(-1px);
 }
 .eco-comp .eco-title {
@@ -358,7 +370,7 @@
   width: 0; height: 0;
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
-  border-top: 4px solid #38bd7e;
+  border-top: 4px solid #22d9a0;
   margin-bottom: 2px;
 }
 
@@ -371,7 +383,7 @@
   /* removed flex-wrap: wrap */
 }
 .eco-leaf {
-  background: rgba(56,189,126,0.06);
+  background: rgba(34,217,160,0.06);
   border: 1px dashed #2a5a42;
   border-radius: 8px;
   padding: 8px 6px;
@@ -380,14 +392,14 @@
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 .eco-leaf:hover {
-  border-color: #38bd7e;
-  background: rgba(56,189,126,0.1);
+  border-color: #22d9a0;
+  background: rgba(34,217,160,0.1);
 }
 .eco-leaf .eco-title {
   font-family: var(--font-head);
   font-size: 0.6rem;
   font-weight: 600;
-  color: #38bd7e;
+  color: #22d9a0;
 }
 .eco-leaf .eco-desc {
   font-size: 0.52rem;
@@ -406,7 +418,7 @@
   display: inline-block;
   margin-top: 4px;
 }
-.eco-status-live     { background: rgba(56,189,126,0.18);  color: #38bd7e; }
+.eco-status-live     { background: rgba(34,217,160,0.18);  color: #22d9a0; }
 .eco-status-progress { background: rgba(250,204,21,0.15);  color: #facc15; }
 .eco-status-roadmap  { background: rgba(99,102,241,0.15);  color: #818cf8; }
 
@@ -432,12 +444,12 @@
   border-radius: 4px;
   flex-shrink: 0;
 }
-.eco-legend-swatch-root   { background: linear-gradient(135deg,#143a28,#1a4a34); border: 1.5px solid #38bd7e; }
+.eco-legend-swatch-root   { background: linear-gradient(135deg,#143a28,#1a4a34); border: 1.5px solid #22d9a0; }
 .eco-legend-swatch-pillar { background: #151f30; border: 1.5px solid #253349; }
 .eco-legend-swatch-comp   { background: #111b29; border: 1px solid #1e2d42; }
-.eco-legend-swatch-leaf   { background: rgba(56,189,126,0.06); border: 1px dashed #2a5a42; }
+.eco-legend-swatch-leaf   { background: rgba(34,217,160,0.06); border: 1px dashed #2a5a42; }
 .eco-legend-swatch-conn   { width: 14px; height: 2px; background: #1e3a2f; border-radius: 0; }
-.eco-legend-swatch-arrow  { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #38bd7e; }
+.eco-legend-swatch-arrow  { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #22d9a0; }
 .eco-legend-badge {
   font-weight: 700;
   font-size: 0.52rem;
