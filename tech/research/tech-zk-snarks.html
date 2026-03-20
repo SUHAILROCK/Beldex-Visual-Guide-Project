@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-      /* ===== Proof of Stake Page - Premium Redesign ===== */
+      /* ===== Proof of Stake Page — Premium Redesign ===== */
       :root {
         --zk-accent: #ef4444;
         --zk-accent-dim: rgba(239,68,68,0.12);
@@ -97,7 +97,7 @@
         .zk-flow-arrow { transform: rotate(90deg); }
       }
     
-/* -- Comprehensive Light Theme -- */
+/* ── Comprehensive Light Theme ── */
       [data-theme="light"] .tech-page,
       [data-theme="light"] .cn-page,
       [data-theme="light"] .rs-page,
@@ -238,7 +238,7 @@
           <a href="../../../index.html" class="zk-back">&larr; Back to Visual Guide</a>
           <div class="zk-hero-badge">Research</div>
           <h1>zk-SNARKs</h1>
-          <p class="zk-hero-sub">Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge - a cryptographic breakthrough for <strong>privacy-enhanced smart contracts</strong> on Beldex.</p>
+          <p class="zk-hero-sub">Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge — a cryptographic breakthrough for <strong>privacy-enhanced smart contracts</strong> on Beldex.</p>
           <div class="zk-stats">
             <div class="zk-stat"><span class="zk-stat-emoji"></span><div><div class="zk-stat-label">Category</div><div class="zk-stat-value">Zero-Knowledge Proofs</div></div></div>
             <div class="zk-stat"><span class="zk-stat-emoji"></span><div><div class="zk-stat-label">Target Use</div><div class="zk-stat-value">Private Smart Contracts</div></div></div>
@@ -247,11 +247,11 @@
         </div>
       </div>
       <div class="zk-body">
-        <div class="zk-card"><h2>What Are zk-SNARKs?</h2><p>zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge) allow one party to prove to another that a statement is true, without revealing any information beyond the truth of the statement itself.</p><p>While Beldex already uses ring signatures and RingCT for Layer 1 privacy, zk-SNARKs are being researched for integration with the <strong>EVM layer</strong> - enabling privacy-preserving smart contracts.</p><div class="zk-highlight"><p><strong>Future Vision:</strong> zk-SNARKs will potentially enable Beldex smart contracts to execute with full computational privacy - users can interact with DeFi without exposing positions, balances, or strategies.</p></div></div>
-        <div class="zk-card"><h2>How zk-SNARKs Work</h2><p>The core properties that make zk-SNARKs revolutionary:</p><div class="zk-feature-grid"><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Zero-Knowledge</h4><p>The verifier learns absolutely nothing beyond "this statement is true." No data about inputs or computation leaks.</p></div><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Succinct</h4><p>Proofs are extremely compact (a few hundred bytes) regardless of computation complexity. Verification is nearly instant.</p></div><div class="zk-feature-item"><span class="zk-feature-icon">??</span><h4>Non-Interactive</h4><p>The prover sends a single message - no back-and-forth communication needed. Ideal for blockchains.</p></div><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Arithmetic Circuits</h4><p>Computations are converted into arithmetic circuits - any program can be "compiled" into a provable circuit.</p></div></div></div>
+        <div class="zk-card"><h2>What Are zk-SNARKs?</h2><p>zk-SNARKs (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge) allow one party to prove to another that a statement is true, without revealing any information beyond the truth of the statement itself.</p><p>While Beldex already uses ring signatures and RingCT for Layer 1 privacy, zk-SNARKs are being researched for integration with the <strong>EVM layer</strong> — enabling privacy-preserving smart contracts.</p><div class="zk-highlight"><p><strong>Future Vision:</strong> zk-SNARKs will potentially enable Beldex smart contracts to execute with full computational privacy — users can interact with DeFi without exposing positions, balances, or strategies.</p></div></div>
+        <div class="zk-card"><h2>How zk-SNARKs Work</h2><p>The core properties that make zk-SNARKs revolutionary:</p><div class="zk-feature-grid"><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Zero-Knowledge</h4><p>The verifier learns absolutely nothing beyond "this statement is true." No data about inputs or computation leaks.</p></div><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Succinct</h4><p>Proofs are extremely compact (a few hundred bytes) regardless of computation complexity. Verification is nearly instant.</p></div><div class="zk-feature-item"><span class="zk-feature-icon">🤝</span><h4>Non-Interactive</h4><p>The prover sends a single message — no back-and-forth communication needed. Ideal for blockchains.</p></div><div class="zk-feature-item"><span class="zk-feature-icon"></span><h4>Arithmetic Circuits</h4><p>Computations are converted into arithmetic circuits — any program can be "compiled" into a provable circuit.</p></div></div></div>
         <div class="zk-card"><h2>How zk-SNARKs Would Work on Beldex</h2><p>The envisioned integration with Beldex's EVM layer:</p><div class="zk-flow"><div class="zk-flow-step"><span class="zk-step-num">Step 1</span><span class="zk-step-label">Contract logic compiled to zk circuit</span></div><span class="zk-flow-arrow">&rarr;</span><div class="zk-flow-step"><span class="zk-step-num">Step 2</span><span class="zk-step-label">User executes privately off-chain</span></div><span class="zk-flow-arrow">&rarr;</span><div class="zk-flow-step"><span class="zk-step-num">Step 3</span><span class="zk-step-label">zk-SNARK proof generated</span></div><span class="zk-flow-arrow">&rarr;</span><div class="zk-flow-step"><span class="zk-step-num">Step 4</span><span class="zk-step-label">Only the proof submitted on-chain</span></div></div></div>
         <div class="zk-card"><h2>zk-SNARKs vs Ring Signatures</h2><table class="zk-table"><thead><tr><th>Feature</th><th>Ring Signatures (current)</th><th>zk-SNARKs (planned)</th></tr></thead><tbody><tr><td>Privacy Model</td><td>Hides sender among decoys</td><td>Proves validity without revealing anything</td></tr><tr><td>Proof Size</td><td>Grows with ring size</td><td>Constant (very small)</td></tr><tr><td>Trusted Setup</td><td>Not required</td><td>Required (or use zk-STARKs)</td></tr><tr><td>Smart Contract Privacy</td><td>Not applicable</td><td>Full computation privacy</td></tr><tr><td>Maturity on Beldex</td><td>Production (live)</td><td>Research phase</td></tr></tbody></table></div>
-        <div class="zk-card"><h2>Why Beldex is Researching zk-SNARKs</h2><ul><li><strong>Private smart contracts:</strong> Ring signatures protect L1 transactions, but EVM interactions are transparent. zk-SNARKs extend privacy to the smart contract layer.</li><li><strong>Scalability benefits:</strong> zk-SNARKs compress complex computations into tiny proofs, potentially enabling rollup-style architectures.</li><li><strong>Complementary to existing tech:</strong> zk-SNARKs add a new privacy layer specifically for EVM interactions and programmable privacy.</li><li><strong>Long-term vision:</strong> Full-stack privacy - from L1 (RingCT + ring sigs) to L2 smart contracts (zk-SNARKs).</li></ul></div>
+        <div class="zk-card"><h2>Why Beldex is Researching zk-SNARKs</h2><ul><li><strong>Private smart contracts:</strong> Ring signatures protect L1 transactions, but EVM interactions are transparent. zk-SNARKs extend privacy to the smart contract layer.</li><li><strong>Scalability benefits:</strong> zk-SNARKs compress complex computations into tiny proofs, potentially enabling rollup-style architectures.</li><li><strong>Complementary to existing tech:</strong> zk-SNARKs add a new privacy layer specifically for EVM interactions and programmable privacy.</li><li><strong>Long-term vision:</strong> Full-stack privacy — from L1 (RingCT + ring sigs) to L2 smart contracts (zk-SNARKs).</li></ul></div>
       </div>
 
       

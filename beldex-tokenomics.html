@@ -774,7 +774,7 @@ function toggleNumSys() {
   render();
 }
 
-// -- Drawer --------------------------------------------------------------------
+// ── Drawer ────────────────────────────────────────────────────────────────────
 function toggleDrawer() {
   const open = document.getElementById('drawer').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('open', open);
@@ -793,7 +793,7 @@ function renderDrawer() {
          onclick="setActive(${i});closeDrawer()">
       <div class="drawer-dot" style="background:${st.color};opacity:${i===active?1:.5}"></div>
       <div class="drawer-info">
-        <div class="drawer-pill">${st.pill} � ${st.badge.split('�')[0].trim()}</div>
+        <div class="drawer-pill">${st.pill} · ${st.badge.split('·')[0].trim()}</div>
         <div class="drawer-title">${st.title}</div>
       </div>
       <span class="drawer-pct" style="color:${i===active?st.color:'#1e4050'}">${st.circPct}%</span>
@@ -825,22 +825,22 @@ function render(){
 
   let blogHtml = '';
   if(s.blog){
-    blogHtml += `<div class="slabel" style="margin-top:12px">?? OFFICIAL SOURCE</div>
+    blogHtml += `<div class="slabel" style="margin-top:12px">📄 OFFICIAL SOURCE</div>
       <a class="src-btn" href="${s.blog}" target="_blank" style="background:${s.color}18;border-color:${s.color}44;">
         <div><div class="st">Read the official announcement</div><div class="sd">${s.blogDate}</div></div>
-        <span class="arr" style="color:${s.color}">?</span>
+        <span class="arr" style="color:${s.color}">↗</span>
       </a>`;
   }
   if(s.blog2){
     blogHtml += `<a class="src-btn" href="${s.blog2}" target="_blank" style="background:rgba(255,255,255,.03);border-color:#1a3a50;">
         <div><div class="st">Also published on Medium</div><div class="sd">${s.blog2Date}</div></div>
-        <span class="arr" style="color:#3a6060">?</span>
+        <span class="arr" style="color:#3a6060">↗</span>
       </a>`;
   }
 
   // System badge
   const sysBadge = numSys === 'indian'
-    ? `<span class="sys-badge" style="background:#ff993322;color:#ff9933">? Indian</span>`
+    ? `<span class="sys-badge" style="background:#ff993322;color:#ff9933">₹ Indian</span>`
     : `<span class="sys-badge" style="background:#00e0be22;color:#00e0be">$ doller</span>`;
 
   const changesHtml = applyNumFmt(
@@ -855,7 +855,7 @@ function render(){
       <div><span class="lbl">In circulation: </span><span class="teal">${fmtCirc(s)}</span></div>
     </div>
     <div class="analogy">
-      <div class="tag">?? SIMPLE EXPLANATION</div>
+      <div class="tag">💡 SIMPLE EXPLANATION</div>
       <p>${s.analogy}</p>
     </div>
     <div class="slabel">WHAT CHANGED THIS PERIOD</div>
@@ -877,7 +877,7 @@ function render(){
       <span class="lv" style="color:${dk?'#445':w.c};${fade?'opacity:.35':''}">${w.p}%</span>
     </div>`;
   }).join('');
-  wc.innerHTML = `<div class="ct">?? Where are all the BDX right now?</div><div class="cs">Each colour = a different locked wallet with a specific purpose</div><div class="bar-stack">${segs}</div><div class="legend">${lgnd}</div>`;
+  wc.innerHTML = `<div class="ct">🗂 Where are all the BDX right now?</div><div class="cs">Each colour = a different locked wallet with a specific purpose</div><div class="bar-stack">${segs}</div><div class="legend">${lgnd}</div>`;
 
   // Circulation card
   const cc = document.getElementById('cc');
@@ -887,14 +887,14 @@ function render(){
     return `<div class="mc" onclick="setActive(${i})"><div class="mb" style="height:${h}px;background:${bg}"></div><div class="my" style="color:${i===active?st.color:'#162840'}">${st.pill}</div></div>`;
   }).join('');
   cc.innerHTML = `
-    <div class="ct">?? What % is freely circulating?</div>
+    <div class="ct">📈 What % is freely circulating?</div>
     <div class="circ-row" style="margin-top:8px">
       <div class="big-pct" style="color:${s.color}">${s.circPct}%</div>
       <div class="circ-sub">of all ${fmtTotalShort(s)}<br>coins are free<br>to buy / sell / trade</div>
     </div>
     <div class="prog-track"><div class="prog-fill" style="width:${s.circPct}%;background:linear-gradient(90deg,#00e0be,${s.color})"><span>${s.circPct}%</span></div></div>
     <div class="mini-bars">${cols}</div>
-    <div class="mini-hint">? tap any bar to jump to that period</div>`;
+    <div class="mini-hint">↑ tap any bar to jump to that period</div>`;
 
   // Nav
   const prev = document.getElementById('btn-prev');
@@ -916,7 +916,7 @@ function setActive(i){
 function go(d){const n=active+d;if(n>=0&&n<steps.length)setActive(n);}
 let activeTab = 0;
 
-// -- Global wallet address registry ------------------------------------------
+// ── Global wallet address registry ──────────────────────────────────────────
 const WDEFS = {
   eco:  { name:"Ecosystem Development Wallet", short:"Ecosystem Dev",
           addr:"bxdxQfsG99ZDH8HdNA2Tih4XEsfs2go8n9De7L2wyw5rPxRvgxSqRXRdGaP5bJLbEy84yWtWdUFmyC3z4VFxYYMY1wwGoYHtH",
@@ -940,24 +940,24 @@ const WDEFS = {
           color:"#e05050" },
 };
 
-// -- Per-step balances [eco, svc, team, mkt] ---------------------------------
+// ── Per-step balances [eco, svc, team, mkt] ─────────────────────────────────
 // null = no public addresses available for this era
 const WBAL = [
-  null,                                                        // 0 - 2018 PoW
-  [3960000000, 990000000,  594000000, 990000000],             // 1 - Dec 2021
-  [3567960000, 990000000,  594000000, 693000000],             // 2 - Oct 2022
-  [3437280000, 990000000,  594000000, 396000000],             // 3 - Jan 2023
-  [3045240000, 214500000,  594000000, 156420000],             // 4 - Oct 2023
-  [2914560000, 214500000,  561000000,  37000000],             // 5 - Jan 2024
-  [2783880000, 214500000,  462000000,  17000000],             // 6 - Apr 2024 (NEW)
-  [2522520000, 214500000,  264000000,          0],            // 7 - Nov 2024
-  [2391840000, 214500000,  165000000,          0],            // 8 - Dec 2024
-  [2261160000, 214500000,   66000000,          0],            // 9 - Mar 2025
-  [2130480000, 214500000,           0,         0],            // 10 - Jun 2025
-  [1999800000, 214500000,           0,         0],            // 11 - Oct 2025
+  null,                                                        // 0 — 2018 PoW
+  [3960000000, 990000000,  594000000, 990000000],             // 1 — Dec 2021
+  [3567960000, 990000000,  594000000, 693000000],             // 2 — Oct 2022
+  [3437280000, 990000000,  594000000, 396000000],             // 3 — Jan 2023
+  [3045240000, 214500000,  594000000, 156420000],             // 4 — Oct 2023
+  [2914560000, 214500000,  561000000,  37000000],             // 5 — Jan 2024
+  [2783880000, 214500000,  462000000,  17000000],             // 6 — Apr 2024 (NEW)
+  [2522520000, 214500000,  264000000,          0],            // 7 — Nov 2024
+  [2391840000, 214500000,  165000000,          0],            // 8 — Dec 2024
+  [2261160000, 214500000,   66000000,          0],            // 9 — Mar 2025
+  [2130480000, 214500000,           0,         0],            // 10 — Jun 2025
+  [1999800000, 214500000,           0,         0],            // 11 — Oct 2025
 ];
 
-// -- Pie / Donut chart ---------------------------------------------------------
+// ── Pie / Donut chart ─────────────────────────────────────────────────────────
 function polar(cx, cy, r, deg) {
   const rad = (deg - 90) * Math.PI / 180;
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
@@ -999,11 +999,11 @@ function buildDonut(wallets, totalLabel) {
     </div>`;
 }
 
-// -- Wallet addresses panel ----------------------------------------------------
+// ── Wallet addresses panel ────────────────────────────────────────────────────
 
 function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '? Copied';
+    btn.textContent = '✓ Copied';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
   });
@@ -1014,12 +1014,12 @@ function buildWallets(idx) {
   if (!bals) return `
     <div style="padding:4px 0">
       <div style="background:#160d00;border-radius:12px;padding:14px;border:1px solid #f0a50033;margin-bottom:10px">
-        <div style="font-size: 14px;font-weight:900;color:#f0a500;margin-bottom:6px">?? 2018 PoW Era - Different Wallet Structure</div>
-        <div style="font-size: 14px;color:#8a9890;line-height:1.7">In 2018, Beldex launched with a total supply of <b style="color:#fff">~2.4 Billion BDX</b>. There were no separate named lock wallets like Ecosystem, Team, or Marketing - coins were distributed directly through public &amp; private sales, with the remaining ~35% vesting linearly over 3 years.<br><br>The named designated wallets (Ecosystem, Seed &amp; VC, Team, Marketing) were only created at the <b style="color:#9b5de5">Dec 10 2021 Bucephalus POS Hardfork</b>, when the total supply was expanded to 9.9 Billion BDX and a full allocation structure was established.</div>
+        <div style="font-size: 14px;font-weight:900;color:#f0a500;margin-bottom:6px">⛏️ 2018 PoW Era — Different Wallet Structure</div>
+        <div style="font-size: 14px;color:#8a9890;line-height:1.7">In 2018, Beldex launched with a total supply of <b style="color:#fff">~2.4 Billion BDX</b>. There were no separate named lock wallets like Ecosystem, Team, or Marketing — coins were distributed directly through public &amp; private sales, with the remaining ~35% vesting linearly over 3 years.<br><br>The named designated wallets (Ecosystem, Seed &amp; VC, Team, Marketing) were only created at the <b style="color:#9b5de5">Dec 10 2021 Bucephalus POS Hardfork</b>, when the total supply was expanded to 9.9 Billion BDX and a full allocation structure was established.</div>
       </div>
       <div style="background:#08131f;border-radius:10px;padding:11px 13px;border:1px solid #0b1f35">
-        <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">?? TO SEE WALLET ADDRESSES</div>
-        <div style="font-size: 14px;color:#5a8880">Navigate to the <b style="color:#9b5de5">Dec 2021</b> step onwards - all four designated wallets with their addresses, view keys, and balances are available from that step forward.</div>
+        <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">👉 TO SEE WALLET ADDRESSES</div>
+        <div style="font-size: 14px;color:#5a8880">Navigate to the <b style="color:#9b5de5">Dec 2021</b> step onwards — all four designated wallets with their addresses, view keys, and balances are available from that step forward.</div>
       </div>
     </div>`;
   const keys = ['eco','svc','team','mkt'];
@@ -1027,14 +1027,14 @@ function buildWallets(idx) {
     const def = WDEFS[k];
     const bal = bals[i];
     const empty = bal === 0;
-    const balHtml = `<span class="wal-bal" style="background:${def.color}20;color:${empty?'#3a6a60':def.color}">${empty ? '? EMPTY - 0 BDX' : fmtBDX(bal)}</span>`;
+    const balHtml = `<span class="wal-bal" style="background:${def.color}20;color:${empty?'#3a6a60':def.color}">${empty ? '⭕ EMPTY — 0 BDX' : fmtBDX(bal)}</span>`;
     return `
       <div class="wal-card" style="border-color:${empty?'#0b1f35':def.color+'33'}">
         <div class="wal-header">
           <span class="wal-name" style="color:${def.color}">${def.name}</span>
           ${balHtml}
         </div>
-        ${empty ? `<div class="wal-empty">? This wallet has been fully distributed - balance is permanently 0 BDX</div>` : `
+        ${empty ? `<div class="wal-empty">✅ This wallet has been fully distributed — balance is permanently 0 BDX</div>` : `
         <div class="wal-row">
           <div class="wal-label">WALLET ADDRESS</div>
           <div class="wal-field">
@@ -1043,7 +1043,7 @@ function buildWallets(idx) {
           </div>
         </div>
         <div class="wal-row">
-          <div class="wal-label">VIEW KEY (read-only � cannot spend)</div>
+          <div class="wal-label">VIEW KEY (read-only · cannot spend)</div>
           <div class="wal-field">
             <span class="wal-text">${def.vkey}</span>
             <button class="copy-btn" style="color:${def.color}" onclick="copyText('${def.vkey}',this)">Copy</button>
@@ -1053,7 +1053,7 @@ function buildWallets(idx) {
   }).join('');
 }
 
-// -- All Wallets Modal ---------------------------------------------------------
+// ── All Wallets Modal ─────────────────────────────────────────────────────────
 function openAllWallets() {
   document.getElementById('wm-overlay').classList.add('open');
   const body = document.getElementById('wm-body');
@@ -1072,7 +1072,7 @@ function openAllWallets() {
           </div>
         </div>
         <div class="wal-row">
-          <div class="wal-label">VIEW KEY (read-only � cannot spend)</div>
+          <div class="wal-label">VIEW KEY (read-only · cannot spend)</div>
           <div class="wal-field">
             <span class="wal-text">${def.vkey}</span>
             <button class="copy-btn" style="color:${def.color}" onclick="copyText('${def.vkey}',this)">Copy</button>
@@ -1087,7 +1087,7 @@ function closeAllWallets() {
   document.getElementById('wm-overlay').classList.remove('open');
 }
 
-// -- Verify Modal --------------------------------------------------------------
+// ── Verify Modal ──────────────────────────────────────────────────────────────
 function openVerifyModal() {
   document.getElementById('vm-overlay').classList.add('open');
   const body = document.getElementById('vm-body');
@@ -1100,7 +1100,7 @@ function closeVerifyModal() {
   document.getElementById('vm-overlay').classList.remove('open');
 }
 
-// -- Sources Modal -------------------------------------------------------------
+// ── Sources Modal ─────────────────────────────────────────────────────────────
 function openSourcesModal() {
   document.getElementById('sm-overlay').classList.add('open');
 }
@@ -1109,15 +1109,15 @@ function closeSourcesModal() {
   document.getElementById('sm-overlay').classList.remove('open');
 }
 
-// -- Verify guide --------------------------------------------------------------
+// ── Verify guide ──────────────────────────────────────────────────────────────
 function buildVerify() {
   return `
     <div style="background:#04090f;border-radius:10px;padding:11px 13px;margin-bottom:14px;border-left:4px solid #ff4f4f">
-      <div style="font-size: 13px;font-weight:800;color:#ff4f4f;letter-spacing:.8px;margin-bottom:4px">?? WHY NOT A BLOCK EXPLORER?</div>
-      <div style="font-size: 14px;color:#7a9a96;line-height:1.65">Beldex uses CryptoNote privacy technology - wallet balances are <b style="color:#fff">encrypted on-chain</b> and invisible to public block explorers. The only way to verify a wallet's balance is using its <b style="color:#f0a500">View Key</b>, which can only be used inside the official CLI wallet. This is by design - it's what makes BDX private.</div>
+      <div style="font-size: 13px;font-weight:800;color:#ff4f4f;letter-spacing:.8px;margin-bottom:4px">🔒 WHY NOT A BLOCK EXPLORER?</div>
+      <div style="font-size: 14px;color:#7a9a96;line-height:1.65">Beldex uses CryptoNote privacy technology — wallet balances are <b style="color:#fff">encrypted on-chain</b> and invisible to public block explorers. The only way to verify a wallet's balance is using its <b style="color:#f0a500">View Key</b>, which can only be used inside the official CLI wallet. This is by design — it's what makes BDX private.</div>
     </div>
 
-    <div class="method-badge" style="background:#9b5de522;color:#9b5de5">CLI WALLET - THE ONLY VERIFICATION METHOD</div>
+    <div class="method-badge" style="background:#9b5de522;color:#9b5de5">CLI WALLET — THE ONLY VERIFICATION METHOD</div>
     <div style="font-size: 14px;color:#5a8880;margin-bottom:14px">This is the official method from <a href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank" style="color:#9b5de5">Beldex's Dec 2022 release post</a>. You need a <b style="color:#fff">Linux system</b> to run the CLI wallet.</div>
 
     <div class="vstep">
@@ -1152,11 +1152,11 @@ function buildVerify() {
         <div class="vstep-title">Enter the wallet address and view key when prompted</div>
         <div class="vstep-desc">The CLI will ask you 3 things in order:</div>
         <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px">
-          <div class="vstep-code">Standard address: <span style="color:#fff">? paste the wallet address from the ?? All Wallets menu</span></div>
-          <div class="vstep-code">Secret view key: <span style="color:#fff">? paste the view key from the ?? All Wallets menu</span></div>
-          <div class="vstep-code">Password: <span style="color:#aaa">? press Enter to leave blank (or type any password)</span></div>
+          <div class="vstep-code">Standard address: <span style="color:#fff">← paste the wallet address from the 🔑 All Wallets menu</span></div>
+          <div class="vstep-code">Secret view key: <span style="color:#fff">← paste the view key from the 🔑 All Wallets menu</span></div>
+          <div class="vstep-code">Password: <span style="color:#aaa">← press Enter to leave blank (or type any password)</span></div>
         </div>
-        <div class="vstep-desc" style="margin-top:6px">?? The view key lets you <b style="color:#fff">read-only</b> - it cannot move or spend any coins. It is completely safe to use.</div>
+        <div class="vstep-desc" style="margin-top:6px">⚠️ The view key lets you <b style="color:#fff">read-only</b> — it cannot move or spend any coins. It is completely safe to use.</div>
       </div>
     </div>
 
@@ -1173,7 +1173,7 @@ function buildVerify() {
       <div class="vstep-num" style="background:#9b5de522;color:#9b5de5">6</div>
       <div class="vstep-body">
         <div class="vstep-title">Wait for the wallet to sync</div>
-        <div class="vstep-desc">The wallet will start syncing with the Beldex blockchain - you'll see block numbers counting up. This usually takes a few minutes. Once the height matches the current block, it's done.</div>
+        <div class="vstep-desc">The wallet will start syncing with the Beldex blockchain — you'll see block numbers counting up. This usually takes a few minutes. Once the height matches the current block, it's done.</div>
       </div>
     </div>
 
@@ -1183,29 +1183,29 @@ function buildVerify() {
         <div class="vstep-title">Type "balance" to see the verified result</div>
         <div class="vstep-desc">Once the wallet prompt appears (showing your wallet name), type the command below and press Enter:</div>
         <div class="vstep-code">balance</div>
-        <div class="vstep-desc" style="margin-top:6px">The balance shown is the true on-chain amount - the exact same numbers stated in all official Beldex tokenomics announcements. You've now independently verified it. ?</div>
+        <div class="vstep-desc" style="margin-top:6px">The balance shown is the true on-chain amount — the exact same numbers stated in all official Beldex tokenomics announcements. You've now independently verified it. ✅</div>
       </div>
     </div>
 
     <div style="background:#04090f;border-radius:10px;padding:11px 13px;margin-top:4px;border:1px solid #0b2030">
-      <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">?? FULL DOCUMENTATION</div>
+      <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">📚 FULL DOCUMENTATION</div>
       <div style="font-size: 14px;color:#5a8880">For a detailed step-by-step guide with screenshots on restoring a CLI wallet from keys, see the official Beldex docs:</div>
       <div class="vstep-code" style="margin-top:6px">https://docs.beldex.io/wallets/guides/cli-restoring-wallet-from-keys</div>
     </div>`;
 }
 
-// -- Feature card renderer -----------------------------------------------------
+// ── Feature card renderer ─────────────────────────────────────────────────────
 function renderFC() {
   triggerAnim('fc');
   const s = steps[active];
-  let tabs = ['?? Pie Chart','?? Wallets'];
+  let tabs = ['📊 Pie Chart','🏦 Wallets'];
   if (activeTab > 1) activeTab = 0;
   const tabHtml = tabs.map((t,i)=>`<button class="ftab${i===activeTab?' on':''}" style="${i===activeTab?`background:${s.color};`:''}\" onclick="setTab(${i})">${t}</button>`).join('');
   let panelHtml;
   if(activeTab===0) panelHtml = buildDonut(s.wallets, fmtTotalShort(s));
   else panelHtml = buildWallets(active);
   document.getElementById('fc').innerHTML = `
-    <div class="ct">?? Explore the Allocation</div>
+    <div class="ct">🔎 Explore the Allocation</div>
     <div class="cs" style="margin-bottom:12px">${tabs.length} ways to dig deeper into the numbers</div>
     <div class="ftabs">${tabHtml}</div>
     <div class="fpanel on">${panelHtml}</div>`;

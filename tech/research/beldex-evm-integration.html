@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EVM Deep Dive - Beldex Visual Guide</title>
-  <meta name="description" content="Deep dive into Beldex EVM Integration - architecture, proof of concept, privacy strategy, and technical challenges of bringing smart contracts to a privacy blockchain." />
+  <title>EVM Deep Dive — Beldex Visual Guide</title>
+  <meta name="description" content="Deep dive into Beldex EVM Integration — architecture, proof of concept, privacy strategy, and technical challenges of bringing smart contracts to a privacy blockchain." />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../../style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-/* --- BASE --- */
+/* ═══ BASE ═══ */
 :root {
   --ev-accent:#0ea5e9;--ev-accent-dim:rgba(14,165,233,0.1);--ev-accent-glow:rgba(14,165,233,0.2);
   --ev-green:#22c55e;--ev-green-dim:rgba(34,197,94,0.1);
@@ -21,7 +21,7 @@
 }
 .ev-page{min-height:100vh;background:var(--ev-dark);color:var(--ev-text);font-family:'Inter',sans-serif}
 
-/* --- HERO --- */
+/* ═══ HERO ═══ */
 .ev-hero{position:relative;padding:60px 32px 48px;
   background:radial-gradient(ellipse at 20% 0%,rgba(14,165,233,0.08),transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(167,139,250,0.06),transparent 50%),linear-gradient(180deg,#0c0e14,#080a10);
   border-bottom:1px solid var(--ev-border);overflow:hidden}
@@ -44,14 +44,14 @@
 .ev-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ev-green);box-shadow:0 0 8px rgba(34,197,94,0.5);margin-right:5px;animation:evPulse 2s ease-in-out infinite}
 @keyframes evPulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* --- SUB NAV --- */
+/* ═══ SUB NAV ═══ */
 .ev-subnav{position:sticky;top:0;z-index:100;max-width:880px;margin:0 auto;padding:14px 32px;display:flex;gap:6px;overflow-x:auto;background:rgba(8,10,16,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--ev-border)}
 .ev-subnav::-webkit-scrollbar{height:0}
 .ev-subnav a{font-size:.78rem;font-weight:600;color:rgba(255,255,255,0.3);text-decoration:none;padding:7px 16px;border-radius:8px;border:1px solid transparent;white-space:nowrap;transition:all .25s}
 .ev-subnav a:hover{color:var(--ev-text);border-color:var(--ev-border)}
 .ev-subnav a.active{color:var(--ev-accent);border-color:rgba(14,165,233,0.18);background:var(--ev-accent-dim)}
 
-/* --- BODY & CARDS --- */
+/* ═══ BODY & CARDS ═══ */
 .ev-body{max-width:880px;margin:0 auto;padding:40px 32px 60px}
 .ev-card{background:var(--ev-card-bg);border:1px solid var(--ev-border);border-radius:18px;padding:36px 32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:0 8px 32px -12px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.03)}
 .ev-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 0% 0%,rgba(255,255,255,0.04),transparent 40%);pointer-events:none}
@@ -70,11 +70,11 @@
 .ev-card:nth-child(3n+2) h2{border-left-color:var(--ev-green)}
 .ev-card:nth-child(3n) h2{border-left-color:var(--ev-purple)}
 
-/* --- HIGHLIGHT BOX --- */
+/* ═══ HIGHLIGHT BOX ═══ */
 .ev-highlight{background:rgba(14,165,233,0.04);border:1px solid rgba(14,165,233,0.12);border-left:3px solid var(--ev-accent);border-radius:10px;padding:16px 20px;margin:18px 0}
 .ev-highlight p{color:rgba(203,213,225,0.8)!important;font-size:.88rem!important;margin:0!important}
 
-/* --- FEATURE GRID --- */
+/* ═══ FEATURE GRID ═══ */
 .ev-feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:18px 0}
 .ev-feature-item{background:rgba(255,255,255,0.02);border:1px solid var(--ev-border);border-radius:14px;padding:22px 20px;transition:border-color .3s,transform .3s}
 .ev-feature-item:hover{border-color:rgba(14,165,233,0.2);transform:translateY(-2px)}
@@ -82,7 +82,7 @@
 .ev-feature-item h4{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:600;color:#e2e8f0;margin:0 0 6px}
 .ev-feature-item p{font-size:.84rem;color:var(--ev-text);line-height:1.6;margin:0}
 
-/* --- FLOW --- */
+/* ═══ FLOW ═══ */
 .ev-flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;justify-content:center}
 .ev-flow-step{background:rgba(255,255,255,0.03);border:1px solid var(--ev-border);border-radius:12px;padding:18px 20px;text-align:center;min-width:140px;flex:1;transition:border-color .25s,transform .25s}
 .ev-flow-step:hover{border-color:rgba(14,165,233,0.18);transform:translateY(-2px)}
@@ -90,7 +90,7 @@
 .ev-step-label{font-size:.82rem;color:var(--ev-text);line-height:1.4}
 .ev-flow-arrow{color:rgba(255,255,255,0.15);font-size:1.2rem;padding:0 8px}
 
-/* --- TABLE --- */
+/* ═══ TABLE ═══ */
 .ev-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.86rem;border-radius:12px;overflow:hidden;border:1px solid var(--ev-border)}
 .ev-table thead th{background:rgba(255,255,255,0.04);padding:13px 16px;text-align:left;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.78rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--ev-border)}
 .ev-table tbody td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--ev-text);vertical-align:top}
@@ -98,7 +98,7 @@
 .ev-table tbody tr:last-child td{border-bottom:none}
 .ev-table tbody tr:hover td{background:rgba(14,165,233,0.02)}
 
-/* --- STATUS CHIPS --- */
+/* ═══ STATUS CHIPS ═══ */
 .ev-chip{display:inline-block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:6px;vertical-align:middle}
 .ev-chip-solved{background:var(--ev-green-dim);color:var(--ev-green);border:1px solid rgba(34,197,94,0.2)}
 .ev-chip-poc{background:var(--ev-accent-dim);color:var(--ev-accent);border:1px solid rgba(14,165,233,0.2)}
@@ -106,7 +106,7 @@
 .ev-chip-research{background:var(--ev-purple-dim);color:var(--ev-purple);border:1px solid rgba(167,139,250,0.2)}
 .ev-chip-planned{background:rgba(255,255,255,0.04);color:var(--ev-text-dim);border:1px solid rgba(255,255,255,0.06)}
 
-/* --- PROBLEM / SOLUTION BOXES --- */
+/* ═══ PROBLEM / SOLUTION BOXES ═══ */
 .ev-ps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
 .ev-ps-item{padding:20px;border-radius:14px;border:1px solid var(--ev-border)}
 .ev-ps-item.ps-problem{border-color:rgba(239,68,68,0.1);background:rgba(239,68,68,0.02)}
@@ -120,10 +120,10 @@
 .ev-ps-item p{font-size:.84rem;color:var(--ev-text);margin:0 0 6px;line-height:1.6}
 .ev-ps-item ul{list-style:none;padding:0;margin:4px 0}
 .ev-ps-item ul li{font-size:.84rem;color:var(--ev-text);padding:4px 0;line-height:1.5;display:flex;gap:8px}
-.ev-ps-item ul li::before{content:"�";color:var(--ev-accent);font-weight:700;flex-shrink:0}
+.ev-ps-item ul li::before{content:"›";color:var(--ev-accent);font-weight:700;flex-shrink:0}
 .ev-ps-item ul li strong{color:#e2e8f0}
 
-/* --- STRATEGY CARDS --- */
+/* ═══ STRATEGY CARDS ═══ */
 .ev-strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0}
 .ev-strategy-card{border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;border:1px solid var(--ev-border)}
 .ev-strategy-card.rejected{border-color:rgba(239,68,68,0.12);background:linear-gradient(135deg,rgba(239,68,68,0.03),transparent)}
@@ -137,7 +137,7 @@
 .ev-strat-outcome.outcome-rejected{background:var(--ev-red-dim);color:var(--ev-red);border:1px solid rgba(239,68,68,0.1)}
 .ev-strat-outcome.outcome-chosen{background:var(--ev-green-dim);color:var(--ev-green);border:1px solid rgba(34,197,94,0.1)}
 
-/* --- TIERS --- */
+/* ═══ TIERS ═══ */
 .ev-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
 .ev-tier{padding:24px 20px;border-radius:14px;text-align:center;border:1px solid var(--ev-border);background:rgba(255,255,255,0.02);transition:border-color .3s,transform .3s}
 .ev-tier:hover{transform:translateY(-3px)}
@@ -149,7 +149,7 @@
 .ev-tier .tier-label{font-size:.7rem;color:var(--ev-accent);font-weight:600;margin-bottom:8px}
 .ev-tier p{font-size:.82rem;color:var(--ev-text);line-height:1.5;margin:0}
 
-/* --- CHALLENGE CARD --- */
+/* ═══ CHALLENGE CARD ═══ */
 .ev-challenge{border:1px solid var(--ev-border);border-radius:16px;margin-bottom:18px;overflow:hidden;background:var(--ev-card-bg);box-shadow:0 4px 24px -8px rgba(0,0,0,0.3)}
 .ev-challenge-head{display:flex;align-items:center;gap:14px;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.03)}
 .ev-challenge-num{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;color:rgba(14,165,233,0.2);min-width:36px}
@@ -158,11 +158,11 @@
 .ev-challenge-title p{font-size:.8rem;color:var(--ev-text-dim);margin:0;line-height:1.4}
 .ev-challenge-body{padding:20px 24px}
 
-/* --- SECTION DIVIDER --- */
+/* ═══ SECTION DIVIDER ═══ */
 .ev-divider{text-align:center;padding:24px 20px;font-size:.9rem;color:rgba(203,213,225,0.7);max-width:580px;margin:8px auto;font-style:italic;position:relative}
 .ev-divider::before{content:"";position:absolute;left:50%;top:0;width:1px;height:16px;background:linear-gradient(180deg,transparent,rgba(14,165,233,0.3));transform:translateX(-50%)}
 
-/* --- PIPELINE STEPS --- */
+/* ═══ PIPELINE STEPS ═══ */
 .ev-pipeline{position:relative;padding-left:40px;margin:18px 0}
 .ev-pipeline::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--ev-accent),var(--ev-purple),var(--ev-green));opacity:.12}
 .ev-pipe-step{position:relative;margin-bottom:16px;padding:20px 24px;border:1px solid var(--ev-border);border-radius:14px;background:rgba(255,255,255,0.02);transition:border-color .25s,transform .25s}
@@ -173,12 +173,12 @@
 .ev-pipe-note{font-size:.78rem;color:var(--ev-text-dim);font-style:italic;margin:4px 0 0}
 .ev-pipe-note strong{color:var(--ev-amber)}
 
-/* --- FOOTER --- */
+/* ═══ FOOTER ═══ */
 .ev-footer{text-align:center;padding:28px 32px;border-top:1px solid var(--ev-border);font-size:.82rem;color:rgba(255,255,255,0.25)}
 .ev-footer a{color:var(--ev-accent);text-decoration:none}
 .ev-footer a:hover{opacity:.7}
 
-/* --- RESPONSIVE --- */
+/* ═══ RESPONSIVE ═══ */
 @media(max-width:768px){
   .ev-hero{padding:40px 20px 36px}
   .ev-hero h1{font-size:1.8rem}
@@ -191,7 +191,7 @@
   .ev-subnav{padding:10px 16px}
 }
 
-/* --- LIGHT THEME - global wildcard selectors from style.css cover most; extras below --- */
+/* ═══ LIGHT THEME — global wildcard selectors from style.css cover most; extras below ═══ */
 [data-theme="light"] .ev-page{background:#f5f7fa!important;color:#1e293b!important}
 [data-theme="light"] .ev-card{background:#fff!important;border-color:rgba(0,0,0,0.06)!important;box-shadow:0 2px 12px rgba(0,0,0,0.05)!important}
 [data-theme="light"] .ev-card::before{background:radial-gradient(ellipse at 0% 0%,rgba(0,0,0,0.02),transparent 40%)!important}
@@ -247,22 +247,22 @@
   <button class="theme-toggle" id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">&#9728;&#65039;</button>
   <div class="ev-page">
 
-    <!-- --- HERO --- -->
+    <!-- ═══ HERO ═══ -->
     <div class="ev-hero">
       <div class="ev-hero-inner">
         <a href="../../index.html" class="ev-back">&larr; Back to Visual Guide</a>
-        <div class="ev-hero-badge">EVM � Privacy Research</div>
+        <div class="ev-hero-badge">EVM × Privacy Research</div>
         <h1>EVM <span>Deep Dive</span></h1>
-        <p class="ev-hero-sub">Ethereum Virtual Machine compatibility bringing <strong>smart contract capabilities</strong> to Beldex - enabling DeFi, NFTs, and dApps with built-in privacy features.</p>
+        <p class="ev-hero-sub">Ethereum Virtual Machine compatibility bringing <strong>smart contract capabilities</strong> to Beldex — enabling DeFi, NFTs, and dApps with built-in privacy features.</p>
         <div class="ev-stats">
-          <div class="ev-stat"><span class="ev-stat-emoji">??</span><div><div class="ev-stat-label">Platform</div><div class="ev-stat-value">Ethereum Virtual Machine</div></div></div>
-          <div class="ev-stat"><span class="ev-stat-emoji">??</span><div><div class="ev-stat-label">Language</div><div class="ev-stat-value">Solidity Compatible</div></div></div>
-          <div class="ev-stat"><span class="ev-stat-emoji">??</span><div><div class="ev-stat-label">Status</div><div class="ev-stat-value"><span class="ev-live-dot"></span>PoC Complete</div></div></div>
+          <div class="ev-stat"><span class="ev-stat-emoji">⚙️</span><div><div class="ev-stat-label">Platform</div><div class="ev-stat-value">Ethereum Virtual Machine</div></div></div>
+          <div class="ev-stat"><span class="ev-stat-emoji">📝</span><div><div class="ev-stat-label">Language</div><div class="ev-stat-value">Solidity Compatible</div></div></div>
+          <div class="ev-stat"><span class="ev-stat-emoji">🧪</span><div><div class="ev-stat-label">Status</div><div class="ev-stat-value"><span class="ev-live-dot"></span>PoC Complete</div></div></div>
         </div>
       </div>
     </div>
 
-    <!-- --- SUB NAV --- -->
+    <!-- ═══ SUB NAV ═══ -->
     <nav class="ev-subnav" aria-label="EVM sections">
       <a href="#s-vision" class="active">Vision</a>
       <a href="#s-poc">Proof of Concept</a>
@@ -275,70 +275,70 @@
 
     <div class="ev-body">
 
-      <!-- --- 1. VISION --- -->
+      <!-- ═══ 1. VISION ═══ -->
       <div class="ev-card" id="s-vision">
         <h2>The Vision: EVM on a Privacy Blockchain</h2>
         <p>Can Ethereum-style smart contracts run natively on a CryptoNote-based privacy blockchain? This is the fundamental question Beldex set out to answer.</p>
         <div class="ev-flow">
-          <div class="ev-flow-step"><span class="ev-step-num">? Problem</span><span class="ev-step-label">Can Ethereum code run on privacy blockchain?</span></div>
+          <div class="ev-flow-step"><span class="ev-step-num">❌ Problem</span><span class="ev-step-label">Can Ethereum code run on privacy blockchain?</span></div>
           <span class="ev-flow-arrow">&rarr;</span>
-          <div class="ev-flow-step"><span class="ev-step-num">?? Research</span><span class="ev-step-label">18 months of focused research and experimentation</span></div>
+          <div class="ev-flow-step"><span class="ev-step-num">🔬 Research</span><span class="ev-step-label">18 months of focused research and experimentation</span></div>
           <span class="ev-flow-arrow">&rarr;</span>
-          <div class="ev-flow-step"><span class="ev-step-num">? Answer</span><span class="ev-step-label">YES - Feasible at Proof-of-Concept level</span></div>
+          <div class="ev-flow-step"><span class="ev-step-num">✅ Answer</span><span class="ev-step-label">YES — Feasible at Proof-of-Concept level</span></div>
         </div>
-        <div class="ev-highlight"><p><strong>Breakthrough:</strong> In May 2023, the team published the first proof of concept for EVM on CryptoNote - proving the fundamental question had a positive answer.</p></div>
+        <div class="ev-highlight"><p><strong>Breakthrough:</strong> In May 2023, the team published the first proof of concept for EVM on CryptoNote — proving the fundamental question had a positive answer.</p></div>
       </div>
 
-      <!-- --- 2. PROOF OF CONCEPT --- -->
+      <!-- ═══ 2. PROOF OF CONCEPT ═══ -->
       <div class="ev-card" id="s-poc">
-        <h2>Proof of Concept Achievement (May�July 2023)</h2>
+        <h2>Proof of Concept Achievement (May–July 2023)</h2>
         <div class="ev-feature-grid">
           <div class="ev-feature-item">
-            <span class="ev-feature-icon">??</span>
+            <span class="ev-feature-icon">📄</span>
             <h4>Research Paper</h4>
-            <p><strong>Published:</strong> May 5, 2023<br><strong>Authors:</strong> Allard Dijk (BitBender) &amp; Dr. Dominique Schr�der (University of Erlangen-Nuremberg)<br><strong>Title:</strong> "Proof of Concept for EVM on CryptoNote"</p>
+            <p><strong>Published:</strong> May 5, 2023<br><strong>Authors:</strong> Allard Dijk (BitBender) &amp; Dr. Dominique Schröder (University of Erlangen-Nuremberg)<br><strong>Title:</strong> "Proof of Concept for EVM on CryptoNote"</p>
           </div>
           <div class="ev-feature-item">
-            <span class="ev-feature-icon">??</span>
+            <span class="ev-feature-icon">🧪</span>
             <h4>Testing Infrastructure</h4>
             <p><strong>Network:</strong> 16 synchronized PoS nodes<br><strong>Implementation:</strong> Minimized Py-EVM (Python-based)<br><strong>Tests:</strong> Contract creation, deployment, execution</p>
           </div>
           <div class="ev-feature-item">
-            <span class="ev-feature-icon">?</span>
+            <span class="ev-feature-icon">✅</span>
             <h4>What Was Proven</h4>
-            <p><strong>Privacy Maintained:</strong> RingCT still functional on Layer 1<br><strong>Full EVM Compatibility:</strong> Can run Ethereum smart contracts<br><strong>State Management:</strong> UTXO ? Account bridge possible</p>
+            <p><strong>Privacy Maintained:</strong> RingCT still functional on Layer 1<br><strong>Full EVM Compatibility:</strong> Can run Ethereum smart contracts<br><strong>State Management:</strong> UTXO ↔ Account bridge possible</p>
           </div>
         </div>
       </div>
 
       <p class="ev-divider">With feasibility proven, the next question became: what does this system actually look like?</p>
 
-      <!-- --- 3. ARCHITECTURE --- -->
+      <!-- ═══ 3. ARCHITECTURE ═══ -->
       <div class="ev-card" id="s-arch">
         <h2>The Hybrid Architecture</h2>
         <p>Beldex EVM uses a <strong>layered architecture</strong> that combines UTXO privacy with account-based smart contracts. Each layer serves a distinct purpose:</p>
         <div class="ev-feature-grid">
           <div class="ev-feature-item" style="border-left:3px solid var(--ev-green)">
-            <span class="ev-feature-icon">??</span>
+            <span class="ev-feature-icon">🟢</span>
             <h4>Layer 1: Main Chain (UTXO) <span class="ev-chip ev-chip-solved">LIVE</span></h4>
             <p><strong>Purpose:</strong> Fast, private financial transactions<br><strong>Features:</strong> RingCT, Bulletproof++, Privacy by Default<br><strong>Consensus:</strong> Proof of Stake (11+1 nodes, VRF planned)</p>
           </div>
           <div class="ev-feature-item" style="border-left:3px solid var(--ev-accent)">
-            <span class="ev-feature-icon">??</span>
+            <span class="ev-feature-icon">🔵</span>
             <h4>Layer 2: EVM Execution <span class="ev-chip ev-chip-poc">PoC</span></h4>
             <p><strong>Purpose:</strong> Smart contracts, DeFi, dApps<br><strong>Features:</strong> Full EVM, Solidity, Ethereum Tools<br><strong>Privacy:</strong> zk-SNARKs (planned), confidential amounts</p>
           </div>
         </div>
-        <div class="ev-highlight"><p><strong>Bridge Layer - The Technical Challenge:</strong> Connects L1 and L2. Users "burn" coins on the main chain to receive credit on the EVM layer.</p></div>
+        <div class="ev-highlight"><p><strong>Bridge Layer — The Technical Challenge:</strong> Connects L1 and L2. Users "burn" coins on the main chain to receive credit on the EVM layer.</p></div>
         <div class="ev-ps">
           <div class="ev-ps-item ps-solution">
-            <div class="ev-ps-label label-solved">? SOLVED</div>
-            <h4>UTXO ? Account</h4>
+            <div class="ev-ps-label label-solved">✓ SOLVED</div>
+            <h4>UTXO → Account</h4>
             <p>Users burn coins on main chain, receive credit on EVM layer. Double-spending prevented via cryptographic burn proofs.</p>
           </div>
           <div class="ev-ps-item ps-research">
-            <div class="ev-ps-label label-research">? IN RESEARCH</div>
-            <h4>Account ? UTXO</h4>
+            <div class="ev-ps-label label-research">⟳ IN RESEARCH</div>
+            <h4>Account → UTXO</h4>
             <p>Moving funds back to private main chain. Challenge: Generate valid RingCT transactions from smart contract state. Still under active research.</p>
           </div>
         </div>
@@ -346,7 +346,7 @@
 
       <p class="ev-divider">This hybrid approach combines the strengths of two fundamentally different models.</p>
 
-      <!-- --- 4. COMPARISON --- -->
+      <!-- ═══ 4. COMPARISON ═══ -->
       <div class="ev-card" id="s-compare">
         <h2>UTXO vs Account Model Comparison</h2>
         <p>How does Beldex's hybrid approach compare to the two dominant blockchain models?</p>
@@ -354,22 +354,22 @@
           <thead><tr><th>Feature</th><th>UTXO Model (Bitcoin/Monero)</th><th>Account Model (Ethereum)</th><th>Beldex Hybrid</th></tr></thead>
           <tbody>
             <tr><td>Structure</td><td>Unspent transaction outputs</td><td>Account balances</td><td>Uses UTXO for transfers, account-style for smart contracts</td></tr>
-            <tr><td>Privacy</td><td>? Strong privacy (RingCT)</td><td>? All public</td><td>? Privacy maintained</td></tr>
-            <tr><td>Smart Contracts</td><td>? Very limited</td><td>? Full support</td><td>? EVM-compatible (research PoC)</td></tr>
-            <tr><td>Parallel Processing</td><td>? Yes</td><td>? Sequential</td><td>? Yes (Layer 1)</td></tr>
-            <tr><td>State Management</td><td>? Stateless</td><td>? Global state</td><td>? Both approaches</td></tr>
+            <tr><td>Privacy</td><td>✅ Strong privacy (RingCT)</td><td>❌ All public</td><td>✅ Privacy maintained</td></tr>
+            <tr><td>Smart Contracts</td><td>❌ Very limited</td><td>✅ Full support</td><td>✅ EVM-compatible (research PoC)</td></tr>
+            <tr><td>Parallel Processing</td><td>✅ Yes</td><td>❌ Sequential</td><td>✅ Yes (Layer 1)</td></tr>
+            <tr><td>State Management</td><td>❌ Stateless</td><td>✅ Global state</td><td>✅ Both approaches</td></tr>
           </tbody>
         </table>
       </div>
 
       <p class="ev-divider">Here is how a smart contract moves through this architecture, step by step.</p>
 
-      <!-- --- 5. HOW IT WORKS --- -->
+      <!-- ═══ 5. HOW IT WORKS ═══ -->
       <div class="ev-card" id="s-how">
         <h2>How Smart Contracts Work on Beldex</h2>
-        <p>Proven at the Proof-of-Concept level - here is the full 6-step pipeline:</p>
+        <p>Proven at the Proof-of-Concept level — here is the full 6-step pipeline:</p>
         <div class="ev-pipeline">
-          <div class="ev-pipe-step" data-n="01"><h4>Contract Creation</h4><p>Developer writes Solidity smart contract (exactly like Ethereum)</p><div class="ev-pipe-note">Tools: Remix, Hardhat, Truffle - all compatible</div></div>
+          <div class="ev-pipe-step" data-n="01"><h4>Contract Creation</h4><p>Developer writes Solidity smart contract (exactly like Ethereum)</p><div class="ev-pipe-note">Tools: Remix, Hardhat, Truffle — all compatible</div></div>
           <div class="ev-pipe-step" data-n="02"><h4>Transaction Submission</h4><p>User creates Beldex transaction with contract bytecode embedded</p><div class="ev-pipe-note">Private transaction amounts via RingCT on Layer 1</div></div>
           <div class="ev-pipe-step" data-n="03"><h4>Block Inclusion</h4><p>Contract transaction added to block by PoS validator</p><div class="ev-pipe-note">Validated through masternode network consensus</div></div>
           <div class="ev-pipe-step" data-n="04"><h4>EVM Execution</h4><p>Python-based Py-EVM processes contract on all synchronized nodes</p><div class="ev-pipe-note">Contract code is public, execution verified by all</div></div>
@@ -380,40 +380,40 @@
 
       <p class="ev-divider">Step 6 raises a critical question: how is privacy maintained when contract code must be public?</p>
 
-      <!-- --- 6. PRIVACY STRATEGY --- -->
+      <!-- ═══ 6. PRIVACY STRATEGY ═══ -->
       <div class="ev-card" id="s-privacy">
         <h2>Privacy Strategy Explained</h2>
         <p>Two approaches were considered for adding privacy to smart contracts. Only one was viable:</p>
         <div class="ev-strategy-grid">
           <div class="ev-strategy-card rejected">
-            <div class="ev-chip ev-chip-planned">? Rejected</div>
+            <div class="ev-chip ev-chip-planned">❌ Rejected</div>
             <h3>Encrypted Smart Contracts</h3>
             <div class="ev-strat-label">Idea:</div><div class="ev-strat-value">Encrypt the smart contract code itself</div>
             <div class="ev-strat-label">Critical Problem:</div><div class="ev-strat-value">Validators cannot execute or verify encrypted code</div>
             <div class="ev-strat-label">Why It Fails:</div><div class="ev-strat-value">Decentralized networks require public verification for consensus</div>
-            <div class="ev-strat-outcome outcome-rejected">Fundamentally impossible ?</div>
+            <div class="ev-strat-outcome outcome-rejected">Fundamentally impossible ✗</div>
           </div>
           <div class="ev-strategy-card chosen">
-            <div class="ev-chip ev-chip-solved">? Chosen</div>
+            <div class="ev-chip ev-chip-solved">✓ Chosen</div>
             <h3>Layer-Based Privacy</h3>
             <div class="ev-strat-label">Layer 1 (Main Chain):</div><div class="ev-strat-value">RingCT hides amounts, senders, and receivers</div>
             <div class="ev-strat-label">Smart Contract Layer:</div><div class="ev-strat-value">Code is public, but transaction data remains private</div>
             <div class="ev-strat-label">Future Enhancement:</div><div class="ev-strat-value">ZK-SNARKs add privacy to contract inputs/outputs</div>
-            <div class="ev-strat-outcome outcome-chosen">Transparent + Private ?</div>
+            <div class="ev-strat-outcome outcome-chosen">Transparent + Private ✓</div>
           </div>
         </div>
 
         <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:#e2e8f0;margin:28px 0 16px;text-align:center">Three-Tier Privacy Model</h3>
         <div class="ev-tiers">
-          <div class="ev-tier"><div class="ev-tier-icon">???</div><h4>Tier 1: Public</h4><div class="tier-label">Contract Code</div><p>Like open-source software - everyone can verify the logic and execution</p></div>
-          <div class="ev-tier"><div class="ev-tier-icon">??</div><h4>Tier 2: Private</h4><div class="tier-label">Transaction Data</div><p>Amounts, balances, and user identities - all encrypted and hidden</p></div>
-          <div class="ev-tier"><div class="ev-tier-icon">??</div><h4>Tier 3: Protected</h4><div class="tier-label">Financial Privacy</div><p>ZK-SNARKs prove validity without revealing underlying data</p></div>
+          <div class="ev-tier"><div class="ev-tier-icon">👁️</div><h4>Tier 1: Public</h4><div class="tier-label">Contract Code</div><p>Like open-source software — everyone can verify the logic and execution</p></div>
+          <div class="ev-tier"><div class="ev-tier-icon">🔒</div><h4>Tier 2: Private</h4><div class="tier-label">Transaction Data</div><p>Amounts, balances, and user identities — all encrypted and hidden</p></div>
+          <div class="ev-tier"><div class="ev-tier-icon">🔐</div><h4>Tier 3: Protected</h4><div class="tier-label">Financial Privacy</div><p>ZK-SNARKs prove validity without revealing underlying data</p></div>
         </div>
       </div>
 
       <p class="ev-divider">Building this system means solving problems no blockchain has faced before.</p>
 
-      <!-- --- 7. CHALLENGES --- -->
+      <!-- ═══ 7. CHALLENGES ═══ -->
       <div class="ev-card" id="s-challenges">
         <h2>Technical Challenges &amp; Solutions</h2>
         <p>Core engineering problems Beldex is solving to enable privacy-preserving smart contracts:</p>
@@ -421,10 +421,10 @@
 
       <!-- Challenge 1 -->
       <div class="ev-challenge">
-        <div class="ev-challenge-head"><div class="ev-challenge-num">01</div><div class="ev-challenge-title"><h3>UTXO vs Account Incompatibility</h3><p>These two systems work in very different ways</p></div><span class="ev-chip ev-chip-poc">? PoC Proven</span></div>
+        <div class="ev-challenge-head"><div class="ev-challenge-num">01</div><div class="ev-challenge-title"><h3>UTXO vs Account Incompatibility</h3><p>These two systems work in very different ways</p></div><span class="ev-chip ev-chip-poc">✓ PoC Proven</span></div>
         <div class="ev-challenge-body">
           <div class="ev-ps">
-            <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>Fundamental Conflict</h4><ul><li><strong>Beldex:</strong> Uses UTXO ? best for privacy</li><li><strong>Ethereum:</strong> Uses accounts ? needed for smart contracts</li><li><strong>Issue:</strong> These two systems work in very different ways</li></ul></div>
+            <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>Fundamental Conflict</h4><ul><li><strong>Beldex:</strong> Uses UTXO → best for privacy</li><li><strong>Ethereum:</strong> Uses accounts → needed for smart contracts</li><li><strong>Issue:</strong> These two systems work in very different ways</li></ul></div>
             <div class="ev-ps-item ps-solution"><div class="ev-ps-label label-solved">Solved</div><h4>Hybrid System</h4><ul><li><strong>Approach:</strong> Use a hybrid system (combine both styles)</li><li><strong>How:</strong> UTXO-style for privacy, accounts-style for smart contracts</li><li><strong>Benefit:</strong> Privacy and smart contracts can coexist</li></ul></div>
           </div>
         </div>
@@ -432,7 +432,7 @@
 
       <!-- Challenge 2 -->
       <div class="ev-challenge">
-        <div class="ev-challenge-head"><div class="ev-challenge-num">02</div><div class="ev-challenge-title"><h3>Double Spending Prevention</h3><p>Value locked by a contract could be used twice without a fix</p></div><span class="ev-chip ev-chip-poc">? PoC Proven</span></div>
+        <div class="ev-challenge-head"><div class="ev-challenge-num">02</div><div class="ev-challenge-title"><h3>Double Spending Prevention</h3><p>Value locked by a contract could be used twice without a fix</p></div><span class="ev-chip ev-chip-poc">✓ PoC Proven</span></div>
         <div class="ev-challenge-body">
           <div class="ev-ps">
             <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>Value Reuse Risk</h4><ul><li><strong>Challenge:</strong> Smart contracts don't use keys</li><li><strong>Risk:</strong> Value locked by contract used twice</li><li><strong>Core Issue:</strong> One-time usage without breaking privacy</li></ul></div>
@@ -443,18 +443,18 @@
 
       <!-- Challenge 3 -->
       <div class="ev-challenge">
-        <div class="ev-challenge-head"><div class="ev-challenge-num">03</div><div class="ev-challenge-title"><h3>Two-Way Bridge Architecture</h3><p>Moving value between privacy chain and EVM layer</p></div><span class="ev-chip ev-chip-partial">? Half Solved</span></div>
+        <div class="ev-challenge-head"><div class="ev-challenge-num">03</div><div class="ev-challenge-title"><h3>Two-Way Bridge Architecture</h3><p>Moving value between privacy chain and EVM layer</p></div><span class="ev-chip ev-chip-partial">⟳ Half Solved</span></div>
         <div class="ev-challenge-body">
           <div class="ev-ps">
-            <div class="ev-ps-item ps-solution"><div class="ev-ps-label label-solved">Solved</div><h4>UTXO ? Account</h4><ul><li><strong>Method:</strong> Burn coins on main chain</li><li><strong>Proof:</strong> Cryptographic burn proof</li><li><strong>Result:</strong> Credit on contract layer</li></ul></div>
-            <div class="ev-ps-item ps-research"><div class="ev-ps-label label-research">In Research</div><h4>Account ? UTXO</h4><ul><li><strong>Challenge:</strong> Valid RingCT generation</li><li><strong>Research:</strong> Proof of withdrawal</li><li><strong>Status:</strong> Active investigation ongoing</li></ul></div>
+            <div class="ev-ps-item ps-solution"><div class="ev-ps-label label-solved">Solved</div><h4>UTXO → Account</h4><ul><li><strong>Method:</strong> Burn coins on main chain</li><li><strong>Proof:</strong> Cryptographic burn proof</li><li><strong>Result:</strong> Credit on contract layer</li></ul></div>
+            <div class="ev-ps-item ps-research"><div class="ev-ps-label label-research">In Research</div><h4>Account → UTXO</h4><ul><li><strong>Challenge:</strong> Valid RingCT generation</li><li><strong>Research:</strong> Proof of withdrawal</li><li><strong>Status:</strong> Active investigation ongoing</li></ul></div>
           </div>
         </div>
       </div>
 
       <!-- Challenge 4 -->
       <div class="ev-challenge">
-        <div class="ev-challenge-head"><div class="ev-challenge-num">04</div><div class="ev-challenge-title"><h3>Smart Contract Secrecy</h3><p>Contracts need to see data to execute, but privacy requires hiding it</p></div><span class="ev-chip ev-chip-research">? In Research</span></div>
+        <div class="ev-challenge-head"><div class="ev-challenge-num">04</div><div class="ev-challenge-title"><h3>Smart Contract Secrecy</h3><p>Contracts need to see data to execute, but privacy requires hiding it</p></div><span class="ev-chip ev-chip-research">⟳ In Research</span></div>
         <div class="ev-challenge-body">
           <div class="ev-ps">
             <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>The Core Paradox</h4><ul><li><strong>Contracts:</strong> Need to see data to execute</li><li><strong>Privacy:</strong> All data must be hidden</li><li><strong>Paradox:</strong> How to execute without seeing?</li></ul></div>
@@ -465,18 +465,18 @@
 
       <!-- Challenge 5 -->
       <div class="ev-challenge">
-        <div class="ev-challenge-head"><div class="ev-challenge-num">05</div><div class="ev-challenge-title"><h3>Blockchain Size &amp; Scalability</h3><p>Privacy proofs caused slow sync times and inflated storage</p></div><span class="ev-chip ev-chip-solved">? Solved</span></div>
+        <div class="ev-challenge-head"><div class="ev-challenge-num">05</div><div class="ev-challenge-title"><h3>Blockchain Size &amp; Scalability</h3><p>Privacy proofs caused slow sync times and inflated storage</p></div><span class="ev-chip ev-chip-solved">✓ Solved</span></div>
         <div class="ev-challenge-body">
           <div class="ev-ps">
-            <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>Transaction Bloat</h4><ul><li><strong>Before:</strong> 1.2�4 MB per 100 tx</li><li><strong>Impact:</strong> Slow sync, large storage</li><li><strong>Limitation:</strong> Scalability bottleneck</li></ul></div>
-            <div class="ev-ps-item ps-solution"><div class="ev-ps-label label-solved">Solved</div><h4>Bulletproof++ Compression</h4><ul><li><strong>Technology:</strong> Bulletproof++ ZK-proofs</li><li><strong>After:</strong> ~120�400 kB per 100 tx</li><li><strong>Status:</strong> Deployed Dec 7, 2025</li></ul></div>
+            <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>Transaction Bloat</h4><ul><li><strong>Before:</strong> 1.2–4 MB per 100 tx</li><li><strong>Impact:</strong> Slow sync, large storage</li><li><strong>Limitation:</strong> Scalability bottleneck</li></ul></div>
+            <div class="ev-ps-item ps-solution"><div class="ev-ps-label label-solved">Solved</div><h4>Bulletproof++ Compression</h4><ul><li><strong>Technology:</strong> Bulletproof++ ZK-proofs</li><li><strong>After:</strong> ~120–400 kB per 100 tx</li><li><strong>Status:</strong> Deployed Dec 7, 2025</li></ul></div>
           </div>
         </div>
       </div>
 
       <!-- Challenge 6 -->
       <div class="ev-challenge">
-        <div class="ev-challenge-head"><div class="ev-challenge-num">06</div><div class="ev-challenge-title"><h3>Network Validator Security</h3><p>Attackers can predict which validators sign the next block</p></div><span class="ev-chip ev-chip-planned">? Planned</span></div>
+        <div class="ev-challenge-head"><div class="ev-challenge-num">06</div><div class="ev-challenge-title"><h3>Network Validator Security</h3><p>Attackers can predict which validators sign the next block</p></div><span class="ev-chip ev-chip-planned">◎ Planned</span></div>
         <div class="ev-challenge-body">
           <div class="ev-ps">
             <div class="ev-ps-item ps-problem"><div class="ev-ps-label label-problem">Problem</div><h4>Predictable Selection</h4><ul><li><strong>Current:</strong> 11+1 deterministic validators</li><li><strong>Risk:</strong> Attackers can predict targets</li><li><strong>Issue:</strong> Targeted attack vulnerability</li></ul></div>

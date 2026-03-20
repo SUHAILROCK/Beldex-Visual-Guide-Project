@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-      /* ===== CryptoNote Flowchart Page - reuses pm-* pattern ===== */
+      /* ===== CryptoNote Flowchart Page — reuses pm-* pattern ===== */
       :root {
         --pm-green: #29e0a9;
         --pm-green-dim: rgba(41,224,169,0.12);
@@ -304,7 +304,7 @@
       .pm-leg-amber { background: var(--pm-amber); opacity: 0.8; color: var(--pm-amber); }
       .pm-leg-green { background: var(--pm-green); opacity: 0.8; color: var(--pm-green); }
 
-      /* Merge connector - arrows pointing UP into the bar */
+      /* Merge connector — arrows pointing UP into the bar */
       .pm-connector-merge .pm-connector-legs {
         top: 0;
         bottom: 28px;
@@ -956,7 +956,7 @@
         .pm-tooltip { transition: none; }
       }
 
-      /* -- Light Theme -- */
+      /* ── Light Theme ── */
       [data-theme="light"] .pm-page { background: #f5f7fa !important; color: #1e293b !important; }
 
       [data-theme="light"] .pm-hero {
@@ -1113,16 +1113,16 @@
               <div class="pm-box-tag pm-tag-green">Founded 2013</div>
               <h3>CryptoNote Protocol</h3>
               <p class="pm-box-sub">The foundational privacy protocol</p>
-              <a href="tech-cryptonote.html" class="pm-box-link">Know More ?</a>
+              <a href="tech-cryptonote.html" class="pm-box-link">Know More →</a>
 
               <!-- Left side box: Main point -->
               <div class="pm-side-box pm-side-box-left">
                 <span class="pm-side-label">Core Innovations</span>
                 <ul class="pm-tooltip-list">
-                  <li><span>??</span> <strong>Ring Signatures</strong> - Hides the sender</li>
-                  <li><span>??</span> <strong>Stealth Addresses</strong> - Hides the receiver</li>
-                  <li><span>??</span> <strong>One-Time Keys</strong> - Creates a new address each time</li>
-                  <li><span>??</span> <strong>Key Image</strong> - Prevents double spending</li>
+                  <li><span>🔹</span> <strong>Ring Signatures</strong> — Hides the sender</li>
+                  <li><span>🔹</span> <strong>Stealth Addresses</strong> — Hides the receiver</li>
+                  <li><span>🔹</span> <strong>One-Time Keys</strong> — Creates a new address each time</li>
+                  <li><span>🔹</span> <strong>Key Image</strong> — Prevents double spending</li>
                 </ul>
               </div>
 
@@ -1150,85 +1150,85 @@
           <!-- ROW 2: Four Core Technologies -->
           <div class="pm-row">
             <div class="pm-box pm-box-purple">
-              <span class="pm-box-icon">??</span>
+              <span class="pm-box-icon">🔮</span>
               <div class="pm-box-tag pm-tag-purple">Sender Privacy</div>
               <h3>Ring Signatures</h3>
               <p class="pm-box-sub">Hide who sent it</p>
-              <a href="tech-ring-signatures.html" class="pm-box-link pm-box-link-purple">Know More ?</a>
+              <a href="tech-ring-signatures.html" class="pm-box-link pm-box-link-purple">Know More →</a>
 
               <div class="pm-tooltip">
                 <div class="pm-tooltip-header">
-                  <span class="pm-tooltip-icon">??</span>
+                  <span class="pm-tooltip-icon">🔮</span>
                   <h4>Ring Signatures <span style="color: var(--pm-purple);">Sender Privacy</span></h4>
                 </div>
                 <p>Mixes the real sender's signature with decoy signatures. No observer can determine which member of the group actually signed the transaction.</p>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> Sender identity hidden among ring members</li>
-                  <li><span>?</span> First proposed by Rivest, Shamir, Tauman (2001)</li>
-                  <li><span>?</span> Applied to blockchain via CryptoNote (2013)</li>
+                  <li><span>✔</span> Sender identity hidden among ring members</li>
+                  <li><span>✔</span> First proposed by Rivest, Shamir, Tauman (2001)</li>
+                  <li><span>✔</span> Applied to blockchain via CryptoNote (2013)</li>
                 </ul>
               </div>
             </div>
 
             <div class="pm-box pm-box-amber">
-              <span class="pm-box-icon">???????</span>
+              <span class="pm-box-icon">👁️‍🗨️</span>
               <div class="pm-box-tag pm-tag-amber">Receiver Privacy</div>
               <h3>Stealth Addresses</h3>
               <p class="pm-box-sub">Hide who received it</p>
-              <a href="tech-stealth-addresses.html" class="pm-box-link pm-box-link-amber">Know More ?</a>
+              <a href="tech-stealth-addresses.html" class="pm-box-link pm-box-link-amber">Know More →</a>
 
               <div class="pm-tooltip">
                 <div class="pm-tooltip-header">
-                  <span class="pm-tooltip-icon">???????</span>
+                  <span class="pm-tooltip-icon">👁️‍🗨️</span>
                   <h4>Stealth Addresses <span style="color: var(--pm-amber);">Receiver Privacy</span></h4>
                 </div>
                 <p>Every payment creates a unique one-time address. Even hundreds of payments to the same person appear completely unrelated on the blockchain.</p>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> One-time address per transaction</li>
-                  <li><span>?</span> Payments cannot be publicly linked</li>
-                  <li><span>?</span> Uses Diffie-Hellman key exchange</li>
+                  <li><span>✔</span> One-time address per transaction</li>
+                  <li><span>✔</span> Payments cannot be publicly linked</li>
+                  <li><span>✔</span> Uses Diffie-Hellman key exchange</li>
                 </ul>
               </div>
             </div>
 
             <div class="pm-box pm-box-blue">
-              <span class="pm-box-icon">??</span>
+              <span class="pm-box-icon">🔑</span>
               <div class="pm-box-tag pm-tag-blue">Unlinkability</div>
               <h3>One-Time Keys</h3>
               <p class="pm-box-sub">Ensure unlinkable payments</p>
 
               <div class="pm-tooltip">
                 <div class="pm-tooltip-header">
-                  <span class="pm-tooltip-icon">??</span>
+                  <span class="pm-tooltip-icon">🔑</span>
                   <h4>One-Time Keys <span style="color: var(--pm-blue);">Unlinkability</span></h4>
                 </div>
                 <p>Each transaction generates a unique one-time public key derived from the receiver's address. This ensures no two outputs can be linked to the same receiver.</p>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> Derived from receiver's public key</li>
-                  <li><span>?</span> Unique per transaction output</li>
-                  <li><span>?</span> Cannot be traced back to wallet address</li>
-                  <li><span>?</span> Works with stealth addresses</li>
+                  <li><span>✔</span> Derived from receiver's public key</li>
+                  <li><span>✔</span> Unique per transaction output</li>
+                  <li><span>✔</span> Cannot be traced back to wallet address</li>
+                  <li><span>✔</span> Works with stealth addresses</li>
                 </ul>
               </div>
             </div>
 
             <div class="pm-box pm-box-green">
-              <span class="pm-box-icon">???</span>
+              <span class="pm-box-icon">🛡️</span>
               <div class="pm-box-tag pm-tag-green">Anti Double-Spend</div>
               <h3>Key Image</h3>
               <p class="pm-box-sub">Prevent double-spending</p>
 
               <div class="pm-tooltip">
                 <div class="pm-tooltip-header">
-                  <span class="pm-tooltip-icon">???</span>
+                  <span class="pm-tooltip-icon">🛡️</span>
                   <h4>Key Image <span style="color: var(--pm-green);">Anti Double-Spend</span></h4>
                 </div>
-                <p>A unique cryptographic image derived from each transaction output. The network stores all key images and rejects any that have been seen before - preventing double-spending without revealing the spender.</p>
+                <p>A unique cryptographic image derived from each transaction output. The network stores all key images and rejects any that have been seen before — preventing double-spending without revealing the spender.</p>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> Unique per transaction output</li>
-                  <li><span>?</span> Deterministic - same input always produces same key image</li>
-                  <li><span>?</span> Cannot be reversed to find the original key</li>
-                  <li><span>?</span> Essential complement to ring signatures</li>
+                  <li><span>✔</span> Unique per transaction output</li>
+                  <li><span>✔</span> Deterministic — same input always produces same key image</li>
+                  <li><span>✔</span> Cannot be reversed to find the original key</li>
+                  <li><span>✔</span> Essential complement to ring signatures</li>
                 </ul>
               </div>
             </div>
@@ -1256,11 +1256,11 @@
 
               <!-- Left side box -->
               <div class="pm-side-box pm-side-box-left">
-                <span class="pm-side-label">?? Issues</span>
+                <span class="pm-side-label">⚠️ Issues</span>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> <strong>Pre-mined</strong> - ~82% mined before public launch</li>
-                  <li><span>?</span> <strong>Unclear launch</strong> - Doubts about start date</li>
-                  <li><span>?</span> <strong>Trust loss</strong> - Led to Monero fork</li>
+                  <li><span>❌</span> <strong>Pre-mined</strong> — ~82% mined before public launch</li>
+                  <li><span>❌</span> <strong>Unclear launch</strong> — Doubts about start date</li>
+                  <li><span>→</span> <strong>Trust loss</strong> — Led to Monero fork</li>
                 </ul>
               </div>
 
@@ -1276,7 +1276,7 @@
           <!-- CONNECTOR -->
           <div class="pm-vline"></div>
 
-          <!-- === INFUSED CONCEPT SECTION: Monero ? RingCT ? Beldex === -->
+          <!-- === INFUSED CONCEPT SECTION: Monero → RingCT → Beldex === -->
           <div class="pm-infused-section">
             <div class="pm-infused-left"><span class="pm-infused-label">Infused the concept</span></div>
             <div class="pm-infused-right"><span class="pm-infused-label">Infused the concept</span></div>
@@ -1293,9 +1293,9 @@
               <div class="pm-side-box pm-side-box-left">
                 <span class="pm-side-label">Key Features</span>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> Fair launch, no pre-mine</li>
-                  <li><span>?</span> Improved ring signatures &amp; stealth addresses</li>
-                  <li><span>?</span> Active open-source community</li>
+                  <li><span>✔</span> Fair launch, no pre-mine</li>
+                  <li><span>✔</span> Improved ring signatures &amp; stealth addresses</li>
+                  <li><span>✔</span> Active open-source community</li>
                 </ul>
               </div>
 
@@ -1314,19 +1314,19 @@
           <!-- ROW 5: RingCT -->
           <div class="pm-row">
             <div class="pm-box pm-box-purple pm-box-wide pm-box-with-sides">
-              <span class="pm-box-icon">??</span>
+              <span class="pm-box-icon">💎</span>
               <div class="pm-box-tag pm-tag-purple">Founded 2017</div>
               <h3>RingCT</h3>
-              <p class="pm-box-sub">Ring Confidential Transactions - hide amounts</p>
-              <a href="tech-ringct.html" class="pm-box-link pm-box-link-purple">Know More ?</a>
+              <p class="pm-box-sub">Ring Confidential Transactions — hide amounts</p>
+              <a href="tech-ringct.html" class="pm-box-link pm-box-link-purple">Know More →</a>
 
               <!-- Left side box -->
               <div class="pm-side-box pm-side-box-left">
                 <span class="pm-side-label">Technical Details</span>
                 <ul class="pm-tooltip-list">
-                  <li><span>?</span> Hides transaction amounts</li>
-                  <li><span>?</span> Ensures amounts are valid</li>
-                  <li><span>?</span> Completes full privacy (sender, receiver, amount)</li>
+                  <li><span>✔</span> Hides transaction amounts</li>
+                  <li><span>✔</span> Ensures amounts are valid</li>
+                  <li><span>✔</span> Completes full privacy (sender, receiver, amount)</li>
                 </ul>
               </div>
 
@@ -1350,16 +1350,16 @@
               <div class="pm-box-tag" style="background: rgba(244,114,182,0.12); color: var(--pm-pink);">2018 &ndash; Present</div>
               <h3>Beldex</h3>
               <p class="pm-box-sub">Complete privacy ecosystem built on CryptoNote &amp; Monero's enhanced privacy stack</p>
-              <a href="../../../index.html" class="pm-box-link pm-box-link-pink">Explore Ecosystem ?</a>
+              <a href="../../../index.html" class="pm-box-link pm-box-link-pink">Explore Ecosystem →</a>
 
               <!-- Left side box -->
               <div class="pm-side-box pm-side-box-left">
                 <span class="pm-side-label">Privacy Stack</span>
                 <ul class="pm-tooltip-list">
-                  <li><span style="color: var(--pm-purple);">?</span> <strong>Sender</strong> - Ring Signatures (ring size 11)</li>
-                  <li><span style="color: var(--pm-blue);">?</span> <strong>Amount</strong> - RingCT with Bulletproof++</li>
-                  <li><span style="color: var(--pm-amber);">?</span> <strong>Receiver</strong> - Stealth Addresses</li>
-                  <li><span style="color: var(--pm-green);">?</span> <strong>Integrity</strong> - Key Images prevent double-spend</li>
+                  <li><span style="color: var(--pm-purple);">✔</span> <strong>Sender</strong> — Ring Signatures (ring size 11)</li>
+                  <li><span style="color: var(--pm-blue);">✔</span> <strong>Amount</strong> — RingCT with Bulletproof++</li>
+                  <li><span style="color: var(--pm-amber);">✔</span> <strong>Receiver</strong> — Stealth Addresses</li>
+                  <li><span style="color: var(--pm-green);">✔</span> <strong>Integrity</strong> — Key Images prevent double-spend</li>
                 </ul>
               </div>
 
