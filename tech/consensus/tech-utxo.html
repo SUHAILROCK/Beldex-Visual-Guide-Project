@@ -86,7 +86,7 @@
         .ux-flow { flex-direction: column; } .ux-flow-arrow { transform: rotate(90deg); }
       }
     
-/* ── Comprehensive Light Theme ── */
+/* -- Comprehensive Light Theme -- */
       [data-theme="light"] .tech-page,
       [data-theme="light"] .cn-page,
       [data-theme="light"] .rs-page,
@@ -226,11 +226,11 @@
           <a href="../../../index.html" class="ux-back">&larr; Back to Visual Guide</a>
           <div class="ux-hero-badge">Core Architecture</div>
           <h1>UTXO Model</h1>
-          <p class="ux-hero-sub">The Unspent Transaction Output model treats cryptocurrency like individual <strong>digital banknotes</strong> — each output is a discrete, spendable unit that enhances privacy.</p>
+          <p class="ux-hero-sub">The Unspent Transaction Output model treats cryptocurrency like individual <strong>digital banknotes</strong> - each output is a discrete, spendable unit that enhances privacy.</p>
           <div class="ux-stats">
-            <div class="ux-stat"><span class="ux-stat-emoji">📄</span><div><div class="ux-stat-label">Used By</div><div class="ux-stat-value">Bitcoin, Beldex, Monero</div></div></div>
-            <div class="ux-stat"><span class="ux-stat-emoji">🧩</span><div><div class="ux-stat-label">Model</div><div class="ux-stat-value">Coin-Based</div></div></div>
-            <div class="ux-stat"><span class="ux-stat-emoji">⚡</span><div><div class="ux-stat-label">Status</div><div class="ux-stat-value"><span class="ux-live-dot"></span>Live</div></div></div>
+            <div class="ux-stat"><span class="ux-stat-emoji">??</span><div><div class="ux-stat-label">Used By</div><div class="ux-stat-value">Bitcoin, Beldex, Monero</div></div></div>
+            <div class="ux-stat"><span class="ux-stat-emoji">??</span><div><div class="ux-stat-label">Model</div><div class="ux-stat-value">Coin-Based</div></div></div>
+            <div class="ux-stat"><span class="ux-stat-emoji">?</span><div><div class="ux-stat-label">Status</div><div class="ux-stat-value"><span class="ux-live-dot"></span>Live</div></div></div>
           </div>
         </div>
       </div>
@@ -238,7 +238,7 @@
       <div class="ux-body">
         <div class="ux-card">
           <h2>What is the UTXO Model?</h2>
-          <p>UTXO stands for <strong>Unspent Transaction Output</strong>. Instead of maintaining account balances like a bank, the UTXO model tracks individual "coins" — each transaction output is a separate, discrete unit that can be spent exactly once.</p>
+          <p>UTXO stands for <strong>Unspent Transaction Output</strong>. Instead of maintaining account balances like a bank, the UTXO model tracks individual "coins" - each transaction output is a separate, discrete unit that can be spent exactly once.</p>
           <p>Think of it like physical cash: if you have a $20 bill and want to pay $15, you hand over the $20 and receive $5 in change. Similarly, in UTXO, you consume entire outputs and create new ones.</p>
           <div class="ux-highlight"><p><strong>Key Principle:</strong> On Beldex, your "balance" is actually the sum of all your unspent transaction outputs. Each output is a separate cryptographic entity that can be independently verified, spent, and mixed into ring signatures.</p></div>
         </div>
@@ -247,10 +247,10 @@
           <h2>How It Works</h2>
           <p>The UTXO model provides several properties critical for Beldex's privacy architecture:</p>
           <div class="ux-feature-grid">
-            <div class="ux-feature-item"><span class="ux-feature-icon">💰</span><h4>Discrete Outputs</h4><p>Every transaction creates new outputs. Each output has a specific (hidden) value and can only be spent once. Your wallet manages a collection of these outputs.</p></div>
-            <div class="ux-feature-item"><span class="ux-feature-icon">🔀</span><h4>Input → Output Transformation</h4><p>Spending consumes one or more existing outputs (inputs) and creates new outputs — one for the recipient and change outputs back to the sender.</p></div>
-            <div class="ux-feature-item"><span class="ux-feature-icon">🔒</span><h4>Privacy Compatibility</h4><p>Each output is an independent entity with its own one-time key and key image — making it perfect for ring signature mixing and stealth address integration.</p></div>
-            <div class="ux-feature-item"><span class="ux-feature-icon">⚡</span><h4>Parallel Validation</h4><p>Since each output is independent, validators can verify multiple transactions simultaneously without worrying about shared state conflicts.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">??</span><h4>Discrete Outputs</h4><p>Every transaction creates new outputs. Each output has a specific (hidden) value and can only be spent once. Your wallet manages a collection of these outputs.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">??</span><h4>Input ? Output Transformation</h4><p>Spending consumes one or more existing outputs (inputs) and creates new outputs - one for the recipient and change outputs back to the sender.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">??</span><h4>Privacy Compatibility</h4><p>Each output is an independent entity with its own one-time key and key image - making it perfect for ring signature mixing and stealth address integration.</p></div>
+            <div class="ux-feature-item"><span class="ux-feature-icon">?</span><h4>Parallel Validation</h4><p>Since each output is independent, validators can verify multiple transactions simultaneously without worrying about shared state conflicts.</p></div>
           </div>
         </div>
 
@@ -262,9 +262,9 @@
             <span class="ux-flow-arrow">&rarr;</span>
             <div class="ux-flow-step"><span class="ux-step-num">Transaction</span><span class="ux-step-label">Send 30 BDX to Alice</span></div>
             <span class="ux-flow-arrow">&rarr;</span>
-            <div class="ux-flow-step"><span class="ux-step-num">Output 1</span><span class="ux-step-label">30 BDX → Alice (new UTXO)</span></div>
+            <div class="ux-flow-step"><span class="ux-step-num">Output 1</span><span class="ux-step-label">30 BDX ? Alice (new UTXO)</span></div>
             <span class="ux-flow-arrow">+</span>
-            <div class="ux-flow-step"><span class="ux-step-num">Output 2</span><span class="ux-step-label">~70 BDX → You (change UTXO)</span></div>
+            <div class="ux-flow-step"><span class="ux-step-num">Output 2</span><span class="ux-step-label">~70 BDX ? You (change UTXO)</span></div>
           </div>
         </div>
 
@@ -285,7 +285,7 @@
         <div class="ux-card">
           <h2>Why Beldex Uses UTXO</h2>
           <ul>
-            <li><strong>Privacy-first architecture:</strong> UTXO outputs are naturally suited for ring signatures — each output is an independent entity that can be used as a decoy in other transactions.</li>
+            <li><strong>Privacy-first architecture:</strong> UTXO outputs are naturally suited for ring signatures - each output is an independent entity that can be used as a decoy in other transactions.</li>
             <li><strong>No state leakage:</strong> In account models, observing balance changes reveals transaction patterns. UTXO combined with RingCT makes this analysis impossible.</li>
             <li><strong>Proven reliability:</strong> The UTXO model has been battle-tested since Bitcoin's launch in 2009 and is the foundation of the most secure blockchain networks.</li>
             <li><strong>EVM bridge:</strong> Beldex's EVM integration creates a bridge between the privacy-focused UTXO layer and the account-based smart contract layer, getting the best of both worlds.</li>

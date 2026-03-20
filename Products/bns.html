@@ -55,7 +55,7 @@
 .rc-head { color: var(--rose); font-size: 0.63rem; letter-spacing: 0.06em; margin-bottom: 0.6rem; }
 .rk { color: var(--muted); } .rv { color: var(--teal); } .ra { color: var(--amber); } .rm { color: var(--violet); }
 
-/* ── SHARED DIVIDER / SUBHEADING ── */
+/* -- SHARED DIVIDER / SUBHEADING -- */
 .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 2.5rem 0; }
 .sub-heading {
   font-size: 1rem; font-weight: 700; text-transform: uppercase;
@@ -244,12 +244,12 @@
 
 <a href="../beldex-tree.html" class="back-link"><svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Home</a>
 
-<!-- ══ BNS ══ -->
+<!-- -- BNS -- -->
 <div class="diagram-section">
   <div class="sec-header">
-    <div class="sec-badge badge-rose">🏷️ BNS</div>
+    <div class="sec-badge badge-rose">??? BNS</div>
     <h2>Turn a Long Address Into a Simple Name</h2>
-    <p>Instead of sharing <code style="font-family:'JetBrains Mono',monospace;color:var(--rose);font-size:0.82em">bdx1qxyz…</code>, you register a name like <code style="font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:0.82em">ssw.bdx</code></p>
+    <p>Instead of sharing <code style="font-family:'JetBrains Mono',monospace;color:var(--rose);font-size:0.82em">bdx1qxyz�</code>, you register a name like <code style="font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:0.82em">ssw.bdx</code></p>
   </div>
 
   <!-- Registration flow -->
@@ -258,10 +258,10 @@
       <div class="bns-item" id="bns0"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(0)">1</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(0)"><div class="bb-title">You type a name</div><div class="bb-sub">e.g. "ssw.bdx" in your Beldex wallet</div></div></div>
       <div class="bns-item" id="bns1"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(1)">2</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(1)"><div class="bb-title">Is the name already taken?</div><div class="bb-sub">The blockchain is checked instantly</div></div></div>
       <div class="fork-box">
-        <div class="fork-branch fork-yes"><div class="fb-l">✗ If taken</div>Rejected, try a different name</div>
-        <div class="fork-branch fork-no"><div class="fb-l">✓ If free</div>Continue to registration</div>
+        <div class="fork-branch fork-yes"><div class="fb-l">? If taken</div>Rejected, try a different name</div>
+        <div class="fork-branch fork-no"><div class="fb-l">? If free</div>Continue to registration</div>
       </div>
-      <div class="bns-item" id="bns2"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(2)">3</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(2)"><div class="bb-title">Name is linked to your wallet</div><div class="bb-sub">ssw.bdx → your wallet address</div></div></div>
+      <div class="bns-item" id="bns2"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(2)">3</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(2)"><div class="bb-title">Name is linked to your wallet</div><div class="bb-sub">ssw.bdx ? your wallet address</div></div></div>
       <div class="bns-item" id="bns3"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(3)">4</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(3)"><div class="bb-title">You approve it with your private key</div><div class="bb-sub">Proves you own this wallet</div></div></div>
       <div class="bns-item" id="bns4"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(4)">5</div><div class="bns-line"></div></div><div class="bns-body" onclick="bnsClick(4)"><div class="bb-title">Network confirms it</div><div class="bb-sub">Masternodes verify and agree</div></div></div>
       <div class="bns-item" id="bns5"><div class="bns-left"><div class="bns-dot" onclick="bnsClick(5)">6</div></div><div class="bns-body" onclick="bnsClick(5)"><div class="bb-title">Saved on the blockchain forever</div><div class="bb-sub">Nobody can take it away from you</div></div></div>
@@ -274,28 +274,28 @@
       </div>
       <div class="registry-card">
         <div class="rc-head">[ What gets stored on-chain ]</div>
-        <span class="rk">├ Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="rv">ssw.bdx</span><br>
-        <span class="rk">├ Wallet &nbsp;&nbsp;&nbsp;</span><span class="rv">bdx1qxyz...</span><br>
-        <span class="rk">├ Mapping &nbsp;</span><span class="ra">ssw.bdx → bdx1qxyz</span><br>
-        <span class="rk">├ Block &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="rv">#2,345,678</span><br>
-        <span class="rk">├ Status &nbsp;&nbsp;</span><span class="rv">active</span><br>
-        <span class="rk">└ Optional </span><span class="rm">BChat ID / BelNet</span>
+        <span class="rk">+ Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="rv">ssw.bdx</span><br>
+        <span class="rk">+ Wallet &nbsp;&nbsp;&nbsp;</span><span class="rv">bdx1qxyz...</span><br>
+        <span class="rk">+ Mapping &nbsp;</span><span class="ra">ssw.bdx ? bdx1qxyz</span><br>
+        <span class="rk">+ Block &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="rv">#2,345,678</span><br>
+        <span class="rk">+ Status &nbsp;&nbsp;</span><span class="rv">active</span><br>
+        <span class="rk">+ Optional </span><span class="rm">BChat ID / BelNet</span>
       </div>
     </div>
   </div>
 
-  <!-- Use cases — hub constellation layout -->
+  <!-- Use cases - hub constellation layout -->
   <div class="section-divider"></div>
   <div class="sub-heading">Where Your BNS Name Works</div>
 
   <div class="hub-layout">
-    <!-- Row 1 Left — Wallet -->
+    <!-- Row 1 Left - Wallet -->
     <div style="grid-column:1;grid-row:1;padding-right:0.5rem;">
       <div class="uc-card" style="--uc-color:var(--blue)" onclick="ucClick(this,0)">
-        <div class="uc-top"><div class="uc-icon">💰</div><div class="uc-label">Wallet</div></div>
+        <div class="uc-top"><div class="uc-icon">??</div><div class="uc-label">Wallet</div></div>
         <div class="uc-name">Send & Receive BDX</div>
         <div class="uc-desc">Use your name instead of a long wallet address to get paid.</div>
-        <div class="uc-example">ssw.bdx → bdx1qxyz…</div>
+        <div class="uc-example">ssw.bdx ? bdx1qxyz�</div>
       </div>
     </div>
 
@@ -308,30 +308,30 @@
       </div>
     </div>
 
-    <!-- Row 1 Right — BChat -->
+    <!-- Row 1 Right - BChat -->
     <div style="grid-column:3;grid-row:1;padding-left:0.5rem;">
       <div class="uc-card" style="--uc-color:var(--teal)" onclick="ucClick(this,1)">
-        <div class="uc-top"><div class="uc-icon">💬</div><div class="uc-label">BChat</div></div>
+        <div class="uc-top"><div class="uc-icon">??</div><div class="uc-label">BChat</div></div>
         <div class="uc-name">Private Username</div>
         <div class="uc-desc">Friends find you on BChat by name instead of a 64-character ID.</div>
-        <div class="uc-example">Search "ssw" on BChat ✓</div>
+        <div class="uc-example">Search "ssw" on BChat ?</div>
       </div>
     </div>
 
-    <!-- Row 2 Left — EVM -->
+    <!-- Row 2 Left - EVM -->
     <div style="grid-column:1;grid-row:2;padding-right:0.5rem;">
       <div class="uc-card" style="--uc-color:var(--violet)" onclick="ucClick(this,3)">
-        <div class="uc-top"><div class="uc-icon">⛓️</div><div class="uc-label">EVM Address</div></div>
+        <div class="uc-top"><div class="uc-icon">??</div><div class="uc-label">EVM Address</div></div>
         <div class="uc-name">Ethereum-Compatible</div>
         <div class="uc-desc">Link your EVM wallet to receive ETH and EVM-based tokens.</div>
-        <div class="uc-example">ssw.bdx → 0x4a7…</div>
+        <div class="uc-example">ssw.bdx ? 0x4a7�</div>
       </div>
     </div>
 
-    <!-- Row 2 Right — BelNet -->
+    <!-- Row 2 Right - BelNet -->
     <div style="grid-column:3;grid-row:2;padding-left:0.5rem;">
       <div class="uc-card" style="--uc-color:var(--green)" onclick="ucClick(this,2)">
-        <div class="uc-top"><div class="uc-icon">🌐</div><div class="uc-label">BelNet Domain</div></div>
+        <div class="uc-top"><div class="uc-icon">??</div><div class="uc-label">BelNet Domain</div></div>
         <div class="uc-name">Host Private Websites</div>
         <div class="uc-desc">Use a .bdx domain to host decentralised apps on BelNet.</div>
         <div class="uc-example">https://ssw.bdx</div>
@@ -358,27 +358,27 @@
     <div class="price-card" onclick="selectPlan(this,1,650)" data-years="1" data-bdx="650">
       <div class="pc-years">1</div><div class="pc-ylab">Year</div>
       <div class="pc-bdx">650 BDX</div><div class="pc-pyr">650 BDX / yr</div>
-      <div class="pc-usd">≈ <span id="usd-1">—</span></div>
+      <div class="pc-usd">� <span id="usd-1">-</span></div>
     </div>
     <div class="price-card" onclick="selectPlan(this,2,1000)" data-years="2" data-bdx="1000">
       <div class="pc-years">2</div><div class="pc-ylab">Years</div>
       <div class="pc-bdx">1,000 BDX</div><div class="pc-pyr">500 BDX / yr</div>
-      <div class="pc-usd">≈ <span id="usd-2">—</span></div>
+      <div class="pc-usd">� <span id="usd-2">-</span></div>
     </div>
     <div class="price-card best-val" onclick="selectPlan(this,5,2000)" data-years="5" data-bdx="2000">
       <div class="pc-years">5</div><div class="pc-ylab">Years</div>
       <div class="pc-bdx">2,000 BDX</div><div class="pc-pyr">400 BDX / yr</div>
-      <div class="pc-usd">≈ <span id="usd-5">—</span></div>
+      <div class="pc-usd">� <span id="usd-5">-</span></div>
     </div>
     <div class="price-card" onclick="selectPlan(this,10,4000)" data-years="10" data-bdx="4000">
       <div class="pc-years">10</div><div class="pc-ylab">Years</div>
       <div class="pc-bdx">4,000 BDX</div><div class="pc-pyr">400 BDX / yr</div>
-      <div class="pc-usd">≈ <span id="usd-10">—</span></div>
+      <div class="pc-usd">� <span id="usd-10">-</span></div>
     </div>
   </div>
 
   <div class="calc-box">
-    <div class="calc-title">🧮 Cost Calculator · Enter BDX Price to See USD Value</div>
+    <div class="calc-title">?? Cost Calculator � Enter BDX Price to See USD Value</div>
     <div class="calc-row">
       <div class="calc-field">
         <label>BDX price (USD)</label>
@@ -387,26 +387,26 @@
       <div class="calc-field">
         <label>Registration period</label>
         <select id="plan-select" onchange="calcUpdate()">
-          <option value="1,650">1 Year · 650 BDX</option>
-          <option value="2,1000">2 Years · 1,000 BDX</option>
-          <option value="5,2000" selected>5 Years · 2,000 BDX (Best Value)</option>
-          <option value="10,4000">10 Years · 4,000 BDX</option>
+          <option value="1,650">1 Year � 650 BDX</option>
+          <option value="2,1000">2 Years � 1,000 BDX</option>
+          <option value="5,2000" selected>5 Years � 2,000 BDX (Best Value)</option>
+          <option value="10,4000">10 Years � 4,000 BDX</option>
         </select>
       </div>
     </div>
     <div class="calc-result">
-      <div class="cr-card hi"><div class="cr-lbl">Total BDX</div><div class="cr-val" id="cr-bdx">—</div><div class="cr-sub" id="cr-bdx-sub">select a plan</div></div>
-      <div class="cr-card"><div class="cr-lbl">Total USD</div><div class="cr-val" id="cr-usd" style="color:var(--amber)">—</div><div class="cr-sub" id="cr-usd-sub">enter BDX price</div></div>
-      <div class="cr-card"><div class="cr-lbl">Cost Per Year</div><div class="cr-val" id="cr-yr" style="color:var(--teal)">—</div><div class="cr-sub" id="cr-yr-sub">BDX / yr</div></div>
+      <div class="cr-card hi"><div class="cr-lbl">Total BDX</div><div class="cr-val" id="cr-bdx">-</div><div class="cr-sub" id="cr-bdx-sub">select a plan</div></div>
+      <div class="cr-card"><div class="cr-lbl">Total USD</div><div class="cr-val" id="cr-usd" style="color:var(--amber)">-</div><div class="cr-sub" id="cr-usd-sub">enter BDX price</div></div>
+      <div class="cr-card"><div class="cr-lbl">Cost Per Year</div><div class="cr-val" id="cr-yr" style="color:var(--teal)">-</div><div class="cr-sub" id="cr-yr-sub">BDX / yr</div></div>
     </div>
-    <div class="burn-note">🔥 <b>All BNS fees are burned.</b> Every BDX paid to register, renew, or transfer a BNS name is permanently removed from circulation, reducing total supply and contributing to long-term BDX scarcity.</div>
-    <div class="transfer-note">🔄 <b>Ownership transfer fee: 50 BDX</b> · Flat fee to move a name to another wallet. Also 100% burned. Wallet &amp; BChat names: <b>buy once, keep forever</b>. BelNet .bdx domains: <b>register &amp; renew</b> (1–10 yr periods).</div>
+    <div class="burn-note">?? <b>All BNS fees are burned.</b> Every BDX paid to register, renew, or transfer a BNS name is permanently removed from circulation, reducing total supply and contributing to long-term BDX scarcity.</div>
+    <div class="transfer-note">?? <b>Ownership transfer fee: 50 BDX</b> � Flat fee to move a name to another wallet. Also 100% burned. Wallet &amp; BChat names: <b>buy once, keep forever</b>. BelNet .bdx domains: <b>register &amp; renew</b> (1�10 yr periods).</div>
   </div>
 
   <div class="tags">
     <span class="tag t-rose">On-chain forever</span><span class="tag t-green">Easy to share</span>
     <span class="tag t-blue">Works for wallet + BChat + BelNet + EVM</span>
-    <span class="tag t-teal">No middleman</span><span class="tag t-amber">All fees burned 🔥</span>
+    <span class="tag t-teal">No middleman</span><span class="tag t-amber">All fees burned ??</span>
   </div>
 </div>
 
@@ -415,7 +415,7 @@
 const bnsData = [
   { step:'Step 1', title:'You pick a name', body:'You open your Beldex wallet and type the name you want, like <b>ssw.bdx</b>. The system checks if the format is valid and if the name is already in use.' },
   { step:'Step 2', title:'Is it already taken?', body:'The blockchain is checked instantly. If someone already registered that name, your request is rejected. If it\'s free, you move forward.' },
-  { step:'Step 3', title:'The name is connected to your wallet', body:'A link is created: <b>ssw.bdx → your wallet address</b>. Anyone who sends BDX to your name will automatically reach the right wallet.' },
+  { step:'Step 3', title:'The name is connected to your wallet', body:'A link is created: <b>ssw.bdx ? your wallet address</b>. Anyone who sends BDX to your name will automatically reach the right wallet.' },
   { step:'Step 4', title:'You approve it', body:'You sign the registration using your <b>private key</b>. This proves you own the wallet. Your key never leaves your device. Only the digital signature is sent.' },
   { step:'Step 5', title:'The network agrees', body:'Masternodes verify that the name is free and your signature is genuine. Once they all agree, the registration is confirmed. No single company is in charge.' },
   { step:'Step 6', title:'Saved on the blockchain permanently', body:'Your name and wallet mapping are stored on-chain. It\'s <b>tamper-proof and permanent</b>. No company can remove it. Works across your wallet, BChat, and BelNet.' }
@@ -433,19 +433,19 @@ function bnsClick(idx) {
 /* BNS use cases */
 const ucData = [
   { color:'var(--blue)', label:'BNS for Wallet', title:'Send & Receive BDX With a Simple Name',
-    body:'Your Beldex wallet address looks like <b>bdx1qxyz4g8f2k…</b>, impossible to share verbally. With BNS, you register a name like <b>ssw.bdx</b> and link it to your wallet. Anyone can now send you BDX just by typing your name.',
-    facts:[{l:'Replaces',v:'Long wallet address (bx1…)'},{l:'Works with',v:'Electron, Mobile & CLI wallets'},{l:'Ownership',v:'Buy once, keep forever'},{l:'Fee',v:'Registration fee 100% burned'}],
+    body:'Your Beldex wallet address looks like <b>bdx1qxyz4g8f2k�</b>, impossible to share verbally. With BNS, you register a name like <b>ssw.bdx</b> and link it to your wallet. Anyone can now send you BDX just by typing your name.',
+    facts:[{l:'Replaces',v:'Long wallet address (bx1�)'},{l:'Works with',v:'Electron, Mobile & CLI wallets'},{l:'Ownership',v:'Buy once, keep forever'},{l:'Fee',v:'Registration fee 100% burned'}],
     extra:'ownership' },
-  { color:'var(--teal)', label:'BNS for BChat', title:'Your BChat Username · Easy to Find',
+  { color:'var(--teal)', label:'BNS for BChat', title:'Your BChat Username � Easy to Find',
     body:'A BChat ID is a 64-character string. Nobody memorises that. Your BNS name becomes your <b>username on BChat</b>. Friends search your name and your account appears. Messages are still fully encrypted and onion-routed.',
     facts:[{l:'Replaces',v:'64-character BChat ID'},{l:'Privacy',v:'Messages still E2E encrypted'},{l:'Tip',v:'Use a pseudonym, not your real name'},{l:'Multiple names?',v:'Yes, 2+ names can point to same ID'}] },
   { color:'var(--green)', label:'BNS Domain (BelNet)', title:'Host Private Websites With a .bdx Address',
     body:'A BNS domain ending in <b>.bdx</b> lets you host decentralised apps and websites on BelNet (called MNApps). The host\'s real IP is hidden by BelNet\'s onion routing. Think of it as a private, uncensorable web.',
-    facts:[{l:'Example',v:'https://beldex.bdx'},{l:'Host IP',v:'Fully hidden by BelNet'},{l:'Ownership',v:'Register for 1–10 years, then renew'},{l:'Why renew?',v:'Prevents domain squatting'}],
+    facts:[{l:'Example',v:'https://beldex.bdx'},{l:'Host IP',v:'Fully hidden by BelNet'},{l:'Ownership',v:'Register for 1�10 years, then renew'},{l:'Why renew?',v:'Prevents domain squatting'}],
     extra:'belnet' },
   { color:'var(--violet)', label:'BNS for EVM Wallets', title:'Cross-Chain Payments With Your Name',
     body:'BNS now works with <b>Ethereum-compatible (EVM) wallet addresses</b> too. Link your EVM wallet to your BNS name and people can send ETH, BNB, or other EVM tokens just by typing your name. No 0x address required.',
-    facts:[{l:'Chains',v:'ETH, BSC & EVM-compatible'},{l:'How',v:'Name resolves to 0x… address'},{l:'vs ENS',v:'BNS keeps your history private'},{l:'Status',v:'Live via Hermes hardfork'}],
+    facts:[{l:'Chains',v:'ETH, BSC & EVM-compatible'},{l:'How',v:'Name resolves to 0x� address'},{l:'vs ENS',v:'BNS keeps your history private'},{l:'Status',v:'Live via Hermes hardfork'}],
     extra:'evm' }
 ];
 function ucClick(el, idx) {
@@ -465,7 +465,7 @@ function ucClick(el, idx) {
   ).join('');
   const extra = document.getElementById('ucd-extra');
   if (d.extra === 'ownership') {
-    extra.innerHTML = `<div class="own-pair"><div class="own-box"><div class="ob-label rose">💬 Wallet & BChat Name</div><div class="ob-title">Buy Once, Keep Forever</div><div class="ob-body">Wallet and BChat names are permanent. No renewal needed. Changing a payment address would break everything.</div></div><div class="own-box"><div class="ob-label green">🌐 BelNet Domain (.bdx)</div><div class="ob-title">Register & Renew Periodically</div><div class="ob-body">Domains require renewal to prevent squatting. All fees are burned. Periods: 1, 2, 5, or 10 years.</div></div></div>`;
+    extra.innerHTML = `<div class="own-pair"><div class="own-box"><div class="ob-label rose">?? Wallet & BChat Name</div><div class="ob-title">Buy Once, Keep Forever</div><div class="ob-body">Wallet and BChat names are permanent. No renewal needed. Changing a payment address would break everything.</div></div><div class="own-box"><div class="ob-label green">?? BelNet Domain (.bdx)</div><div class="ob-title">Register & Renew Periodically</div><div class="ob-body">Domains require renewal to prevent squatting. All fees are burned. Periods: 1, 2, 5, or 10 years.</div></div></div>`;
   } else if (d.extra === 'belnet') {
     extra.innerHTML = `<div style="margin-top:1rem;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:0.7rem 1rem;font-size:0.8rem;color:rgba(52,211,153,0.85)"><b style="color:#34d399">What is an MNApp?</b> A masternode app, a private website hosted on BelNet. Both host and visitors stay anonymous. The host IP is hidden by BelNet, linked to the .bdx domain.</div>`;
   } else if (d.extra === 'evm') {
@@ -495,7 +495,7 @@ function calcUpdate() {
   document.getElementById('cr-bdx-sub').textContent = selYears + ' year' + (selYears > 1 ? 's' : '');
   for (const [yr, bdx] of Object.entries(plans)) {
     const el = document.getElementById('usd-' + yr);
-    if (el) el.textContent = px && !isNaN(px) ? '$' + (bdx * px).toFixed(2) : '—';
+    if (el) el.textContent = px && !isNaN(px) ? '$' + (bdx * px).toFixed(2) : '-';
   }
   if (!isNaN(px) && px > 0) {
     const tot = selBdx * px;
@@ -504,9 +504,9 @@ function calcUpdate() {
     document.getElementById('cr-yr').textContent = '$' + (tot / selYears).toFixed(2);
     document.getElementById('cr-yr-sub').textContent = (selBdx / selYears) + ' BDX / yr';
   } else {
-    document.getElementById('cr-usd').textContent = '—';
+    document.getElementById('cr-usd').textContent = '-';
     document.getElementById('cr-usd-sub').textContent = 'enter BDX price above';
-    document.getElementById('cr-yr').textContent = '—';
+    document.getElementById('cr-yr').textContent = '-';
     document.getElementById('cr-yr-sub').textContent = (selBdx / selYears) + ' BDX / yr';
   }
 }

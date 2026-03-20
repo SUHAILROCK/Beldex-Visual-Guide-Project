@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-      /* ===== Proof of Stake Page — Premium Redesign ===== */
+      /* ===== Proof of Stake Page - Premium Redesign ===== */
       :root {
         --bn-accent: #8b5cf6;
         --bn-accent-dim: rgba(139,92,246,0.12);
@@ -97,7 +97,7 @@
         .bn-flow-arrow { transform: rotate(90deg); }
       }
     
-/* ── Comprehensive Light Theme ── */
+/* -- Comprehensive Light Theme -- */
       [data-theme="light"] .tech-page,
       [data-theme="light"] .cn-page,
       [data-theme="light"] .rs-page,
@@ -238,7 +238,7 @@
           <a href="../../../index.html" class="bn-back">&larr; Back to Visual Guide</a>
           <div class="bn-hero-badge">Networking</div>
           <h1>BelNet</h1>
-          <p class="bn-hero-sub">A decentralized <strong>onion-routed VPN</strong> powered by the Beldex masternode network — providing censorship-resistant, private internet access.</p>
+          <p class="bn-hero-sub">A decentralized <strong>onion-routed VPN</strong> powered by the Beldex masternode network - providing censorship-resistant, private internet access.</p>
           <div class="bn-stats">
             <div class="bn-stat"><span class="bn-stat-emoji"></span><div><div class="bn-stat-label">Type</div><div class="bn-stat-value">Decentralized VPN</div></div></div>
             <div class="bn-stat"><span class="bn-stat-emoji"></span><div><div class="bn-stat-label">Routing</div><div class="bn-stat-value">Onion Routing</div></div></div>
@@ -247,11 +247,11 @@
         </div>
       </div>
       <div class="bn-body">
-        <div class="bn-card"><h2>What is BelNet?</h2><p>BelNet is a decentralized Virtual Private Network built on top of the Beldex masternode infrastructure. Unlike commercial VPNs that rely on centralized servers, BelNet routes your traffic through multiple independently operated masternodes.</p><p>Each connection is encrypted in multiple layers (onion routing), so <strong>no single node knows both the origin and destination</strong> of your traffic — providing trustless privacy.</p><div class="bn-highlight"><p><strong>Key Principle:</strong> BelNet eliminates the need to trust a single VPN provider. Traffic is split across independently operated masternodes, each seeing only one encrypted layer.</p></div></div>
-        <div class="bn-card"><h2>How BelNet Works</h2><p>BelNet combines onion routing with the Beldex masternode network:</p><div class="bn-feature-grid"><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Multi-Layer Encryption</h4><p>Traffic is wrapped in multiple encryption layers — each masternode peels off one layer and forwards to the next.</p></div><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Random Path Selection</h4><p>Routes are randomly selected through multiple masternodes, making traffic analysis extremely difficult.</p></div><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Masternode-Powered</h4><p>Existing Beldex masternodes serve as relay nodes. Their collateral stake incentivizes reliable, honest operation.</p></div><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Censorship Resistant</h4><p>No central authority can shut down BelNet. As long as masternodes operate globally, the VPN remains accessible.</p></div></div></div>
+        <div class="bn-card"><h2>What is BelNet?</h2><p>BelNet is a decentralized Virtual Private Network built on top of the Beldex masternode infrastructure. Unlike commercial VPNs that rely on centralized servers, BelNet routes your traffic through multiple independently operated masternodes.</p><p>Each connection is encrypted in multiple layers (onion routing), so <strong>no single node knows both the origin and destination</strong> of your traffic - providing trustless privacy.</p><div class="bn-highlight"><p><strong>Key Principle:</strong> BelNet eliminates the need to trust a single VPN provider. Traffic is split across independently operated masternodes, each seeing only one encrypted layer.</p></div></div>
+        <div class="bn-card"><h2>How BelNet Works</h2><p>BelNet combines onion routing with the Beldex masternode network:</p><div class="bn-feature-grid"><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Multi-Layer Encryption</h4><p>Traffic is wrapped in multiple encryption layers - each masternode peels off one layer and forwards to the next.</p></div><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Random Path Selection</h4><p>Routes are randomly selected through multiple masternodes, making traffic analysis extremely difficult.</p></div><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Masternode-Powered</h4><p>Existing Beldex masternodes serve as relay nodes. Their collateral stake incentivizes reliable, honest operation.</p></div><div class="bn-feature-item"><span class="bn-feature-icon"></span><h4>Censorship Resistant</h4><p>No central authority can shut down BelNet. As long as masternodes operate globally, the VPN remains accessible.</p></div></div></div>
         <div class="bn-card"><h2>Connection Flow</h2><p>How a BelNet connection is established:</p><div class="bn-flow"><div class="bn-flow-step"><span class="bn-step-num">Step 1</span><span class="bn-step-label">Client selects random masternode path</span></div><span class="bn-flow-arrow">&rarr;</span><div class="bn-flow-step"><span class="bn-step-num">Step 2</span><span class="bn-step-label">Traffic encrypted in multiple layers</span></div><span class="bn-flow-arrow">&rarr;</span><div class="bn-flow-step"><span class="bn-step-num">Step 3</span><span class="bn-step-label">Each node decrypts one layer, forwards</span></div><span class="bn-flow-arrow">&rarr;</span><div class="bn-flow-step"><span class="bn-step-num">Step 4</span><span class="bn-step-label">Exit node reaches destination</span></div></div></div>
         <div class="bn-card"><h2>BelNet vs Traditional VPNs</h2><table class="bn-table"><thead><tr><th>Feature</th><th>Traditional VPN</th><th>BelNet (Beldex)</th></tr></thead><tbody><tr><td>Server Operator</td><td>Single company</td><td>Distributed masternodes</td></tr><tr><td>Trust Model</td><td>Trust the VPN provider</td><td>Trustless (multi-hop)</td></tr><tr><td>Encryption</td><td>Single tunnel</td><td>Multi-layer onion routing</td></tr><tr><td>Censorship</td><td>Can be blocked/shut down</td><td>Decentralized, resilient</td></tr><tr><td>Payment</td><td>Credit card (identity linked)</td><td>BDX (private)</td></tr></tbody></table></div>
-        <div class="bn-card"><h2>Why BelNet Matters</h2><ul><li><strong>True privacy:</strong> No single entity sees your complete traffic pattern — not even the entry or exit nodes.</li><li><strong>Decentralized infrastructure:</strong> Runs on the existing masternode network, benefiting from its global distribution and economic security.</li><li><strong>Censorship resistance:</strong> Governments or ISPs cannot shut down BelNet by targeting a single provider.</li><li><strong>Privacy ecosystem:</strong> Combined with BChat and Beldex Browser, BelNet completes Beldex's full-stack privacy offering.</li></ul></div>
+        <div class="bn-card"><h2>Why BelNet Matters</h2><ul><li><strong>True privacy:</strong> No single entity sees your complete traffic pattern - not even the entry or exit nodes.</li><li><strong>Decentralized infrastructure:</strong> Runs on the existing masternode network, benefiting from its global distribution and economic security.</li><li><strong>Censorship resistance:</strong> Governments or ISPs cannot shut down BelNet by targeting a single provider.</li><li><strong>Privacy ecosystem:</strong> Combined with BChat and Beldex Browser, BelNet completes Beldex's full-stack privacy offering.</li></ul></div>
       </div>
 
       

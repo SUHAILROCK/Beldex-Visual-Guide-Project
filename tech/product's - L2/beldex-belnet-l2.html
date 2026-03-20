@@ -656,7 +656,7 @@ strong{color:var(--tx);font-weight:700;}
       <div class="card-body">Masternodes earn 90% of every Beldex block reward. This is a strong incentive to maintain good uptime, fast bandwidth, and honest behavior. Poor-performing nodes earn less; excellent nodes earn more.</div>
     </div>
     <div class="card">
-      <div class="card-icon">ğŸ”—</div>
+      <div class="card-icon">ğŸ”-</div>
       <div class="card-title">Dual Function</div>
       <div class="card-body">The same masternode simultaneously validates Beldex blockchain transactions, stores BChat message swarms, and routes BelNet traffic. This shared infrastructure makes running a node economically efficient for operators.</div>
     </div>
@@ -1100,9 +1100,9 @@ strong{color:var(--tx);font-weight:700;}
     <p style="max-width:500px;margin:0 auto;">Available on Android, Windows, and Linux. Open, install, connect. Your IP disappears in seconds.</p>
   </div>
   <div class="dl-grid ri d1">
-    <a class="dlc" href="https://github.com/Beldex-Coin/belnet-app/releases/download/v1.3.1/Belnet-1.3.1.apk" target="_blank"><div class="dlc-ico">ğŸ¤–</div><div class="dlc-name">Android</div><div class="dlc-sub">APK v1.3.1</div><div style="color:var(--bl);font-size:.7rem;">â†—</div></a>
-    <a class="dlc" href="https://deb.beldex.io/Beldex-projects/belnet-gui/belnet-gui-1.1.1-win64.exe" target="_blank"><div class="dlc-ico">ğŸªŸ</div><div class="dlc-name">Windows</div><div class="dlc-sub">v1.1.1</div><div style="color:var(--bl);font-size:.7rem;">â†—</div></a>
-    <a class="dlc" href="https://belnet.beldex.io/belnet-linux-installation" target="_blank"><div class="dlc-ico">ğŸ§</div><div class="dlc-name">Linux</div><div class="dlc-sub">Install Guide</div><div style="color:var(--bl);font-size:.7rem;">â†—</div></a>
+    <a class="dlc" href="https://github.com/Beldex-Coin/belnet-app/releases/download/v1.3.1/Belnet-1.3.1.apk" target="_blank"><div class="dlc-ico">ğŸ¤–</div><div class="dlc-name">Android</div><div class="dlc-sub">APK v1.3.1</div><div style="color:var(--bl);font-size:.7rem;">â†-</div></a>
+    <a class="dlc" href="https://deb.beldex.io/Beldex-projects/belnet-gui/belnet-gui-1.1.1-win64.exe" target="_blank"><div class="dlc-ico">ğŸªŸ</div><div class="dlc-name">Windows</div><div class="dlc-sub">v1.1.1</div><div style="color:var(--bl);font-size:.7rem;">â†-</div></a>
+    <a class="dlc" href="https://belnet.beldex.io/belnet-linux-installation" target="_blank"><div class="dlc-ico">ğŸ§</div><div class="dlc-name">Linux</div><div class="dlc-sub">Install Guide</div><div style="color:var(--bl);font-size:.7rem;">â†-</div></a>
     <div class="dlc soon"><div class="dlc-ico">ğŸ</div><div class="dlc-name">macOS</div><div class="dlc-sub" style="color:var(--am);">Coming soon</div></div>
   </div>
   <div style="text-align:center;margin-top:2.5rem;border-top:1px solid var(--br);padding-top:2rem;" class="ri d2">
@@ -1429,7 +1429,7 @@ function buildKnowledgeCards(){
     var card=document.createElement('div');
     card.className='jk-card';card.id='jkCard'+i;
     var knowsHtml=d.knows.map(function(k){return '<div class="jk-item know"><span class="jk-dot">âœ“</span><span>'+k+'</span></div>';}).join('');
-    var blindHtml=d.blind.map(function(b){return '<div class="jk-item blind"><span class="jk-dot">âœ—</span><span>'+b+'</span></div>';}).join('');
+    var blindHtml=d.blind.map(function(b){return '<div class="jk-item blind"><span class="jk-dot">âœ-</span><span>'+b+'</span></div>';}).join('');
     card.innerHTML='<div class="jk-head"><div class="jk-emoji">'+p.emoji+'</div><div class="jk-info"><div class="jk-name">'+p.name+'</div><div class="jk-role">'+p.role+'</div></div></div>'+knowsHtml+blindHtml;
     card.onclick=(function(idx){return function(){clearTimeout(jTimer);jRunning=false;jStep=idx;updateJPanel(idx);drawJourney(idx,0);updateKnowledgeCards(idx);};})(i);
     grid.appendChild(card);
@@ -1616,7 +1616,7 @@ function selectRegion(name,btn){
   html+='<div class="edr-row"><div class="edr-k">Exit IP</div><div class="edr-v">'+r.ip+'</div></div>';
   html+='<div class="edr-row"><div class="edr-k">Latency</div><div class="edr-v em">'+r.latency+'</div></div>';
   html+='<div class="edr-row"><div class="edr-k">Node</div><div class="edr-v" style="font-size:.68rem">'+r.node+'</div></div>';
-  html+='<div class="edr-row"><div class="edr-k">Status</div><div class="edr-v em">â— '+r.status+'</div></div>';
+  html+='<div class="edr-row"><div class="edr-k">Status</div><div class="edr-v em">â- '+r.status+'</div></div>';
   html+='<div class="edr-row"><div class="edr-k">Use</div><div class="edr-v txm" style="color:var(--txm)">'+r.useCase+'</div></div>';
   document.getElementById('edResult').innerHTML=html;
 }
@@ -1872,7 +1872,7 @@ var THREATS_DATA=[
    defense:'There are no logs to produce. The LLARP protocol does not log connection metadata by design, not by policy. No node stores user identity data. Even if every operator was compelled, the records contain only encrypted packet routing with no user identifiers.',
    result:'ELIMINATED  Nothing to hand over'},
   {id:5,angle:300,    risk:0.40,riskLabel:'VERY LOW',col:'#34D399',
-   name:'Blockchain Linkability',icon:'ğŸ”—',
+   name:'Blockchain Linkability',icon:'ğŸ”-',
    attack:'An attacker tries to link BDX staking transactions or node reward payments back to individual operator identities.',
    defense:'Beldex uses RingCT (Ring Confidential Transactions) and stealth addresses. Ring signatures hide which UTXO is spent. Stealth addresses create unique one-time receive addresses per transaction. Financial activity cannot be linked to operator identity.',
    result:'VERY LOW  RingCT breaks the chain'},

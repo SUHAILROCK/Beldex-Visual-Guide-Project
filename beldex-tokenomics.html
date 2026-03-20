@@ -36,14 +36,14 @@
 
 body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; padding-bottom: 60px; transition: background 0.3s, color 0.3s; }
 
-/* ── Header ── */
+/* -- Header -- */
 .hdr { background: var(--bg-card); padding: 14px 16px 12px; border-bottom: 2px solid var(--border-card); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; transition: all 0.3s; }
 .hdr-center { flex: 1; text-align: center; }
 .hdr-center h1 { font-size: 22px; font-weight: 900; line-height: 1.2; background: linear-gradient(135deg, #00e0be, #9b5de5); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 10px rgba(0,224,190,0.2); letter-spacing: 0.5px; }
 .hdr-center p { font-size: 10px; color: var(--text-sub); margin-top: 4px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; }
 [data-theme="light"] .hdr-center h1 { background: linear-gradient(135deg, #009982, #7a3bbb); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none; }
 
-/* ── Hamburger button ── */
+/* -- Hamburger button -- */
 .ham-btn { width: 40px; height: 40px; background: var(--border-card); border: none; border-radius: 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; transition: background 0.2s; }
 .ham-btn:hover { background: var(--bg-hover); }
 .ham-line { width: 18px; height: 2px; background: #3a9a90; border-radius: 2px; transition: all 0.3s; }
@@ -51,7 +51,7 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .ham-btn.open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .ham-btn.open .ham-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: #00e0be; }
 
-/* ── Drawer ── */
+/* -- Drawer -- */
 .drawer-overlay { position: fixed; inset: 0; background: var(--bg-overlay); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(3px); }
 .drawer-overlay.open { opacity: 1; pointer-events: all; }
 .drawer { position: fixed; left: 0; top: 0; bottom: 0; width: min(300px, 88vw); background: var(--bg-panel); z-index: 201; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border-card); display: flex; flex-direction: column; overflow: hidden; }
@@ -62,7 +62,7 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .drawer-close { width: 32px; height: 32px; background: var(--border-card); border: none; border-radius: 8px; cursor: pointer; color: #3a9a90; font-size: 19px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
 .drawer-close:hover { background: var(--bg-hover); color: #00e0be; }
 
-/* ── Wallets Modal ── */
+/* -- Wallets Modal -- */
 .wm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 16px; }
 .wm-overlay.open { opacity: 1; pointer-events: all; }
 .wm-box { background: var(--bg-panel); border: 1px solid var(--border-card); border-radius: 16px; width: 100%; max-width: 580px; max-height: 85vh; display: flex; flex-direction: column; transform: translateY(24px) scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
@@ -86,13 +86,13 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .drawer-item.active .drawer-title { color: var(--text-title); }
 .drawer-pct { font-size: 13px; font-weight: 900; flex-shrink: 0; }
 
-/* ── Return Button ── */
+/* -- Return Button -- */
 .return-btn { display: flex; align-items: center; gap: 5px; background: var(--border-card); border: 1px solid transparent; color: var(--text-title); font-size: 13px; font-weight: 800; padding: 0 12px; height: 36px; border-radius: 10px; cursor: pointer; transition: all 0.2s; letter-spacing: 0.4px; text-decoration: none; flex-shrink: 0; }
 .return-btn:hover { background: linear-gradient(135deg, #00e0be22, #9b5de522); border-color: #00e0be44; }
 .return-btn .return-arrow { font-size: 17px; transition: transform 0.2s; }
 .return-btn:hover .return-arrow { transform: translateX(-2px); }
 
-/* ── Controls ── */
+/* -- Controls -- */
 .controls-grp { display: flex; align-items: center; gap: 8px; }
 .icon-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--border-card); border: none; color: var(--text-title); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 19px; transition: background 0.2s; flex-shrink: 0; }
 .icon-btn:hover { background: var(--bg-hover); }
@@ -141,7 +141,7 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .src-btn .sd { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
 .src-btn .arr { font-size: 20px; }
 
-/* ── Cards ── */
+/* -- Cards -- */
 .card { background: var(--bg-card); border-radius: 14px; padding: 16px 18px; border: 1px solid var(--border-card); transition: background 0.3s, border-color 0.3s; }
 .ct { font-size: 15px; font-weight: 800; color: var(--text-title); margin-bottom: 3px; }
 .cs { font-size: 14px; color: var(--text-sub); margin-bottom: 12px; }
@@ -165,7 +165,7 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .my { font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mini-hint { font-size: 12px; color: var(--text-sub); text-align: center; margin-top: 3px; }
 
-/* ── Nav & Tabs ── */
+/* -- Nav & Tabs -- */
 .nav { display: flex; gap: 8px; }
 .nav-btn { flex: 1; padding: 11px; border-radius: 11px; border: 1px solid var(--border-card); font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(--btn-text); }
 .nav-btn:disabled { cursor: default; background: var(--bg-inset) !important; color: var(--text-sub) !important; opacity: 0.6; border-color: var(--border-card) !important; }
@@ -221,7 +221,7 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 .method-badge { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 0.7px; padding: 2px 8px; border-radius: 6px; margin-bottom: 10px; }
 
 
-/* ── Animations & Polish ── */
+/* -- Animations & Polish -- */
 @keyframes fadeSwap { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
 .animate-swap { animation: fadeSwap 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
 @keyframes piePop { from { transform: scale(0.8) rotate(-10deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
@@ -241,10 +241,10 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 <div class="drawer" id="drawer">
   <div class="drawer-head">
     <div>
-      <div class="drawer-head-title">📅 All Milestones</div>
-      <div class="drawer-head-sub">12 tokenomics events · 2018–2025</div>
+      <div class="drawer-head-title">?? All Milestones</div>
+      <div class="drawer-head-sub">12 tokenomics events � 2018�2025</div>
     </div>
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <button class="drawer-close" onclick="closeDrawer()">?</button>
   </div>
   <div class="drawer-list" id="drawer-list"></div>
 </div>
@@ -254,10 +254,10 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   <div class="wm-box">
     <div class="wm-head">
       <div>
-        <div class="wm-title">🔑 Official Tokenomics Wallets</div>
-        <div class="wm-sub">All 5 designated wallets · addresses + read-only view keys</div>
+        <div class="wm-title">?? Official Tokenomics Wallets</div>
+        <div class="wm-sub">All 5 designated wallets � addresses + read-only view keys</div>
       </div>
-      <button class="drawer-close" onclick="closeAllWallets()">✕</button>
+      <button class="drawer-close" onclick="closeAllWallets()">?</button>
     </div>
     <div class="wm-body" id="wm-body"></div>
   </div>
@@ -268,26 +268,26 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   <div class="wm-box">
     <div class="wm-head">
       <div>
-        <div class="wm-title">📚 All Official Sources</div>
+        <div class="wm-title">?? All Official Sources</div>
         <div class="wm-sub">Every number in this dashboard comes directly from one of these posts</div>
       </div>
-      <button class="drawer-close" onclick="closeSourcesModal()">✕</button>
+      <button class="drawer-close" onclick="closeSourcesModal()">?</button>
     </div>
     <div class="wm-body">
       <div class="srcs" id="sm-body">
-        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b" target="_blank"><span>Beldex Tokenomics — Jan 2022 (Initial POS allocation)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/beldex-tokenomics-update/" target="_blank"><span>Tokenomics Update Q1–Q3 2022 — Official Blog</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-update-2d2e40c2e6e9" target="_blank"><span>Tokenomics Update Q1–Q3 2022 — Medium</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank"><span>Q4 2022 Scheduled Release — Jan 2023</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/tokenomics-update-dwf-labs-token-sale-release/" target="_blank"><span>DWF Labs Token Sale — Mar 2023 (697M BDX · $25M · 2yr vesting)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-2023-fbad56b3d97a" target="_blank"><span>Q3 2023 Scheduled Release — Oct 2023</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-december-2023-e62cc314564e" target="_blank"><span>Q4 2023 Scheduled Release — Jan 2024 (Team Unlock!)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-march-2024-989f2145f2b1" target="_blank"><span>Q1 2024 Scheduled Release — Apr 2024 (Release 9, Circ 64.89%)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-update-for-q3-september-2024-3dc1ba38c999" target="_blank"><span>Q3 2024 Scheduled Release — Nov 2024</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-december-2024/" target="_blank"><span>Q4 2024 Scheduled Release — Dec 2024</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-march-31-2025/" target="_blank"><span>Q1 2025 Scheduled Release — Mar 2025 (Release 13, Circ 74.34%)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-q2-2025-d2c314bacc00" target="_blank"><span>Q2 2025 Scheduled Release — Aug 2025 (Release 14, Team = 0)</span><span class="a">↗</span></a>
-        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-30-2025-d56467691f32" target="_blank"><span>Q3 2025 Scheduled Release — Oct 2025 (Release 15, Circ 77.64%)</span><span class="a">↗</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b" target="_blank"><span>Beldex Tokenomics - Jan 2022 (Initial POS allocation)</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldex.io/blog/beldex-tokenomics-update/" target="_blank"><span>Tokenomics Update Q1�Q3 2022 - Official Blog</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/beldex-tokenomics-update-2d2e40c2e6e9" target="_blank"><span>Tokenomics Update Q1�Q3 2022 - Medium</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank"><span>Q4 2022 Scheduled Release - Jan 2023</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldex.io/blog/tokenomics-update-dwf-labs-token-sale-release/" target="_blank"><span>DWF Labs Token Sale - Mar 2023 (697M BDX � $25M � 2yr vesting)</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-2023-fbad56b3d97a" target="_blank"><span>Q3 2023 Scheduled Release - Oct 2023</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-december-2023-e62cc314564e" target="_blank"><span>Q4 2023 Scheduled Release - Jan 2024 (Team Unlock!)</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-march-2024-989f2145f2b1" target="_blank"><span>Q1 2024 Scheduled Release - Apr 2024 (Release 9, Circ 64.89%)</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-update-for-q3-september-2024-3dc1ba38c999" target="_blank"><span>Q3 2024 Scheduled Release - Nov 2024</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-december-2024/" target="_blank"><span>Q4 2024 Scheduled Release - Dec 2024</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldex.io/blog/bdx-scheduled-release-march-31-2025/" target="_blank"><span>Q1 2025 Scheduled Release - Mar 2025 (Release 13, Circ 74.34%)</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-q2-2025-d2c314bacc00" target="_blank"><span>Q2 2025 Scheduled Release - Aug 2025 (Release 14, Team = 0)</span><span class="a">?</span></a>
+        <a class="srow" href="https://beldexcoin.medium.com/bdx-scheduled-release-september-30-2025-d56467691f32" target="_blank"><span>Q3 2025 Scheduled Release - Oct 2025 (Release 15, Circ 77.64%)</span><span class="a">?</span></a>
       </div>
     </div>
   </div>
@@ -298,10 +298,10 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   <div class="wm-box">
     <div class="wm-head">
       <div>
-        <div class="wm-title">🔍 How to Verify Wallets</div>
+        <div class="wm-title">?? How to Verify Wallets</div>
         <div class="wm-sub">Step-by-step guide using the CLI wallet</div>
       </div>
-      <button class="drawer-close" onclick="closeVerifyModal()">✕</button>
+      <button class="drawer-close" onclick="closeVerifyModal()">?</button>
     </div>
     <div class="wm-body" id="vm-body"></div>
   </div>
@@ -310,27 +310,27 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 <!-- Header -->
 <div class="hdr">
   <a href="index.html" class="return-btn" title="Return to Beldex Visual Guide">
-    <span class="return-arrow">←</span> Back to Visual Guide
+    <span class="return-arrow">?</span> Back to Visual Guide
   </a>
   <button class="ham-btn" id="ham-btn" onclick="toggleDrawer()" aria-label="Open step menu">
     <div class="ham-line"></div>
     <div class="ham-line"></div>
     <div class="ham-line"></div>
   </button>
-  <button class="icon-btn" onclick="openSourcesModal()" title="View official sources" style="margin-left: 5px;">📚</button>
+  <button class="icon-btn" onclick="openSourcesModal()" title="View official sources" style="margin-left: 5px;">??</button>
   <div class="hdr-center">
     <h1>Beldex (BDX) Token History</h1>
-    <p>Official sources · tap ☰ to navigate all steps</p>
+    <p>Official sources � tap ? to navigate all steps</p>
   </div>
   <div class="controls-grp">
-    <button class="wallets-hdr-btn" onclick="openVerifyModal()" title="Learn how to verify balances">🔍 How to Verify</button>
-    <button class="wallets-hdr-btn" onclick="openAllWallets()" title="View all official wallet addresses">🔑 All Wallets</button>
-    <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">☀️</button>
+    <button class="wallets-hdr-btn" onclick="openVerifyModal()" title="Learn how to verify balances">?? How to Verify</button>
+    <button class="wallets-hdr-btn" onclick="openAllWallets()" title="View all official wallet addresses">?? All Wallets</button>
+    <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode">??</button>
     <div class="num-toggle-wrap">
       <div class="num-toggle" id="num-toggle" onclick="toggleNumSys()" title="Switch number system">
         <div class="num-toggle-slider" id="toggle-slider"></div>
-        <div class="num-toggle-opt" id="opt-intl">$ USD 🇺🇸</div>
-        <div class="num-toggle-opt" id="opt-indian">₹ INR 🇮🇳</div>
+        <div class="num-toggle-opt" id="opt-intl">$ USD ????</div>
+        <div class="num-toggle-opt" id="opt-indian">? INR ????</div>
       </div>
     </div>
   </div>
@@ -344,7 +344,7 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   </div>
   <div class="step-title-wrap">
     <span class="step-bar-count" id="step-title-short"></span>
-    <button class="share-btn" id="share-link-btn" onclick="copyStepLink()" title="Copy link to this specific step">🔗 Share</button>
+    <button class="share-btn" id="share-link-btn" onclick="copyStepLink()" title="Copy link to this specific step">?? Share</button>
   </div>
 </div>
 
@@ -354,8 +354,8 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
   </div>
   <div class="col-right">
     <div class="nav">
-      <button class="nav-btn prev-btn" id="btn-prev" onclick="go(-1)">← Previous</button>
-      <button class="nav-btn" id="btn-next" onclick="go(1)">Next →</button>
+      <button class="nav-btn prev-btn" id="btn-prev" onclick="go(-1)">? Previous</button>
+      <button class="nav-btn" id="btn-next" onclick="go(1)">Next ?</button>
     </div>
     <div id="wc" class="card"></div>
     <div id="cc" class="card"></div>
@@ -366,269 +366,269 @@ body { background: var(--bg-main); color: var(--text-main); font-family: 'Segoe 
 <script>
 const steps = [
   {
-    pill:"2018", title:"Fair Launch 🌱", color:"#f0a500", bg:"#160d00",
-    badge:"PoW Launch · March 2018",
+    pill:"2018", title:"Fair Launch ??", color:"#f0a500", bg:"#160d00",
+    badge:"PoW Launch � March 2018",
     total:"~2.4 Billion BDX", totalShort:"~2.4B BDX", circN:1560000000, totalN:2400000000, circ:"~1.56 Billion BDX (65%+)", circPct:65,
     blog:"https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b", blogDate:"Original Whitepaper & Launch Docs",
-    analogy:"Think of BDX like a community pizza 🍕 — when Beldex launched in 2018, more than 65 slices out of 100 were handed straight to buyers through public and private sales. The remaining slices were locked and slowly released over 3 years (Aug 2018 → Aug 2021) to fund the team, listings, and marketing.",
+    analogy:"Think of BDX like a community pizza ?? - when Beldex launched in 2018, more than 65 slices out of 100 were handed straight to buyers through public and private sales. The remaining slices were locked and slowly released over 3 years (Aug 2018 ? Aug 2021) to fund the team, listings, and marketing.",
     changes:[
-      {i:"🚀",t:"Beldex launched in March 2018 as a Monero fork, using Proof-of-Work (CPU mining)"},
-      {i:"🎁",t:"65%+ of all coins distributed via public & private sales at launch"},
-      {i:"⏳",t:"Remaining ~35% vested linearly over 3 years (Aug 2018 → Aug 2021) for airdrops, marketing, exchange listings & team"},
-      {i:"⛏️",t:"Anyone could mine BDX with a regular CPU — no special hardware needed"},
+      {i:"??",t:"Beldex launched in March 2018 as a Monero fork, using Proof-of-Work (CPU mining)"},
+      {i:"??",t:"65%+ of all coins distributed via public & private sales at launch"},
+      {i:"?",t:"Remaining ~35% vested linearly over 3 years (Aug 2018 ? Aug 2021) for airdrops, marketing, exchange listings & team"},
+      {i:"??",t:"Anyone could mine BDX with a regular CPU - no special hardware needed"},
     ],
     wallets:[
       {n:"Distributed to buyers (65%)",     p:65, c:"#f0a500"},
-      {n:"Team reserve — 3yr vesting (35%)",p:35, c:"#152a3a"},
+      {n:"Team reserve - 3yr vesting (35%)",p:35, c:"#152a3a"},
     ]
   },
   {
-    pill:"Dec 2021", title:"The Big Mint ⚡", color:"#9b5de5", bg:"#0d0420",
-    badge:"Bucephalus POS Hardfork · Dec 10 2021",
+    pill:"Dec 2021", title:"The Big Mint ?", color:"#9b5de5", bg:"#0d0420",
+    badge:"Bucephalus POS Hardfork � Dec 10 2021",
     total:"9,900,000,000 BDX", circN:2970000000, totalN:9900000000, circ:"2,970,000,000 BDX (30%)", circPct:30,
-    blog:"https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b", blogDate:"Jan 2022 · Medium",
-    analogy:"Imagine a startup raised a huge funding round and issued new shares. Beldex minted billions of new BDX coins — but locked almost all of them away. Only 30% are free to trade. The rest will drip out slowly over the next 3+ years to fund development, marketing, and team salaries.",
+    blog:"https://beldexcoin.medium.com/beldex-tokenomics-a9a8001c783b", blogDate:"Jan 2022 � Medium",
+    analogy:"Imagine a startup raised a huge funding round and issued new shares. Beldex minted billions of new BDX coins - but locked almost all of them away. Only 30% are free to trade. The rest will drip out slowly over the next 3+ years to fund development, marketing, and team salaries.",
     changes:[
-      {i:"📈",t:"Total supply grew from ~2.4B → 9,900,000,000 BDX (new coins minted at block height 742425)"},
-      {i:"🏗️",t:"40% (3,960,000,000 BDX) locked to build BChat, BelNet & Beldex Browser — released quarterly for 3 years"},
-      {i:"🔒",t:"Team's 6% (594,000,000 BDX) locked for exactly 2 years (until Dec 10 2023), then drips over 18 months at 33M/month"},
-      {i:"💼",t:"10% (990,000,000 BDX) set aside for Seed & VC investors"},
-      {i:"📣",t:"10% (990,000,000 BDX) set aside for marketing"},
-      {i:"⚡",t:"Switched from PoW mining to PoS staking — earn BDX by running a masternode (requires 10,000 BDX)"},
+      {i:"??",t:"Total supply grew from ~2.4B ? 9,900,000,000 BDX (new coins minted at block height 742425)"},
+      {i:"???",t:"40% (3,960,000,000 BDX) locked to build BChat, BelNet & Beldex Browser - released quarterly for 3 years"},
+      {i:"??",t:"Team's 6% (594,000,000 BDX) locked for exactly 2 years (until Dec 10 2023), then drips over 18 months at 33M/month"},
+      {i:"??",t:"10% (990,000,000 BDX) set aside for Seed & VC investors"},
+      {i:"??",t:"10% (990,000,000 BDX) set aside for marketing"},
+      {i:"?",t:"Switched from PoW mining to PoS staking - earn BDX by running a masternode (requires 10,000 BDX)"},
     ],
     wallets:[
       {n:"Circulating (30%)",        p:30, c:"#00e0be"},
       {n:"Ecosystem Dev (40%)",      p:40, c:"#9b5de5"},
       {n:"Seed & VC (10%)",          p:10, c:"#0088ff"},
       {n:"Marketing (10%)",          p:10, c:"#f0a500"},
-      {n:"Team — LOCKED (6%)",       p:6,  c:"#152a3a"},
+      {n:"Team - LOCKED (6%)",       p:6,  c:"#152a3a"},
       {n:"Exchange Liquidity (2%)",  p:2,  c:"#1a4a60"},
       {n:"Early Adopters (1%)",      p:1,  c:"#0d3040"},
       {n:"Legal (1%)",               p:1,  c:"#223a50"},
     ]
   },
   {
-    pill:"Oct 2022", title:"First 3 Quarterly Releases 🔓", color:"#00e0be", bg:"#001810",
-    badge:"Releases 1·2·3 — Q1+Q2+Q3 2022",
+    pill:"Oct 2022", title:"First 3 Quarterly Releases ??", color:"#00e0be", bg:"#001810",
+    badge:"Releases 1�2�3 - Q1+Q2+Q3 2022",
     total:"9,900,000,000 BDX", circN:4005540000, totalN:9900000000, circ:"4,005,540,000 BDX (40.4%)", circPct:40,
-    blog:"https://beldex.io/blog/beldex-tokenomics-update/", blogDate:"Oct 2022 · Official Blog",
-    blog2:"https://beldexcoin.medium.com/beldex-tokenomics-update-2d2e40c2e6e9", blog2Date:"Oct 2022 · Medium",
-    analogy:"Like a salary paid every 3 months — each quarter Beldex opens the vault a little to pay developers, marketers, and exchanges. In the first 9 months of 2022, three batches of 130.68M coins each were released from the development wallet for BChat and BelNet.",
+    blog:"https://beldex.io/blog/beldex-tokenomics-update/", blogDate:"Oct 2022 � Official Blog",
+    blog2:"https://beldexcoin.medium.com/beldex-tokenomics-update-2d2e40c2e6e9", blog2Date:"Oct 2022 � Medium",
+    analogy:"Like a salary paid every 3 months - each quarter Beldex opens the vault a little to pay developers, marketers, and exchanges. In the first 9 months of 2022, three batches of 130.68M coins each were released from the development wallet for BChat and BelNet.",
     changes:[
-      {i:"👨‍💻",t:"392,040,000 BDX released from Ecosystem wallet (3 × 130.68M) — paid for BChat & BelNet development"},
-      {i:"📣",t:"297,000,000 BDX released from Marketing wallet for advertising campaigns"},
-      {i:"🏦",t:"198,000,000 BDX released for exchange liquidity — fully released, now in circulation"},
-      {i:"🎁",t:"99,000,000 BDX released as early adopter rewards & community airdrops — fully released"},
-      {i:"⚖️",t:"49,500,000 BDX released for legal registration of Beldex Research Labs, BChat & BelNet entities"},
-      {i:"🔒",t:"Team wallet STILL FULLY LOCKED — all 594,000,000 BDX, not a single coin released yet"},
-      {i:"💼",t:"Seed & VC wallet untouched — all 990,000,000 BDX still there"},
+      {i:"?????",t:"392,040,000 BDX released from Ecosystem wallet (3 � 130.68M) - paid for BChat & BelNet development"},
+      {i:"??",t:"297,000,000 BDX released from Marketing wallet for advertising campaigns"},
+      {i:"??",t:"198,000,000 BDX released for exchange liquidity - fully released, now in circulation"},
+      {i:"??",t:"99,000,000 BDX released as early adopter rewards & community airdrops - fully released"},
+      {i:"??",t:"49,500,000 BDX released for legal registration of Beldex Research Labs, BChat & BelNet entities"},
+      {i:"??",t:"Team wallet STILL FULLY LOCKED - all 594,000,000 BDX, not a single coin released yet"},
+      {i:"??",t:"Seed & VC wallet untouched - all 990,000,000 BDX still there"},
     ],
     wallets:[
       {n:"Circulating (40.4%)",    p:40.4, c:"#00e0be"},
       {n:"Ecosystem Dev (36.1%)",  p:36.1, c:"#9b5de5"},
       {n:"Seed & VC (10%)",        p:10,   c:"#0088ff"},
       {n:"Marketing (7%)",         p:7,    c:"#f0a500"},
-      {n:"Team — LOCKED (6%)",     p:6,    c:"#152a3a"},
+      {n:"Team - LOCKED (6%)",     p:6,    c:"#152a3a"},
       {n:"Legal (0.5%)",           p:0.5,  c:"#223a50"},
     ]
   },
   {
-    pill:"Jan 2023", title:"Legal Wallet Emptied 📭", color:"#4cc9f0", bg:"#001420",
-    badge:"Release 4 · Dec 31 2022",
+    pill:"Jan 2023", title:"Legal Wallet Emptied ??", color:"#4cc9f0", bg:"#001420",
+    badge:"Release 4 � Dec 31 2022",
     total:"9,900,000,000 BDX", circN:4482720000, totalN:9900000000, circ:"4,482,720,000 BDX (45.28%)", circPct:45,
-    blog:"https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354", blogDate:"Jan 2023 · Medium",
-    analogy:"Another quarterly batch of development coins was released. The legal budget was fully used up — all legal registration and incorporation work was done. The legal wallet now holds 0 BDX. Team coins are still locked for another ~11 months.",
+    blog:"https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354", blogDate:"Jan 2023 � Medium",
+    analogy:"Another quarterly batch of development coins was released. The legal budget was fully used up - all legal registration and incorporation work was done. The legal wallet now holds 0 BDX. Team coins are still locked for another ~11 months.",
     changes:[
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet on Dec 31, 2022 (4th quarterly release)"},
-      {i:"📣",t:"297,000,000 BDX released from Marketing wallet in Q4 2022"},
-      {i:"⚖️",t:"49,500,000 BDX released from Legal wallet — Legal wallet is now completely EMPTY (0 BDX remaining)"},
-      {i:"🔒",t:"Team wallet still FULLY LOCKED — 594,000,000 BDX, approximately 11 months cliff remaining until Dec 10 2023"},
-      {i:"💼",t:"Seed & VC wallet still completely untouched — 990,000,000 BDX"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet on Dec 31, 2022 (4th quarterly release)"},
+      {i:"??",t:"297,000,000 BDX released from Marketing wallet in Q4 2022"},
+      {i:"??",t:"49,500,000 BDX released from Legal wallet - Legal wallet is now completely EMPTY (0 BDX remaining)"},
+      {i:"??",t:"Team wallet still FULLY LOCKED - 594,000,000 BDX, approximately 11 months cliff remaining until Dec 10 2023"},
+      {i:"??",t:"Seed & VC wallet still completely untouched - 990,000,000 BDX"},
     ],
     wallets:[
       {n:"Circulating (45.28%)",   p:45.28, c:"#00e0be"},
       {n:"Ecosystem Dev (34.72%)", p:34.72, c:"#9b5de5"},
       {n:"Seed & VC (10%)",        p:10,    c:"#0088ff"},
-      {n:"Team — LOCKED (6%)",     p:6,     c:"#152a3a"},
+      {n:"Team - LOCKED (6%)",     p:6,     c:"#152a3a"},
       {n:"Marketing (4%)",         p:4,     c:"#f0a500"},
     ]
   },
   {
-    pill:"Oct 2023", title:"Seed & VC Coins Used 💼", color:"#00b89a", bg:"#001510",
-    badge:"Release 7 · Sep 30 2023",
+    pill:"Oct 2023", title:"Seed & VC Coins Used ??", color:"#00b89a", bg:"#001510",
+    badge:"Release 7 � Sep 30 2023",
     total:"9,900,000,000 BDX", circN:5890500000, totalN:9900000000, circ:"5,890,500,000 BDX (59.5%)", circPct:60,
-    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-september-2023-fbad56b3d97a", blogDate:"Oct 2023 · Medium",
-    analogy:"A huge strategic investment happened in March 2023 — Beldex sold 697M BDX (worth $25M) to DWF Labs, a major global crypto market maker, from the Seed & VC wallet. This funded years of operational runway. On top of that, 75M BDX went to Block Alpha as a marketing partnership. Together, that's why the Seed & VC wallet collapsed from 10% (990M) all the way down to just 2.16% (214.5M). The team vault is still locked — just ~3 months left before it opens.",
+    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-september-2023-fbad56b3d97a", blogDate:"Oct 2023 � Medium",
+    analogy:"A huge strategic investment happened in March 2023 - Beldex sold 697M BDX (worth $25M) to DWF Labs, a major global crypto market maker, from the Seed & VC wallet. This funded years of operational runway. On top of that, 75M BDX went to Block Alpha as a marketing partnership. Together, that's why the Seed & VC wallet collapsed from 10% (990M) all the way down to just 2.16% (214.5M). The team vault is still locked - just ~3 months left before it opens.",
     changes:[
-      {i:"🏦",t:"697,000,000 BDX (7% of total supply, worth $25M) sold to DWF Labs — global crypto market maker. Coins vest over 2 years from March 2023. This funds years of R&D, operations & marketing runway"},
-      {i:"🤝",t:"75,000,000 BDX released from Seed & VC wallet to Block Alpha — marketing & investment platform partnership (3M USDT equivalent)"},
-      {i:"📉",t:"Seed & VC wallet: 990,000,000 → 214,500,000 BDX (DWF 697M + Block Alpha 75M = 772M out, leaving 2.16%)"},
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet on Sep 30, 2023 — funds R&D"},
-      {i:"📣",t:"120,000,000 BDX released from Marketing wallet — used for Tier-1 exchange listing campaigns"},
-      {i:"🔒",t:"Team wallet STILL LOCKED — all 594,000,000 BDX, approximately 3 months cliff remaining"},
-      {i:"⏳",t:"Team unlock date approaching: Dec 10 2023 — then 33M BDX released every month for 18 months"},
+      {i:"??",t:"697,000,000 BDX (7% of total supply, worth $25M) sold to DWF Labs - global crypto market maker. Coins vest over 2 years from March 2023. This funds years of R&D, operations & marketing runway"},
+      {i:"??",t:"75,000,000 BDX released from Seed & VC wallet to Block Alpha - marketing & investment platform partnership (3M USDT equivalent)"},
+      {i:"??",t:"Seed & VC wallet: 990,000,000 ? 214,500,000 BDX (DWF 697M + Block Alpha 75M = 772M out, leaving 2.16%)"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet on Sep 30, 2023 - funds R&D"},
+      {i:"??",t:"120,000,000 BDX released from Marketing wallet - used for Tier-1 exchange listing campaigns"},
+      {i:"??",t:"Team wallet STILL LOCKED - all 594,000,000 BDX, approximately 3 months cliff remaining"},
+      {i:"?",t:"Team unlock date approaching: Dec 10 2023 - then 33M BDX released every month for 18 months"},
     ],
     wallets:[
       {n:"Circulating (59.5%)",    p:59.5,  c:"#00e0be"},
       {n:"Ecosystem Dev (30.76%)", p:30.76, c:"#9b5de5"},
-      {n:"Team — LOCKED (6%)",     p:6,     c:"#152a3a"},
+      {n:"Team - LOCKED (6%)",     p:6,     c:"#152a3a"},
       {n:"Seed & VC (2.16%)",      p:2.16,  c:"#0088ff"},
       {n:"Marketing (1.58%)",      p:1.58,  c:"#f0a500"},
     ]
   },
   {
-    pill:"Jan 2024", title:"Team Coins Finally Unlock! 🔑", color:"#0088ff", bg:"#000d1a",
-    badge:"Release 8 · Dec 31 2023",
+    pill:"Jan 2024", title:"Team Coins Finally Unlock! ??", color:"#0088ff", bg:"#000d1a",
+    badge:"Release 8 � Dec 31 2023",
     total:"9,900,000,000 BDX", circN:6174630000, totalN:9900000000, circ:"6,174,630,000 BDX (62.37%)", circPct:62,
-    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-december-2023-e62cc314564e", blogDate:"Jan 2024 · Medium",
-    analogy:"After exactly 2 years of being locked, the team's 594M BDX started releasing on Dec 10, 2023. They don't get everything at once — 33 million comes out every single month for 18 months (ending May 2025). It's like an employee's shares finally starting to vest after a long wait.",
+    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-december-2023-e62cc314564e", blogDate:"Jan 2024 � Medium",
+    analogy:"After exactly 2 years of being locked, the team's 594M BDX started releasing on Dec 10, 2023. They don't get everything at once - 33 million comes out every single month for 18 months (ending May 2025). It's like an employee's shares finally starting to vest after a long wait.",
     changes:[
-      {i:"🎉",t:"Team 2-year cliff ended Dec 10, 2023 — 18-month linear vesting began immediately at 33M BDX/month"},
-      {i:"💸",t:"33,000,000 BDX released to team in December 2023 — the very first team payment ever"},
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet — funds EVM research & Beldex Browser development"},
-      {i:"📣",t:"120,000,000 BDX released from Marketing wallet — for Tier-1 exchange promotional contests"},
-      {i:"💼",t:"Seed & VC wallet unchanged — 214,500,000 BDX (2.16%) remaining"},
-      {i:"🌐",t:"Bern Hardfork announced for January 2024 — introduces Beldex Name Service (BNS) for .bdx private domains"},
+      {i:"??",t:"Team 2-year cliff ended Dec 10, 2023 - 18-month linear vesting began immediately at 33M BDX/month"},
+      {i:"??",t:"33,000,000 BDX released to team in December 2023 - the very first team payment ever"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet - funds EVM research & Beldex Browser development"},
+      {i:"??",t:"120,000,000 BDX released from Marketing wallet - for Tier-1 exchange promotional contests"},
+      {i:"??",t:"Seed & VC wallet unchanged - 214,500,000 BDX (2.16%) remaining"},
+      {i:"??",t:"Bern Hardfork announced for January 2024 - introduces Beldex Name Service (BNS) for .bdx private domains"},
     ],
     wallets:[
       {n:"Circulating (62.37%)",   p:62.37, c:"#00e0be"},
       {n:"Ecosystem Dev (29.44%)", p:29.44, c:"#9b5de5"},
-      {n:"Team — Vesting (5.66%)", p:5.66,  c:"#ff4fa0"},
+      {n:"Team - Vesting (5.66%)", p:5.66,  c:"#ff4fa0"},
       {n:"Seed & VC (2.16%)",      p:2.16,  c:"#0088ff"},
       {n:"Marketing (0.37%)",      p:0.37,  c:"#f0a500"},
     ]
   },
   {
-    pill:"Apr 2024", title:"Q1 2024 Release 🔄", color:"#20c0ff", bg:"#001520",
-    badge:"Release 9 · Mar 31 2024",
+    pill:"Apr 2024", title:"Q1 2024 Release ??", color:"#20c0ff", bg:"#001520",
+    badge:"Release 9 � Mar 31 2024",
     total:"9,900,000,000 BDX", circN:6422620000, totalN:9900000000, circ:"6,422,620,000 BDX (64.89%)", circPct:65,
-    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-march-2024-989f2145f2b1", blogDate:"Apr 2024 · Medium",
-    analogy:"Another steady quarter — the marketing wallet is nearly empty (only 17M left), and the team keeps receiving 33M BDX every month. Development funds continue flowing to the EVM integration project and Beldex Browser. This is the 9th quarterly release since the POS hardfork.",
+    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-march-2024-989f2145f2b1", blogDate:"Apr 2024 � Medium",
+    analogy:"Another steady quarter - the marketing wallet is nearly empty (only 17M left), and the team keeps receiving 33M BDX every month. Development funds continue flowing to the EVM integration project and Beldex Browser. This is the 9th quarterly release since the POS hardfork.",
     changes:[
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet on Mar 31, 2024 — funds EVM integration, Beldex Browser & ecosystem development"},
-      {i:"💸",t:"99,000,000 BDX released to team (33M/month × 3 months: Jan, Feb, Mar 2024)"},
-      {i:"📣",t:"20,000,000 BDX released from Marketing wallet — used for Bern Hardfork & BNS promotional campaigns"},
-      {i:"📭",t:"Marketing wallet almost empty — only 17,000,000 BDX remaining (was 37M at end of Q4 2023)"},
-      {i:"💼",t:"Seed & VC wallet unchanged — 214,500,000 BDX (2.16%), no release this quarter"},
-      {i:"🌐",t:"Bern Hardfork successfully implemented — Beldex Name Service (BNS) live for .bdx private domains"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet on Mar 31, 2024 - funds EVM integration, Beldex Browser & ecosystem development"},
+      {i:"??",t:"99,000,000 BDX released to team (33M/month � 3 months: Jan, Feb, Mar 2024)"},
+      {i:"??",t:"20,000,000 BDX released from Marketing wallet - used for Bern Hardfork & BNS promotional campaigns"},
+      {i:"??",t:"Marketing wallet almost empty - only 17,000,000 BDX remaining (was 37M at end of Q4 2023)"},
+      {i:"??",t:"Seed & VC wallet unchanged - 214,500,000 BDX (2.16%), no release this quarter"},
+      {i:"??",t:"Bern Hardfork successfully implemented - Beldex Name Service (BNS) live for .bdx private domains"},
     ],
     wallets:[
       {n:"Circulating (64.89%)",   p:64.89, c:"#00e0be"},
       {n:"Ecosystem Dev (28.12%)", p:28.12, c:"#9b5de5"},
-      {n:"Team — Vesting (4.66%)", p:4.66,  c:"#ff4fa0"},
+      {n:"Team - Vesting (4.66%)", p:4.66,  c:"#ff4fa0"},
       {n:"Seed & VC (2.16%)",      p:2.16,  c:"#0088ff"},
       {n:"Marketing (0.17%)",      p:0.17,  c:"#f0a500"},
     ]
   },
   {
-    pill:"Nov 2024", title:"Marketing Wallet Emptied 📭", color:"#e06030", bg:"#1a0800",
-    badge:"Release 11 · Sep 30 2024",
+    pill:"Nov 2024", title:"Marketing Wallet Emptied ??", color:"#e06030", bg:"#1a0800",
+    badge:"Release 11 � Sep 30 2024",
     total:"9,900,000,000 BDX", circN:6900300000, totalN:9900000000, circ:"6,900,300,000 BDX (69.7%)", circPct:70,
-    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-update-for-q3-september-2024-3dc1ba38c999", blogDate:"Nov 2024 · Medium",
-    analogy:"The Marketing wallet just ran completely dry — the final 17M BDX was spent. The team keeps receiving 33M BDX every month in the final stretch of their 18-month vesting. Development coins are now directed toward AI research inside Beldex apps.",
+    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-update-for-q3-september-2024-3dc1ba38c999", blogDate:"Nov 2024 � Medium",
+    analogy:"The Marketing wallet just ran completely dry - the final 17M BDX was spent. The team keeps receiving 33M BDX every month in the final stretch of their 18-month vesting. Development coins are now directed toward AI research inside Beldex apps.",
     changes:[
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet — funds EVM integration & Beldex Browser research"},
-      {i:"💸",t:"99,000,000 BDX released to team (33M/month × 3 months: Jul, Aug, Sep 2024)"},
-      {i:"📭",t:"17,000,000 BDX released from Marketing wallet — wallet is now COMPLETELY EMPTY (0 BDX)"},
-      {i:"💼",t:"Seed & VC wallet unchanged — 214,500,000 BDX (2.16%) remaining, no release this quarter"},
-      {i:"🤖",t:"Ecosystem funds now directed to BeldexAI research: Federated Learning in BChat, Smart Routing in BelNet"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet - funds EVM integration & Beldex Browser research"},
+      {i:"??",t:"99,000,000 BDX released to team (33M/month � 3 months: Jul, Aug, Sep 2024)"},
+      {i:"??",t:"17,000,000 BDX released from Marketing wallet - wallet is now COMPLETELY EMPTY (0 BDX)"},
+      {i:"??",t:"Seed & VC wallet unchanged - 214,500,000 BDX (2.16%) remaining, no release this quarter"},
+      {i:"??",t:"Ecosystem funds now directed to BeldexAI research: Federated Learning in BChat, Smart Routing in BelNet"},
     ],
     wallets:[
       {n:"Circulating (69.7%)",    p:69.7,  c:"#00e0be"},
       {n:"Ecosystem Dev (25.48%)", p:25.48, c:"#9b5de5"},
-      {n:"Team — Vesting (2.66%)", p:2.66,  c:"#ff4fa0"},
+      {n:"Team - Vesting (2.66%)", p:2.66,  c:"#ff4fa0"},
       {n:"Seed & VC (2.16%)",      p:2.16,  c:"#0088ff"},
-      {n:"Marketing — EMPTY (0%)", p:0,     c:"#152a3a"},
+      {n:"Marketing - EMPTY (0%)", p:0,     c:"#152a3a"},
     ]
   },
   {
-    pill:"Dec 2024", title:"AI Era & New Listings 🤖", color:"#4cc9f0", bg:"#001018",
-    badge:"Release 12 · Dec 31 2024",
+    pill:"Dec 2024", title:"AI Era & New Listings ??", color:"#4cc9f0", bg:"#001018",
+    badge:"Release 12 � Dec 31 2024",
     total:"9,900,000,000 BDX", circN:7129980000, totalN:9900000000, circ:"7,129,980,000 BDX (72.02%)", circPct:72,
-    blog:"https://beldex.io/blog/bdx-scheduled-release-december-2024/", blogDate:"Dec 2024 · Official Blog",
-    analogy:"72% of all BDX is now freely circulating. Team wallet has only 165M BDX left — 5 final monthly releases (Jan–May 2025) until the wallet hits zero forever. 2024 was a landmark year: BNS launched, Tangem hardware wallet support added, and BDX listed on Kraken, CoinEx & BloFin.",
+    blog:"https://beldex.io/blog/bdx-scheduled-release-december-2024/", blogDate:"Dec 2024 � Official Blog",
+    analogy:"72% of all BDX is now freely circulating. Team wallet has only 165M BDX left - 5 final monthly releases (Jan�May 2025) until the wallet hits zero forever. 2024 was a landmark year: BNS launched, Tangem hardware wallet support added, and BDX listed on Kraken, CoinEx & BloFin.",
     changes:[
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet on Dec 31, 2024 — continues BeldexAI research"},
-      {i:"💸",t:"99,000,000 BDX released to team (33M/month × 3 months: Oct, Nov, Dec 2024)"},
-      {i:"🏦",t:"Team wallet now has only 165,000,000 BDX left — final 5 monthly releases (Jan–May 2025) then done"},
-      {i:"💼",t:"Seed & VC wallet unchanged — 214,500,000 BDX (2.16%), no release this quarter"},
-      {i:"🌐",t:"BNS live in 2024: own a .bdx name like yourname.bdx for private decentralized identity"},
-      {i:"🔒",t:"Tangem hardware wallet now supports BDX — store coins safely offline"},
-      {i:"📊",t:"BDX listed on Kraken, CoinEx & BloFin exchanges during 2024"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet on Dec 31, 2024 - continues BeldexAI research"},
+      {i:"??",t:"99,000,000 BDX released to team (33M/month � 3 months: Oct, Nov, Dec 2024)"},
+      {i:"??",t:"Team wallet now has only 165,000,000 BDX left - final 5 monthly releases (Jan�May 2025) then done"},
+      {i:"??",t:"Seed & VC wallet unchanged - 214,500,000 BDX (2.16%), no release this quarter"},
+      {i:"??",t:"BNS live in 2024: own a .bdx name like yourname.bdx for private decentralized identity"},
+      {i:"??",t:"Tangem hardware wallet now supports BDX - store coins safely offline"},
+      {i:"??",t:"BDX listed on Kraken, CoinEx & BloFin exchanges during 2024"},
     ],
     wallets:[
       {n:"Circulating (72.02%)",   p:72.02, c:"#00e0be"},
       {n:"Ecosystem Dev (24.16%)", p:24.16, c:"#9b5de5"},
       {n:"Seed & VC (2.16%)",      p:2.16,  c:"#0088ff"},
-      {n:"Team — Vesting (1.66%)", p:1.66,  c:"#ff4fa0"},
+      {n:"Team - Vesting (1.66%)", p:1.66,  c:"#ff4fa0"},
     ]
   },
   {
-    pill:"Mar 2025", title:"Team Almost Done 🏁", color:"#a0c040", bg:"#0a1200",
-    badge:"Release 13 · Mar 31 2025",
+    pill:"Mar 2025", title:"Team Almost Done ??", color:"#a0c040", bg:"#0a1200",
+    badge:"Release 13 � Mar 31 2025",
     total:"9,900,000,000 BDX", circN:7359660000, totalN:9900000000, circ:"7,359,660,000 BDX (74.34%)", circPct:74,
-    blog:"https://beldex.io/blog/bdx-scheduled-release-march-31-2025/", blogDate:"Mar 2025 · Official Blog",
-    analogy:"The team wallet is nearly empty — only 66M BDX left after this quarter's 99M release. Two more monthly payments of 33M will happen in April and May 2025, then the team wallet reaches zero forever. The Ecosystem development wallet keeps dripping quarterly.",
+    blog:"https://beldex.io/blog/bdx-scheduled-release-march-31-2025/", blogDate:"Mar 2025 � Official Blog",
+    analogy:"The team wallet is nearly empty - only 66M BDX left after this quarter's 99M release. Two more monthly payments of 33M will happen in April and May 2025, then the team wallet reaches zero forever. The Ecosystem development wallet keeps dripping quarterly.",
     changes:[
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet on Mar 31, 2025 — funds BeldexAI R&D"},
-      {i:"💸",t:"99,000,000 BDX released to team (33M/month × 3 months: Jan, Feb, Mar 2025)"},
-      {i:"🏁",t:"Team wallet now has only 66,000,000 BDX left — just 2 more monthly releases (Apr + May 2025) to go"},
-      {i:"💼",t:"Seed & VC wallet unchanged — 214,500,000 BDX (2.16%), no release this quarter"},
-      {i:"📦",t:"Total BDX released in Q2 2025: 196,680,000 BDX (130.68M Ecosystem + 66M Team)"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet on Mar 31, 2025 - funds BeldexAI R&D"},
+      {i:"??",t:"99,000,000 BDX released to team (33M/month � 3 months: Jan, Feb, Mar 2025)"},
+      {i:"??",t:"Team wallet now has only 66,000,000 BDX left - just 2 more monthly releases (Apr + May 2025) to go"},
+      {i:"??",t:"Seed & VC wallet unchanged - 214,500,000 BDX (2.16%), no release this quarter"},
+      {i:"??",t:"Total BDX released in Q2 2025: 196,680,000 BDX (130.68M Ecosystem + 66M Team)"},
     ],
     wallets:[
       {n:"Circulating (74.34%)",      p:74.34, c:"#00e0be"},
       {n:"Ecosystem Dev (22.84%)",    p:22.84, c:"#9b5de5"},
       {n:"Seed & VC (2.16%)",         p:2.16,  c:"#0088ff"},
-      {n:"Team — Almost done (0.66%)",p:0.66,  c:"#ff4fa0"},
+      {n:"Team - Almost done (0.66%)",p:0.66,  c:"#ff4fa0"},
     ]
   },
   {
-    pill:"Jun 2025", title:"Team Wallet Reaches Zero 🎯", color:"#60e080", bg:"#001808",
-    badge:"Release 14 · Jun 30 2025",
+    pill:"Jun 2025", title:"Team Wallet Reaches Zero ??", color:"#60e080", bg:"#001808",
+    badge:"Release 14 � Jun 30 2025",
     total:"9,900,000,000 BDX", circN:7555680000, totalN:9900000000, circ:"7,555,680,000 BDX (76.32%)", circPct:76,
-    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-q2-2025-d2c314bacc00", blogDate:"Aug 2025 · Medium",
-    analogy:"The team wallet has hit exactly zero. In April and May 2025, the last 66M BDX (33M each month) were released to the team — completing the full 18-month vesting. Every single team coin has now been distributed. Only the Ecosystem wallet keeps releasing quarterly.",
+    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-q2-2025-d2c314bacc00", blogDate:"Aug 2025 � Medium",
+    analogy:"The team wallet has hit exactly zero. In April and May 2025, the last 66M BDX (33M each month) were released to the team - completing the full 18-month vesting. Every single team coin has now been distributed. Only the Ecosystem wallet keeps releasing quarterly.",
     changes:[
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet on Jun 30, 2025 — funds Federated Learning, VRFs, Bulletproof++, FHE research"},
-      {i:"🎯",t:"66,000,000 BDX released to team in April + May 2025 (33M × 2 months) — Team wallet is now PERMANENTLY EMPTY (0 BDX)"},
-      {i:"✅",t:"18-month team vesting fully completed — all 594,000,000 BDX distributed since Dec 2023"},
-      {i:"💼",t:"Seed & VC wallet unchanged — 214,500,000 BDX (2.16%), no release this quarter"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet on Jun 30, 2025 - funds Federated Learning, VRFs, Bulletproof++, FHE research"},
+      {i:"??",t:"66,000,000 BDX released to team in April + May 2025 (33M � 2 months) - Team wallet is now PERMANENTLY EMPTY (0 BDX)"},
+      {i:"?",t:"18-month team vesting fully completed - all 594,000,000 BDX distributed since Dec 2023"},
+      {i:"??",t:"Seed & VC wallet unchanged - 214,500,000 BDX (2.16%), no release this quarter"},
     ],
     wallets:[
       {n:"Circulating (76.32%)",    p:76.32, c:"#00e0be"},
       {n:"Ecosystem Dev (21.52%)",  p:21.52, c:"#9b5de5"},
       {n:"Seed & VC (2.16%)",       p:2.16,  c:"#0088ff"},
-      {n:"Team — EMPTY (0%)",       p:0,     c:"#152a3a"},
+      {n:"Team - EMPTY (0%)",       p:0,     c:"#152a3a"},
     ]
   },
   {
-    pill:"Oct 2025", title:"All Vesting Complete ✅", color:"#ff4fa0", bg:"#180010",
-    badge:"Release 15 · Sep 30 2025",
+    pill:"Oct 2025", title:"All Vesting Complete ?", color:"#ff4fa0", bg:"#180010",
+    badge:"Release 15 � Sep 30 2025",
     total:"9,900,000,000 BDX", circN:7686360000, totalN:9900000000, circ:"7,686,360,000 BDX (77.64%)", circPct:78,
-    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-september-30-2025-d56467691f32", blogDate:"Oct 2025 · Medium",
-    analogy:"All the locked vesting wallets are now empty. The team's 18-month vesting finished in May 2025 and the Q2 2025 report confirmed it. By September 2025, 77.64% of all BDX is freely circulating — the highest percentage ever. Only the Ecosystem development wallet keeps releasing quarterly until it's exhausted.",
+    blog:"https://beldexcoin.medium.com/bdx-scheduled-release-september-30-2025-d56467691f32", blogDate:"Oct 2025 � Medium",
+    analogy:"All the locked vesting wallets are now empty. The team's 18-month vesting finished in May 2025 and the Q2 2025 report confirmed it. By September 2025, 77.64% of all BDX is freely circulating - the highest percentage ever. Only the Ecosystem development wallet keeps releasing quarterly until it's exhausted.",
     changes:[
-      {i:"✅",t:"Team wallet confirmed EMPTY since May 2025 — all 594,000,000 BDX fully distributed over 18 months"},
-      {i:"👨‍💻",t:"130,680,000 BDX released from Ecosystem wallet (20.20% = 1,999,800,000 BDX remaining) — funds AI research: Federated Learning, Smart Routing, VRFs, Bulletproof++"},
-      {i:"💼",t:"Seed & VC wallet still 214,500,000 BDX — no release this quarter"},
-      {i:"🏆",t:"Grayscale Research named BDX a Top 20 performer in Q4 2025 for volatility-adjusted returns"},
-      {i:"🌉",t:"LayerZero integration (Dec 2025): BDX now moves across Ethereum, Solana, BNB Chain, Base & Arbitrum with zero slippage"},
-      {i:"🛒",t:"BTCPayServer integration: merchants can now accept BDX payments in real shops"},
-      {i:"📊",t:"New exchange listings in 2025-2026: BloFin (Jan 2026), Pionex, Coins.ph & others"},
+      {i:"?",t:"Team wallet confirmed EMPTY since May 2025 - all 594,000,000 BDX fully distributed over 18 months"},
+      {i:"?????",t:"130,680,000 BDX released from Ecosystem wallet (20.20% = 1,999,800,000 BDX remaining) - funds AI research: Federated Learning, Smart Routing, VRFs, Bulletproof++"},
+      {i:"??",t:"Seed & VC wallet still 214,500,000 BDX - no release this quarter"},
+      {i:"??",t:"Grayscale Research named BDX a Top 20 performer in Q4 2025 for volatility-adjusted returns"},
+      {i:"??",t:"LayerZero integration (Dec 2025): BDX now moves across Ethereum, Solana, BNB Chain, Base & Arbitrum with zero slippage"},
+      {i:"??",t:"BTCPayServer integration: merchants can now accept BDX payments in real shops"},
+      {i:"??",t:"New exchange listings in 2025-2026: BloFin (Jan 2026), Pionex, Coins.ph & others"},
     ],
     wallets:[
       {n:"Circulating (77.64%)",     p:77.64, c:"#00e0be"},
       {n:"Ecosystem Dev (20.20%)",   p:20.20, c:"#9b5de5"},
       {n:"Seed & VC (2.16%)",        p:2.16,  c:"#0088ff"},
-      {n:"Team — FULLY DONE (0%)",   p:0,     c:"#152a3a"},
+      {n:"Team - FULLY DONE (0%)",   p:0,     c:"#152a3a"},
     ]
   },
 ];
 
 let active = 0;
 
-// ── URL Deep Linking & UX ──
+// -- URL Deep Linking & UX --
 if (window.location.hash.startsWith('#step=')) {
   const stepNum = parseInt(window.location.hash.split('=')[1]);
   if (!isNaN(stepNum) && stepNum >= 1 && stepNum <= steps.length) {
@@ -662,30 +662,30 @@ document.addEventListener('touchend', e => {
   touchStartY = null;
 });
 
-// ── Link Sharing ──
+// -- Link Sharing --
 function copyStepLink() {
   const url = window.location.href.split('#')[0] + '#step=' + (active + 1);
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('share-link-btn');
     const oldHtml = btn.innerHTML;
-    btn.innerHTML = '✓ Copied!';
+    btn.innerHTML = '? Copied!';
     btn.classList.add('copied');
     setTimeout(() => { 
-      btn.innerHTML = '🔗 Share'; 
+      btn.innerHTML = '?? Share'; 
       btn.classList.remove('copied'); 
     }, 1500);
   });
 }
 
-// ── Theme Toggle (Light/Dark Mode) ──
+// -- Theme Toggle (Light/Dark Mode) --
 let isLight = false;
 function toggleTheme() {
   isLight = !isLight;
   document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
-  document.getElementById('theme-toggle').textContent = isLight ? '🌙' : '☀️';
+  document.getElementById('theme-toggle').textContent = isLight ? '??' : '??';
 }
 
-// ── Number system ─────────────────────────────────────────────────────────────
+// -- Number system -------------------------------------------------------------
 let numSys = 'intl'; // 'intl' | 'indian'
 
 function fmtBDX(n, brief=false) {
@@ -774,7 +774,7 @@ function toggleNumSys() {
   render();
 }
 
-// ── Drawer ────────────────────────────────────────────────────────────────────
+// -- Drawer --------------------------------------------------------------------
 function toggleDrawer() {
   const open = document.getElementById('drawer').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('open', open);
@@ -793,7 +793,7 @@ function renderDrawer() {
          onclick="setActive(${i});closeDrawer()">
       <div class="drawer-dot" style="background:${st.color};opacity:${i===active?1:.5}"></div>
       <div class="drawer-info">
-        <div class="drawer-pill">${st.pill} · ${st.badge.split('·')[0].trim()}</div>
+        <div class="drawer-pill">${st.pill} � ${st.badge.split('�')[0].trim()}</div>
         <div class="drawer-title">${st.title}</div>
       </div>
       <span class="drawer-pct" style="color:${i===active?st.color:'#1e4050'}">${st.circPct}%</span>
@@ -825,22 +825,22 @@ function render(){
 
   let blogHtml = '';
   if(s.blog){
-    blogHtml += `<div class="slabel" style="margin-top:12px">📄 OFFICIAL SOURCE</div>
+    blogHtml += `<div class="slabel" style="margin-top:12px">?? OFFICIAL SOURCE</div>
       <a class="src-btn" href="${s.blog}" target="_blank" style="background:${s.color}18;border-color:${s.color}44;">
         <div><div class="st">Read the official announcement</div><div class="sd">${s.blogDate}</div></div>
-        <span class="arr" style="color:${s.color}">↗</span>
+        <span class="arr" style="color:${s.color}">?</span>
       </a>`;
   }
   if(s.blog2){
     blogHtml += `<a class="src-btn" href="${s.blog2}" target="_blank" style="background:rgba(255,255,255,.03);border-color:#1a3a50;">
         <div><div class="st">Also published on Medium</div><div class="sd">${s.blog2Date}</div></div>
-        <span class="arr" style="color:#3a6060">↗</span>
+        <span class="arr" style="color:#3a6060">?</span>
       </a>`;
   }
 
   // System badge
   const sysBadge = numSys === 'indian'
-    ? `<span class="sys-badge" style="background:#ff993322;color:#ff9933">₹ Indian</span>`
+    ? `<span class="sys-badge" style="background:#ff993322;color:#ff9933">? Indian</span>`
     : `<span class="sys-badge" style="background:#00e0be22;color:#00e0be">$ doller</span>`;
 
   const changesHtml = applyNumFmt(
@@ -855,7 +855,7 @@ function render(){
       <div><span class="lbl">In circulation: </span><span class="teal">${fmtCirc(s)}</span></div>
     </div>
     <div class="analogy">
-      <div class="tag">💡 SIMPLE EXPLANATION</div>
+      <div class="tag">?? SIMPLE EXPLANATION</div>
       <p>${s.analogy}</p>
     </div>
     <div class="slabel">WHAT CHANGED THIS PERIOD</div>
@@ -877,7 +877,7 @@ function render(){
       <span class="lv" style="color:${dk?'#445':w.c};${fade?'opacity:.35':''}">${w.p}%</span>
     </div>`;
   }).join('');
-  wc.innerHTML = `<div class="ct">🗂 Where are all the BDX right now?</div><div class="cs">Each colour = a different locked wallet with a specific purpose</div><div class="bar-stack">${segs}</div><div class="legend">${lgnd}</div>`;
+  wc.innerHTML = `<div class="ct">?? Where are all the BDX right now?</div><div class="cs">Each colour = a different locked wallet with a specific purpose</div><div class="bar-stack">${segs}</div><div class="legend">${lgnd}</div>`;
 
   // Circulation card
   const cc = document.getElementById('cc');
@@ -887,14 +887,14 @@ function render(){
     return `<div class="mc" onclick="setActive(${i})"><div class="mb" style="height:${h}px;background:${bg}"></div><div class="my" style="color:${i===active?st.color:'#162840'}">${st.pill}</div></div>`;
   }).join('');
   cc.innerHTML = `
-    <div class="ct">📈 What % is freely circulating?</div>
+    <div class="ct">?? What % is freely circulating?</div>
     <div class="circ-row" style="margin-top:8px">
       <div class="big-pct" style="color:${s.color}">${s.circPct}%</div>
       <div class="circ-sub">of all ${fmtTotalShort(s)}<br>coins are free<br>to buy / sell / trade</div>
     </div>
     <div class="prog-track"><div class="prog-fill" style="width:${s.circPct}%;background:linear-gradient(90deg,#00e0be,${s.color})"><span>${s.circPct}%</span></div></div>
     <div class="mini-bars">${cols}</div>
-    <div class="mini-hint">↑ tap any bar to jump to that period</div>`;
+    <div class="mini-hint">? tap any bar to jump to that period</div>`;
 
   // Nav
   const prev = document.getElementById('btn-prev');
@@ -916,7 +916,7 @@ function setActive(i){
 function go(d){const n=active+d;if(n>=0&&n<steps.length)setActive(n);}
 let activeTab = 0;
 
-// ── Global wallet address registry ──────────────────────────────────────────
+// -- Global wallet address registry ------------------------------------------
 const WDEFS = {
   eco:  { name:"Ecosystem Development Wallet", short:"Ecosystem Dev",
           addr:"bxdxQfsG99ZDH8HdNA2Tih4XEsfs2go8n9De7L2wyw5rPxRvgxSqRXRdGaP5bJLbEy84yWtWdUFmyC3z4VFxYYMY1wwGoYHtH",
@@ -940,24 +940,24 @@ const WDEFS = {
           color:"#e05050" },
 };
 
-// ── Per-step balances [eco, svc, team, mkt] ─────────────────────────────────
+// -- Per-step balances [eco, svc, team, mkt] ---------------------------------
 // null = no public addresses available for this era
 const WBAL = [
-  null,                                                        // 0 — 2018 PoW
-  [3960000000, 990000000,  594000000, 990000000],             // 1 — Dec 2021
-  [3567960000, 990000000,  594000000, 693000000],             // 2 — Oct 2022
-  [3437280000, 990000000,  594000000, 396000000],             // 3 — Jan 2023
-  [3045240000, 214500000,  594000000, 156420000],             // 4 — Oct 2023
-  [2914560000, 214500000,  561000000,  37000000],             // 5 — Jan 2024
-  [2783880000, 214500000,  462000000,  17000000],             // 6 — Apr 2024 (NEW)
-  [2522520000, 214500000,  264000000,          0],            // 7 — Nov 2024
-  [2391840000, 214500000,  165000000,          0],            // 8 — Dec 2024
-  [2261160000, 214500000,   66000000,          0],            // 9 — Mar 2025
-  [2130480000, 214500000,           0,         0],            // 10 — Jun 2025
-  [1999800000, 214500000,           0,         0],            // 11 — Oct 2025
+  null,                                                        // 0 - 2018 PoW
+  [3960000000, 990000000,  594000000, 990000000],             // 1 - Dec 2021
+  [3567960000, 990000000,  594000000, 693000000],             // 2 - Oct 2022
+  [3437280000, 990000000,  594000000, 396000000],             // 3 - Jan 2023
+  [3045240000, 214500000,  594000000, 156420000],             // 4 - Oct 2023
+  [2914560000, 214500000,  561000000,  37000000],             // 5 - Jan 2024
+  [2783880000, 214500000,  462000000,  17000000],             // 6 - Apr 2024 (NEW)
+  [2522520000, 214500000,  264000000,          0],            // 7 - Nov 2024
+  [2391840000, 214500000,  165000000,          0],            // 8 - Dec 2024
+  [2261160000, 214500000,   66000000,          0],            // 9 - Mar 2025
+  [2130480000, 214500000,           0,         0],            // 10 - Jun 2025
+  [1999800000, 214500000,           0,         0],            // 11 - Oct 2025
 ];
 
-// ── Pie / Donut chart ─────────────────────────────────────────────────────────
+// -- Pie / Donut chart ---------------------------------------------------------
 function polar(cx, cy, r, deg) {
   const rad = (deg - 90) * Math.PI / 180;
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
@@ -999,11 +999,11 @@ function buildDonut(wallets, totalLabel) {
     </div>`;
 }
 
-// ── Wallet addresses panel ────────────────────────────────────────────────────
+// -- Wallet addresses panel ----------------------------------------------------
 
 function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ Copied';
+    btn.textContent = '? Copied';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
   });
@@ -1014,12 +1014,12 @@ function buildWallets(idx) {
   if (!bals) return `
     <div style="padding:4px 0">
       <div style="background:#160d00;border-radius:12px;padding:14px;border:1px solid #f0a50033;margin-bottom:10px">
-        <div style="font-size: 14px;font-weight:900;color:#f0a500;margin-bottom:6px">⛏️ 2018 PoW Era — Different Wallet Structure</div>
-        <div style="font-size: 14px;color:#8a9890;line-height:1.7">In 2018, Beldex launched with a total supply of <b style="color:#fff">~2.4 Billion BDX</b>. There were no separate named lock wallets like Ecosystem, Team, or Marketing — coins were distributed directly through public &amp; private sales, with the remaining ~35% vesting linearly over 3 years.<br><br>The named designated wallets (Ecosystem, Seed &amp; VC, Team, Marketing) were only created at the <b style="color:#9b5de5">Dec 10 2021 Bucephalus POS Hardfork</b>, when the total supply was expanded to 9.9 Billion BDX and a full allocation structure was established.</div>
+        <div style="font-size: 14px;font-weight:900;color:#f0a500;margin-bottom:6px">?? 2018 PoW Era - Different Wallet Structure</div>
+        <div style="font-size: 14px;color:#8a9890;line-height:1.7">In 2018, Beldex launched with a total supply of <b style="color:#fff">~2.4 Billion BDX</b>. There were no separate named lock wallets like Ecosystem, Team, or Marketing - coins were distributed directly through public &amp; private sales, with the remaining ~35% vesting linearly over 3 years.<br><br>The named designated wallets (Ecosystem, Seed &amp; VC, Team, Marketing) were only created at the <b style="color:#9b5de5">Dec 10 2021 Bucephalus POS Hardfork</b>, when the total supply was expanded to 9.9 Billion BDX and a full allocation structure was established.</div>
       </div>
       <div style="background:#08131f;border-radius:10px;padding:11px 13px;border:1px solid #0b1f35">
-        <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">👉 TO SEE WALLET ADDRESSES</div>
-        <div style="font-size: 14px;color:#5a8880">Navigate to the <b style="color:#9b5de5">Dec 2021</b> step onwards — all four designated wallets with their addresses, view keys, and balances are available from that step forward.</div>
+        <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">?? TO SEE WALLET ADDRESSES</div>
+        <div style="font-size: 14px;color:#5a8880">Navigate to the <b style="color:#9b5de5">Dec 2021</b> step onwards - all four designated wallets with their addresses, view keys, and balances are available from that step forward.</div>
       </div>
     </div>`;
   const keys = ['eco','svc','team','mkt'];
@@ -1027,14 +1027,14 @@ function buildWallets(idx) {
     const def = WDEFS[k];
     const bal = bals[i];
     const empty = bal === 0;
-    const balHtml = `<span class="wal-bal" style="background:${def.color}20;color:${empty?'#3a6a60':def.color}">${empty ? '⭕ EMPTY — 0 BDX' : fmtBDX(bal)}</span>`;
+    const balHtml = `<span class="wal-bal" style="background:${def.color}20;color:${empty?'#3a6a60':def.color}">${empty ? '? EMPTY - 0 BDX' : fmtBDX(bal)}</span>`;
     return `
       <div class="wal-card" style="border-color:${empty?'#0b1f35':def.color+'33'}">
         <div class="wal-header">
           <span class="wal-name" style="color:${def.color}">${def.name}</span>
           ${balHtml}
         </div>
-        ${empty ? `<div class="wal-empty">✅ This wallet has been fully distributed — balance is permanently 0 BDX</div>` : `
+        ${empty ? `<div class="wal-empty">? This wallet has been fully distributed - balance is permanently 0 BDX</div>` : `
         <div class="wal-row">
           <div class="wal-label">WALLET ADDRESS</div>
           <div class="wal-field">
@@ -1043,7 +1043,7 @@ function buildWallets(idx) {
           </div>
         </div>
         <div class="wal-row">
-          <div class="wal-label">VIEW KEY (read-only · cannot spend)</div>
+          <div class="wal-label">VIEW KEY (read-only � cannot spend)</div>
           <div class="wal-field">
             <span class="wal-text">${def.vkey}</span>
             <button class="copy-btn" style="color:${def.color}" onclick="copyText('${def.vkey}',this)">Copy</button>
@@ -1053,7 +1053,7 @@ function buildWallets(idx) {
   }).join('');
 }
 
-// ── All Wallets Modal ─────────────────────────────────────────────────────────
+// -- All Wallets Modal ---------------------------------------------------------
 function openAllWallets() {
   document.getElementById('wm-overlay').classList.add('open');
   const body = document.getElementById('wm-body');
@@ -1072,7 +1072,7 @@ function openAllWallets() {
           </div>
         </div>
         <div class="wal-row">
-          <div class="wal-label">VIEW KEY (read-only · cannot spend)</div>
+          <div class="wal-label">VIEW KEY (read-only � cannot spend)</div>
           <div class="wal-field">
             <span class="wal-text">${def.vkey}</span>
             <button class="copy-btn" style="color:${def.color}" onclick="copyText('${def.vkey}',this)">Copy</button>
@@ -1087,7 +1087,7 @@ function closeAllWallets() {
   document.getElementById('wm-overlay').classList.remove('open');
 }
 
-// ── Verify Modal ──────────────────────────────────────────────────────────────
+// -- Verify Modal --------------------------------------------------------------
 function openVerifyModal() {
   document.getElementById('vm-overlay').classList.add('open');
   const body = document.getElementById('vm-body');
@@ -1100,7 +1100,7 @@ function closeVerifyModal() {
   document.getElementById('vm-overlay').classList.remove('open');
 }
 
-// ── Sources Modal ─────────────────────────────────────────────────────────────
+// -- Sources Modal -------------------------------------------------------------
 function openSourcesModal() {
   document.getElementById('sm-overlay').classList.add('open');
 }
@@ -1109,15 +1109,15 @@ function closeSourcesModal() {
   document.getElementById('sm-overlay').classList.remove('open');
 }
 
-// ── Verify guide ──────────────────────────────────────────────────────────────
+// -- Verify guide --------------------------------------------------------------
 function buildVerify() {
   return `
     <div style="background:#04090f;border-radius:10px;padding:11px 13px;margin-bottom:14px;border-left:4px solid #ff4f4f">
-      <div style="font-size: 13px;font-weight:800;color:#ff4f4f;letter-spacing:.8px;margin-bottom:4px">🔒 WHY NOT A BLOCK EXPLORER?</div>
-      <div style="font-size: 14px;color:#7a9a96;line-height:1.65">Beldex uses CryptoNote privacy technology — wallet balances are <b style="color:#fff">encrypted on-chain</b> and invisible to public block explorers. The only way to verify a wallet's balance is using its <b style="color:#f0a500">View Key</b>, which can only be used inside the official CLI wallet. This is by design — it's what makes BDX private.</div>
+      <div style="font-size: 13px;font-weight:800;color:#ff4f4f;letter-spacing:.8px;margin-bottom:4px">?? WHY NOT A BLOCK EXPLORER?</div>
+      <div style="font-size: 14px;color:#7a9a96;line-height:1.65">Beldex uses CryptoNote privacy technology - wallet balances are <b style="color:#fff">encrypted on-chain</b> and invisible to public block explorers. The only way to verify a wallet's balance is using its <b style="color:#f0a500">View Key</b>, which can only be used inside the official CLI wallet. This is by design - it's what makes BDX private.</div>
     </div>
 
-    <div class="method-badge" style="background:#9b5de522;color:#9b5de5">CLI WALLET — THE ONLY VERIFICATION METHOD</div>
+    <div class="method-badge" style="background:#9b5de522;color:#9b5de5">CLI WALLET - THE ONLY VERIFICATION METHOD</div>
     <div style="font-size: 14px;color:#5a8880;margin-bottom:14px">This is the official method from <a href="https://beldexcoin.medium.com/december-2022-scheduled-release-of-bdx-c572323bb354" target="_blank" style="color:#9b5de5">Beldex's Dec 2022 release post</a>. You need a <b style="color:#fff">Linux system</b> to run the CLI wallet.</div>
 
     <div class="vstep">
@@ -1152,11 +1152,11 @@ function buildVerify() {
         <div class="vstep-title">Enter the wallet address and view key when prompted</div>
         <div class="vstep-desc">The CLI will ask you 3 things in order:</div>
         <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px">
-          <div class="vstep-code">Standard address: <span style="color:#fff">← paste the wallet address from the 🔑 All Wallets menu</span></div>
-          <div class="vstep-code">Secret view key: <span style="color:#fff">← paste the view key from the 🔑 All Wallets menu</span></div>
-          <div class="vstep-code">Password: <span style="color:#aaa">← press Enter to leave blank (or type any password)</span></div>
+          <div class="vstep-code">Standard address: <span style="color:#fff">? paste the wallet address from the ?? All Wallets menu</span></div>
+          <div class="vstep-code">Secret view key: <span style="color:#fff">? paste the view key from the ?? All Wallets menu</span></div>
+          <div class="vstep-code">Password: <span style="color:#aaa">? press Enter to leave blank (or type any password)</span></div>
         </div>
-        <div class="vstep-desc" style="margin-top:6px">⚠️ The view key lets you <b style="color:#fff">read-only</b> — it cannot move or spend any coins. It is completely safe to use.</div>
+        <div class="vstep-desc" style="margin-top:6px">?? The view key lets you <b style="color:#fff">read-only</b> - it cannot move or spend any coins. It is completely safe to use.</div>
       </div>
     </div>
 
@@ -1173,7 +1173,7 @@ function buildVerify() {
       <div class="vstep-num" style="background:#9b5de522;color:#9b5de5">6</div>
       <div class="vstep-body">
         <div class="vstep-title">Wait for the wallet to sync</div>
-        <div class="vstep-desc">The wallet will start syncing with the Beldex blockchain — you'll see block numbers counting up. This usually takes a few minutes. Once the height matches the current block, it's done.</div>
+        <div class="vstep-desc">The wallet will start syncing with the Beldex blockchain - you'll see block numbers counting up. This usually takes a few minutes. Once the height matches the current block, it's done.</div>
       </div>
     </div>
 
@@ -1183,29 +1183,29 @@ function buildVerify() {
         <div class="vstep-title">Type "balance" to see the verified result</div>
         <div class="vstep-desc">Once the wallet prompt appears (showing your wallet name), type the command below and press Enter:</div>
         <div class="vstep-code">balance</div>
-        <div class="vstep-desc" style="margin-top:6px">The balance shown is the true on-chain amount — the exact same numbers stated in all official Beldex tokenomics announcements. You've now independently verified it. ✅</div>
+        <div class="vstep-desc" style="margin-top:6px">The balance shown is the true on-chain amount - the exact same numbers stated in all official Beldex tokenomics announcements. You've now independently verified it. ?</div>
       </div>
     </div>
 
     <div style="background:#04090f;border-radius:10px;padding:11px 13px;margin-top:4px;border:1px solid #0b2030">
-      <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">📚 FULL DOCUMENTATION</div>
+      <div style="font-size: 13px;font-weight:800;color:#3a6a60;letter-spacing:.8px;margin-bottom:5px">?? FULL DOCUMENTATION</div>
       <div style="font-size: 14px;color:#5a8880">For a detailed step-by-step guide with screenshots on restoring a CLI wallet from keys, see the official Beldex docs:</div>
       <div class="vstep-code" style="margin-top:6px">https://docs.beldex.io/wallets/guides/cli-restoring-wallet-from-keys</div>
     </div>`;
 }
 
-// ── Feature card renderer ─────────────────────────────────────────────────────
+// -- Feature card renderer -----------------------------------------------------
 function renderFC() {
   triggerAnim('fc');
   const s = steps[active];
-  let tabs = ['📊 Pie Chart','🏦 Wallets'];
+  let tabs = ['?? Pie Chart','?? Wallets'];
   if (activeTab > 1) activeTab = 0;
   const tabHtml = tabs.map((t,i)=>`<button class="ftab${i===activeTab?' on':''}" style="${i===activeTab?`background:${s.color};`:''}\" onclick="setTab(${i})">${t}</button>`).join('');
   let panelHtml;
   if(activeTab===0) panelHtml = buildDonut(s.wallets, fmtTotalShort(s));
   else panelHtml = buildWallets(active);
   document.getElementById('fc').innerHTML = `
-    <div class="ct">🔎 Explore the Allocation</div>
+    <div class="ct">?? Explore the Allocation</div>
     <div class="cs" style="margin-bottom:12px">${tabs.length} ways to dig deeper into the numbers</div>
     <div class="ftabs">${tabHtml}</div>
     <div class="fpanel on">${panelHtml}</div>`;

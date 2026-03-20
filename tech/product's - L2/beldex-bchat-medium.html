@@ -762,7 +762,7 @@ h3{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;}
         <div id="callStateConn" class="call-demo" style="display:none;">
           <div class="cd-avatar">👤</div>
           <div class="cd-name">alice.bdx</div>
-          <div class="cd-status connected">● Connected   Encrypted P2P</div>
+          <div class="cd-status connected">�-� Connected   Encrypted P2P</div>
           <div class="cd-waveform">
             <div class="wave-bar" style="animation-delay:0s"></div>
             <div class="wave-bar" style="animation-delay:.1s"></div>
@@ -916,7 +916,7 @@ h3{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;}
     </div>
     <div class="fi d2">
       <div class="pay-box">
-        <div class="pay-topbar"><div class="pay-topbar-title">Send BDX   Live Preview</div><div class="pay-live">● Private Payment</div></div>
+        <div class="pay-topbar"><div class="pay-topbar-title">Send BDX   Live Preview</div><div class="pay-live">�-� Private Payment</div></div>
         <div class="pay-body">
           <div class="pay-field"><label class="pay-label" for="payTo">Send to (BNS name or BChat ID)</label><input class="pay-input" id="payTo" value="alice.bdx" oninput="updatePay()"></div>
           <div class="pay-field"><label class="pay-label" for="payAmt">Amount (BDX)</label><input class="pay-input" id="payAmt" type="number" value="100" min="0.001" step="1" oninput="updatePay()"></div>
@@ -949,11 +949,11 @@ h3{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;}
     <p style="font-size:1.05rem;color:var(--tx2);max-width:500px;margin:0 auto;line-height:1.85;">Available on Android, iOS, Windows, macOS and Linux. Download, tap Create Account, and you are set.</p>
   </div>
   <div class="dl-grid fi d1">
-    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-android/releases/download/v2.9.2/Bchat-2.9.2-universal-release.apk" target="_blank"><div class="dl-icon">🤖</div><div class="dl-name">Android</div><div class="dl-sub">APK v2.9.2</div><div class="dl-arrow">↗</div></a>
-    <a class="dl-card" href="https://apps.apple.com/us/app/bchat-messenger/id1626066143" target="_blank"><div class="dl-icon">🍎</div><div class="dl-name">iOS</div><div class="dl-sub">App Store</div><div class="dl-arrow">↗</div></a>
-    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-win-x64-2.7.3.exe" target="_blank"><div class="dl-icon">🪟</div><div class="dl-name">Windows</div><div class="dl-sub">EXE v2.7.3</div><div class="dl-arrow">↗</div></a>
-    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-mac-x64-2.7.3.dmg" target="_blank"><div class="dl-icon">🍏</div><div class="dl-name">macOS</div><div class="dl-sub">DMG v2.7.3</div><div class="dl-arrow">↗</div></a>
-    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-linux-amd64-2.7.3.deb" target="_blank"><div class="dl-icon">🐧</div><div class="dl-name">Linux</div><div class="dl-sub">DEB v2.7.3</div><div class="dl-arrow">↗</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-android/releases/download/v2.9.2/Bchat-2.9.2-universal-release.apk" target="_blank"><div class="dl-icon">🤖</div><div class="dl-name">Android</div><div class="dl-sub">APK v2.9.2</div><div class="dl-arrow">�-</div></a>
+    <a class="dl-card" href="https://apps.apple.com/us/app/bchat-messenger/id1626066143" target="_blank"><div class="dl-icon">🍎</div><div class="dl-name">iOS</div><div class="dl-sub">App Store</div><div class="dl-arrow">�-</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-win-x64-2.7.3.exe" target="_blank"><div class="dl-icon">🪟</div><div class="dl-name">Windows</div><div class="dl-sub">EXE v2.7.3</div><div class="dl-arrow">�-</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-mac-x64-2.7.3.dmg" target="_blank"><div class="dl-icon">🍏</div><div class="dl-name">macOS</div><div class="dl-sub">DMG v2.7.3</div><div class="dl-arrow">�-</div></a>
+    <a class="dl-card" href="https://github.com/Beldex-Coin/bchat-desktop/releases/download/v2.7.3/bchat-desktop-linux-amd64-2.7.3.deb" target="_blank"><div class="dl-icon">🐧</div><div class="dl-name">Linux</div><div class="dl-sub">DEB v2.7.3</div><div class="dl-arrow">�-</div></a>
   </div>
   <div style="text-align:center;margin-top:2.5rem;border-top:1px solid var(--ln);padding-top:2rem;" class="fi d2">
     <p style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txd);">BChat · Built on Beldex Blockchain · Open Source · Zero Data Collected</p>
@@ -1043,7 +1043,7 @@ function pickApp(app,btn){
   var d=APP_DATA[app];
   var html='<div class="dp-header"><div class="dp-app-name">'+d.name+'</div><div class="dp-verdict">'+d.verdict+'</div></div><div class="dp-list">';
   d.items.forEach(function(it,i){
-    var ico=it.type==='bad'?'✕':it.type==='good'?'✓':'○';
+    var ico=it.type==='bad'?'✕':it.type==='good'?'✓':'�-�';
     html+='<div class="dp-item '+it.type+'" style="animation-delay:'+(i*.07)+'s;animation:slideIn .3s ease both"><span class="dp-ico">'+ico+'</span><span class="dp-txt">'+it.text+'</span></div>';
   });
   html+='</div>';
@@ -1303,7 +1303,7 @@ function drawSwarmPhase(phase){
     ctx.lineWidth=(isActive||isDeleting)?2:1;
     ctx.beginPath();ctx.arc(np.x,np.y,nr,0,Math.PI*2);ctx.fill();ctx.stroke();
     ctx.font=Math.round(nr*.9)+'px serif';ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(isActive?'🔒':(isDeleting?'🗑':'⚫'),np.x,np.y);
+    ctx.fillText(isActive?'🔒':(isDeleting?'�-�':'⚫'),np.x,np.y);
   });
 
   /* Sender */
