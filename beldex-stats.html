@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex Explorer — Network Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─── */
+:root {
+  --bg: #030507;
+  --surface: #080c11;
+  --panel: #0b1018;
+  --panel2: #0e141d;
+  --border: rgba(255,255,255,0.05);
+  --border2: rgba(255,255,255,0.09);
+  --gold: #f0a500; --gold2: #ffc144; --gold-dim: rgba(240,165,0,0.12);
+  --green: #00e676; --green-dim: rgba(0,230,118,0.10);
+  --cyan: #00bcd4; --cyan-dim: rgba(0,188,212,0.10);
+  --red: #ff4444; --red-dim: rgba(255,68,68,0.10);
+  --purple: #9c27b0; --purple-dim: rgba(156,39,176,0.10);
+  --blue: #2196f3; --blue-dim: rgba(33,150,243,0.10);
+  --orange: #ff9800; --orange-dim: rgba(255,152,0,0.10);
+  --text: #dde3ed; --muted: #5a6a7e; --faint: #1a2230;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:var(--font-body); min-height:100vh; overflow-x:hidden; }
+
+/* ─── SCANLINES ─── */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:1000;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);
+}
+
+/* ─── AMBIENT ─── */
+.ambient {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 0%, rgba(240,165,0,0.05) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(0,188,212,0.04) 0%,transparent 60%);
+}
+
+/* ─── NAVBAR ─── */
+.navbar {
+  position:sticky; top:0; z-index:200;
+  background:rgba(3,5,7,0.9); backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px; height:56px;
+}
+.nb-left { display:flex; align-items:center; gap:20px; }
+.nb-logo {
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--font-display); font-size:13px; font-weight:700;
+  letter-spacing:0.12em; color:var(--text); text-decoration:none;
+}
+.nb-pulse {
+  width:8px; height:8px; border-radius:50%; background:var(--gold);
+  box-shadow:0 0 0 0 rgba(240,165,0,0.7);
+  animation:sonar 2s ease-out infinite;
+}
+@keyframes sonar {
+  0%{box-shadow:0 0 0 0 rgba(240,165,0,0.7)}
+  70%{box-shadow:0 0 0 10px rgba(240,165,0,0)}
+  100%{box-shadow:0 0 0 0 rgba(240,165,0,0)}
+}
+.nb-sep { width:1px; height:20px; background:var(--border2); }
+.nb-link {
+  font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em;
+  color:var(--muted); text-decoration:none; padding:4px 10px;
+  border-radius:4px; transition:all 0.2s;
+}
+.nb-link:hover, .nb-link.active { color:var(--gold); background:var(--gold-dim); }
+
+.nb-right { display:flex; align-items:center; gap:14px; }
+.live-chip {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em;
+  color:var(--green); background:var(--green-dim);
+  border:1px solid rgba(0,230,118,0.2); border-radius:20px; padding:4px 10px;
+}
+.live-dot { width:5px; height:5px; border-radius:50%; background:var(--green); animation:blink 1s ease-in-out infinite; }
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
+.sync-btn {
+  font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em;
+  background:none; border:1px solid var(--border2); border-radius:4px;
+  color:var(--muted); padding:5px 12px; cursor:pointer; transition:all 0.2s;
+}
+.sync-btn:hover { color:var(--gold); border-color:rgba(240,165,0,0.3); }
+.cd-chip { font-family:var(--font-mono); font-size:9px; color:var(--muted); letter-spacing:0.06em; }
+#cd { color:var(--gold); }
+
+/* ─── MAIN LAYOUT ─── */
+.page { position:relative; z-index:1; max-width:1400px; margin:0 auto; padding:24px 24px 80px; }
+
+/* ─── SECTION HEADERS ─── */
+.sec-head {
+  display:flex; align-items:center; gap:12px;
+  margin:32px 0 14px;
+}
+.sec-title {
+  font-family:var(--font-display); font-size:10px; font-weight:600;
+  letter-spacing:0.15em; text-transform:uppercase; color:var(--muted);
+}
+.sec-line { flex:1; height:1px; background:var(--border); }
+.sec-badge {
+  font-family:var(--font-mono); font-size:8px; letter-spacing:0.08em;
+  color:var(--muted); background:var(--faint); padding:2px 7px; border-radius:3px;
+}
+
+/* ─── TOOLTIP SYSTEM ─── */
+.tip-wrap { position:relative; display:inline-flex; align-items:center; gap:4px; }
+.tip-icon {
+  width:13px; height:13px; border-radius:50%;
+  background:var(--faint); border:1px solid var(--border2);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:8px; color:var(--muted); cursor:help; flex-shrink:0;
+  transition:all 0.2s;
+}
+.tip-icon:hover { background:var(--gold-dim); border-color:rgba(240,165,0,0.3); color:var(--gold); }
+.tip-box {
+  position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  background:#111820; border:1px solid var(--border2);
+  border-radius:8px; padding:10px 14px;
+  width:220px; z-index:999;
+  opacity:0; pointer-events:none; transition:opacity 0.15s;
+  font-family:var(--font-body); font-size:11px; line-height:1.5;
+  color:var(--text); font-weight:400; text-transform:none; letter-spacing:0;
+}
+.tip-box::after {
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:5px solid transparent; border-top-color:#111820;
+}
+.tip-wrap:hover .tip-box { opacity:1; }
+.tip-box strong { color:var(--gold); font-weight:600; display:block; margin-bottom:4px; }
+
+/* ─── BLOCK VISUALIZER (mempool-style) ─── */
+.block-viz-wrap {
+  background:var(--panel); border:1px solid var(--border2); border-radius:14px;
+  overflow:hidden; margin-bottom:2px;
+}
+.bv-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px; border-bottom:1px solid var(--border);
+}
+.bv-title {
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--font-display); font-size:10px; font-weight:600;
+  letter-spacing:0.12em; color:var(--text);
+}
+.bv-pulse { width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:blink 1.2s ease-in-out infinite; }
+.bv-exp { font-family:var(--font-mono); font-size:9px; color:var(--gold); text-decoration:none; letter-spacing:0.06em; border-bottom:1px solid rgba(240,165,0,0.2); }
+.bv-exp:hover { border-color:var(--gold); }
+
+.block-track {
+  display:flex; align-items:stretch; gap:3px;
+  padding:16px 20px; overflow-x:auto;
+  scrollbar-width:none;
+}
+.block-track::-webkit-scrollbar { display:none; }
+
+.block-card {
+  flex-shrink:0; width:100px; min-height:110px;
+  background:var(--panel2); border:1px solid var(--border2); border-radius:8px;
+  padding:12px 10px; cursor:pointer; position:relative; overflow:hidden;
+  transition:transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  display:flex; flex-direction:column; gap:6px;
+}
+.block-card:hover { transform:translateY(-3px); border-color:var(--cyan); box-shadow:0 0 20px rgba(0,188,212,0.15); }
+.block-card.new-block { animation:blockSlide 0.5s ease; }
+@keyframes blockSlide { from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)} }
+
+/* fill bar inside block card */
+.block-fill {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(180deg, transparent, rgba(0,188,212,0.08));
+  transition:height 0.5s ease;
+}
+
+.bc-height {
+  font-family:var(--font-display); font-size:11px; font-weight:700;
+  color:var(--cyan); letter-spacing:0.04em; position:relative;
+}
+.bc-age { font-family:var(--font-mono); font-size:9px; color:var(--muted); }
+.bc-txcount {
+  font-family:var(--font-mono); font-size:10px; color:var(--text);
+  margin-top:auto;
+}
+.bc-size { font-family:var(--font-mono); font-size:9px; color:var(--muted); }
+.bc-reward { font-family:var(--font-mono); font-size:9px; color:var(--green); }
+
+/* mempool pending card */
+.block-card.mempool {
+  border-style:dashed; border-color:rgba(240,165,0,0.25);
+  background:rgba(240,165,0,0.03);
+}
+.bc-pending { font-family:var(--font-mono); font-size:9px; color:var(--gold); animation:blink 1.5s ease-in-out infinite; }
+
+/* ─── HERO ROW ─── */
+.hero-row {
+  display:grid; grid-template-columns:2fr 1fr 1fr;
+  gap:3px; margin-bottom:3px;
+  animation:fadeUp 0.6s ease both;
+}
+
+.hero-price {
+  background:var(--panel); border:1px solid var(--border2); border-radius:14px 0 0 14px;
+  padding:32px 36px; position:relative; overflow:hidden;
+}
+.hero-price::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--gold), var(--gold2), transparent 70%);
+}
+.hp-eyebrow {
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--muted);
+}
+.curr-toggle {
+  display:flex; gap:2px; background:var(--faint); border-radius:5px; padding:2px; margin-left:auto;
+}
+.ctb {
+  font-family:var(--font-mono); font-size:9px; letter-spacing:0.06em;
+  padding:3px 10px; border-radius:3px; border:none; cursor:pointer;
+  background:transparent; color:var(--muted); transition:all 0.15s;
+}
+.ctb.on { background:var(--gold); color:#000; font-weight:700; }
+.hp-price {
+  font-family:var(--font-display); font-size:clamp(44px,6vw,72px); font-weight:900;
+  line-height:1; letter-spacing:-1px;
+  background:linear-gradient(135deg, #ffffff 20%, var(--gold2) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hp-sym { font-size:0.45em; -webkit-text-fill-color:var(--muted); }
+.hp-change {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:12px;
+  margin-top:12px; padding:5px 12px; border-radius:6px;
+}
+.hp-change.up{color:var(--green);background:var(--green-dim);border:1px solid rgba(0,230,118,0.2)}
+.hp-change.dn{color:var(--red);background:var(--red-dim);border:1px solid rgba(255,68,68,0.2)}
+.hp-change.nt{color:var(--muted);background:var(--faint);border:1px solid var(--border)}
+.hp-ts { font-family:var(--font-mono); font-size:9px; color:var(--muted); margin-top:16px; letter-spacing:0.04em; }
+
+.hero-stat {
+  background:var(--panel); border:1px solid var(--border2);
+  padding:28px 24px; display:flex; flex-direction:column; justify-content:space-between;
+}
+.hero-stat:last-child { border-radius:0 14px 14px 0; }
+.hs-label {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+}
+.hs-value {
+  font-family:var(--font-display); font-size:26px; font-weight:700; line-height:1;
+}
+.hs-value.cyan{color:var(--cyan)} .hs-value.purple{color:var(--purple)}
+.hs-sub { font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-top:8px; }
+
+/* ─── STAT TILES ─── */
+.tiles-grid {
+  display:grid; grid-template-columns:repeat(6,1fr); gap:3px;
+  animation:fadeUp 0.6s ease 0.08s both;
+}
+
+.tile {
+  background:var(--panel); border:1px solid var(--border);
+  padding:20px 16px; position:relative; overflow:hidden;
+  transition:border-color 0.25s, background 0.25s;
+}
+.tile:first-child { border-radius:14px 0 0 14px; }
+.tile:last-child { border-radius:0 14px 14px 0; }
+.tile:hover { background:rgba(255,255,255,0.015); }
+.tile::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  opacity:0.5; transition:opacity 0.3s;
+}
+.tile:hover::after { opacity:1; }
+.t-gold::after{background:var(--gold);box-shadow:0 2px 12px var(--gold)}
+.t-green::after{background:var(--green);box-shadow:0 2px 12px var(--green)}
+.t-cyan::after{background:var(--cyan);box-shadow:0 2px 12px var(--cyan)}
+.t-red::after{background:var(--red);box-shadow:0 2px 12px var(--red)}
+.t-purple::after{background:var(--purple);box-shadow:0 2px 12px var(--purple)}
+.t-orange::after{background:var(--orange);box-shadow:0 2px 12px var(--orange)}
+
+.t-icon { font-size:15px; opacity:0.55; margin-bottom:10px; }
+.t-label {
+  display:flex; align-items:center; gap:5px;
+  font-family:var(--font-mono); font-size:8px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:8px;
+}
+.t-val {
+  font-family:var(--font-display); font-size:17px; font-weight:700; line-height:1;
+  letter-spacing:-0.3px;
+}
+.t-val.gold{color:var(--gold)} .t-val.green{color:var(--green)}
+.t-val.cyan{color:var(--cyan)} .t-val.red{color:var(--red)}
+.t-val.purple{color:var(--purple)} .t-val.orange{color:var(--orange)}
+.t-sub { font-family:var(--font-mono); font-size:9px; color:var(--muted); margin-top:5px; }
+.t-tag {
+  display:inline-block; font-family:var(--font-mono); font-size:7px;
+  letter-spacing:0.1em; text-transform:uppercase; padding:2px 5px;
+  border-radius:3px; margin-top:7px; border:1px solid;
+}
+.t-tag.live{color:var(--green);border-color:rgba(0,230,118,0.25);background:var(--green-dim)}
+.t-tag.fixed{color:var(--muted);border-color:var(--border2)}
+.t-tag.cached{color:var(--orange);border-color:rgba(255,152,0,0.25)}
+
+/* ─── MAIN GRID BELOW ─── */
+.main-grid {
+  display:grid; grid-template-columns:1.5fr 1fr;
+  gap:16px; margin-top:16px;
+  animation:fadeUp 0.6s ease 0.15s both;
+}
+
+/* ─── TX FEED ─── */
+.tx-feed {
+  background:var(--panel); border:1px solid var(--border2); border-radius:14px; overflow:hidden;
+}
+.tf-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px; border-bottom:1px solid var(--border);
+}
+.tf-title {
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font-display); font-size:10px; font-weight:600;
+  letter-spacing:0.1em; color:var(--text);
+}
+.tf-badge {
+  font-family:var(--font-mono); font-size:9px; padding:2px 8px;
+  border-radius:10px; background:var(--green-dim); color:var(--green);
+  border:1px solid rgba(0,230,118,0.2);
+}
+
+.tf-cols {
+  display:grid; grid-template-columns:80px 60px 1fr 80px 60px;
+  padding:8px 20px; border-bottom:1px solid var(--border);
+  font-family:var(--font-mono); font-size:8px; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--muted);
+}
+.tf-row {
+  display:grid; grid-template-columns:80px 60px 1fr 80px 60px;
+  padding:10px 20px; border-bottom:1px solid var(--border);
+  font-family:var(--font-mono); font-size:11px;
+  transition:background 0.15s; align-items:center;
+}
+.tf-row:last-child { border-bottom:none; }
+.tf-row:hover { background:rgba(255,255,255,0.02); }
+.tf-row.incoming { animation:rowIn 0.4s ease; }
+@keyframes rowIn{from{opacity:0;background:rgba(0,188,212,0.06)}to{opacity:1;background:transparent}}
+
+.tr-height { color:var(--cyan); font-weight:500; }
+.tr-height a { color:inherit; text-decoration:none; }
+.tr-height a:hover { text-decoration:underline; }
+.tr-age { color:var(--muted); }
+.tr-hash { color:var(--muted); font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tr-hash a { color:var(--muted); text-decoration:none; }
+.tr-hash a:hover { color:var(--text); }
+.tr-fee { color:var(--gold); text-align:right; }
+.tr-type { text-align:right; }
+
+/* tx type pills */
+.type-pill {
+  display:inline-block; font-size:8px; padding:2px 6px; border-radius:3px;
+  font-family:var(--font-mono); letter-spacing:0.04em;
+}
+.tp-reward{background:rgba(0,230,118,0.12);color:var(--green)}
+.tp-burn{background:rgba(255,68,68,0.12);color:var(--red)}
+.tp-bns{background:rgba(33,150,243,0.12);color:var(--blue)}
+.tp-mn{background:rgba(156,39,176,0.12);color:var(--purple)}
+.tp-tx{background:rgba(255,255,255,0.05);color:var(--muted)}
+
+/* ─── RIGHT COLUMN ─── */
+.right-col { display:flex; flex-direction:column; gap:16px; }
+
+/* ─── MASTERNODE PANEL ─── */
+.mn-panel {
+  background:var(--panel); border:1px solid var(--border2); border-radius:14px; overflow:hidden;
+}
+.mn-header {
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  font-family:var(--font-display); font-size:10px; font-weight:600;
+  letter-spacing:0.1em; color:var(--text);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.mn-header a { font-family:var(--font-mono); font-size:9px; color:var(--gold); text-decoration:none; }
+.mn-header a:hover { text-decoration:underline; }
+
+.mn-donut-wrap {
+  padding:20px; display:flex; align-items:center; gap:20px;
+}
+.mn-donut { position:relative; width:100px; height:100px; flex-shrink:0; }
+.mn-donut svg { transform:rotate(-90deg); }
+.mn-donut-center {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.mn-donut-num {
+  font-family:var(--font-display); font-size:16px; font-weight:700; color:var(--green); line-height:1;
+}
+.mn-donut-label { font-family:var(--font-mono); font-size:7px; color:var(--muted); margin-top:2px; }
+
+.mn-legend { flex:1; display:flex; flex-direction:column; gap:10px; }
+.mn-leg-row { display:flex; align-items:center; justify-content:space-between; }
+.mn-leg-left { display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:10px; color:var(--muted); }
+.mn-leg-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.mn-leg-val { font-family:var(--font-display); font-size:14px; font-weight:700; }
+
+.mn-rows { border-top:1px solid var(--border); }
+.mn-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 20px; border-bottom:1px solid var(--border); font-size:12px;
+}
+.mn-row:last-child { border-bottom:none; }
+.mn-k { display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.06em; color:var(--muted); }
+.mn-v { font-family:var(--font-display); font-size:13px; font-weight:600; }
+.mn-v.green{color:var(--green)}.mn-v.gold{color:var(--gold)}.mn-v.red{color:var(--red)}.mn-v.cyan{color:var(--cyan)}
+
+/* ─── FEE PANEL ─── */
+.fee-panel {
+  background:var(--panel); border:1px solid var(--border2); border-radius:14px; overflow:hidden;
+}
+.fee-header {
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  font-family:var(--font-display); font-size:10px; font-weight:600;
+  letter-spacing:0.1em; color:var(--text);
+}
+.fee-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:13px 20px; border-bottom:1px solid var(--border);
+}
+.fee-row:last-child { border-bottom:none; }
+.fee-left { display:flex; flex-direction:column; gap:3px; }
+.fee-name { display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.06em; color:var(--muted); }
+.fee-desc { font-size:10px; color:var(--muted); font-style:italic; }
+.fee-val { font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--gold); }
+.fee-val.flash { color:var(--orange); }
+
+/* ─── PROTOCOL PANEL ─── */
+.proto-panel {
+  background:var(--panel); border:1px solid var(--border2); border-radius:14px; overflow:hidden;
+}
+.proto-header {
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  font-family:var(--font-display); font-size:10px; font-weight:600;
+  letter-spacing:0.1em; color:var(--text);
+}
+.proto-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 20px; border-bottom:1px solid var(--border); font-size:12px;
+}
+.proto-row:last-child { border-bottom:none; }
+.proto-k { display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.06em; color:var(--muted); }
+.proto-v { font-family:var(--font-mono); font-size:11px; font-weight:500; }
+.proto-v.green{color:var(--green)}.proto-v.gold{color:var(--gold)}.proto-v.cyan{color:var(--cyan)}
+
+/* ─── MARKET ROW ─── */
+.market-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:3px;
+  margin-top:16px;
+  animation:fadeUp 0.6s ease 0.2s both;
+}
+.mkt-card {
+  background:var(--panel); border:1px solid var(--border); padding:20px;
+  position:relative; overflow:hidden;
+}
+.mkt-card:first-child { border-radius:14px 0 0 14px; }
+.mkt-card:last-child { border-radius:0 14px 14px 0; }
+.mkt-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; }
+.mc-gold::before{background:linear-gradient(90deg,var(--gold),transparent)}
+.mc-green::before{background:linear-gradient(90deg,var(--green),transparent)}
+.mc-red::before{background:linear-gradient(90deg,var(--red),transparent)}
+.mc-purple::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.mkt-label {
+  display:flex; align-items:center; gap:5px;
+  font-family:var(--font-mono); font-size:8px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+}
+.mkt-val {
+  font-family:var(--font-display); font-size:18px; font-weight:700;
+}
+.mkt-val.gold{color:var(--gold)} .mkt-val.green{color:var(--green)}
+.mkt-val.red{color:var(--red)} .mkt-val.purple{color:var(--purple)}
+.mkt-sub { font-size:10px; color:var(--muted); margin-top:6px; }
+
+/* ─── STATUS BAR ─── */
+.status-bar {
+  display:flex; align-items:center; gap:8px; padding:10px 20px;
+  border-top:1px solid var(--border);
+  font-family:var(--font-mono); font-size:9px; color:var(--muted); letter-spacing:0.06em;
+}
+.sdot { width:5px; height:5px; border-radius:50%; }
+.sdot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
+.sdot.err{background:var(--red)}
+.sdot.loading{background:var(--gold);animation:blink 0.8s ease-in-out infinite}
+
+/* ─── FOOTER ─── */
+footer {
+  position:relative; z-index:1; margin-top:48px; padding:18px 28px;
+  border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--font-mono); font-size:9px; color:var(--muted); letter-spacing:0.06em;
+}
+footer a { color:var(--gold); text-decoration:none; }
+footer a:hover { text-decoration:underline; }
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){
+  .tiles-grid{grid-template-columns:repeat(3,1fr)}
+  .tile:first-child,.tile:last-child{border-radius:0}
+  .hero-row{grid-template-columns:1fr}
+  .hero-price{border-radius:14px}
+  .hero-stat{border-radius:0}
+  .hero-stat:last-child{border-radius:0 0 14px 14px}
+}
+@media(max-width:900px){
+  .main-grid{grid-template-columns:1fr}
+  .market-row{grid-template-columns:1fr 1fr}
+  .tf-cols,.tf-row{grid-template-columns:70px 55px 1fr 70px}
+  .tf-cols>:last-child,.tf-row>:last-child{display:none}
+  .block-track{padding:12px}
+}
+@media(max-width:600px){
+  .tiles-grid{grid-template-columns:repeat(2,1fr)}
+  .market-row{grid-template-columns:1fr}
+  .mkt-card:first-child,.mkt-card:last-child{border-radius:0}
+  .navbar .nb-link{display:none}
+}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nb-left">
+    <a href="/" class="nb-logo"><div class="nb-pulse"></div>BELDEX</a>
+    <div class="nb-sep"></div>
+    <a href="#blocks" class="nb-link active">Blocks</a>
+    <a href="#network" class="nb-link">Network</a>
+    <a href="#mn-section" class="nb-link">MasterNodes</a>
+    <a href="#fees" class="nb-link">Fees</a>
+  </div>
+  <div class="nb-right">
+    <div class="live-chip"><div class="live-dot"></div>LIVE</div>
+    <button class="sync-btn" onclick="loadAll()">↻ SYNC</button>
+    <div class="cd-chip">NEXT <span id="cd">30</span>s</div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ── BLOCK VISUALIZER ── -->
+  <div id="blocks" class="block-viz-wrap" style="animation:fadeUp 0.6s ease both">
+    <div class="bv-header">
+      <div class="bv-title">
+        <div class="bv-pulse"></div>
+        LIVE BLOCK STREAM
+        <div class="tip-wrap">
+          <div class="tip-icon">?</div>
+          <div class="tip-box"><strong>What is this?</strong>Each box is a block — a package of transactions the network just confirmed. New blocks appear every ~2 minutes. Think of each block like a page in a ledger book being written in real-time.</div>
+        </div>
+      </div>
+      <a href="https://explorer.beldex.io" target="_blank" class="bv-exp">FULL EXPLORER →</a>
+    </div>
+    <div class="block-track" id="block-track">
+      <!-- filled by JS -->
+      <div style="padding:30px;font-family:var(--font-mono);font-size:11px;color:var(--muted)">Loading blocks...</div>
+    </div>
+    <div class="status-bar">
+      <div class="sdot loading" id="edot"></div>
+      <span id="estat">Connecting...</span>
+      <span style="margin-left:auto">Last sync: <span id="sync-time">—</span></span>
+    </div>
+  </div>
+
+  <!-- ── HERO ROW ── -->
+  <div id="network" class="hero-row" style="margin-top:3px">
+    <div class="hero-price">
+      <div class="hp-eyebrow">
+        BDX / LIVE PRICE
+        <div class="tip-wrap">
+          <div class="tip-icon">?</div>
+          <div class="tip-box"><strong>BDX Price</strong>The current market price of one BDX token. This updates every 30 seconds from CoinGecko, a trusted crypto price aggregator.</div>
+        </div>
+        <div class="curr-toggle" style="margin-left:auto">
+          <button class="ctb on" id="btn-usd" onclick="setCur('usd')">$ USD</button>
+          <button class="ctb" id="btn-inr" onclick="setCur('inr')">₹ INR</button>
+        </div>
+      </div>
+      <div class="hp-price"><span class="hp-sym" id="price-sym">$</span><span id="price">...</span></div>
+      <div id="chg" class="hp-change nt">Fetching price...</div>
+      <div class="hp-ts">Updated: <span id="upd">—</span></div>
+    </div>
+    <div class="hero-stat">
+      <div>
+        <div class="hs-label">
+          BLOCK HEIGHT
+          <div class="tip-wrap">
+            <div class="tip-icon">?</div>
+            <div class="tip-box"><strong>Block Height</strong>The total number of blocks ever added to the Beldex chain. Height 5,230,872 means ~5.2 million blocks have been confirmed since 2018. Higher = older, more secure chain.</div>
+          </div>
+        </div>
+        <div class="hs-value cyan" id="height">...</div>
+        <div class="hs-sub" id="hf-sub">Hard fork v20</div>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div>
+        <div class="hs-label">
+          MARKET CAP
+          <div class="tip-wrap">
+            <div class="tip-icon">?</div>
+            <div class="tip-box"><strong>Market Cap</strong>Total value of all BDX in circulation. Calculated as: Price × Circulating Supply. A higher market cap means the network is more valuable overall.</div>
+          </div>
+        </div>
+        <div class="hs-value purple" id="mcap">...</div>
+        <div class="hs-sub" id="vol-sub">Vol: <span id="vol">...</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STAT TILES ── -->
+  <div class="tiles-grid" style="margin-top:3px" id="network-tiles">
+    <div class="tile t-gold">
+      <div class="t-icon">🔥</div>
+      <div class="t-label">BDX BURNED <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Burned BDX</strong>These coins are permanently destroyed — removed from circulation forever. Every BNS purchase and some transaction fees burn BDX. Burning reduces supply, which can increase scarcity over time.</div></div></div>
+      <div class="t-val gold" id="burned">...</div>
+      <div class="t-sub">Permanently destroyed</div>
+      <div class="t-tag live" id="tag-burn">live</div>
+    </div>
+    <div class="tile t-green">
+      <div class="t-icon">🖥</div>
+      <div class="t-label">ACTIVE NODES <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Active MasterNodes</strong>Computers running the Beldex network right now. Each locked up 10,000 BDX as collateral. They validate transactions, power BelNet VPN, and earn rewards. More nodes = stronger network.</div></div></div>
+      <div class="t-val green" id="masternodes">...</div>
+      <div class="t-sub">Validating network</div>
+      <div class="t-tag live" id="tag-mn">live</div>
+    </div>
+    <div class="tile t-cyan">
+      <div class="t-icon">📛</div>
+      <div class="t-label">BNS NAMES <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Beldex Name System</strong>Like a domain name (.com) but for your Beldex wallet. Instead of sharing a 97-character address, you register a short name like "alice.bdx". Each registration burns BDX permanently.</div></div></div>
+      <div class="t-val cyan" id="bns">...</div>
+      <div class="t-sub">Registered names</div>
+      <div class="t-tag live" id="tag-bns">live</div>
+    </div>
+    <div class="tile t-red">
+      <div class="t-icon">📦</div>
+      <div class="t-label">TX POOL <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Transaction Pool (Mempool)</strong>Transactions waiting to be included in the next block. A pool of 0 means the network is keeping up perfectly — all transactions confirmed almost instantly.</div></div></div>
+      <div class="t-val red" id="txpool">...</div>
+      <div class="t-sub" id="txpool-size">Pending transactions</div>
+      <div class="t-tag live" id="tag-pool">live</div>
+    </div>
+    <div class="tile t-purple">
+      <div class="t-icon">💾</div>
+      <div class="t-label">CHAIN SIZE <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Blockchain Size</strong>How much disk space the full Beldex blockchain takes up. This grows over time as more blocks are added. Running a full node requires at least this much storage.</div></div></div>
+      <div class="t-val purple" id="bcsize">...</div>
+      <div class="t-sub">Full node storage</div>
+      <div class="t-tag live" id="tag-size">live</div>
+    </div>
+    <div class="tile t-orange">
+      <div class="t-icon">⚡</div>
+      <div class="t-label">STAKE REQ. <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Staking Requirement</strong>To run a MasterNode you must lock exactly 10,000 BDX as a security deposit. This proves you are committed. You earn block rewards in return and get your BDX back when you stop.</div></div></div>
+      <div class="t-val orange">10,000</div>
+      <div class="t-sub">BDX per MasterNode</div>
+      <div class="t-tag fixed">protocol</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN GRID ── -->
+  <div class="main-grid">
+
+    <!-- TX FEED -->
+    <div class="tx-feed">
+      <div class="tf-header">
+        <div class="tf-title">
+          RECENT TRANSACTIONS
+          <div class="tip-wrap">
+            <div class="tip-icon">?</div>
+            <div class="tip-box"><strong>Recent Transactions</strong>The latest actions recorded on the Beldex blockchain. This includes regular transfers, masternode events, and BNS name purchases — all privacy-protected.</div>
+          </div>
+        </div>
+        <div class="tf-badge" id="tx-count-badge">0 txs</div>
+      </div>
+      <div class="tf-cols">
+        <span>BLOCK</span><span>AGE</span><span>TX HASH</span><span style="text-align:right">FEE (BDX)</span><span style="text-align:right">TYPE</span>
+      </div>
+      <div id="tx-list">
+        <div style="padding:24px 20px;font-family:var(--font-mono);font-size:11px;color:var(--muted)">Loading transactions...</div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+
+      <!-- MASTERNODE PANEL -->
+      <div class="mn-panel" id="mn-section">
+        <div class="mn-header">
+          MASTERNODE NETWORK
+          <a href="https://explorer.beldex.io/master_nodes" target="_blank">VIEW ALL →</a>
+        </div>
+        <div class="mn-donut-wrap">
+          <div class="mn-donut">
+            <svg viewBox="0 0 100 100" width="100" height="100">
+              <circle cx="50" cy="50" r="38" fill="none" stroke="var(--faint)" stroke-width="12"/>
+              <circle id="mn-arc-active" cx="50" cy="50" r="38" fill="none" stroke="var(--green)" stroke-width="12"
+                stroke-dasharray="0 239" stroke-linecap="round" style="transition:stroke-dasharray 1s ease"/>
+              <circle id="mn-arc-decom" cx="50" cy="50" r="38" fill="none" stroke="var(--red)" stroke-width="12"
+                stroke-dasharray="0 239" stroke-linecap="round" style="transition:stroke-dasharray 1s ease"/>
+            </svg>
+            <div class="mn-donut-center">
+              <div class="mn-donut-num" id="mn-total">...</div>
+              <div class="mn-donut-label">TOTAL</div>
+            </div>
+          </div>
+          <div class="mn-legend">
+            <div class="mn-leg-row">
+              <div class="mn-leg-left"><div class="mn-leg-dot" style="background:var(--green)"></div>Active</div>
+              <div class="mn-leg-val green" id="mn-active">...</div>
+            </div>
+            <div class="mn-leg-row">
+              <div class="mn-leg-left"><div class="mn-leg-dot" style="background:var(--red)"></div>Decommissioned</div>
+              <div class="mn-leg-val red" id="mn-decom">...</div>
+            </div>
+            <div class="mn-leg-row">
+              <div class="mn-leg-left"><div class="mn-leg-dot" style="background:var(--muted)"></div>Awaiting</div>
+              <div class="mn-leg-val" style="color:var(--muted)" id="mn-await">...</div>
+            </div>
+          </div>
+        </div>
+        <div class="mn-rows">
+          <div class="mn-row">
+            <div class="mn-k">
+              STAKING REQ.
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Staking Requirement</strong>10,000 BDX must be locked to run one MasterNode. You can run a shared node with up to 4 contributors splitting the 10,000 BDX requirement.</div></div>
+            </div>
+            <div class="mn-v gold">10,000 BDX</div>
+          </div>
+          <div class="mn-row">
+            <div class="mn-k">
+              BDX LOCKED
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Total BDX Locked</strong>Estimated BDX locked in all active MasterNodes (active nodes × 10,000 BDX). This supply is temporarily removed from circulation, supporting the token's value.</div></div>
+            </div>
+            <div class="mn-v cyan" id="mn-locked">...</div>
+          </div>
+          <div class="mn-row">
+            <div class="mn-k">
+              BLOCK REWARD
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Block Reward</strong>Each new block mints new BDX. Most goes to MasterNodes as payment for securing the network. The reward per block is approximately 6.25 BDX.</div></div>
+            </div>
+            <div class="mn-v green">~6.25 BDX</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEE PANEL -->
+      <div class="fee-panel" id="fees">
+        <div class="fee-header">TRANSACTION FEES</div>
+        <div class="fee-row">
+          <div class="fee-left">
+            <div class="fee-name">
+              BASE FEE (OUTPUT)
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Base Fee per Output</strong>Every output (recipient) in a transaction costs this fee. A simple send to 1 person = 1 output. This fee goes to MasterNodes running the network.</div></div>
+            </div>
+            <div class="fee-desc">Per recipient in transaction</div>
+          </div>
+          <div class="fee-val" id="fee-out">...</div>
+        </div>
+        <div class="fee-row">
+          <div class="fee-left">
+            <div class="fee-name">
+              BASE FEE (SIZE)
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Base Fee per kB</strong>Larger transactions cost more because they take up more block space. This fee scales with how many bytes your transaction uses.</div></div>
+            </div>
+            <div class="fee-desc">Per kilobyte of transaction data</div>
+          </div>
+          <div class="fee-val" id="fee-kb">...</div>
+        </div>
+        <div class="fee-row">
+          <div class="fee-left">
+            <div class="fee-name">
+              FLASH FEE (OUTPUT)
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Flash Fee</strong>Flash transactions are instant — confirmed in under 2 seconds instead of waiting for the next block. They cost 3× the base fee for this speed guarantee.</div></div>
+            </div>
+            <div class="fee-desc">Instant confirmation (~2 sec)</div>
+          </div>
+          <div class="fee-val flash" id="flash-out">...</div>
+        </div>
+        <div class="fee-row">
+          <div class="fee-left">
+            <div class="fee-name">
+              FLASH FEE (SIZE)
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Flash Fee per kB</strong>The size-based component of the flash fee — 3× the base size fee. Enables near-instant settlement for time-sensitive payments.</div></div>
+            </div>
+            <div class="fee-desc">Per kilobyte, instant tx</div>
+          </div>
+          <div class="fee-val flash" id="flash-kb">...</div>
+        </div>
+        <div class="fee-row">
+          <div class="fee-left">
+            <div class="fee-name">
+              BLOCK SIZE LIMIT
+              <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Block Size Limit</strong>Each block has a soft limit (300kB) and hard limit (600kB). The soft limit is the target; the hard limit is the absolute maximum. This controls how many transactions fit per block.</div></div>
+            </div>
+            <div class="fee-desc">Soft / Hard limit per block</div>
+          </div>
+          <div class="fee-val" id="block-size" style="color:var(--cyan)">...</div>
+        </div>
+      </div>
+
+      <!-- PROTOCOL PANEL -->
+      <div class="proto-panel">
+        <div class="proto-header">PROTOCOL</div>
+        <div class="proto-row">
+          <div class="proto-k">CONSENSUS <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>Proof of Stake</strong>Beldex switched from mining (PoW) to staking (PoS) in December 2021. Instead of using electricity to secure the chain, MasterNodes lock BDX as collateral. Greener and faster.</div></div></div>
+          <div class="proto-v green">Proof of Stake</div>
+        </div>
+        <div class="proto-row">
+          <div class="proto-k">PRIVACY TECH <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>RingCT + Stealth Addresses</strong>Every transaction on Beldex hides the sender, recipient, and amount. RingCT mixes your transaction with decoys. Stealth Addresses ensure no one can link your wallet address to transactions.</div></div></div>
+          <div class="proto-v">RingCT + Stealth</div>
+        </div>
+        <div class="proto-row">
+          <div class="proto-k">HARD FORK</div>
+          <div class="proto-v gold" id="hf">v20</div>
+        </div>
+        <div class="proto-row">
+          <div class="proto-k">ORIGIN <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>CryptoNote Protocol</strong>Beldex is based on CryptoNote, the same privacy foundation used by Monero. It provides ring signatures and stealth addresses at the protocol level.</div></div></div>
+          <div class="proto-v">CryptoNote (Monero fork)</div>
+        </div>
+        <div class="proto-row">
+          <div class="proto-k">CIRC. SUPPLY</div>
+          <div class="proto-v cyan" id="sup">...</div>
+        </div>
+        <div class="proto-row">
+          <div class="proto-k">TOTAL SUPPLY</div>
+          <div class="proto-v" id="tsup">...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── MARKET ROW ── -->
+  <div class="market-row">
+    <div class="mkt-card mc-green">
+      <div class="mkt-label">24H HIGH <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>24h High</strong>The highest price BDX reached in the last 24 hours. Compare to current price to see how far it has moved from the daily peak.</div></div></div>
+      <div class="mkt-val green" id="h24">...</div>
+      <div class="mkt-sub">Today's peak</div>
+    </div>
+    <div class="mkt-card mc-red">
+      <div class="mkt-label">24H LOW <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>24h Low</strong>The lowest price BDX hit in the last 24 hours. The gap between high and low shows today's price volatility.</div></div></div>
+      <div class="mkt-val red" id="l24">...</div>
+      <div class="mkt-sub">Today's floor</div>
+    </div>
+    <div class="mkt-card mc-gold">
+      <div class="mkt-label">ALL-TIME HIGH <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>All-Time High</strong>The highest price BDX has ever traded at. Reached in July 2021. Current price vs ATH shows how far the price has moved from its peak.</div></div></div>
+      <div class="mkt-val gold" id="ath">...</div>
+      <div class="mkt-sub" id="athd">...</div>
+    </div>
+    <div class="mkt-card mc-purple">
+      <div class="mkt-label">FROM ATH <div class="tip-wrap"><div class="tip-icon">?</div><div class="tip-box"><strong>From ATH</strong>How much the current price is below the all-time high, expressed as a percentage. A negative number here is normal for most crypto assets.</div></div></div>
+      <div class="mkt-val purple" id="athc">...</div>
+      <div class="mkt-sub">Distance from peak</div>
+    </div>
+  </div>
+
+</div><!-- .page -->
+
+<footer>
+  <div>DATA: <a href="https://explorer.beldex.io" target="_blank">EXPLORER.BELDEX.IO</a> &nbsp;·&nbsp; <a href="https://coingecko.com" target="_blank">COINGECKO</a></div>
+  <div>BELDEX NETWORK EXPLORER &nbsp;·&nbsp; <span id="foot-ts">—</span></div>
+</footer>
+
+<script>
+/* ── helpers ── */
+const g = id => document.getElementById(id);
+const s = (id, v) => { const e=g(id); if(e) e.textContent=v; };
+const now = () => new Date().toLocaleTimeString('en-US',{hour12:false});
+
+let priceUSD=0, priceINR=0, currency='usd';
+
+function fp(n,cur='usd'){
+  if(!n&&n!==0)return'—';
+  const sym=cur==='inr'?'₹':'$';
+  if(n<0.001)return sym+n.toFixed(6);
+  if(n<0.01)return sym+n.toFixed(5);
+  if(n<1)return sym+n.toFixed(4);
+  return sym+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fc(n){
+  if(!n)return'—';
+  if(n>=1e12)return'$'+(n/1e12).toFixed(2)+'T';
+  if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';
+  return'$'+n.toLocaleString();
+}
+function tagCached(id){ const e=g(id);if(e){e.textContent='cached';e.className='t-tag cached';} }
+function setStatus(state,msg){ const d=g('edot'),t=g('estat');if(d)d.className='sdot '+state;if(t)t.textContent=msg; }
+
+function setCur(cur){
+  currency=cur;
+  g('btn-usd').classList.toggle('on',cur==='usd');
+  g('btn-inr').classList.toggle('on',cur==='inr');
+  g('price-sym').textContent=cur==='inr'?'₹':'$';
+  if(priceUSD){
+    const p=cur==='inr'?priceINR:priceUSD;
+    s('price',fp(p,cur).replace(/[₹$]/,''));
+  }
+}
+
+/* ── CoinGecko ── */
+async function fetchPrice(){
+  const r=await fetch('https://api.coingecko.com/api/v3/coins/beldex?localization=false&tickers=false&community_data=false&developer_data=false');
+  if(!r.ok)throw new Error('CG '+r.status);
+  const d=await r.json(); const m=d.market_data;
+  priceUSD=m.current_price.usd;
+  priceINR=m.current_price.inr||priceUSD*84;
+  const p=currency==='inr'?priceINR:priceUSD;
+  s('price',fp(p,currency).replace(/[₹$]/,''));
+  const chg=m.price_change_percentage_24h||0;
+  const badge=g('chg');
+  if(badge){
+    badge.className='hp-change '+(chg>0?'up':chg<0?'dn':'nt');
+    badge.textContent=(chg>=0?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%  24H';
+  }
+  s('mcap',fc(m.market_cap.usd));
+  s('vol',fc(m.total_volume.usd));
+  s('vol-sub','Vol: '+fc(m.total_volume.usd));
+  s('sup',(m.circulating_supply/1e9).toFixed(3)+'B BDX');
+  s('tsup',m.total_supply?(m.total_supply/1e9).toFixed(3)+'B BDX':'∞');
+  s('h24',fp(m.high_24h.usd));
+  s('l24',fp(m.low_24h.usd));
+  s('ath',fp(m.ath.usd));
+  s('athd','ATH: '+new Date(m.ath_date.usd).toLocaleDateString('en-US',{year:'numeric',month:'short'}));
+  s('athc',(m.ath_change_percentage.usd||0).toFixed(1)+'%');
+  s('upd',now()+' · '+(currency==='inr'?'INR':'USD'));
+}
+
+/* ── Explorer API ── */
+async function fetchExplorer(){
+  const r=await fetch('/api/explorer');
+  if(!r.ok)throw new Error('API '+r.status);
+  const j=await r.json();
+  if(!j.ok)throw new Error(j.error);
+  const d=j.data;
+
+  /* chain stats */
+  if(d.blockHeight){s('height',d.blockHeight.toLocaleString());}else tagCached('tag-burn');
+  if(d.hardFork){s('hf',d.hardFork);s('hf-sub','Hard fork '+d.hardFork);}
+  if(d.burnedBDX){s('burned',(d.burnedBDX/1e6).toFixed(3)+'M BDX');}else tagCached('tag-burn');
+  if(d.totalBNS){s('bns',d.totalBNS.toLocaleString());}else tagCached('tag-bns');
+  if(d.txPoolCount!==undefined){
+    s('txpool',d.txPoolCount);
+    s('txpool-size',d.txPoolSize||'0B'+' pending');
+    g('tag-pool')&&(g('tag-pool').textContent='live',g('tag-pool').className='t-tag live');
+  }
+  if(d.blockchainSize){s('bcsize',d.blockchainSize);g('tag-size')&&(g('tag-size').textContent='live',g('tag-size').className='t-tag live');}
+  if(d.baseFeeOutput){s('fee-out',d.baseFeeOutput+' BDX');}
+  if(d.baseFeeKb){s('fee-kb',d.baseFeeKb+' BDX/kB');}
+  if(d.flashFeeOutput){s('flash-out',d.flashFeeOutput+' BDX');}
+  if(d.flashFeeKb){s('flash-kb',d.flashFeeKb+' BDX/kB');}
+  if(d.blockSizeSoft&&d.blockSizeHard){s('block-size',d.blockSizeSoft+' / '+d.blockSizeHard);}
+
+  /* masternodes */
+  const active=d.activeNodes||0, decom=d.decomNodes||0, await_=d.awaitingNodes||0;
+  const total=active+decom+await_;
+  if(total>0){
+    s('masternodes',active.toLocaleString());
+    g('tag-mn')&&(g('tag-mn').textContent='live',g('tag-mn').className='t-tag live');
+    s('mn-total',total.toLocaleString());
+    s('mn-active',active.toLocaleString());
+    s('mn-decom',decom);
+    s('mn-await',await_);
+    s('mn-locked',((active*10000)/1e6).toFixed(2)+'M BDX');
+    /* donut arcs — circumference = 2π×38 ≈ 239 */
+    const circ=239;
+    const activeArc=(active/total)*circ;
+    const decomArc=(decom/total)*circ;
+    const arcA=g('mn-arc-active'),arcD=g('mn-arc-decom');
+    if(arcA) arcA.setAttribute('stroke-dasharray',`${activeArc} ${circ}`);
+    if(arcD){
+      arcD.setAttribute('stroke-dasharray',`${decomArc} ${circ}`);
+      arcD.setAttribute('stroke-dashoffset',`-${activeArc}`);
+    }
+  }
+
+  /* block visualizer */
+  if(d.recentBlocks&&d.recentBlocks.length>0){
+    const track=g('block-track');
+    track.innerHTML='';
+
+    /* mempool pending card first */
+    const pending=document.createElement('div');
+    pending.className='block-card mempool';
+    pending.innerHTML=`
+      <div class="bc-height" style="color:var(--gold)">PENDING</div>
+      <div class="bc-pending">● Next block</div>
+      <div class="bc-txcount">${d.txPoolCount||0} waiting</div>
+      <div class="bc-size" style="color:var(--gold);margin-top:auto">~2 min</div>
+    `;
+    track.appendChild(pending);
+
+    d.recentBlocks.forEach((b,i)=>{
+      const card=document.createElement('div');
+      card.className='block-card'+(i===0?' new-block':'');
+      const txCount=b.txs?b.txs.length:0;
+      const sizeBytes=b.size?parseSize(b.size):0;
+      const fillPct=Math.min(100,Math.max(8,(sizeBytes/300000)*100));
+      card.innerHTML=`
+        <div class="block-fill" style="height:${fillPct}%"></div>
+        <div class="bc-height"><a href="https://explorer.beldex.io/block/${b.height}" target="_blank" style="color:inherit;text-decoration:none">#${b.height.toLocaleString()}</a></div>
+        <div class="bc-age">${b.age||'~'+(i*2)+'m ago'}</div>
+        <div class="bc-txcount" style="margin-top:auto">${txCount} tx${txCount!==1?'s':''}</div>
+        <div class="bc-size">${b.size||'—'}</div>
+        <div class="bc-reward">6.25 BDX</div>
+      `;
+      track.appendChild(card);
+    });
+
+    setStatus('ok','explorer.beldex.io — live data');
+    s('sync-time',now());
+  }
+
+  /* tx list */
+  const txList=g('tx-list');
+  txList.innerHTML='';
+  let totalTxs=0;
+  if(d.recentBlocks){
+    d.recentBlocks.forEach(b=>{
+      if(!b.txs)return;
+      b.txs.forEach((tx,i)=>{
+        totalTxs++;
+        if(totalTxs>20)return;
+        const row=document.createElement('div');
+        row.className='tf-row'+(totalTxs===1?' incoming':'');
+        const fee=tx.fee&&tx.fee!=='0'?tx.fee:'—';
+        const pill=tx.burn
+          ?'<span class="type-pill tp-burn">🔥 BURN</span>'
+          :'<span class="type-pill tp-tx">TRANSFER</span>';
+        row.innerHTML=`
+          <div class="tr-height"><a href="https://explorer.beldex.io/block/${b.height}" target="_blank">#${b.height.toLocaleString()}</a></div>
+          <div class="tr-age">${b.age||'—'}</div>
+          <div class="tr-hash" style="color:var(--muted);font-size:9px">Private tx</div>
+          <div class="tr-fee" style="text-align:right">${fee}</div>
+          <div class="tr-type" style="text-align:right">${pill}</div>
+        `;
+        txList.appendChild(row);
+      });
+      /* also add the block reward row */
+      if(totalTxs<=20){
+        totalTxs++;
+        const rrow=document.createElement('div');
+        rrow.className='tf-row';
+        rrow.innerHTML=`
+          <div class="tr-height"><a href="https://explorer.beldex.io/block/${b.height}" target="_blank">#${b.height.toLocaleString()}</a></div>
+          <div class="tr-age">${b.age||'—'}</div>
+          <div class="tr-hash" style="color:var(--muted);font-size:9px">Block reward</div>
+          <div class="tr-fee" style="text-align:right;color:var(--green)">—</div>
+          <div class="tr-type" style="text-align:right"><span class="type-pill tp-reward">🎁 REWARD</span></div>
+        `;
+        txList.appendChild(rrow);
+      }
+    });
+  }
+  s('tx-count-badge', totalTxs+' txs');
+  if(txList.children.length===0){
+    txList.innerHTML='<div style="padding:20px;font-family:var(--font-mono);font-size:11px;color:var(--muted)">No transactions in recent blocks</div>';
+  }
+}
+
+function parseSize(s){
+  if(!s)return 0;
+  if(s.endsWith('k')||s.endsWith('K'))return parseFloat(s)*1024;
+  return parseInt(s)||0;
+}
+
+function applyFallbacks(){
+  setStatus('err','Explorer unreachable — showing last known values');
+  if(g('height').textContent==='...')s('height','5,231,000+');
+  if(g('burned').textContent==='...')s('burned','9.62M BDX');
+  if(g('bns').textContent==='...')s('bns','5,314+');
+  if(g('txpool').textContent==='...')s('txpool','0');
+  if(g('masternodes').textContent==='...')s('masternodes','2,676');
+  if(g('mn-active').textContent==='...')s('mn-active','2,676');
+  if(g('mn-decom').textContent==='...')s('mn-decom','8');
+  if(g('mn-await').textContent==='...')s('mn-await','0');
+  if(g('mn-total').textContent==='...')s('mn-total','2,684');
+  if(g('mn-locked').textContent==='...')s('mn-locked','26.76M BDX');
+  if(g('bcsize').textContent==='...')s('bcsize','48.0 GB');
+  if(g('fee-out').textContent==='...')s('fee-out','0.0001 BDX');
+  if(g('fee-kb').textContent==='...')s('fee-kb','0.006666 BDX/kB');
+  if(g('flash-out').textContent==='...')s('flash-out','0.0003 BDX');
+  if(g('flash-kb').textContent==='...')s('flash-kb','0.019998 BDX/kB');
+  if(g('block-size').textContent==='...')s('block-size','300kB / 600kB');
+  g('block-track').innerHTML=`<div style="padding:24px;font-family:var(--font-mono);font-size:11px;color:var(--muted)">API not deployed — <a href="https://explorer.beldex.io" target="_blank" style="color:var(--gold)">view explorer →</a></div>`;
+  g('tx-list').innerHTML=`<div style="padding:20px;font-family:var(--font-mono);font-size:11px;color:var(--muted)">API not deployed yet</div>`;
+}
+
+/* countdown */
+let timer,cd=30;
+function startCD(){
+  clearInterval(timer);cd=30;s('cd',cd);
+  timer=setInterval(()=>{cd--;s('cd',cd);if(cd<=0)loadAll();},1000);
+}
+
+async function loadAll(){
+  startCD();
+  s('foot-ts',new Date().toUTCString().replace(' GMT',''));
+  fetchPrice().catch(e=>{s('price','ERR');console.warn(e);});
+  setStatus('loading','Fetching chain data...');
+  fetchExplorer().catch(()=>applyFallbacks());
+}
+
+loadAll();
+</script>
+</body>
+</html>
