@@ -1111,7 +1111,7 @@ function startCD(){
 async function loadAll(){
   startCD();
   s('foot-ts',new Date().toUTCString().replace(' GMT',''));
-  fetchPrice().catch(e=>{s('price','ERR');console.warn(e);});
+  fetchPrice().catch(e=>{if(!priceUSD)s('price','ERR');console.warn(e);});
   setStatus('loading','Fetching chain data...');
   fetchExplorer().catch(()=>applyFallbacks());
 }
