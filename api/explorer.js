@@ -3,18 +3,17 @@ module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=40');
 
   try {
-    // Use JSON API endpoints instead of HTML scraping
-    // The explorer is a JS-rendered SPA, so HTML scraping gets empty content
-    const [infoRes, emissionRes, mempoolRes, mnRes] = await Promise.allSettled([
+    // Fetch from all known working API endpoints in parallel
+    const [infoRes, emissionRes, statsRes, mnStatsRes] = await Promise.allSettled([
       fetch('https://explorer.beldex.io/api/networkinfo'),
       fetch('https://explorer.beldex.io/api/emission'),
-      fetch('https://explorer.beldex.io/api/mempool'),
-      fetch('https://explorer.beldex.io/api/master_nodes_states')
+      fetch('https://explorer.beldex.io/api/get_stats'),
+      fetch('https://explorer.beldex.io/api/master_node_stats')
     ]);
 
     const data = {};
 
-    // Network info: block height, hard fork, fees, block size, blockchain size
+    // Network info: block height, hard fork, fees, block size, blockchain size, tx pool, BNS
     if (infoRes.status === 'fulfilled' && infoRes.value.ok) {
       try {
         const info = await infoRes.value.json();
@@ -23,6 +22,9 @@ module.exports = async function handler(req, res) {
         if (d.height) data.blockHeight = d.height;
         if (d.current_hf_version) data.hardFork = 'v' + d.current_hf_version;
         else if (d.hard_fork) data.hardFork = 'v' + d.hard_fork;
+
+        // TX pool size from networkinfo
+        if (d.tx_pool_size !== undefined) data.txPoolCount = d.tx_pool_size;
 
         // Fees (in atomic units, 1 BDX = 1e9 atomic)
         if (d.fee_per_output) data.baseFeeOutput = (d.fee_per_output / 1e9).toFixed(4);
@@ -50,83 +52,127 @@ module.exports = async function handler(req, res) {
           data.blockchainSize = gb + ' GB';
         }
 
-        // Staking requirement
+        // Staking requirement from networkinfo
         if (d.staking_requirement) {
           data.stakingRequirement = Math.round(d.staking_requirement / 1e9);
         }
+
+        // BNS counts from networkinfo
+        if (d.bns_counts !== undefined) {
+          // Could be a number or an object with sub-counts
+          if (typeof d.bns_counts === 'number') {
+            data.totalBNS = d.bns_counts;
+          } else if (typeof d.bns_counts === 'object') {
+            // Sum all BNS type counts
+            let total = 0;
+            for (const key of Object.keys(d.bns_counts)) {
+              total += d.bns_counts[key] || 0;
+            }
+            data.totalBNS = total;
+          }
+        }
+
+        // Store raw networkinfo for debug
+        data._networkinfoKeys = Object.keys(d);
       } catch (e) {
-        // networkinfo wasn't JSON, try alternate endpoints
+        data._networkinfoError = e.message;
       }
     }
 
-    // Emission data: burned BDX, BNS count
+    // Emission data: burned BDX, circulating supply
+    // Fields: burn_amount, emission_amount, fee_amount, circulating_supply
     if (emissionRes.status === 'fulfilled' && emissionRes.value.ok) {
       try {
         const em = await emissionRes.value.json();
         const d = em.data || em;
 
-        if (d.burned || d.burnt) {
+        // burn_amount is the correct field name (in atomic units)
+        if (d.burn_amount) {
+          data.burnedBDX = d.burn_amount > 1e12 ? d.burn_amount / 1e9 : d.burn_amount;
+        } else if (d.burned || d.burnt) {
           const burned = d.burned || d.burnt;
-          // Could be in atomic units or already in BDX
-          data.burnedBDX = burned > 1e9 ? burned / 1e9 : burned;
+          data.burnedBDX = burned > 1e12 ? burned / 1e9 : burned;
         }
-        if (d.total_bns !== undefined) data.totalBNS = d.total_bns;
-        if (d.bns_counts !== undefined) data.totalBNS = d.bns_counts;
-      } catch (e) {}
-    }
 
-    // Mempool
-    if (mempoolRes.status === 'fulfilled' && mempoolRes.value.ok) {
-      try {
-        const mp = await mempoolRes.value.json();
-        const d = mp.data || mp;
-        if (d.txs) {
-          data.txPoolCount = Array.isArray(d.txs) ? d.txs.length : 0;
-        } else if (d.tx_count !== undefined) {
-          data.txPoolCount = d.tx_count;
-        } else {
-          data.txPoolCount = 0;
+        if (d.emission_amount) {
+          data.totalEmission = d.emission_amount > 1e12 ? d.emission_amount / 1e9 : d.emission_amount;
         }
-        if (d.txs_size) data.txPoolSize = d.txs_size;
+        if (d.circulating_supply) {
+          data.circulatingSupply = d.circulating_supply > 1e12 ? d.circulating_supply / 1e9 : d.circulating_supply;
+        }
+
+        // Store raw emission keys for debug
+        data._emissionKeys = Object.keys(d);
       } catch (e) {
-        data.txPoolCount = 0;
+        data._emissionError = e.message;
       }
     }
 
-    // Master nodes
-    if (mnRes.status === 'fulfilled' && mnRes.value.ok) {
+    // Get stats: difficulty, height, burn, total_emission, last_timestamp, last_reward
+    if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
       try {
-        const mn = await mnRes.value.json();
-        const d = mn.data || mn;
+        const st = await statsRes.value.json();
+        const d = st.data || st;
 
-        if (d.active) data.activeNodes = d.active;
-        else if (d.states && d.states.active) data.activeNodes = d.states.active;
+        // Fallback burn data from get_stats
+        if (!data.burnedBDX && d.burn) {
+          data.burnedBDX = d.burn > 1e12 ? d.burn / 1e9 : d.burn;
+        }
+        if (d.difficulty) data.difficulty = d.difficulty;
+        if (d.last_reward) {
+          data.lastReward = d.last_reward > 1e6 ? (d.last_reward / 1e9).toFixed(2) : d.last_reward;
+        }
 
-        if (d.decommissioned !== undefined) data.decomNodes = d.decommissioned;
-        else if (d.states && d.states.decommissioned) data.decomNodes = d.states.decommissioned;
-
-        if (d.awaiting !== undefined) data.awaitingNodes = d.awaiting;
-        else if (d.states && d.states.awaiting) data.awaitingNodes = d.states.awaiting;
-      } catch (e) {}
+        data._statsKeys = Object.keys(d);
+      } catch (e) {
+        data._statsError = e.message;
+      }
     }
 
-    // If networkinfo didn't work, try alternate endpoint
-    if (!data.blockHeight) {
+    // Master node stats: active, funded, awaiting_contribution, decommissioned
+    if (mnStatsRes.status === 'fulfilled' && mnStatsRes.value.ok) {
       try {
-        const altRes = await fetch('https://explorer.beldex.io/api/transactions', {
-          headers: { 'User-Agent': 'Mozilla/5.0' }
-        });
-        if (altRes.ok) {
-          const alt = await altRes.json();
-          const d = alt.data || alt;
-          if (d.blocks && d.blocks.length > 0) {
-            data.blockHeight = d.blocks[0].height || d.blocks[0].block_height;
+        const mn = await mnStatsRes.value.json();
+        const d = mn.data || mn;
+
+        if (d.active !== undefined) data.activeNodes = d.active;
+        else if (d.funded !== undefined) data.activeNodes = d.funded;
+
+        if (d.decommissioned !== undefined) data.decomNodes = d.decommissioned;
+        if (d.awaiting_contribution !== undefined) data.awaitingNodes = d.awaiting_contribution;
+
+        // Staking requirement from master node stats (fallback)
+        if (!data.stakingRequirement && d.staking_requirement) {
+          data.stakingRequirement = d.staking_requirement > 1e6
+            ? Math.round(d.staking_requirement / 1e9)
+            : d.staking_requirement;
+        }
+
+        data._mnStatsKeys = Object.keys(d);
+      } catch (e) {
+        data._mnStatsError = e.message;
+      }
+    }
+
+    // Fallback: try /api/master_nodes if stats endpoint failed
+    if (data.activeNodes === undefined) {
+      try {
+        const mnAlt = await fetch('https://explorer.beldex.io/api/master_nodes');
+        if (mnAlt.ok) {
+          const mnData = await mnAlt.json();
+          const d = mnData.data || mnData;
+          if (Array.isArray(d)) {
+            data.activeNodes = d.filter(n => n.active || n.funded).length;
+            data.decomNodes = d.filter(n => n.decommissioned).length;
+            data.awaitingNodes = d.filter(n => n.awaiting).length;
+          } else if (d.master_nodes && Array.isArray(d.master_nodes)) {
+            data.activeNodes = d.master_nodes.length;
           }
         }
       } catch (e) {}
     }
 
-    // Get recent blocks from the main page links as fallback
+    // Get recent blocks
     if (!data.recentBlocks || data.recentBlocks.length === 0) {
       try {
         const txRes = await fetch('https://explorer.beldex.io/api/transactions');
@@ -145,11 +191,11 @@ module.exports = async function handler(req, res) {
       } catch (e) {}
     }
 
-    // Last resort: scrape block links from HTML (this already worked)
+    // Last resort: scrape block links from HTML
     if (!data.recentBlocks || data.recentBlocks.length === 0) {
       try {
         const htmlRes = await fetch('https://explorer.beldex.io/', {
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BeldexExplorer/1.0)' }
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BeldexStats/1.0)' }
         });
         if (htmlRes.ok) {
           const html = await htmlRes.text();
@@ -165,8 +211,6 @@ module.exports = async function handler(req, res) {
             }
           }
           data.recentBlocks = blocks;
-
-          // Also derive block height from highest block
           if (!data.blockHeight && blocks.length > 0) {
             data.blockHeight = blocks[0].height;
           }
@@ -174,31 +218,12 @@ module.exports = async function handler(req, res) {
       } catch (e) {}
     }
 
-    // If we still don't have masternode data, try the HTML page
-    if (!data.activeNodes) {
-      try {
-        const mnHtml = await fetch('https://explorer.beldex.io/api/master_nodes');
-        if (mnHtml.ok) {
-          const mnData = await mnHtml.json();
-          const d = mnData.data || mnData;
-          // Count from array if returned as list
-          if (Array.isArray(d)) {
-            data.activeNodes = d.filter(n => n.active || n.funded).length;
-            data.decomNodes = d.filter(n => n.decommissioned).length;
-            data.awaitingNodes = d.filter(n => n.awaiting).length;
-          } else if (d.master_nodes && Array.isArray(d.master_nodes)) {
-            data.activeNodes = d.master_nodes.length;
-          }
-        }
-      } catch (e) {}
-    }
-
-    // Debug: include which endpoints responded for troubleshooting
+    // Debug: include which endpoints responded
     data._debug = {
       networkinfo: infoRes.status === 'fulfilled' ? infoRes.value.status : 'failed',
       emission: emissionRes.status === 'fulfilled' ? emissionRes.value.status : 'failed',
-      mempool: mempoolRes.status === 'fulfilled' ? mempoolRes.value.status : 'failed',
-      masternodes: mnRes.status === 'fulfilled' ? mnRes.value.status : 'failed'
+      get_stats: statsRes.status === 'fulfilled' ? statsRes.value.status : 'failed',
+      master_node_stats: mnStatsRes.status === 'fulfilled' ? mnStatsRes.value.status : 'failed'
     };
 
     data.fetchedAt = Date.now();
