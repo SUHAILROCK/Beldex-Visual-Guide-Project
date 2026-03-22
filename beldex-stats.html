@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beldex Explorer — Network Dashboard</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ─── RESET & BASE ─── */
@@ -224,8 +225,8 @@ body::after {
   display:flex; gap:2px; background:var(--faint); border-radius:5px; padding:2px; margin-left:auto;
 }
 .ctb {
-  font-family:var(--font-mono); font-size:9px; letter-spacing:0.06em;
-  padding:3px 10px; border-radius:3px; border:none; cursor:pointer;
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em;
+  padding:4px 12px; border-radius:3px; border:none; cursor:pointer;
   background:transparent; color:var(--muted); transition:all 0.15s;
 }
 .ctb.on { background:var(--gold); color:#000; font-weight:700; }
@@ -893,63 +894,120 @@ const g = id => document.getElementById(id);
 const s = (id, v) => { const e=g(id); if(e) e.textContent=v; };
 const now = () => new Date().toLocaleTimeString('en-US',{hour12:false});
 
-let priceUSD=0, priceINR=0, currency='usd';
+let priceUSD=0, priceINR=0, currency='usd', marketData=null, explorerData=null;
 
-function fp(n,cur='usd'){
-  if(!n&&n!==0)return'—';
+/* Indian number system: 1,00,000 (lakh), 1,00,00,000 (crore) */
+function fmtIndian(n){
+  const str=Math.floor(n).toString();
+  if(str.length<=3) return str;
+  let last3=str.slice(-3);
+  let rest=str.slice(0,-3);
+  /* group remaining digits in pairs */
+  rest=rest.replace(/\B(?=(\d{2})+(?!\d))/g,',');
+  return rest+','+last3;
+}
+
+/* format price */
+function fp(n,cur){
+  cur=cur||currency;
+  if(!n&&n!==0)return cur==='inr'?'₹0':'$0';
   const sym=cur==='inr'?'₹':'$';
   if(n<0.001)return sym+n.toFixed(6);
   if(n<0.01)return sym+n.toFixed(5);
   if(n<1)return sym+n.toFixed(4);
+  if(cur==='inr'){
+    const whole=Math.floor(n);
+    const dec=(n-whole).toFixed(2).slice(1);
+    return sym+fmtIndian(whole)+dec;
+  }
   return sym+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
-function fc(n){
-  if(!n)return'—';
-  if(n>=1e12)return'$'+(n/1e12).toFixed(2)+'T';
-  if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';
-  if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';
-  return'$'+n.toLocaleString();
+
+/* format compact (market cap, volume) */
+function fc(n,cur){
+  cur=cur||currency;
+  if(!n)return cur==='inr'?'₹0':'$0';
+  const sym=cur==='inr'?'₹':'$';
+  if(cur==='inr'){
+    if(n>=1e12)return sym+(n/1e7/1e5).toFixed(2)+' Lakh Cr';
+    if(n>=1e7)return sym+fmtIndian(Math.round(n/1e7))+' Cr';
+    if(n>=1e5)return sym+fmtIndian(Math.round(n/1e5))+' L';
+    return sym+fmtIndian(Math.round(n));
+  }
+  if(n>=1e12)return sym+(n/1e12).toFixed(2)+'T';
+  if(n>=1e9)return sym+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return sym+(n/1e6).toFixed(2)+'M';
+  return sym+n.toLocaleString('en-US');
 }
+
+/* format BDX amounts: Indian (Lakh/Crore) or Western (M/B) */
+function fBDX(n){
+  if(!n)return'0 BDX';
+  if(currency==='inr'){
+    if(n>=1e7)return fmtIndian(Math.round(n/1e7))+' Cr BDX';
+    if(n>=1e5)return(n/1e5).toFixed(2)+' L BDX';
+    return fmtIndian(Math.round(n))+' BDX';
+  }
+  if(n>=1e9)return(n/1e9).toFixed(3)+'B BDX';
+  if(n>=1e6)return(n/1e6).toFixed(3)+'M BDX';
+  if(n>=1e3)return(n/1e3).toFixed(1)+'K BDX';
+  return Math.round(n).toLocaleString('en-US')+' BDX';
+}
+
 function tagCached(id){ const e=g(id);if(e){e.textContent='cached';e.className='t-tag cached';} }
 function setStatus(state,msg){ const d=g('edot'),t=g('estat');if(d)d.className='sdot '+state;if(t)t.textContent=msg; }
 
-function setCur(cur){
-  currency=cur;
-  g('btn-usd').classList.toggle('on',cur==='usd');
-  g('btn-inr').classList.toggle('on',cur==='inr');
-  g('price-sym').textContent=cur==='inr'?'₹':'$';
-  if(priceUSD){
-    const p=cur==='inr'?priceINR:priceUSD;
-    s('price',fp(p,cur).replace(/[₹$]/,''));
-  }
-}
+function applyMarketUI(){
+  if(!marketData)return;
+  const m=marketData, cur=currency;
+  const isINR=cur==='inr';
+  const p=isINR?priceINR:priceUSD;
 
-/* ── CoinGecko ── */
-async function fetchPrice(){
-  const r=await fetch('https://api.coingecko.com/api/v3/coins/beldex?localization=false&tickers=false&community_data=false&developer_data=false');
-  if(!r.ok)throw new Error('CG '+r.status);
-  const d=await r.json(); const m=d.market_data;
-  priceUSD=m.current_price.usd;
-  priceINR=m.current_price.inr||priceUSD*84;
-  const p=currency==='inr'?priceINR:priceUSD;
-  s('price',fp(p,currency).replace(/[₹$]/,''));
+  g('price-sym').textContent=isINR?'₹':'$';
+  s('price',fp(p,cur).replace(/[₹$]/,''));
+
   const chg=m.price_change_percentage_24h||0;
   const badge=g('chg');
   if(badge){
     badge.className='hp-change '+(chg>0?'up':chg<0?'dn':'nt');
     badge.textContent=(chg>=0?'▲ +':'▼ ')+Math.abs(chg).toFixed(2)+'%  24H';
   }
-  s('mcap',fc(m.market_cap.usd));
-  s('vol',fc(m.total_volume.usd));
-  s('vol-sub','Vol: '+fc(m.total_volume.usd));
-  s('sup',(m.circulating_supply/1e9).toFixed(3)+'B BDX');
-  s('tsup',m.total_supply?(m.total_supply/1e9).toFixed(3)+'B BDX':'∞');
-  s('h24',fp(m.high_24h.usd));
-  s('l24',fp(m.low_24h.usd));
-  s('ath',fp(m.ath.usd));
-  s('athd','ATH: '+new Date(m.ath_date.usd).toLocaleDateString('en-US',{year:'numeric',month:'short'}));
-  s('athc',(m.ath_change_percentage.usd||0).toFixed(1)+'%');
-  s('upd',now()+' · '+(currency==='inr'?'INR':'USD'));
+
+  s('mcap',fc(isINR?m.market_cap.inr:m.market_cap.usd, cur));
+  s('vol',fc(isINR?m.total_volume.inr:m.total_volume.usd, cur));
+  s('vol-sub','Vol: '+fc(isINR?m.total_volume.inr:m.total_volume.usd, cur));
+  s('sup',fBDX(m.circulating_supply));
+  s('tsup',m.total_supply?fBDX(m.total_supply):'∞');
+  s('h24',fp(isINR?m.high_24h.inr:m.high_24h.usd, cur));
+  s('l24',fp(isINR?m.low_24h.inr:m.low_24h.usd, cur));
+  s('ath',fp(isINR?m.ath.inr:m.ath.usd, cur));
+  s('athd','ATH: '+new Date((isINR?m.ath_date.inr:m.ath_date.usd)||m.ath_date.usd).toLocaleDateString('en-US',{year:'numeric',month:'short'}));
+  s('athc',((isINR?m.ath_change_percentage.inr:m.ath_change_percentage.usd)||0).toFixed(1)+'%');
+  s('upd',now()+' · '+(isINR?'INR':'USD'));
+
+  /* re-render BDX amounts (use explorer data or fallback constants) */
+  const burned=explorerData?explorerData.burnedBDX:9620000;
+  if(burned) s('burned',fBDX(burned));
+  const active=explorerData?(explorerData.activeNodes||0):2676;
+  if(active>0) s('mn-locked',fBDX(active*10000));
+}
+
+function setCur(cur){
+  currency=cur;
+  g('btn-usd').classList.toggle('on',cur==='usd');
+  g('btn-inr').classList.toggle('on',cur==='inr');
+  applyMarketUI();
+}
+
+/* ── CoinGecko ── */
+async function fetchPrice(){
+  const r=await fetch('https://api.coingecko.com/api/v3/coins/beldex?localization=false&tickers=false&community_data=false&developer_data=false');
+  if(!r.ok)throw new Error('CG '+r.status);
+  const d=await r.json();
+  marketData=d.market_data;
+  priceUSD=marketData.current_price.usd;
+  priceINR=marketData.current_price.inr||priceUSD*84;
+  applyMarketUI();
 }
 
 /* ── Explorer API ── */
@@ -959,11 +1017,12 @@ async function fetchExplorer(){
   const j=await r.json();
   if(!j.ok)throw new Error(j.error);
   const d=j.data;
+  explorerData=d;
 
   /* chain stats */
   if(d.blockHeight){s('height',d.blockHeight.toLocaleString());}else tagCached('tag-burn');
   if(d.hardFork){s('hf',d.hardFork);s('hf-sub','Hard fork '+d.hardFork);}
-  if(d.burnedBDX){s('burned',(d.burnedBDX/1e6).toFixed(3)+'M BDX');}else tagCached('tag-burn');
+  if(d.burnedBDX){s('burned',fBDX(d.burnedBDX));}else tagCached('tag-burn');
   if(d.totalBNS){s('bns',d.totalBNS.toLocaleString());}else tagCached('tag-bns');
   if(d.txPoolCount!==undefined){
     s('txpool',d.txPoolCount);
@@ -988,7 +1047,7 @@ async function fetchExplorer(){
     s('mn-active',active.toLocaleString());
     s('mn-decom',decom);
     s('mn-await',await_);
-    s('mn-locked',((active*10000)/1e6).toFixed(2)+'M BDX');
+    s('mn-locked',fBDX(active*10000));
     /* donut arcs — circumference = 2π×38 ≈ 239 */
     const circ=239;
     const activeArc=(active/total)*circ;
@@ -1094,7 +1153,7 @@ function parseSize(s){
 function applyFallbacks(){
   setStatus('err','Explorer unreachable — showing last known values');
   if(g('height').textContent==='...')s('height','5,231,000+');
-  if(g('burned').textContent==='...')s('burned','9.62M BDX');
+  if(g('burned').textContent==='...')s('burned',fBDX(9620000));
   if(g('bns').textContent==='...')s('bns','5,314+');
   if(g('txpool').textContent==='...')s('txpool','0');
   if(g('masternodes').textContent==='...')s('masternodes','2,676');
@@ -1102,7 +1161,7 @@ function applyFallbacks(){
   if(g('mn-decom').textContent==='...')s('mn-decom','8');
   if(g('mn-await').textContent==='...')s('mn-await','0');
   if(g('mn-total').textContent==='...')s('mn-total','2,684');
-  if(g('mn-locked').textContent==='...')s('mn-locked','26.76M BDX');
+  if(g('mn-locked').textContent==='...')s('mn-locked',fBDX(26760000));
   if(g('bcsize').textContent==='...')s('bcsize','48.0 GB');
   if(g('fee-out').textContent==='...')s('fee-out','0.0001 BDX');
   if(g('fee-kb').textContent==='...')s('fee-kb','0.006666 BDX/kB');
