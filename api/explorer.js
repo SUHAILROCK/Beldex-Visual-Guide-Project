@@ -1,14 +1,22 @@
+/* fetch with a hard timeout so Vercel never hangs past 8 s */
+function fetchT(url, opts = {}, ms = 7000) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctrl.signal })
+    .finally(() => clearTimeout(id));
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=40');
 
   try {
-    // Fetch from all known working API endpoints in parallel
+    // Fetch from all known working API endpoints in parallel (7 s timeout each)
     const [infoRes, emissionRes, statsRes, mnStatsRes] = await Promise.allSettled([
-      fetch('https://explorer.beldex.io/api/networkinfo'),
-      fetch('https://explorer.beldex.io/api/emission'),
-      fetch('https://explorer.beldex.io/api/get_stats'),
-      fetch('https://explorer.beldex.io/api/master_node_stats')
+      fetchT('https://explorer.beldex.io/api/networkinfo'),
+      fetchT('https://explorer.beldex.io/api/emission'),
+      fetchT('https://explorer.beldex.io/api/get_stats'),
+      fetchT('https://explorer.beldex.io/api/master_node_stats')
     ]);
 
     const data = {};
@@ -157,7 +165,7 @@ module.exports = async function handler(req, res) {
     // Fallback: try /api/master_nodes if stats endpoint failed
     if (data.activeNodes === undefined) {
       try {
-        const mnAlt = await fetch('https://explorer.beldex.io/api/master_nodes');
+        const mnAlt = await fetchT('https://explorer.beldex.io/api/master_nodes');
         if (mnAlt.ok) {
           const mnData = await mnAlt.json();
           const d = mnData.data || mnData;
@@ -175,7 +183,7 @@ module.exports = async function handler(req, res) {
     // Get recent blocks
     if (!data.recentBlocks || data.recentBlocks.length === 0) {
       try {
-        const txRes = await fetch('https://explorer.beldex.io/api/transactions');
+        const txRes = await fetchT('https://explorer.beldex.io/api/transactions');
         if (txRes.ok) {
           const txData = await txRes.json();
           const d = txData.data || txData;
@@ -194,7 +202,7 @@ module.exports = async function handler(req, res) {
     // Last resort: scrape block links from HTML
     if (!data.recentBlocks || data.recentBlocks.length === 0) {
       try {
-        const htmlRes = await fetch('https://explorer.beldex.io/', {
+        const htmlRes = await fetchT('https://explorer.beldex.io/', {
           headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BeldexStats/1.0)' }
         });
         if (htmlRes.ok) {
