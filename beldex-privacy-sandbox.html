@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beldex Privacy — Interactive Exhibit</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&family=Sora:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           1. WORLD-CLASS DESIGN SYSTEM
+           ========================================================================== */
+        :root {
+            --green: #00e5c0;
+            --green-glow: rgba(0, 229, 192, 0.4);
+            --purple: #a78bfa;
+            --purple-glow: rgba(167, 139, 250, 0.4);
+            --amber: #fbbf24;
+            --blue: #3b82f6;
+            --red: #ef4444;
+            
+            --bg-void: #050505;
+            --surface: #0a0a0a;
+            --surface-hover: #111111;
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --text-title: #ffffff;
+            --text-body: #a1a1aa;
+            
+            --font-head: 'Sora', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-sys: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-void); color: var(--text-body);
+            font-family: var(--font-body); min-height: 100vh;
+            overflow: hidden; /* Lock scroll, handled internally */
+            display: flex; flex-direction: column;
+        }
+
+        /* Ambient Blobs (Cinematic background) */
+        .ambient-glow {
+            position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1;
+            opacity: 0.15; transition: all 2s ease-in-out; pointer-events: none;
+        }
+        #glow1 { width: 800px; height: 800px; background: var(--purple); left: -200px; top: -200px; }
+        #glow2 { width: 600px; height: 600px; background: var(--green); right: -100px; bottom: -100px; }
+
+        /* Noise Texture */
+        .noise {
+            position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.04;
+            background: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)"/%3E%3C/svg%3E');
+        }
+
+        /* ==========================================================================
+           2. HEADER
+           ========================================================================== */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 3rem; border-bottom: 1px solid var(--border);
+            z-index: 100; background: rgba(5,5,5,0.8); backdrop-filter: blur(20px);
+        }
+        .brand { display: flex; align-items: center; gap: 1rem; }
+        .lux-chip {
+            border: 1px solid var(--border); background: var(--surface);
+            padding: 0.4rem 1rem; border-radius: 30px; font-family: var(--font-sys);
+            font-size: 0.75rem; font-weight: 700; color: #fff;
+            letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .lux-chip::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .logo-text { font-family: var(--font-head); font-weight: 500; font-size: 1.2rem; color: #fff; }
+        .back-nav { color: var(--text-body); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .back-nav:hover { color: #fff; }
+
+        /* ==========================================================================
+           3. MAIN LAYOUT (STORYBOARD)
+           ========================================================================== */
+        .exhibit {
+            display: flex; flex: 1; height: calc(100vh - 80px);
+        }
+
+        /* --- SIDEBAR (THE CHAPTERS) --- */
+        .sidebar {
+            width: 450px; border-right: 1px solid var(--border);
+            background: rgba(10,10,10,0.5); backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; overflow-y: auto;
+            position: relative; z-index: 10;
+        }
+        
+        .chapter {
+            padding: 2.5rem; border-bottom: 1px solid var(--border);
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+        .chapter::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+            background: linear-gradient(to bottom, var(--green), var(--purple));
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .chapter:hover { background: var(--surface-hover); }
+        .chapter.active { background: rgba(255,255,255,0.02); }
+        .chapter.active::before { opacity: 1; }
+        
+        .ch-num {
+            font-family: var(--font-sys); font-size: 0.8rem; font-weight: 700;
+            color: #52525b; margin-bottom: 0.75rem; display: block;
+        }
+        .chapter.active .ch-num { color: var(--green); }
+        .ch-title {
+            font-family: var(--font-head); font-size: 1.5rem; font-weight: 700;
+            color: var(--text-title); margin-bottom: 1rem; line-height: 1.2;
+        }
+        .chapter.active .ch-title {
+            background: linear-gradient(135deg, #fff, #a1a1aa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .ch-desc {
+            font-size: 0.95rem; line-height: 1.7; color: var(--text-body);
+            height: 0; overflow: hidden; opacity: 0; transition: all 0.4s;
+        }
+        .chapter.active .ch-desc { height: auto; opacity: 1; margin-bottom: 1.5rem; }
+
+        .btn-visualize {
+            background: transparent; border: 1px solid var(--border); color: #fff;
+            font-family: var(--font-head); font-weight: 600; font-size: 0.9rem;
+            padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s; display: none; margin-top: 1rem;
+        }
+        .chapter.active .btn-visualize { display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-visualize:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.2); }
+        .btn-visualize::after { content: '→'; font-family: system-ui; }
+
+        /* --- MAIN STAGE (THE VISUALIZER) --- */
+        .stage {
+            flex: 1; position: relative; display: flex; justify-content: center; align-items: center;
+            overflow: hidden; perspective: 1000px;
+        }
+
+        /* Concept View Containers */
+        .concept-view {
+            position: absolute; inset: 0; opacity: 0; pointer-events: none;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.8s, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: scale(0.95);
+        }
+        .concept-view.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+
+        /* ==========================================================================
+           4. VISUALIZATION COMPONENTS
+           ========================================================================== */
+        
+        /* Node Base (UI Elements on Stage) */
+        .v-node {
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+            position: absolute;
+        }
+        .v-box {
+            width: 80px; height: 80px; background: rgba(20,20,20,0.8);
+            border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #fff;
+        }
+        .v-lbl { font-family: var(--font-sys); font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        /* Data Packet */
+        .v-packet {
+            position: absolute; padding: 0.5rem 1rem; border-radius: 8px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; font-family: var(--font-sys); font-size: 0.85rem; font-weight: 700;
+            opacity: 0; transition: all 1s ease-in-out; z-index: 50;
+            backdrop-filter: blur(5px);
+        }
+
+        /* SVG Paths */
+        .v-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .v-track { fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 4 4; }
+        .v-track-anim { fill: none; stroke: var(--green); stroke-width: 2; opacity: 0; transition: opacity 0.3s; }
+        
+        /* --- CONCEPT 1: PUBLIC LEDGER --- */
+        #c1 .v-node.sender { left: 20%; top: 50%; transform: translateY(-50%); }
+        #c1 .v-node.receiver { right: 20%; top: 50%; transform: translateY(-50%); }
+        #c1 .v-packet { background: rgba(239, 68, 68, 0.1); border-color: var(--red); color: var(--red); } /* Red indicates bad/exposed */
+        
+        .hacker-eye {
+            position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; color: var(--red); opacity: 0; transition: opacity 0.5s;
+        }
+
+        /* --- CONCEPT 2: RING SIGNATURES --- */
+        #c2 .ring-arena {
+            width: 300px; height: 300px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.1);
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center;
+        }
+        .r-orb {
+            position: absolute; width: 16px; height: 16px; border-radius: 50%;
+            background: var(--surface); border: 2px solid var(--border);
+            transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .r-orb.sender-orb { background: var(--green); box-shadow: 0 0 15px var(--green); border-color: transparent;}
+        
+        /* --- CONCEPT 3: RING CT --- */
+        #c3 .amount-box {
+            font-family: var(--font-sys); font-size: 2rem; color: #fff; font-weight: 800;
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            transition: all 0.5s; display: flex; align-items: center; gap: 1rem;
+        }
+        .padlock { width: 40px; height: 40px; color: var(--border); transition: color 0.5s; }
+        .ct-math {
+            position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);
+            font-family: var(--font-sys); font-size: 1rem; color: var(--purple); opacity: 0; transition: opacity 1s; text-align: center;
+        }
+
+        /* --- CONCEPT 4: STEALTH ADDRESSES --- */
+        #c4 .v-node.sender { left: 20%; top: 50%; transform: translateY(-50%); }
+        #c4 .v-node.public-rec { right: 20%; top: 25%; transform: translateY(-50%); }
+        #c4 .v-node.stealth-rec { right: 20%; top: 75%; transform: translateY(-50%); opacity: 0; }
+
+        /* --- CONCEPT 5: ONION ROUTING (Masternodes) --- */
+        #c5 .mn-grid { width: 100%; height: 100%; position: relative; }
+        .mn-node {
+            position: absolute; width: 40px; height: 40px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+        }
+        .mn-node svg { width: 16px; height: 16px; color: #a1a1aa; }
+        #mnS { left: 10%; top: 50%; }
+        #mn1 { left: 30%; top: 20%; }
+        #mn2 { left: 50%; top: 80%; }
+        #mn3 { left: 70%; top: 30%; }
+        #mnR { left: 90%; top: 50%; }
+        
+        /* Onion Layers Effect */
+        #c5 .v-packet { padding: 8px; border-radius: 50%; border: 4px solid var(--green); outline: 4px solid var(--purple); box-shadow: 0 0 0 4px var(--blue); width: 30px; height: 30px; }
+
+    </style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="ambient-glow" id="glow1"></div>
+<div class="ambient-glow" id="glow2"></div>
+
+<header>
+    <div class="brand">
+        <span class="lux-chip">VISUAL EXHIBIT</span>
+        <div class="logo-text">Beldex Privacy Protocol</div>
+    </div>
+    <a href="index.html" class="back-nav">Exit Exhibit</a>
+</header>
+
+<div class="exhibit">
+    <!-- SIDEBAR CHAPTERS -->
+    <div class="sidebar">
+        
+        <div class="chapter active" id="ch1" onclick="loadConcept(1)">
+            <span class="ch-num">01 / DISCOVERY</span>
+            <h2 class="ch-title">The Public Ledger Flaw</h2>
+            <div class="ch-desc">
+                In traditional blockchains like Bitcoin, every transaction is completely transparent. Observers can see exactly who sent money, to whom, and the exact amount. It functions like a public bulletin board.
+            </div>
+            <button class="btn-visualize" onclick="playConcept(1); event.stopPropagation();">Simulate Trace</button>
+        </div>
+
+        <div class="chapter" id="ch2" onclick="loadConcept(2)">
+            <span class="ch-num">02 / SENDER PRIVACY</span>
+            <h2 class="ch-title">Ring Signatures</h2>
+            <div class="ch-desc">
+                Beldex solves sender exposure by mathematically mixing your transaction with past outputs from the blockchain. To an outside observer, a group of 10 different wallets appears to have sent the funds simultaneously.
+            </div>
+            <button class="btn-visualize" onclick="playConcept(2); event.stopPropagation();">Visualize Mixing</button>
+        </div>
+
+        <div class="chapter" id="ch3" onclick="loadConcept(3)">
+            <span class="ch-num">03 / AMOUNT PRIVACY</span>
+            <h2 class="ch-title">RingCT</h2>
+            <div class="ch-desc">
+                Confidential Transactions (RingCT) encrypt the actual BDX amount being sent. Using Pedersen Commitments, the network validates that the accounting math is correct without ever decrypting the numbers.
+            </div>
+            <button class="btn-visualize" onclick="playConcept(3); event.stopPropagation();">Encrypt Payload</button>
+        </div>
+
+        <div class="chapter" id="ch4" onclick="loadConcept(4)">
+            <span class="ch-num">04 / RECEIVER PRIVACY</span>
+            <h2 class="ch-title">Stealth Addresses</h2>
+            <div class="ch-desc">
+                You never send funds directly to someone's public Beldex address. Instead, the sender's wallet generates a random, one-time "Stealth Clone" address on the blockchain. Only the receiver has the private key to unlock it and see it belongs to them.
+            </div>
+            <button class="btn-visualize" onclick="playConcept(4); event.stopPropagation();">Generate Clone Node</button>
+        </div>
+
+        <div class="chapter" id="ch5" onclick="loadConcept(5)">
+            <span class="ch-num">05 / META PRIVACY</span>
+            <h2 class="ch-title">BelNet Onion Routing</h2>
+            <div class="ch-desc">
+                To prevent ISPs or hackers from tracking your IP address, your transaction data is encrypted in layers and bounced through 3 random Beldex Masternodes across the globe. Each hop peels one encryption layer until it reaches its final destination.
+            </div>
+            <button class="btn-visualize" onclick="playConcept(5); event.stopPropagation();">Route via BelNet</button>
+        </div>
+
+    </div>
+
+    <!-- MAIN STAGE -->
+    <div class="stage">
+        
+        <!-- CONCEPT 1 -->
+        <div class="concept-view active" id="c1">
+            <svg class="v-svg">
+                <path class="v-track" d="M 20% 50% L 80% 50%"></path>
+                <path class="v-track-anim" id="c1Track" d="M 20% 50% L 80% 50%" stroke-dasharray="1000" stroke-dashoffset="1000"></path>
+            </svg>
+            <div class="v-node sender">
+                <div class="v-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg></div>
+                <div class="v-lbl">Wallet A (Visible)</div>
+            </div>
+            <div class="v-node receiver">
+                <div class="v-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg></div>
+                <div class="v-lbl">Wallet B (Visible)</div>
+            </div>
+            
+            <svg class="hacker-eye" id="c1Eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <div class="v-packet" id="c1Pkt" style="left: 20%; top: 50%; transform: translate(-50%, -50%);">150 BDX (Exposed)</div>
+        </div>
+
+        <!-- CONCEPT 2 -->
+        <div class="concept-view" id="c2">
+            <div class="ring-arena" id="c2Ring">
+                <!-- Orbs managed by JS -->
+            </div>
+            <div class="v-lbl" style="position: absolute; bottom: 20%;">Identify the real sender. (Impossible)</div>
+        </div>
+
+        <!-- CONCEPT 3 -->
+        <div class="concept-view" id="c3">
+            <div class="amount-box" id="c3Amt">
+                <svg class="padlock" id="c3Lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>1500 BDX</span>
+            </div>
+            <div class="ct-math" id="c3Math">
+                C(a, x) = a · H + x · G<br>
+                <span style="font-size:0.8rem; color:#64748b;">Zero-Knowledge Proof Verified</span>
+            </div>
+        </div>
+
+        <!-- CONCEPT 4 -->
+        <div class="concept-view" id="c4">
+            <svg class="v-svg">
+                <!-- Track to public (dashed) -->
+                <path class="v-track" d="M 20% 50% Q 50% 25% 80% 25%"></path>
+                <!-- Track to stealth (hidden initially) -->
+                <path class="v-track" id="c4Dashed" d="M 20% 50% Q 50% 75% 80% 75%" opacity="0"></path>
+            </svg>
+            
+            <div class="v-node sender">
+                <div class="v-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9z"/></svg></div>
+                <div class="v-lbl">Sender</div>
+            </div>
+            <div class="v-node public-rec">
+                <div class="v-box" style="border-style: dashed; opacity: 0.5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/></svg></div>
+                <div class="v-lbl">Public Address</div>
+            </div>
+            <div class="v-node stealth-rec" id="c4StealthNode">
+                <div class="v-box" style="border-color: var(--amber); box-shadow: 0 0 20px rgba(251,191,36,0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" color="var(--amber)"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
+                <div class="v-lbl" style="color:var(--amber);">Stealth Clone (sec_...)</div>
+            </div>
+            <div class="v-packet" id="c4Pkt" style="left: 20%; top: 50%; transform: translate(-50%, -50%); border-color:var(--green); color:var(--green);">Target: Public</div>
+        </div>
+
+        <!-- CONCEPT 5 -->
+        <div class="concept-view" id="c5">
+            <svg class="v-svg">
+                <path class="v-track" d="M 10% 50% L 30% 20% L 50% 80% L 70% 30% L 90% 50%"></path>
+            </svg>
+            
+            <div class="mn-node" id="mnS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"><circle cx="12" cy="12" r="10"/></svg></div>
+            <div class="mn-node" id="mn1" style="border-color: var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6" y2="6"/><line x1="6" y1="18" x2="6" y2="18"/></svg></div>
+            <div class="mn-node" id="mn2" style="border-color: var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6" y2="6"/><line x1="6" y1="18" x2="6" y2="18"/></svg></div>
+            <div class="mn-node" id="mn3" style="border-color: var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="#00e5c0" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6" y2="6"/><line x1="6" y1="18" x2="6" y2="18"/></svg></div>
+            <div class="mn-node" id="mnR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"><circle cx="12" cy="12" r="10"/></svg></div>
+
+            <div class="v-packet" id="c5Pkt" style="left: 10%; top: 50%; transform: translate(-50%, -50%); border-radius:50%; width:20px; height:20px; padding:0; background:var(--bg-void);"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // System State
+    let activeConcept = 1;
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+    const qs = el => document.querySelector(el);
+    const qsa = el => document.querySelectorAll(el);
+
+    // Swap Concepts
+    function loadConcept(num) {
+        if (num === activeConcept) return;
+        
+        // Sidebar UI
+        qsa('.chapter').forEach(c => c.classList.remove('active'));
+        document.getElementById('ch' + num).classList.add('active');
+        
+        // Visualizer UI
+        qsa('.concept-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('c' + num).classList.add('active');
+        
+        // Ambient background color shifts for aesthetics
+        const g1 = document.getElementById('glow1');
+        const g2 = document.getElementById('glow2');
+        if(num === 1) { g1.style.background = 'var(--red)'; g2.style.background = 'var(--blue)'; }
+        if(num === 2) { g1.style.background = 'var(--green)'; g2.style.background = 'var(--border)'; }
+        if(num === 3) { g1.style.background = 'var(--purple)'; g2.style.background = 'var(--green)'; }
+        if(num === 4) { g1.style.background = 'var(--amber)'; g2.style.background = 'var(--purple)'; }
+        if(num === 5) { g1.style.background = 'var(--blue)'; g2.style.background = 'var(--green)'; }
+        
+        activeConcept = num;
+        resetAnims();
+    }
+
+    // Animation Resets
+    function resetAnims() {
+        // C1
+        qs('#c1Pkt').style.left = '20%'; qs('#c1Pkt').style.opacity = '0';
+        qs('#c1Eye').style.opacity = '0';
+        // C2
+        const ring = qs('#c2Ring'); ring.innerHTML = ''; ring.style.transform = 'translate(-50%, -50%) rotate(0deg)';
+        // C3
+        qs('#c3Amt span').innerText = '1500 BDX'; qs('#c3Amt span').style.color = '#fff';
+        qs('#c3Lock').style.color = 'var(--border)'; qs('#c3Math').style.opacity = '0';
+        // C4
+        qs('#c4Pkt').style.left = '20%'; qs('#c4Pkt').style.top = '50%'; qs('#c4Pkt').style.opacity = '0'; qs('#c4StealthNode').style.opacity = '0';
+        qs('#c4Pkt').innerText = 'Target: Public'; qs('#c4Dashed').style.opacity = '0';
+        // C5
+        qs('#c5Pkt').style.left = '10%'; qs('#c5Pkt').style.top = '50%'; qs('#c5Pkt').style.boxShadow = '0 0 0 4px var(--blue)'; qs('#c5Pkt').style.outline = '4px solid var(--purple)'; qs('#c5Pkt').style.border = '4px solid var(--green)';
+    }
+
+    // Concept Implementations
+    async function playConcept(num) {
+        resetAnims();
+        const btn = document.querySelector(`#ch${num} .btn-visualize`);
+        btn.disabled = true;
+
+        if (num === 1) await animC1();
+        if (num === 2) await animC2();
+        if (num === 3) await animC3();
+        if (num === 4) await animC4();
+        if (num === 5) await animC5();
+
+        btn.disabled = false;
+    }
+
+    function randHex(len) { let r=''; const c='0123456789ABCDEF'; for(let i=0;i<len;i++) r+=c[Math.floor(Math.random()*16)]; return `0x${r}`; }
+
+    // --- C1: Public Ledger ---
+    async function animC1() {
+        const pkt = qs('#c1Pkt'); const eye = qs('#c1Eye');
+        pkt.style.opacity = '1';
+        await delay(500);
+        pkt.style.left = '50%'; // Move to middle
+        await delay(800);
+        eye.style.opacity = '1'; // Hacker sees it
+        await delay(1000);
+        pkt.style.left = '80%'; // Reaches end but compromised
+        await delay(1000);
+        pkt.style.opacity = '0';
+    }
+
+    // --- C2: Ring Sigs ---
+    async function animC2() {
+        const ring = qs('#c2Ring');
+        const numDecoys = 10;
+        
+        // Spawn Real Sender
+        const real = document.createElement('div');
+        real.className = 'r-orb sender-orb';
+        real.style.left = '50%'; real.style.top = '50%';
+        ring.appendChild(real);
+        await delay(500);
+
+        // Move to edge
+        real.style.top = '0%';
+        await delay(800);
+
+        // Spawn Decoys
+        for(let i=1; i<numDecoys; i++) {
+            const dec = document.createElement('div');
+            dec.className = 'r-orb';
+            dec.style.left = '50%'; dec.style.top = '50%';
+            ring.appendChild(dec);
+            
+            // Push outwards in circle math
+            setTimeout(() => {
+                const angle = (i * (360/numDecoys)) * (Math.PI/180);
+                const r = 150; // half ring size
+                dec.style.left = `calc(50% + ${Math.sin(angle)*r}px)`;
+                dec.style.top = `calc(50% - ${Math.cos(angle)*r}px)`;
+            }, 50);
+        }
+        await delay(1500);
+
+        // Turn all same color (Obfuscation)
+        ring.childNodes.forEach(node => {
+            node.className = 'r-orb';
+            node.style.borderColor = 'var(--purple)';
+            node.style.boxShadow = '0 0 10px var(--purple)';
+        });
+
+        // Fast Spin
+        ring.style.transition = 'transform 3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        ring.style.transform = 'translate(-50%, -50%) rotate(720deg)';
+    }
+
+    // --- C3: RingCT ---
+    async function animC3() {
+        const amt = qs('#c3Amt span');
+        const lock = qs('#c3Lock');
+        const math = qs('#c3Math');
+
+        await delay(500);
+        lock.style.color = 'var(--purple)';
+        await delay(500);
+
+        // Matrix Scramble
+        amt.style.color = 'var(--purple)';
+        let counter = 0;
+        const iv = setInterval(() => {
+            amt.innerText = randHex(8);
+            counter++;
+            if(counter > 20) {
+                clearInterval(iv);
+                amt.innerText = '[ Data Encrypted ]';
+                amt.style.fontSize = '1.2rem';
+                math.style.opacity = '1';
+            }
+        }, 50);
+    }
+
+    // --- C4: Stealth Address ---
+    async function animC4() {
+        const pkt = qs('#c4Pkt');
+        const stealth = qs('#c4StealthNode');
+        const dash = qs('#c4Dashed');
+
+        pkt.style.opacity = '1';
+        await delay(1000);
+        
+        // Spawn Stealth
+        stealth.style.opacity = '1';
+        dash.style.opacity = '1';
+        pkt.innerText = 'Calculating Route...';
+        pkt.style.color = 'var(--amber)'; pkt.style.borderColor = 'var(--amber)';
+        
+        await delay(1000);
+        
+        // Route to Stealth (Quadratic Bezier approximation using left/top)
+        // Midpoint of curve is left 50%, top 75%
+        pkt.innerText = '[ Encrypted Payload ]';
+        pkt.style.left = '50%'; pkt.style.top = '75%';
+        await delay(1000);
+        
+        pkt.style.left = '80%'; pkt.style.top = '75%';
+        await delay(1000);
+        pkt.style.opacity = '0';
+    }
+
+    // --- C5: Masternodes / BelNet ---
+    async function animC5() {
+        const pkt = qs('#c5Pkt');
+        pkt.style.opacity = '1';
+        await delay(800);
+
+        // Hop 1 (Strips Blue)
+        pkt.style.left = '30%'; pkt.style.top = '20%';
+        await delay(1000);
+        pkt.style.boxShadow = 'none'; // Peels layer
+
+        // Hop 2 (Strips Purple)
+        pkt.style.left = '50%'; pkt.style.top = '80%';
+        await delay(1000);
+        pkt.style.outline = 'none'; // Peels layer
+
+        // Hop 3 (Strips Green)
+        pkt.style.left = '70%'; pkt.style.top = '30%';
+        await delay(1000);
+        pkt.style.border = '4px solid transparent'; // Peels
+        pkt.style.background = '#fff'; // Pure packet
+
+        // Final
+        pkt.style.left = '90%'; pkt.style.top = '50%';
+        await delay(1000);
+        pkt.style.opacity = '0';
+    }
+
+</script>
+</body>
+</html>
