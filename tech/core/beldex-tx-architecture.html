@@ -335,7 +335,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   <div class="nd" data-label="Ring Assembly" onclick="goSec('s2')"></div>
   <div class="nd" data-label="TX Build" onclick="goSec('s3')"></div>
   <div class="nd" data-label="RingCT" onclick="goSec('s4')"></div>
-  <div class="nd" data-label="Bulletproofs+" onclick="goSec('s5')"></div>
+  <div class="nd" data-label="Bulletproofs++" onclick="goSec('s5')"></div>
   <div class="nd" data-label="Stealth" onclick="goSec('s6')"></div>
   <div class="nd" data-label="Broadcast" onclick="goSec('s7')"></div>
   <div class="nd" data-label="Quorum" onclick="goSec('s8')"></div>
@@ -407,7 +407,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="pipe-node" onclick="goSec('s5')" data-pipe="4">
         <div class="pn-num">05</div>
         <div class="pn-icon">&#9889;</div>
-        <div class="pn-name">Bulletproofs+</div>
+        <div class="pn-name">Bulletproofs++</div>
       </div>
       <div class="pipe-node" onclick="goSec('s6')" data-pipe="5">
         <div class="pn-num">06</div>
@@ -471,7 +471,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
     <div class="ov-card" onclick="goSec('s5')">
       <div class="ov-card-num">STAGE 05</div>
-      <div class="ov-card-title">Bulletproofs+</div>
+      <div class="ov-card-title">Bulletproofs++</div>
       <div class="ov-card-desc">A compact range proof (~417 bytes) certifies that every output amount is positive and within valid range without revealing the value.</div>
       <div class="ov-card-tag tag-crypto">Crypto Layer</div>
       <div class="ov-card-bg-num">05</div>
@@ -638,7 +638,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
-          <div class="sdg-text"><strong>rct_signatures</strong> holds the RingCT data and Bulletproofs+ proof. This is the largest part of the transaction by byte size.</div>
+          <div class="sdg-text"><strong>rct_signatures</strong> holds the RingCT data and Bulletproofs++ proof. This is the largest part of the transaction by byte size.</div>
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
@@ -671,7 +671,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
                 <div class="txa-line"><span class="txa-key">"type"</span><span class="txa-comment">: </span><span class="txa-val num">6</span><span class="txa-comment">,</span><span class="txa-key">"fee"</span><span class="txa-comment">: </span><span class="txa-val num">20000</span><span class="txa-comment">,</span></div>
                 <div class="txa-line"><span class="txa-key">"ecdhInfo"</span><span class="txa-comment">: [</span><span class="txa-val str">"ECDH encrypted amounts"</span><span class="txa-comment">],</span></div>
                 <div class="txa-line"><span class="txa-key">"outPk"</span><span class="txa-comment">: [</span><span class="txa-val str">"Pedersen commitments"</span><span class="txa-comment">],</span></div>
-                <div class="txa-line"><span class="txa-key">"p"</span><span class="txa-comment">: {</span><span class="txa-key">"bp+"</span><span class="txa-comment">: [</span><span class="txa-val str">"Bulletproofs+ range proof"</span><span class="txa-comment">]}</span></div>
+                <div class="txa-line"><span class="txa-key">"p"</span><span class="txa-comment">: {</span><span class="txa-key">"bp+"</span><span class="txa-comment">: [</span><span class="txa-val str">"Bulletproofs++ range proof"</span><span class="txa-comment">]}</span></div>
               </div>
             <div class="txa-line"><span class="txa-comment">}</span></div></div>
           </div>
@@ -780,7 +780,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <div class="stage-badge-cat">Crypto Layer</div>
       </div>
       <div class="sec-title-sm">BULLETPROOFS<em>+</em><br>RANGE PROOF</div>
-      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">RingCT hides amounts. But how do validators know you are not creating BDX from nothing? Bulletproofs+ is the answer. It generates a tiny proof that certifies every output amount is between 0 and 2^64 without revealing the actual value.</p>
+      <p style="font-size:.92rem;color:var(--mid);margin:1rem 0;line-height:1.75;">RingCT hides amounts. But how do validators know you are not creating BDX from nothing? Bulletproofs++ is the answer. It generates a tiny proof that certifies every output amount is between 0 and 2^64 without revealing the actual value.</p>
       <div class="stage-detail-grid">
         <div class="sdg-row">
           <div class="sdg-dot"></div>
@@ -788,15 +788,15 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
-          <div class="sdg-text"><strong>Bulletproofs+ (HF20)</strong> reduced proof size by 38% compared to standard Bulletproofs. One proof for the entire transaction.</div>
+          <div class="sdg-text"><strong>Bulletproofs++ (HF20)</strong> reduced proof size by 38% compared to standard Bulletproofs. One proof for the entire transaction.</div>
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
-          <div class="sdg-text"><strong>Verification is fast</strong> because Bulletproofs+ supports batch verification. Many proofs can be checked simultaneously.</div>
+          <div class="sdg-text"><strong>Verification is fast</strong> because Bulletproofs++ supports batch verification. Many proofs can be checked simultaneously.</div>
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
-          <div class="sdg-text"><strong>The proof size history</strong> shows continuous improvement: Borromean 6.1 KB to Bulletproofs 675 B to Bulletproofs+ 417 B. A 93% total reduction.</div>
+          <div class="sdg-text"><strong>The proof size history</strong> shows continuous improvement: Borromean 6.1 KB to Bulletproofs 675 B to Bulletproofs++ 417 B. A 93% total reduction.</div>
         </div>
       </div>
     </div>
@@ -815,7 +815,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
             <div class="bpc-val">~675 B</div>
           </div>
           <div class="bpc-row active">
-            <div class="bpc-label">Bulletproofs+</div>
+            <div class="bpc-label">Bulletproofs++</div>
             <div class="bpc-bar-wrap"><div class="bpc-bar" id="bar2" style="width:0;background:var(--gr);"></div></div>
             <div class="bpc-val" style="color:var(--gr);">~417 B &#10003;</div>
           </div>
@@ -989,7 +989,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
-          <div class="sdg-text"><strong>Validators check every transaction:</strong> valid ring signatures, key images not spent, valid Bulletproofs+, correct fee, valid RingCT commitments.</div>
+          <div class="sdg-text"><strong>Validators check every transaction:</strong> valid ring signatures, key images not spent, valid Bulletproofs++, correct fee, valid RingCT commitments.</div>
         </div>
         <div class="sdg-row">
           <div class="sdg-dot"></div>
@@ -1086,7 +1086,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <div class="strip-cell">
       <div class="strip-num">417B</div>
       <div class="strip-lbl">Proof Size</div>
-      <div class="strip-sub">Bulletproofs+ per transaction</div>
+      <div class="strip-sub">Bulletproofs++ per transaction</div>
     </div>
     <div class="strip-cell">
       <div class="strip-num">~5m</div>
