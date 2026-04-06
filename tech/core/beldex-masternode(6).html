@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beldex MasterNodes - The Engine of the Network</title>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bitter:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THE ENGINE ROOM - Beldex MasterNode Guide
+   Carbon #0A0A08 · Forge Amber #FF9500 · Molten Gold #FFCC00
+   Cooling Steel #3A4A5A · Spark White #F5F0E8
+   Bebas Neue (industrial display) · Bitter (editorial body)
+   Barlow (clean labels) · JetBrains Mono (numbers/code)
+   All levels layered · No em dashes · No contractions
+   ============================================================ */
+:root {
+  --carbon:   #0A0A08;
+  --forge:    #111108;
+  --panel:    #181810;
+  --steel:    #1E2028;
+  --lift:     #252830;
+  --border:   rgba(255,149,0,0.12);
+  --border2:  rgba(255,149,0,0.06);
+  --amber:    #FF9500;
+  --amber2:   rgba(255,149,0,0.18);
+  --amber3:   rgba(255,149,0,0.07);
+  --gold:     #FFCC00;
+  --gold2:    rgba(255,204,0,0.15);
+  --spark:    #F5F0E8;
+  --spark2:   rgba(245,240,232,0.85);
+  --spark3:   rgba(245,240,232,0.62);
+  --spark4:   rgba(245,240,232,0.32);
+  --cool:     #4A9EFF;
+  --cool2:    rgba(74,158,255,0.15);
+  --green:    #00D084;
+  --green2:   rgba(0,208,132,0.12);
+  --red:      #FF3B30;
+  --red2:     rgba(255,59,48,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--carbon);
+  color:var(--spark2);
+  font-family:'Barlow',sans-serif;
+  font-size:15px;line-height:1.75;
+  overflow-x:hidden;cursor:default;
+}
+/* Riveted steel texture overlay */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle,rgba(255,149,0,0.015) 1px,transparent 1px);
+  background-size:36px 36px;
+  pointer-events:none;z-index:0;
+}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--carbon);}
+::-webkit-scrollbar-thumb{background:rgba(255,149,0,0.35);border-radius:2px;}
+::selection{background:var(--amber2);color:var(--spark);}
+
+/* ── typography ─────────────────────────────── */
+.display{font-family:'Bebas Neue',sans-serif;letter-spacing:1px;color:var(--spark);line-height:0.96;}
+.display-xl{font-size:clamp(72px,12vw,160px);}
+.display-lg{font-size:clamp(48px,6vw,80px);}
+.display-md{font-size:clamp(32px,4vw,52px);}
+.display-sm{font-size:clamp(22px,3vw,34px);}
+.editorial{font-family:'Bitter',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.label-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--amber);
+}
+
+/* ── layout ─────────────────────────────── */
+.w{max-width:1120px;margin:0 auto;padding:0 40px;position:relative;z-index:2;}
+.w-mid{max-width:840px;margin:0 auto;padding:0 40px;position:relative;z-index:2;}
+.sec{padding:100px 0;position:relative;}
+.sec-alt{background:var(--forge);}
+.sec-steel{background:var(--steel);}
+
+/* ── dividers ─────────────────────────────── */
+.rivet-rule{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--amber2),rgba(255,149,0,0.4),var(--amber2),transparent);
+  margin:0;
+}
+.gear-divider{
+  text-align:center;padding:16px 0;
+  font-size:18px;color:var(--amber2);letter-spacing:24px;
+  position:relative;
+}
+
+/* ── section label ─────────────────────────────── */
+.sec-eyebrow{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:16px;
+}
+.sec-eyebrow::before{
+  content:'';width:28px;height:2px;background:var(--amber);flex-shrink:0;
+}
+/* ── scroll offset for sticky nav ─────────────────────────────── */
+#what,#how,#validator,#rewards,#requirements,#ecosystem{scroll-margin-top:68px;}
+
+/* ── reveal ─────────────────────────────── */
+.rv{opacity:0;transform:translateY(24px);transition:opacity.65s ease,transform.65s ease;}
+.rv.on{opacity:1;transform:translateY(0);}
+
+/* ── NAV ─────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:900;
+  height:58px;padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,10,8,0.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border2);
+}
+.nav-brand{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;letter-spacing:2px;color:var(--amber);text-decoration:none;
+}
+.nav-brand span{color:var(--spark3);font-size:14px;margin-left:4px;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--spark3);text-decoration:none;transition:color.2s;
+}
+.nav-links a:hover{color:var(--amber);}
+
+/* ============================================================
+   SECTION 1 - HERO (SIGNATURE MOMENT: engine canvas)
+   ============================================================ */
+#hero{
+  min-height:100vh;display:flex;align-items:center;
+  overflow:hidden;position:relative;
+}
+#engine-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;
+}
+.hero-vignette{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(to right, rgba(10,10,8,0.95) 0%, rgba(10,10,8,0.88) 30%, rgba(10,10,8,0.45) 58%, rgba(10,10,8,0.85) 80%, var(--carbon) 100%),
+    linear-gradient(to bottom, var(--carbon) 0%, transparent 12%, transparent 88%, var(--carbon) 100%);
+  z-index:2;pointer-events:none;
+}
+.hero-content{
+  position:relative;z-index:3;
+  max-width:1120px;margin:0 auto;padding:0 40px;
+  width:100%;
+}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:3.5px;text-transform:uppercase;
+  color:var(--amber);margin-bottom:24px;
+}
+.hero-kicker::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--amber);animation:pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
+.hero-h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(80px,14vw,190px);
+  line-height:.90;color:var(--spark);
+  letter-spacing:2px;
+  text-shadow:0 0 80px rgba(255,149,0,0.1);
+  margin-bottom:6px;
+}
+.hero-h1 .amber-line{color:var(--amber);}
+.hero-h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(20px,3vw,36px);
+  color:rgba(245,240,232,0.72);letter-spacing:4px;
+  margin-bottom:28px;
+}
+.hero-desc{
+  font-family:'Bitter',serif;
+  font-size:16px;color:rgba(245,240,232,0.78);line-height:1.85;
+  max-width:520px;border-left:3px solid rgba(255,149,0,0.45);
+  padding-left:20px;margin-bottom:44px;
+}
+.hero-counters{
+  display:flex;gap:48px;flex-wrap:wrap;margin-bottom:44px;
+}
+.hc{display:flex;flex-direction:column;gap:4px;}
+.hc-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:48px;color:var(--amber);line-height:1;
+}
+.hc-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,240,232,0.65);
+}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+.cta-forge{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:16px;letter-spacing:2px;
+  padding:13px 32px;background:var(--amber);color:var(--carbon);
+  border:none;cursor:pointer;text-decoration:none;border-radius:2px;
+  transition:transform.2s,box-shadow.2s;
+}
+.cta-forge:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,149,0,0.35);}
+.cta-ghost{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:16px;letter-spacing:2px;
+  padding:13px 32px;background:transparent;color:var(--spark3);
+  border:1px solid var(--border);cursor:pointer;text-decoration:none;border-radius:2px;
+  transition:border-color.2s,color.2s;
+}
+.cta-ghost:hover{border-color:var(--amber);color:var(--amber);}
+/* Scroll indicator */
+.hero-scroll{
+  position:absolute;bottom:36px;left:40px;
+  z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+}
+.hs-text{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,0.38);}
+.hs-line{width:1px;height:40px;background:linear-gradient(180deg,transparent,var(--amber));animation:scroll-pulse 2s ease-in-out infinite;}
+@keyframes scroll-pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* ============================================================
+   SECTION 2 - WHAT IS A MASTERNODE
+   ============================================================ */
+#what{background:var(--carbon);}
+.what-layout{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;margin-top:60px;}
+/* Hierarchy visual */
+.node-hierarchy{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.nh-item{
+  width:100%;padding:16px 22px;background:var(--panel);
+  border:1px solid var(--border2);border-radius:2px;
+  display:flex;align-items:center;gap:16px;
+  transition:border-color.25s;cursor:default;
+  position:relative;overflow:hidden;
+}
+.nh-item:hover{border-color:var(--border);}
+.nh-item.highlight{border-color:var(--amber);background:var(--amber3);}
+.nh-item.highlight::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--amber);
+}
+.nh-icon{font-size:22px;flex-shrink:0;}
+.nh-title{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;
+  color:var(--spark);margin-bottom:2px;
+}
+.nh-desc{font-size:12px;color:var(--spark3);line-height:1.6;}
+.nh-connector{
+  width:2px;height:16px;background:linear-gradient(180deg,var(--amber2),var(--amber3));
+  align-self:center;margin:0;
+}
+/* What text */
+.what-points{display:flex;flex-direction:column;gap:24px;}
+.wp{display:flex;gap:16px;align-items:flex-start;}
+.wp-num{
+  font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--amber2);
+  line-height:1;flex-shrink:0;min-width:36px;
+  transition:color.3s;
+}
+.wp:hover .wp-num{color:var(--amber);}
+.wp-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:5px;
+}
+.wp-title{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;
+  color:var(--spark);margin-bottom:5px;
+}
+.wp-text{font-family:'Bitter',serif;font-size:13px;color:var(--spark3);line-height:1.85;}
+/* Analogy box */
+.analogy-box{
+  background:var(--panel);border:1px solid var(--gold2);
+  border-left:3px solid var(--gold);
+  padding:20px 24px;border-radius:0 3px 3px 0;margin-top:28px;
+}
+.ab-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:8px;
+}
+.ab-text{font-family:'Bitter',serif;font-size:13px;color:var(--spark3);line-height:1.85;font-style:italic;}
+
+/* ============================================================
+   SECTION 3 - WHY MASTERNODES EXIST
+   ============================================================ */
+#why{background:var(--forge);}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:56px;}
+.prob-card{
+  background:var(--panel);border:1px solid var(--border2);
+  padding:28px 24px;border-radius:2px;
+  transition:border-color.25s,transform.25s;cursor:default;
+  position:relative;overflow:hidden;
+}
+.prob-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--amber),transparent);
+  transform:scaleX(0);transition:transform.3s;transform-origin:left;
+}
+.prob-card:hover{border-color:var(--amber2);transform:translateY(-4px);}
+.prob-card:hover::after{transform:scaleX(1);}
+.prob-emoji{font-size:32px;margin-bottom:16px;display:block;}
+.prob-problem{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--red);margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.prob-problem::before{content:'✗';color:var(--red);}
+.prob-problem-text{color:var(--spark3);font-size:12px;line-height:1.7;margin-bottom:14px;}
+.prob-solution{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--green);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.prob-solution::before{content:'✓';color:var(--green);}
+.prob-solution-text{color:var(--spark2);font-size:12px;line-height:1.7;}
+
+/* ============================================================
+   SECTION 4 - HOW MASTERNODES WORK (interactive step flow)
+   ============================================================ */
+#how{background:var(--carbon);}
+.flow-wrap{margin-top:60px;}
+.flow-tabs{display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;}
+.flow-tab{
+  flex:1;min-width:120px;
+  padding:13px 16px;
+  background:var(--panel);border:1px solid var(--border2);
+  font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;
+  color:var(--spark3);cursor:pointer;text-align:center;
+  transition:all.2s;position:relative;
+}
+.flow-tab.active{background:var(--amber3);color:var(--amber);border-color:var(--amber2);}
+.flow-tab.active::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:0;height:3px;background:var(--amber);
+}
+.flow-display{
+  background:var(--panel);border:1px solid var(--border2);
+  min-height:320px;
+}
+.flow-step{display:none;}
+.flow-step.active{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;animation:step-slide.35s ease;
+}
+@keyframes step-slide{from{opacity:0;transform:translateX(12px);}to{opacity:1;transform:translateX(0);}}
+.fs-visual{
+  padding:36px 32px;border-right:1px solid var(--border2);
+  display:flex;flex-direction:column;justify-content:center;gap:20px;
+}
+.fs-content{padding:36px 32px;display:flex;flex-direction:column;justify-content:center;}
+.fs-step-num{
+  font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--amber2);
+  line-height:1;margin-bottom:4px;
+}
+.fs-title{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--spark);
+  letter-spacing:1px;margin-bottom:10px;
+}
+.fs-body{font-family:'Bitter',serif;font-size:13px;color:var(--spark3);line-height:1.9;margin-bottom:16px;}
+.fs-fact{
+  padding:12px 16px;background:var(--forge);
+  border:1px solid var(--border2);border-left:2px solid var(--amber);
+  border-radius:0 2px 2px 0;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--spark3);line-height:1.7;
+}
+.fs-fact strong{color:var(--amber);}
+/* Visual elements per step */
+.quorum-visual{display:flex;flex-direction:column;gap:12px;}
+.qv-row{display:flex;align-items:center;gap:10px;}
+.qv-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--spark3);min-width:100px;
+}
+.qv-nodes{display:flex;gap:6px;flex-wrap:wrap;}
+.qv-node{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-family:'JetBrains Mono',monospace;
+  border:1px solid;
+  transition:all.3s;
+}
+.qv-node.producer{background:var(--amber2);border-color:var(--amber);color:var(--amber);}
+.qv-node.validator{background:var(--green2);border-color:var(--green);color:var(--green);}
+.qv-node.dim{background:var(--forge);border-color:var(--border2);color:var(--spark4);}
+
+.stake-visual{display:flex;flex-direction:column;gap:10px;}
+.sv-bar{
+  height:10px;background:var(--forge);border:1px solid var(--border2);
+  border-radius:2px;overflow:hidden;position:relative;
+}
+.sv-fill{
+  height:100%;background:var(--amber);border-radius:2px;
+  transition:width 1s ease;width:0;
+}
+.sv-row{display:flex;align-items:center;gap:12px;}
+.sv-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--spark3);min-width:80px;}
+
+.lock-visual{
+  display:flex;flex-direction:column;gap:8px;
+}
+.lv-item{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  background:var(--forge);border:1px solid var(--border2);border-radius:2px;
+}
+.lv-icon{font-size:16px;flex-shrink:0;}
+.lv-text{font-size:12px;color:var(--spark3);}
+.lv-text strong{color:var(--amber);}
+.lv-timeline{
+  display:flex;align-items:center;
+  margin-top:4px;
+}
+.lt-seg{
+  height:6px;flex:1;border-radius:2px;
+  position:relative;
+}
+.lt-seg::after{
+  content:attr(data-label);
+  position:absolute;top:-18px;left:0;right:0;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1px;
+  color:var(--spark3);white-space:nowrap;
+}
+
+.services-visual{display:flex;flex-direction:column;gap:8px;}
+.sv-service{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  background:var(--forge);border:1px solid var(--border2);border-radius:2px;
+  transition:border-color.25s;
+}
+.sv-service:hover{border-color:var(--amber2);}
+.sv-service-icon{font-size:18px;flex-shrink:0;}
+.sv-service-name{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--spark);letter-spacing:1px;}
+.sv-service-desc{font-size:11px;color:var(--spark3);}
+.sv-badge{
+  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;
+  text-transform:uppercase;padding:2px 8px;border-radius:2px;
+  background:var(--amber3);border:1px solid rgba(255,149,0,0.25);
+  color:var(--amber);margin-left:auto;flex-shrink:0;
+}
+
+/* Flow nav dots */
+.flow-nav-dots{display:flex;gap:6px;justify-content:center;padding:14px;}
+.fnd{
+  width:6px;height:6px;border-radius:50%;background:var(--border);
+  cursor:pointer;transition:background.2s;
+}
+.fnd.on{background:var(--amber);}
+
+/* ============================================================
+   SECTION 5 - VALIDATOR SELECTION (quorum interactive)
+   ============================================================ */
+#validator{background:var(--forge);}
+.quorum-arena{margin-top:60px;background:var(--panel);border:1px solid var(--border);border-radius:3px;overflow:hidden;}
+.qa-header{
+  padding:14px 22px;background:var(--steel);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.qa-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--spark3);display:flex;align-items:center;gap:8px;
+}
+.qa-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--amber);animation:pulse-dot 1.8s ease-in-out infinite;}
+.shuffle-btn{
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;
+  padding:8px 20px;background:var(--amber);color:var(--carbon);
+  border:none;cursor:pointer;border-radius:2px;transition:transform.15s,box-shadow.15s;
+}
+.shuffle-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,149,0,0.3);}
+.shuffle-btn:active{transform:scale(0.97);}
+.qa-body{padding:28px 24px;display:grid;grid-template-columns:1fr 280px;gap:28px;}
+.quorum-network{display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;}
+.qn-node{
+  width:52px;height:52px;border-radius:6px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border:1.5px solid var(--border2);background:var(--forge);
+  cursor:default;transition:all.35s;position:relative;
+  font-family:'JetBrains Mono',monospace;
+}
+.qn-node.selected-producer{
+  border-color:var(--amber);background:var(--amber3);
+  box-shadow:0 0 18px rgba(255,149,0,0.25);
+  animation:producer-glow 1.5s ease-in-out infinite;
+}
+@keyframes producer-glow{0%,100%{box-shadow:0 0 12px rgba(255,149,0,0.2);}50%{box-shadow:0 0 24px rgba(255,149,0,0.5);}}
+.qn-node.selected-validator{border-color:var(--green);background:var(--green2);}
+.qn-node.idle{border-color:var(--border2);background:var(--forge);}
+.qn-id{font-size:9px;color:var(--spark3);}
+.qn-role{font-size:8px;letter-spacing:1px;text-transform:uppercase;}
+.qn-role.p{color:var(--amber);}
+.qn-role.v{color:var(--green);}
+.qn-icon{font-size:16px;}
+.quorum-readout{background:var(--forge);border:1px solid var(--border2);padding:18px;border-radius:2px;}
+.qr-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:14px;}
+.qr-stat{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+.qrs-label{font-size:10px;color:var(--spark3);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;}
+.qrs-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--spark);}
+.qrs-val .accent{color:var(--amber);}
+.qr-divider{height:1px;background:var(--border2);margin:12px 0;}
+.qr-rule-item{font-size:11px;color:var(--spark3);display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;}
+.qr-rule-item::before{content:'→';color:var(--amber);flex-shrink:0;}
+.explain-block{
+  padding:20px 24px;background:var(--forge);border-top:1px solid var(--border2);
+  font-family:'Bitter',serif;font-size:13px;color:var(--spark3);line-height:1.85;
+}
+.explain-block strong{color:var(--spark);}
+
+/* ============================================================
+   SECTION 6 - REWARDS & QUEUE SYSTEM (interactive FIFO sim)
+   ============================================================ */
+#rewards{background:var(--carbon);}
+.queue-sim{margin-top:60px;background:var(--panel);border:1px solid var(--border);border-radius:3px;overflow:hidden;}
+.qs-header{
+  padding:14px 22px;background:var(--steel);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.qs-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--spark3);display:flex;align-items:center;gap:8px;}
+.qs-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 1.8s ease-in-out infinite;}
+.qs-controls{display:flex;gap:8px;}
+.q-btn{
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;
+  padding:7px 18px;border:1px solid var(--border);background:var(--panel);
+  color:var(--spark3);cursor:pointer;border-radius:2px;transition:all.2s;
+}
+.q-btn:hover{border-color:var(--amber);color:var(--amber);}
+.q-btn.primary{background:var(--amber);color:var(--carbon);border-color:var(--amber);}
+.q-btn.primary:hover{box-shadow:0 4px 14px rgba(255,149,0,0.3);transform:translateY(-1px);}
+.qs-body{padding:28px 24px;display:grid;grid-template-columns:1fr 240px;gap:28px;}
+/* Queue track */
+.queue-track{display:flex;flex-direction:column;gap:3px;}
+.qt-header{
+  display:flex;align-items:center;gap:12px;padding:8px 14px;
+  background:var(--forge);border-bottom:1px solid var(--border2);
+}
+.qt-col{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--spark3);}
+.qt-col.pos{width:40px;text-align:center;}
+.qt-col.name{flex:1;}
+.qt-col.status{width:80px;text-align:center;}
+.qt-col.rewards{width:80px;text-align:center;}
+.queue-rows{display:flex;flex-direction:column;gap:2px;max-height:340px;overflow-y:auto;}
+.qrow{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  background:var(--forge);border:1px solid var(--border2);border-radius:2px;
+  transition:all.4s;
+}
+.qrow.top-3{border-color:rgba(255,149,0,0.25);background:var(--amber3);}
+.qrow.rewarded{border-color:var(--green);background:var(--green2);animation:reward-flash.4s ease;}
+@keyframes reward-flash{0%{background:rgba(255,204,0,0.3);}100%{background:var(--green2);}}
+.qrow-pos{
+  width:40px;text-align:center;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--amber);
+}
+.qrow-pos.dim{color:var(--spark4);}
+.qrow-name{flex:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--spark2);}
+.qrow-status{
+  width:80px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;
+  text-transform:uppercase;padding:3px 8px;border-radius:2px;
+}
+.qrow-status.next{background:var(--amber2);color:var(--amber);}
+.qrow-status.ready{background:var(--green2);color:var(--green);}
+.qrow-status.waiting{color:var(--spark4);}
+.qrow-rewards{
+  width:80px;text-align:right;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);
+}
+/* Stats panel */
+.queue-stats{background:var(--forge);border:1px solid var(--border2);padding:18px;border-radius:2px;display:flex;flex-direction:column;gap:16px;}
+.qs-stat{display:flex;flex-direction:column;gap:4px;}
+.qss-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--spark3);}
+.qss-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--amber);}
+.qss-val.gold{color:var(--gold);}
+.qss-val.green{color:var(--green);}
+.qs-explain{padding:20px 24px;background:var(--forge);border-top:1px solid var(--border2);display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.qse-card{background:var(--panel);border:1px solid var(--border2);padding:16px 18px;border-radius:2px;}
+.qse-title{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--amber);letter-spacing:1px;margin-bottom:6px;}
+.qse-text{font-family:'Bitter',serif;font-size:12px;color:var(--spark3);line-height:1.8;}
+
+/* ============================================================
+   SECTION 7 - REQUIREMENTS
+   ============================================================ */
+#requirements{background:var(--forge);}
+.req-layout{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:60px;}
+.req-panel{background:var(--panel);border:1px solid var(--border2);padding:36px 32px;border-radius:2px;}
+.req-panel-title{
+  font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--spark);
+  letter-spacing:1px;margin-bottom:4px;
+}
+.req-panel-sub{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:24px;display:block;
+}
+.req-item{
+  display:flex;gap:14px;align-items:flex-start;padding:14px 0;
+  border-bottom:1px solid var(--border2);
+}
+.req-item:last-child{border-bottom:none;}
+.req-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.req-name{
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;
+  color:var(--spark);margin-bottom:4px;
+}
+.req-detail{font-family:'Bitter',serif;font-size:12px;color:var(--spark3);line-height:1.8;}
+.req-val{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--amber);
+  margin-top:2px;display:block;
+}
+/* Staking path comparison */
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:3px;}
+.path-card{background:var(--panel);border:1px solid var(--border2);padding:28px 24px;border-radius:2px;}
+.path-card.highlight{border-color:var(--amber2);}
+.path-type{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:8px;
+}
+.path-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--spark);letter-spacing:1px;margin-bottom:14px;}
+.path-points{display:flex;flex-direction:column;gap:8px;}
+.path-point{display:flex;gap:8px;font-size:13px;color:var(--spark3);}
+.path-point::before{content:'→';color:var(--amber);flex-shrink:0;}
+
+/* ============================================================
+   SECTION 8 - ROLE IN ECOSYSTEM
+   ============================================================ */
+#ecosystem{background:var(--carbon);}
+.eco-hub{margin-top:60px;display:flex;flex-direction:column;align-items:center;gap:0;}
+/* Central node */
+.eco-center{
+  background:var(--amber3);border:2px solid var(--amber);
+  width:160px;height:160px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  box-shadow:0 0 40px rgba(255,149,0,0.15);
+  animation:center-pulse 3s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes center-pulse{0%,100%{box-shadow:0 0 30px rgba(255,149,0,0.12);}50%{box-shadow:0 0 60px rgba(255,149,0,0.28);}}
+.eco-center-icon{font-size:36px;}
+.eco-center-label{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--amber);letter-spacing:1px;}
+/* Spoke grid below center */
+.eco-spokes{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
+  width:100%;margin-top:3px;
+}
+.eco-spoke{
+  background:var(--panel);border:1px solid var(--border2);
+  padding:24px 20px;border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+  transition:border-color.25s,transform.25s;cursor:default;
+  position:relative;
+}
+.eco-spoke::before{
+  content:'';position:absolute;top:-32px;left:50%;transform:translateX(-50%);
+  width:1px;height:30px;
+  background:linear-gradient(180deg,var(--amber2),transparent);
+}
+.eco-spoke:hover{border-color:var(--amber2);transform:translateY(-3px);}
+.es-icon{font-size:26px;}
+.es-name{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--spark);letter-spacing:1px;}
+.es-role{font-size:11px;color:var(--amber);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.es-desc{font-size:12px;color:var(--spark3);line-height:1.7;}
+
+/* ============================================================
+   SECTION 9 - ADVANTAGES
+   ============================================================ */
+#advantages{background:var(--forge);}
+.adv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:60px;}
+.adv-card{
+  background:var(--panel);border:1px solid var(--border2);
+  padding:30px 24px;border-radius:2px;
+  transition:border-color.25s,transform.25s;cursor:default;
+  position:relative;overflow:hidden;
+}
+.adv-card:hover{border-color:var(--amber2);transform:translateY(-4px);}
+.adv-card::before{
+  content:attr(data-num);
+  position:absolute;top:-12px;right:16px;
+  font-family:'Bebas Neue',sans-serif;font-size:80px;
+  color:rgba(255,149,0,0.05);line-height:1;
+}
+.adv-icon{font-size:30px;margin-bottom:16px;display:block;}
+.adv-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--spark);letter-spacing:1px;margin-bottom:10px;}
+.adv-text{font-family:'Bitter',serif;font-size:13px;color:var(--spark3);line-height:1.85;}
+.adv-highlight{
+  margin-top:14px;padding:10px 14px;
+  background:var(--amber3);border:1px dashed rgba(255,149,0,0.25);
+  border-radius:2px;font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:1px;color:var(--amber);
+}
+
+/* ============================================================
+   SECTION 10 - KEY POINTS GLANCE (sticky summary)
+   ============================================================ */
+#glance{background:var(--carbon);}
+.glance-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:60px;}
+.glance-item{
+  background:var(--panel);border:1px solid var(--border2);
+  padding:22px 24px;border-radius:2px;
+  display:flex;gap:16px;align-items:flex-start;
+  transition:border-color.2s;
+}
+.glance-item:hover{border-color:var(--border);}
+.gi-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.gi-key{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:4px;
+}
+.gi-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--spark);letter-spacing:1px;margin-bottom:4px;}
+.gi-desc{font-size:12px;color:var(--spark3);line-height:1.75;font-family:'Bitter',serif;}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  background:var(--carbon);border-top:1px solid var(--border2);
+  padding:36px 40px;display:flex;
+  justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:14px;position:relative;z-index:2;
+}
+.ft-brand{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--amber);}
+.ft-note{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--spark3);}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media(max-width:840px){
+  .what-layout,.flow-step.active,.req-layout,.path-grid,.qs-body,.qa-body,.qs-explain{grid-template-columns:1fr;}
+  .fs-visual{border-right:none;border-bottom:1px solid var(--border2);}
+  .eco-spokes{grid-template-columns:repeat(2,1fr);}
+  .adv-grid,.glance-grid,.problem-grid{grid-template-columns:1fr;}
+  .hero-counters{gap:24px;}
+  .chapter{padding:40px 24px 60px;}
+  .eco-spoke::before{display:none;}
+  nav{padding:0 20px;}
+  .w,.w-mid{padding:0 24px;}
+  .sec{padding:64px 0;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────── -->
+<nav>
+  <a href="../../beldex-tree.html" class="nav-brand">BELDEX <span>/ MASTERNODES</span></a>
+  <ul class="nav-links">
+    <li><a href="#what">What</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#validator">Selection</a></li>
+    <li><a href="#rewards">Rewards</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#ecosystem">Ecosystem</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================================
+     SECTION 1 - HERO
+     ============================================================ -->
+<section id="hero">
+  <canvas id="engine-canvas"></canvas>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">The Beldex Engine</div>
+    <h1 class="hero-h1">
+      MASTER<br>
+      <span class="amber-line">NODES.</span>
+    </h1>
+    <h2 class="hero-h2">The Infrastructure That Powers Everything</h2>
+    <p class="hero-desc">
+      MasterNodes are the backbone of the Beldex network. They validate transactions, route private messages, power the BelNet VPN, and keep the blockchain secure. Every BDX you spend, every private message you send, every anonymous connection you make passes through this network.
+    </p>
+    <div class="hero-counters">
+      <div class="hc">
+        <span class="hc-num" id="hero-nodes">2,200+</span>
+        <span class="hc-label">Active MasterNodes</span>
+      </div>
+      <div class="hc">
+        <span class="hc-num">10,000</span>
+        <span class="hc-label">BDX Required</span>
+      </div>
+      <div class="hc">
+        <span class="hc-num">10</span>
+        <span class="hc-label">BDX Per Block</span>
+      </div>
+      <div class="hc">
+        <span class="hc-num">12</span>
+        <span class="hc-label">Nodes Per Quorum</span>
+      </div>
+    </div>
+    <div class="hero-ctas">
+      <a href="#what" class="cta-forge">Explore the Network</a>
+      <a href="#requirements" class="cta-ghost">Run a MasterNode</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="hs-text">Scroll</span>
+    <div class="hs-line"></div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 2 - WHAT IS A MASTERNODE
+     ============================================================ -->
+<section id="what" class="sec">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 01</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">What Is a <span style="color:var(--amber)">MasterNode?</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85;margin-bottom:0">
+        Think of a MasterNode as a power station in a city grid. The city cannot function without power stations. The Beldex network cannot function without MasterNodes. They are always running, always serving, and always being paid for their service.
+      </p>
+    </div>
+
+    <div class="what-layout">
+      <div class="rv" style="transition-delay:.1s">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--spark3);margin-bottom:16px">Node Evolution Hierarchy</div>
+        <div class="node-hierarchy">
+          <div class="nh-item">
+            <span class="nh-icon">📡</span>
+            <div>
+              <div class="nh-title">Light Node</div>
+              <p class="nh-desc">Holds no blockchain data. Asks full nodes to verify transactions on its behalf. Lowest trust level.</p>
+            </div>
+          </div>
+          <div class="nh-connector"></div>
+          <div class="nh-item">
+            <span class="nh-icon">🖥</span>
+            <div>
+              <div class="nh-title">Full Node</div>
+              <p class="nh-desc">Stores a complete copy of the blockchain. Validates transactions. Earns no reward.</p>
+            </div>
+          </div>
+          <div class="nh-connector"></div>
+          <div class="nh-item highlight">
+            <span class="nh-icon">⚡</span>
+            <div>
+              <div class="nh-title">MasterNode</div>
+              <p class="nh-desc">Full node plus: validates blocks in quorums, routes BelNet traffic, serves BChat messages, earns BDX rewards. Requires 10,000 BDX stake.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rv" style="transition-delay:.2s">
+        <div class="what-points">
+          <div class="wp">
+            <span class="wp-num">01</span>
+            <div>
+              <div class="wp-label">Core Identity</div>
+              <div class="wp-title">A Full Node With Responsibilities</div>
+              <p class="wp-text">A MasterNode holds the full Beldex blockchain. It verifies every transaction. But it also participates in block quorums, routes encrypted network traffic, and stores messages for offline users.</p>
+            </div>
+          </div>
+          <div class="wp">
+            <span class="wp-num">02</span>
+            <div>
+              <div class="wp-label">The Stake</div>
+              <div class="wp-title">10,000 BDX as Collateral</div>
+              <p class="wp-text">Every MasterNode operator locks 10,000 BDX as collateral. This stake can be slashed if the node misbehaves. The financial risk ensures honest behavior without needing to trust anyone personally.</p>
+            </div>
+          </div>
+          <div class="wp">
+            <span class="wp-num">03</span>
+            <div>
+              <div class="wp-label">Always On</div>
+              <div class="wp-title">Runs 24 Hours, 7 Days a Week</div>
+              <p class="wp-text">MasterNodes must stay online continuously. The network uses uptime proofs to verify each node is active. Nodes that go offline lose block credits and face deregistration.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="analogy-box rv" style="transition-delay:.35s">
+          <div class="ab-label">Plain Language Analogy</div>
+          <p class="ab-text">Imagine a library where every librarian must deposit 10,000 coins before starting work. They keep all the books in order, verify that borrowed books are real, and help route messages between members. In return, they receive a share of the library's daily income. If a librarian cheats, they lose their deposit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 3 - WHY MASTERNODES EXIST
+     ============================================================ -->
+<section id="why" class="sec sec-alt">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 02</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Why <span style="color:var(--amber)">MasterNodes Exist</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        Three real problems in privacy blockchain networks made MasterNodes necessary. Each problem has a direct architectural solution.
+      </p>
+    </div>
+    <div class="problem-grid rv" style="transition-delay:.15s">
+      <div class="prob-card">
+        <span class="prob-emoji">🕵️</span>
+        <div class="prob-problem">Remote Node Surveillance Risk</div>
+        <p class="prob-problem-text">On privacy coins, wallets must connect to a remote node to scan the blockchain. A malicious node operator can log the IP address of every wallet that connects. This links real-world identities to transactions.</p>
+        <div class="prob-solution">MasterNode Solution</div>
+        <p class="prob-solution-text">MasterNodes act as remote nodes by requirement. Because each MasterNode has 10,000 BDX at stake, an attacker would need enormous capital to control a meaningful share. The financial barrier makes mass surveillance impractical.</p>
+      </div>
+      <div class="prob-card">
+        <span class="prob-emoji">🔒</span>
+        <div class="prob-problem">Centralized Consensus Failure</div>
+        <p class="prob-problem-text">Without a large network of committed validators, a small group of miners or validators can collude to reverse transactions or censor the blockchain. This is called a 51% attack.</p>
+        <div class="prob-solution">MasterNode Solution</div>
+        <p class="prob-solution-text">2,200 or more MasterNodes each requiring 10,000 BDX make it economically impossible to acquire majority control. A quorum of 12 nodes validates every block. At least 7 of the 11 validators must agree independently.</p>
+      </div>
+      <div class="prob-card">
+        <span class="prob-emoji">📡</span>
+        <div class="prob-problem">No Infrastructure for Privacy Apps</div>
+        <p class="prob-problem-text">A private browser, encrypted messenger, and decentralized VPN need a distributed server network to run on. Building and paying for this infrastructure separately would centralize it, defeating the privacy purpose.</p>
+        <div class="prob-solution">MasterNode Solution</div>
+        <p class="prob-solution-text">MasterNodes already exist and are already paid through block rewards. BelNet and BChat route through this same network at no extra cost. The infrastructure is decentralized by design and funded by the protocol itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 4 - HOW MASTERNODES WORK (interactive steps)
+     ============================================================ -->
+<section id="how" class="sec">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 03</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">How MasterNodes <span style="color:var(--amber)">Work</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        Click each step to follow the full MasterNode lifecycle, from registration to receiving a reward.
+      </p>
+    </div>
+    <div class="flow-wrap rv" style="transition-delay:.15s">
+      <div class="flow-tabs" id="flow-tabs">
+        <div class="flow-tab active" onclick="setStep(0)">01. Register</div>
+        <div class="flow-tab" onclick="setStep(1)">02. Stake</div>
+        <div class="flow-tab" onclick="setStep(2)">03. Quorum</div>
+        <div class="flow-tab" onclick="setStep(3)">04. Validate</div>
+        <div class="flow-tab" onclick="setStep(4)">05. Reward</div>
+      </div>
+      <div class="flow-display" id="flow-display">
+
+        <!-- STEP 0: REGISTER -->
+        <div class="flow-step active" id="fstep-0">
+          <div class="fs-visual">
+            <div class="fs-step-num">01</div>
+            <div class="lock-visual">
+              <div class="lv-item"><span class="lv-icon">🖥</span><span class="lv-text">Set up a Linux VPS server with a <strong>static IP address</strong></span></div>
+              <div class="lv-item"><span class="lv-icon">⬇</span><span class="lv-text">Install <strong>beldex-node</strong>, <strong>beldex-storage-server</strong>, and <strong>belnet-router</strong> services</span></div>
+              <div class="lv-item"><span class="lv-icon">🔑</span><span class="lv-text">Run the <strong>register_master_node</strong> command on the daemon</span></div>
+              <div class="lv-item"><span class="lv-icon">📡</span><span class="lv-text">Other nodes individually verify your collateral before you are added</span></div>
+            </div>
+          </div>
+          <div class="fs-content">
+            <div class="fs-title">Node Registration</div>
+            <p class="fs-body">Registration begins on your VPS server. You run the Beldex daemon with the <code>--master-node</code> flag. The daemon generates a registration command. You paste that command into your Beldex wallet, which submits the staking transaction to the network. The extra field of this transaction contains your MasterNode operator address.</p>
+            <div class="fs-fact">Before your node joins the active network, each existing MasterNode independently verifies that your collateral matches the required amount. There is no central gatekeeper.</div>
+          </div>
+        </div>
+
+        <!-- STEP 1: STAKE -->
+        <div class="flow-step" id="fstep-1">
+          <div class="fs-visual">
+            <div class="fs-step-num">02</div>
+            <div class="stake-visual">
+              <div class="sv-row">
+                <span class="sv-label">Solo Stake</span>
+                <div class="sv-bar" style="flex:1"><div class="sv-fill" style="width:100%;background:var(--amber)"></div></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">10,000 BDX</span>
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--spark3);margin:4px 0">OR pool with up to 4 contributors</div>
+              <div class="sv-row">
+                <span class="sv-label">Operator</span>
+                <div class="sv-bar" style="flex:1"><div class="sv-fill" style="width:50%;background:var(--amber)"></div></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">5,000</span>
+              </div>
+              <div class="sv-row">
+                <span class="sv-label">Contributor 2</span>
+                <div class="sv-bar" style="flex:1"><div class="sv-fill" style="width:25%;background:var(--gold)"></div></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">2,500</span>
+              </div>
+              <div class="sv-row">
+                <span class="sv-label">Contributor 3</span>
+                <div class="sv-bar" style="flex:1"><div class="sv-fill" style="width:15%;background:var(--cool)"></div></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cool)">1,500</span>
+              </div>
+              <div class="sv-row">
+                <span class="sv-label">Contributor 4</span>
+                <div class="sv-bar" style="flex:1"><div class="sv-fill" style="width:10%;background:var(--green)"></div></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green)">1,000</span>
+              </div>
+            </div>
+          </div>
+          <div class="fs-content">
+            <div class="fs-title">Collateral Lock</div>
+            <p class="fs-body">The 10,000 BDX collateral is locked as a time-locked output in your wallet. You still own it. But you cannot spend it while the node is active. Infinite Staking means the stake does not expire automatically. It stays locked until you explicitly request an unlock.</p>
+            <div class="fs-fact"><strong>Pool staking:</strong> If you cannot supply the full 10,000 BDX alone, up to 4 contributors can share the stake. Each contributor's share determines their proportion of future rewards. Minimum individual contribution rules apply.</div>
+          </div>
+        </div>
+
+        <!-- STEP 2: QUORUM SELECTION -->
+        <div class="flow-step" id="fstep-2">
+          <div class="fs-visual">
+            <div class="fs-step-num">03</div>
+            <div class="quorum-visual">
+              <div class="qv-row">
+                <span class="qv-label">Block Producer</span>
+                <div class="qv-nodes">
+                  <div class="qv-node producer" title="Block Producer">P</div>
+                </div>
+              </div>
+              <div class="qv-row">
+                <span class="qv-label">Validators</span>
+                <div class="qv-nodes" id="step-validators">
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node validator">V</div>
+                  <div class="qv-node dim">V</div>
+                  <div class="qv-node dim">V</div>
+                  <div class="qv-node dim">V</div>
+                  <div class="qv-node dim">V</div>
+                </div>
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--spark3);margin-top:8px">7 of 11 validators must agree to confirm the block</div>
+            </div>
+          </div>
+          <div class="fs-content">
+            <div class="fs-title">Quorum Formation</div>
+            <p class="fs-body">Every 30 seconds, a new block must be produced. Before it can be produced, the network forms a quorum of 12 MasterNodes. One node is selected as the block producer. The remaining 11 become validators. Selection is random at the protocol level.</p>
+            <div class="fs-fact"><strong>The rule:</strong> 7 out of 11 validators must independently attest to the block. This super-majority requirement means that even if a minority of validators is compromised, the block still cannot be falsified.</div>
+          </div>
+        </div>
+
+        <!-- STEP 3: VALIDATE -->
+        <div class="flow-step" id="fstep-3">
+          <div class="fs-visual">
+            <div class="fs-step-num">04</div>
+            <div class="lock-visual">
+              <div class="lv-item"><span class="lv-icon">📦</span><span class="lv-text">Block producer collects pending transactions and assembles a candidate block</span></div>
+              <div class="lv-item"><span class="lv-icon">📢</span><span class="lv-text">Candidate block is sent to the 11 validator nodes in the quorum</span></div>
+              <div class="lv-item"><span class="lv-icon">✅</span><span class="lv-text">Each validator independently checks: valid transactions, correct amounts, no double-spends</span></div>
+              <div class="lv-item"><span class="lv-icon">📡</span><span class="lv-text">If 7 or more validators sign their approval, the block is broadcast to the full network</span></div>
+              <div class="lv-item" style="border-color:rgba(255,149,0,0.25)"><span class="lv-icon">⛓</span><span class="lv-text"><strong>Block is appended to the Beldex chain</strong>. A new quorum forms immediately for the next block</span></div>
+            </div>
+          </div>
+          <div class="fs-content">
+            <div class="fs-title">Block Validation</div>
+            <p class="fs-body">This step is where MasterNodes do their most critical work. They verify that every transaction in the candidate block is legitimate. Ring signatures are checked. Stealth address formats are verified. Double-spends are detected and rejected. No transaction can reach the chain without passing this check.</p>
+            <div class="fs-fact"><strong>Block time:</strong> One block every 30 seconds. This repeats continuously, 24 hours a day. A new quorum forms for every single block produced.</div>
+          </div>
+        </div>
+
+        <!-- STEP 4: REWARD -->
+        <div class="flow-step" id="fstep-4">
+          <div class="fs-visual">
+            <div class="fs-step-num">05</div>
+            <div class="lock-visual">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:10px">Reward Lock Periods</div>
+              <div style="display:flex;height:16px;border-radius:2px;overflow:hidden;width:100%;margin-bottom:6px">
+                <div style="flex:2;background:var(--amber2);border:1px solid var(--amber2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--amber)">Active - earning</div>
+                <div style="flex:1;background:var(--gold2);border:1px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--gold)">Unlock 15d</div>
+              </div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--spark3);margin-bottom:16px">Still earning during the 15-day unlock period</div>
+              <div class="lv-item"><span class="lv-icon">💰</span><span class="lv-text">Block reward: <strong>10 BDX per block</strong> shared across all active MasterNodes via reward queue</span></div>
+              <div class="lv-item"><span class="lv-icon">📅</span><span class="lv-text">Rewards can be claimed <strong>daily, weekly, or monthly</strong> at operator's choice</span></div>
+              <div class="lv-item"><span class="lv-icon">🔓</span><span class="lv-text">Unlock request: stake remains locked for <strong>15 additional days</strong>, still earning rewards</span></div>
+            </div>
+          </div>
+          <div class="fs-content">
+            <div class="fs-title">Earning Rewards</div>
+            <p class="fs-body">Block rewards of 10 BDX are distributed to MasterNodes based on a strict first-in, first-out queue. When your node receives its reward, it moves to the bottom of the queue and waits for every other node ahead of it to be rewarded before it is next again. This guarantees every node earns equally over time.</p>
+            <div class="fs-fact">Pool nodes split the block reward proportionally. If you contributed 25% of the 10,000 BDX stake, you receive 25% of the reward each time that node is selected from the queue.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="flow-nav-dots" id="flow-dots">
+        <div class="fnd on" onclick="setStep(0)"></div>
+        <div class="fnd" onclick="setStep(1)"></div>
+        <div class="fnd" onclick="setStep(2)"></div>
+        <div class="fnd" onclick="setStep(3)"></div>
+        <div class="fnd" onclick="setStep(4)"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 5 - VALIDATOR SELECTION (interactive shuffle)
+     ============================================================ -->
+<section id="validator" class="sec sec-alt">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 04</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Validator <span style="color:var(--amber)">Selection</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        Every block cycle, 12 nodes are chosen from the full network to form a quorum. The selection is random. No node can predict or influence which quorum it will join. Press Shuffle to simulate a new selection round.
+      </p>
+    </div>
+    <div class="quorum-arena rv" style="transition-delay:.15s">
+      <div class="qa-header">
+        <div class="qa-label">Quorum Simulator</div>
+        <button class="shuffle-btn" onclick="shuffleQuorum()">&#8635; New Block Round</button>
+      </div>
+      <div class="qa-body">
+        <div class="quorum-network" id="quorum-nodes"></div>
+        <div class="quorum-readout">
+          <div class="qr-title">Current Quorum</div>
+          <div class="qr-stat">
+            <span class="qrs-label">Block Producer</span>
+            <span class="qrs-val" id="qr-producer"><span class="accent">MN-?</span></span>
+          </div>
+          <div class="qr-stat">
+            <span class="qrs-label">Validators</span>
+            <span class="qrs-val" id="qr-validators">11 nodes</span>
+          </div>
+          <div class="qr-divider"></div>
+          <div class="qr-rule-item">1 of 12 produces the candidate block</div>
+          <div class="qr-rule-item">11 of 12 validate the block independently</div>
+          <div class="qr-rule-item">7 of 11 must agree for the block to be confirmed</div>
+          <div class="qr-rule-item">New quorum selected every 30 seconds</div>
+          <div class="qr-rule-item">Selection is random at protocol level</div>
+        </div>
+      </div>
+      <div class="explain-block">
+        <strong>Why randomness matters:</strong> If validator selection were predictable, an attacker could prepare to control a quorum. Random selection means an attacker cannot know in advance which nodes will validate the next block. Combined with the 10,000 BDX stake per node, acquiring enough nodes to influence any single quorum requires enormous capital, and success would only affect one block out of thousands.
+      </div>
+    </div>
+
+    <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;" class="rv" style="transition-delay:.25s">
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:22px 20px;border-radius:2px">
+        <div class="label-tag" style="margin-bottom:8px">Quorum Size</div>
+        <div class="display display-md" style="color:var(--amber)">12</div>
+        <p style="font-family:'Bitter',serif;font-size:12px;color:var(--spark3);margin-top:8px;line-height:1.75">1 block producer and 11 validators per block cycle. The group dissolves and reforms for every single block.</p>
+      </div>
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:22px 20px;border-radius:2px">
+        <div class="label-tag" style="margin-bottom:8px">Confirmation Threshold</div>
+        <div class="display display-md" style="color:var(--amber)">7 / 11</div>
+        <p style="font-family:'Bitter',serif;font-size:12px;color:var(--spark3);margin-top:8px;line-height:1.75">A super-majority of 7 validators must independently sign the block. A minority of bad actors cannot override the honest majority.</p>
+      </div>
+      <div style="background:var(--panel);border:1px solid var(--border2);padding:22px 20px;border-radius:2px">
+        <div class="label-tag" style="margin-bottom:8px">Block Time</div>
+        <div class="display display-md" style="color:var(--amber)">30s</div>
+        <p style="font-family:'Bitter',serif;font-size:12px;color:var(--spark3);margin-top:8px;line-height:1.75">One block every 30 seconds. A fresh quorum for every block. No single group holds validation power for more than one cycle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 6 - REWARDS AND QUEUE SYSTEM (live FIFO sim)
+     ============================================================ -->
+<section id="rewards" class="sec">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 05</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Rewards <span style="color:var(--amber)">&amp; Queue</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        Every MasterNode in the network is rewarded fairly through a first-in, first-out queue. The simulation below shows the queue in action. Press Reward Next Node to pay the front node and watch it move to the back.
+      </p>
+    </div>
+    <div class="queue-sim rv" style="transition-delay:.15s">
+      <div class="qs-header">
+        <div class="qs-label">Reward Queue Simulator</div>
+        <div class="qs-controls">
+          <button class="q-btn primary" onclick="rewardNext()">▶ Reward Next Node</button>
+          <button class="q-btn" onclick="queueReset()">&#8635; Reset</button>
+        </div>
+      </div>
+      <div class="qs-body">
+        <div class="queue-track">
+          <div class="qt-header">
+            <span class="qt-col pos">#</span>
+            <span class="qt-col name">MasterNode</span>
+            <span class="qt-col status">Status</span>
+            <span class="qt-col rewards">Earned (BDX)</span>
+          </div>
+          <div class="queue-rows" id="queue-rows"></div>
+        </div>
+        <div class="queue-stats">
+          <div class="qs-stat"><span class="qss-label">Reward Cycles</span><span class="qss-val" id="q-cycles">0</span></div>
+          <div class="qs-stat"><span class="qss-label">BDX Distributed</span><span class="qss-val gold" id="q-distributed">0</span></div>
+          <div class="qs-stat"><span class="qss-label">Per Node Average</span><span class="qss-val green" id="q-average">0</span></div>
+          <div style="height:1px;background:var(--border2);margin:4px 0"></div>
+          <div style="font-family:'Bitter',serif;font-size:11px;color:var(--spark3);line-height:1.75">
+            Each block produces 10 BDX. The front node in the queue receives its share. It then moves to the back. This repeats every block.
+          </div>
+        </div>
+      </div>
+      <div class="qs-explain">
+        <div class="qse-card">
+          <div class="qse-title">Why First-In, First-Out?</div>
+          <p class="qse-text">Every node joins the queue when it registers. After it receives a reward, it returns to the back. This guarantees that no node waits indefinitely and no node receives rewards more frequently than others. The mechanism is deterministic. Every operator can predict when their next reward will arrive.</p>
+        </div>
+        <div class="qse-card">
+          <div class="qse-title">Unlock and Lock Periods</div>
+          <p class="qse-text">When an operator decides to stop running their node, they request an unlock. The collateral stays locked for 15 more days. The node continues earning rewards during those 15 days. If a node is deregistered by the network for being offline too long, the lock period extends to 30 days.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 7 - REQUIREMENTS
+     ============================================================ -->
+<section id="requirements" class="sec sec-alt">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 06</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Requirements to <span style="color:var(--amber)">Run a MasterNode</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        Running a MasterNode requires both a financial commitment and a technical setup. Both are manageable for a motivated operator.
+      </p>
+    </div>
+    <div class="req-layout rv" style="transition-delay:.15s">
+      <div class="req-panel">
+        <div class="req-panel-title">Financial Requirements</div>
+        <span class="req-panel-sub">What You Must Stake</span>
+        <div class="req-item">
+          <span class="req-icon">💰</span>
+          <div>
+            <div class="req-name">Minimum Collateral</div>
+            <span class="req-val">10,000 BDX</span>
+            <p class="req-detail">This is locked while your node is active. You retain ownership. You cannot spend it. When you unlock, it returns to your wallet after a 15-day waiting period.</p>
+          </div>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">🔒</span>
+          <div>
+            <div class="req-name">Minimum Lock Period</div>
+            <span class="req-val">30 Days</span>
+            <p class="req-detail">Collateral must stay locked for a minimum of 30 days (86,400 blocks) from registration. This prevents hit-and-run validators who register and immediately withdraw.</p>
+          </div>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">♾</span>
+          <div>
+            <div class="req-name">Infinite Staking</div>
+            <p class="req-detail">Stakes do not expire automatically. Your node stays active indefinitely until you choose to unlock. This gives operators long-term stability without re-registration.</p>
+          </div>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">👥</span>
+          <div>
+            <div class="req-name">Pool Staking</div>
+            <p class="req-detail">Cannot afford 10,000 BDX alone? Up to 4 contributors can co-own a MasterNode. Each shares rewards proportionally to their stake. Platforms like MyCointainer allow staking any amount.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="req-panel">
+        <div class="req-panel-title">Technical Requirements</div>
+        <span class="req-panel-sub">What Your Server Must Have</span>
+        <div class="req-item">
+          <span class="req-icon">🖥</span>
+          <div>
+            <div class="req-name">Operating System</div>
+            <span class="req-val">Linux (Debian / Ubuntu)</span>
+            <p class="req-detail">A VPS running Debian or Ubuntu. Other distributions may work but require modifications to the setup commands.</p>
+          </div>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">📡</span>
+          <div>
+            <div class="req-name">Static IP Address</div>
+            <p class="req-detail">Your server needs a permanent, static IP address. If the IP changes, the network registers the change in the Masternode Monitor. The node remains active but the change is logged.</p>
+          </div>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">⚡</span>
+          <div>
+            <div class="req-name">Three Running Services</div>
+            <p class="req-detail"><code>beldex-node.service</code> handles blockchain. <code>beldex-storage-server.service</code> handles BChat message storage. <code>belnet-router.service</code> handles BelNet VPN routing. All three must run simultaneously.</p>
+          </div>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">⏱</span>
+          <div>
+            <div class="req-name">Continuous Uptime</div>
+            <p class="req-detail">The network monitors uptime via proofs submitted regularly. Nodes earn block credits for uptime. These credits protect the node if it briefly goes offline. Running out of credits triggers decommissioning.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Staking paths -->
+    <div style="margin-top:24px;" class="rv" style="transition-delay:.25s">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--spark3);margin-bottom:16px">Two Ways to Participate</div>
+      <div class="path-grid">
+        <div class="path-card highlight">
+          <div class="path-type">Option A</div>
+          <div class="path-title">Run Your Own MasterNode</div>
+          <div class="path-points">
+            <div class="path-point">Full 10,000 BDX required (or shared with up to 4 contributors)</div>
+            <div class="path-point">Set up and manage a Linux VPS server</div>
+            <div class="path-point">Full control over your node configuration</div>
+            <div class="path-point">Claim 100% of your portion of block rewards</div>
+            <div class="path-point">Cold masternode hosting available via Nodehub if no VPS</div>
+          </div>
+        </div>
+        <div class="path-card">
+          <div class="path-type">Option B</div>
+          <div class="path-title">Join a Staking Pool</div>
+          <div class="path-points">
+            <div class="path-point">Stake any amount via platforms like MyCointainer</div>
+            <div class="path-point">No server setup or technical knowledge required</div>
+            <div class="path-point">Rewards proportional to your stake amount</div>
+            <div class="path-point">Someone else operates the node on your behalf</div>
+            <div class="path-point">Lower barrier to entry but you trust the pool operator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 8 - ROLE IN ECOSYSTEM
+     ============================================================ -->
+<section id="ecosystem" class="sec">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 07</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Role in the <span style="color:var(--amber)">Beldex Ecosystem</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        MasterNodes do not just validate blocks. They are the shared infrastructure for every product in the Beldex ecosystem. Remove MasterNodes and all four applications stop working.
+      </p>
+    </div>
+    <div class="eco-hub rv" style="transition-delay:.15s">
+      <div class="eco-center">
+        <span class="eco-center-icon">⚡</span>
+        <span class="eco-center-label">MASTERNODES</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--amber);opacity:0.7">2,200+ ACTIVE</span>
+      </div>
+      <div class="eco-spokes">
+        <div class="eco-spoke">
+          <span class="es-icon">🔗</span>
+          <div>
+            <div class="es-role">Blockchain</div>
+            <div class="es-name">Beldex Chain</div>
+            <p class="es-desc">MasterNodes validate every block and every transaction. They store the full blockchain history and produce checkpoints that make the chain immutable.</p>
+          </div>
+        </div>
+        <div class="eco-spoke">
+          <span class="es-icon">🌐</span>
+          <div>
+            <div class="es-role">VPN Infrastructure</div>
+            <div class="es-name">BelNet</div>
+            <p class="es-desc">MasterNodes serve as relay and routing nodes for BelNet. Your encrypted traffic hops through them. They know only the previous and next hop, never the origin or destination.</p>
+          </div>
+        </div>
+        <div class="eco-spoke">
+          <span class="es-icon">💬</span>
+          <div>
+            <div class="es-role">Message Routing</div>
+            <div class="es-name">BChat</div>
+            <p class="es-desc">BChat routes messages through MasterNodes using the Beldex Secure Masternode protocol. Messages are stored on the network when recipients are offline and delivered when they reconnect.</p>
+          </div>
+        </div>
+        <div class="eco-spoke">
+          <span class="es-icon">🌍</span>
+          <div>
+            <div class="es-role">Privacy Browser</div>
+            <div class="es-name">Beldex Browser</div>
+            <p class="es-desc">The Beldex Browser uses BelNet for private routing. BeldexAI optimizes traffic distribution across MasterNodes, selecting the shortest path and preventing node overload.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 9 - ADVANTAGES
+     ============================================================ -->
+<section id="advantages" class="sec sec-alt">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Section 08</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Advantages of <span style="color:var(--amber)">MasterNodes</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        The MasterNode design produces benefits at every level. For the network. For the operators. For the users of every Beldex application.
+      </p>
+    </div>
+    <div class="adv-grid rv" style="transition-delay:.15s">
+      <div class="adv-card" data-num="01">
+        <span class="adv-icon">🛡️</span>
+        <div class="adv-title">Sybil Resistance</div>
+        <p class="adv-text">Creating a fake identity on most blockchain networks costs very little. On Beldex, each identity costs 10,000 BDX. An attacker who wants to spin up 100 fake nodes must acquire 1,000,000 BDX and lock it. This makes mass identity attacks financially ruinous.</p>
+        <div class="adv-highlight">10,000 BDX per node. Each fake node costs real capital.</div>
+      </div>
+      <div class="adv-card" data-num="02">
+        <span class="adv-icon">⚖️</span>
+        <div class="adv-title">Fair Reward Distribution</div>
+        <p class="adv-text">The first-in, first-out queue means every node receives exactly one reward before any node receives two. There is no lottery, no favoritism, no advantage for larger or newer nodes. The system is mathematically equal.</p>
+        <div class="adv-highlight">Every node earns the same reward per cycle, regardless of when it joined.</div>
+      </div>
+      <div class="adv-card" data-num="03">
+        <span class="adv-icon">📡</span>
+        <div class="adv-title">Decentralized Infrastructure</div>
+        <p class="adv-text">BelNet, BChat, and Beldex Browser do not rely on servers owned by Beldex International. They run on the MasterNode network. No single company, government, or attacker can shut down the infrastructure by targeting one data center or one entity.</p>
+        <div class="adv-highlight">2,200+ independently operated nodes across multiple geographies.</div>
+      </div>
+      <div class="adv-card" data-num="04">
+        <span class="adv-icon">💰</span>
+        <div class="adv-title">Passive Income for Operators</div>
+        <p class="adv-text">Operators earn BDX block rewards continuously for as long as their node is active and online. The reward queue ensures that income is predictable and consistent. Operators can calculate their expected earnings based on the total number of active nodes in the network.</p>
+        <div class="adv-highlight">10 BDX per block, distributed fairly across all active nodes in the queue.</div>
+      </div>
+      <div class="adv-card" data-num="05">
+        <span class="adv-icon">⚡</span>
+        <div class="adv-title">Fast Finality</div>
+        <p class="adv-text">Traditional blockchains can take minutes or hours to confirm a transaction with certainty. The Beldex quorum system confirms a block in 30 seconds. Flash Transactions use the MasterNode quorum to lock transactions instantly, making near-real-time payments possible.</p>
+        <div class="adv-highlight">30-second block time. Flash Transactions confirm in seconds using quorum locking.</div>
+      </div>
+      <div class="adv-card" data-num="06">
+        <span class="adv-icon">🔒</span>
+        <div class="adv-title">Incentive Alignment</div>
+        <p class="adv-text">MasterNode operators have a direct financial reason to keep the network honest and online. Acting maliciously risks losing their 10,000 BDX stake. Going offline risks losing block credits and deregistration. The economic incentives push every operator toward good behavior.</p>
+        <div class="adv-highlight">Honest behavior is more profitable than dishonest behavior at every step.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rivet-rule"></div>
+
+<!-- ============================================================
+     SECTION 10 - KEY POINTS GLANCE
+     ============================================================ -->
+<section id="glance" class="sec">
+  <div class="w">
+    <div class="rv">
+      <div class="sec-eyebrow"><span class="label-tag">Full Glance</span></div>
+      <h2 class="display display-lg" style="margin-bottom:12px">Key Points at a <span style="color:var(--amber)">Glance</span></h2>
+      <p style="font-family:'Bitter',serif;font-size:15px;color:var(--spark3);max-width:620px;line-height:1.85">
+        Every critical fact about Beldex MasterNodes in one place. Bookmark this section.
+      </p>
+    </div>
+    <div class="glance-grid rv" style="transition-delay:.15s">
+      <div class="glance-item"><span class="gi-icon">💰</span><div><div class="gi-key">Staking Requirement</div><div class="gi-val">10,000 BDX</div><p class="gi-desc">The minimum collateral required to register and run an independent MasterNode. Locked until you request an unlock.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">⬡</span><div><div class="gi-key">Active Network Size</div><div class="gi-val">2,200+ Nodes</div><p class="gi-desc">Over 2,200 independently operated MasterNodes currently secure the Beldex network. Each controlled by a different operator.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">🗳</span><div><div class="gi-key">Quorum Composition</div><div class="gi-val">12 Nodes</div><p class="gi-desc">1 block producer and 11 validators are selected for every block. 7 of the 11 validators must agree to confirm.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">⏱</span><div><div class="gi-key">Block Time</div><div class="gi-val">30 Seconds</div><p class="gi-desc">One new block every 30 seconds. A new quorum forms for every block. No group holds validation power for more than one cycle.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">🎁</span><div><div class="gi-key">Block Reward</div><div class="gi-val">10 BDX / Block</div><p class="gi-desc">10 BDX is minted with each new block. The entire reward goes to MasterNodes via the first-in, first-out queue.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">🔒</span><div><div class="gi-key">Minimum Lock Period</div><div class="gi-val">30 Days</div><p class="gi-desc">After registering, collateral must stay locked for at least 30 days (86,400 blocks). Unlocking after that takes 15 additional days.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">👥</span><div><div class="gi-key">Pool Contributors</div><div class="gi-val">Up to 4</div><p class="gi-desc">A single MasterNode can have up to 4 contributors sharing the 10,000 BDX stake. Rewards split proportionally by stake size.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">🧠</span><div><div class="gi-key">AI Load Balancing</div><div class="gi-val">BeldexAI</div><p class="gi-desc">BeldexAI monitors the network and distributes BelNet and Beldex Browser traffic across MasterNodes using the shortest available path.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">🛠</span><div><div class="gi-key">Services Per Node</div><div class="gi-val">3 Required</div><p class="gi-desc">Every active MasterNode must run beldex-node, beldex-storage-server, and belnet-router simultaneously and continuously.</p></div></div>
+      <div class="glance-item"><span class="gi-icon">⚡</span><div><div class="gi-key">PoS Transition</div><div class="gi-val">Dec 2021</div><p class="gi-desc">Beldex transitioned from Proof of Work to Proof of Stake in December 2021 (Bucephalus hardfork). MasterNodes became the sole validators.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-brand">BELDEX MASTERNODES</div>
+  <div class="ft-note">Part of the Beldex Complete Visual Guide</div>
+</footer>
+
+<script>
+/* ============================================================
+   HERO ENGINE CANVAS - Signature Moment
+   Glowing pistons fire in sequence, representing MasterNodes
+   ============================================================ */
+(function(){
+  const c = document.getElementById('engine-canvas');
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
+  resize(); window.addEventListener('resize',resize);
+
+  const NODE_COUNT = 18;
+  const nodes = Array.from({length:NODE_COUNT},(_,i)=>({
+    id:i,
+    angle: (i/NODE_COUNT)*Math.PI*2,
+    orbitSpeed: 0.004, // full rotation every ~26 seconds at 60fps
+    fireTimer:0, fired:false,
+    pulseT:Math.random()*Math.PI*2,
+  }));
+  // Inner orbit nodes rotating opposite direction, faster
+  const innerNodes = Array.from({length:6},(_,i)=>({
+    angle: (i/6)*Math.PI*2,
+    orbitSpeed: -0.008,
+    pulseT:Math.random()*Math.PI*2,
+  }));
+
+  let lastFire = 0, fireIdx = 0;
+  const FIRE_INTERVAL = 120;
+
+  // Drifting particles — only in the right half so text stays clear
+  const particles = Array.from({length:35},()=>({
+    x:.52+Math.random()*.46,y:Math.random(),
+    vx:(Math.random()-.5)*.0005,vy:(Math.random()-.5)*.0005,
+    r:Math.random()*1.3+.3,o:Math.random()*.15+.04
+  }));
+
+  function draw(ts){
+    ctx.clearRect(0,0,W,H);
+    // Center of animation sits in the right 30% of the canvas, ring sized to fit fully visible
+    const rightStart = W * 0.50;
+    const rightZone  = W - rightStart;
+    const cx = rightStart + rightZone * 0.50; // center of right half
+    const cy = H * 0.50;
+    const nr  = Math.min(rightZone * 0.46, H * 0.38); // fits fully within right half
+    const nr2 = nr * 0.50; // inner orbit
+
+    // Orbit all nodes
+    nodes.forEach(n=>{ n.angle+=n.orbitSpeed; });
+    innerNodes.forEach(n=>{ n.angle+=n.orbitSpeed; });
+
+    // Particles — bounce within right half only
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y=(p.y+p.vy+1)%1;
+      if(p.x<.52){p.x=.52;p.vx=Math.abs(p.vx);}
+      if(p.x>.98){p.x=.98;p.vx=-Math.abs(p.vx);}
+      ctx.beginPath();ctx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,149,0,${p.o})`;ctx.fill();
+    });
+
+    // Orbital ring tracks
+    ctx.beginPath();ctx.arc(cx,cy,nr,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,149,0,0.08)';ctx.lineWidth=1;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,nr2,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,149,0,0.05)';ctx.lineWidth=1;ctx.stroke();
+
+    // Inner orbit nodes (smaller, dimmer)
+    innerNodes.forEach(n=>{
+      n.pulseT+=.018;
+      const nx=cx+Math.cos(n.angle)*nr2;
+      const ny=cy+Math.sin(n.angle)*nr2;
+      const pulse=.6+Math.sin(n.pulseT)*.4;
+      ctx.beginPath();ctx.arc(nx,ny,3.5,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,204,0,${.25*pulse})`;
+      ctx.strokeStyle=`rgba(255,204,0,${.5*pulse})`;
+      ctx.lineWidth=1;ctx.fill();ctx.stroke();
+      // thin spoke to center
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(nx,ny);
+      ctx.strokeStyle=`rgba(255,149,0,0.05)`;ctx.lineWidth=1;ctx.stroke();
+    });
+
+    // Fire next node sequentially
+    if(ts-lastFire>FIRE_INTERVAL){
+      nodes[fireIdx%NODE_COUNT].fireTimer=ts;
+      nodes[fireIdx%NODE_COUNT].fired=true;
+      fireIdx++; lastFire=ts;
+    }
+
+    // Draw outer nodes
+    nodes.forEach((n,i)=>{
+      n.pulseT+=.012;
+      const angle=n.angle;
+      const nx=cx+Math.cos(angle)*nr;
+      const ny=cy+Math.sin(angle)*nr;
+
+      const age=ts-n.fireTimer;
+      const isFiring=n.fired&&age<600;
+      const fireGlow=isFiring?Math.max(0,1-age/600):0;
+
+      // Spoke line from center
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(nx,ny);
+      ctx.strokeStyle=`rgba(255,149,0,${.04+fireGlow*.2})`;ctx.lineWidth=isFiring?1.5:1;ctx.stroke();
+
+      // Glow
+      if(isFiring){
+        const g=ctx.createRadialGradient(nx,ny,0,nx,ny,28);
+        g.addColorStop(0,`rgba(255,204,0,${.5*fireGlow})`);
+        g.addColorStop(1,'transparent');
+        ctx.beginPath();ctx.arc(nx,ny,28,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+      }
+
+      // Node circle
+      const pulse=.7+Math.sin(n.pulseT)*.3;
+      const r=isFiring?9:6;
+      ctx.beginPath();ctx.arc(nx,ny,r,0,Math.PI*2);
+      ctx.fillStyle=isFiring?`rgba(255,204,0,${.7+fireGlow*.3})`:`rgba(255,149,0,${.2*pulse})`;
+      if(isFiring){ctx.shadowColor='#FFCC00';ctx.shadowBlur=14;}
+      ctx.fill();ctx.shadowBlur=0;
+      ctx.beginPath();ctx.arc(nx,ny,r,0,Math.PI*2);
+      ctx.strokeStyle=isFiring?`rgba(255,204,0,.9)`:`rgba(255,149,0,${.4*pulse})`;
+      ctx.lineWidth=1.5;ctx.stroke();
+
+      // Emit particles on fire
+      if(isFiring&&age<80){
+        for(let j=0;j<3;j++){
+          const pa=Math.random()*Math.PI*2;
+          const pd=Math.random()*20+8;
+          ctx.beginPath();ctx.arc(nx+Math.cos(pa)*pd,ny+Math.sin(pa)*pd,1.5,0,Math.PI*2);
+          ctx.fillStyle=`rgba(255,220,80,${fireGlow*.5})`;ctx.fill();
+        }
+      }
+    });
+
+    // Center hub
+    const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,32);
+    cg.addColorStop(0,'rgba(255,149,0,0.14)');cg.addColorStop(1,'transparent');
+    ctx.beginPath();ctx.arc(cx,cy,32,0,Math.PI*2);ctx.fillStyle=cg;ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,149,0,0.6)';ctx.shadowColor='#FF9500';ctx.shadowBlur=18;ctx.fill();ctx.shadowBlur=0;
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+const rvObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');rvObs.unobserve(e.target);}});
+},{threshold:.08,rootMargin:'0px 0px -24px 0px'});
+document.querySelectorAll('.rv').forEach((el,i)=>{
+  if(!el.style.transitionDelay) el.style.transitionDelay=`${(i%5)*.05}s`;
+  rvObs.observe(el);
+});
+
+/* ============================================================
+   STEP FLOW TABS
+   ============================================================ */
+function setStep(idx){
+  document.querySelectorAll('.flow-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.flow-step').forEach((s,i)=>s.classList.toggle('active',i===idx));
+  document.querySelectorAll('.fnd').forEach((d,i)=>d.classList.toggle('on',i===idx));
+}
+
+/* ============================================================
+   QUORUM SHUFFLE
+   ============================================================ */
+const TOTAL_NODES=24;
+let producerIdx=0;
+function buildQuorumNodes(){
+  const container=document.getElementById('quorum-nodes');
+  container.innerHTML='';
+  for(let i=0;i<TOTAL_NODES;i++){
+    const d=document.createElement('div');
+    d.className='qn-node idle';
+    d.id=`qn-${i}`;
+    d.innerHTML=`<span class="qn-icon">⬡</span><span class="qn-id">MN-${String(i+1).padStart(2,'0')}</span><span class="qn-role"></span>`;
+    container.appendChild(d);
+  }
+}
+function shuffleQuorum(){
+  // Reset all
+  document.querySelectorAll('.qn-node').forEach(n=>{n.className='qn-node idle';n.querySelector('.qn-role').textContent='';});
+  const pool=[...Array(TOTAL_NODES).keys()];
+  // Shuffle Fisher-Yates
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  const selected=pool.slice(0,12);
+  producerIdx=selected[0];
+  // Assign roles
+  selected.forEach((nodeIdx,i)=>{
+    const el=document.getElementById(`qn-${nodeIdx}`);
+    if(i===0){
+      el.className='qn-node selected-producer';
+      el.querySelector('.qn-role').textContent='PROD';
+      el.querySelector('.qn-role').className='qn-role p';
+    } else {
+      el.className='qn-node selected-validator';
+      el.querySelector('.qn-role').textContent='VAL';
+      el.querySelector('.qn-role').className='qn-role v';
+    }
+  });
+  document.getElementById('qr-producer').innerHTML=`<span class="accent">MN-${String(producerIdx+1).padStart(2,'0')}</span>`;
+}
+buildQuorumNodes();
+shuffleQuorum();
+
+/* ============================================================
+   QUEUE SIMULATOR
+   ============================================================ */
+const QUEUE_NODES=[
+  'Forge-Alpha','Steel-Omega','Carbon-Prime','Ember-Delta',
+  'Anvil-Node','Piston-X1','Spark-Seven','Forge-Beta',
+  'Iron-Gate','Blast-Node','Coal-Fire','Amber-Core'
+];
+let queue=[...QUEUE_NODES.map((n,i)=>({name:n,rewards:0,pos:i}))];
+let cycles=0,distributed=0;
+
+function renderQueue(){
+  const rows=document.getElementById('queue-rows');
+  rows.innerHTML='';
+  queue.forEach((node,i)=>{
+    const div=document.createElement('div');
+    const isTop=i===0;
+    const isTop3=i<3;
+    div.className='qrow'+(isTop?' rewarded':isTop3?' top-3':'');
+    div.innerHTML=`
+      <div class="qrow-pos ${i>2?'dim':''}">${i===0?'▶':i+1}</div>
+      <div class="qrow-name">${node.name}</div>
+      <div class="qrow-status ${i===0?'next':i<3?'ready':'waiting'}">${i===0?'NEXT':i<3?'SOON':''}</div>
+      <div class="qrow-rewards">${node.rewards > 0 ? node.rewards : ''}</div>
+    `;
+    rows.appendChild(div);
+  });
+  document.getElementById('q-cycles').textContent=cycles;
+  document.getElementById('q-distributed').textContent=distributed;
+  const avg=queue.length>0?(distributed/queue.length).toFixed(1):0;
+  document.getElementById('q-average').textContent=avg;
+}
+
+function rewardNext(){
+  // Reward front node
+  const front=queue.shift();
+  front.rewards+=10;
+  cycles++;distributed+=10;
+  // Move to back
+  queue.push(front);
+  renderQueue();
+}
+function queueReset(){
+  queue=QUEUE_NODES.map((n,i)=>({name:n,rewards:0,pos:i}));
+  cycles=0;distributed=0;
+  renderQueue();
+}
+renderQueue();
+
+/* ============================================================
+   SMOOTH SCROLL
+   ============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>
