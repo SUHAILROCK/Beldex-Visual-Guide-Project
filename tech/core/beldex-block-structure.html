@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Beldex Block Structure</title>
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;600;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;600;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;600;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;600;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap"></noscript>
 <style>
 :root{
   --bg:#030507;--dp:#050a10;--pn:#080f1a;--wl:#0d1a27;--ln:#152233;
@@ -593,7 +597,7 @@ footer{background:var(--dp);border-top:1px solid var(--ln);padding:1.1rem 2.5rem
       </div>
     </div>
   </div>
-  <canvas id="pipeCanvas" height="240" class="fi" style="margin-top:2rem;"></canvas>
+  <canvas id="pipeCanvas" height="300" class="fi" style="margin-top:2rem;display:block;"></canvas>
 </div>
 </section>
 
@@ -768,6 +772,8 @@ window.addEventListener('scroll',function(){
     return b;
   }
   function draw(){
+    if(!W||!H){resize();requestAnimationFrame(draw);return;}
+    if(document.hidden){requestAnimationFrame(draw);return;}
     ctx.clearRect(0,0,W,H);
     ctx.fillStyle='#030507';ctx.fillRect(0,0,W,H);
     drops.forEach(function(d){
@@ -825,7 +831,8 @@ window.addEventListener('scroll',function(){
     beamY+=1.5;if(beamY>H+20)beamY=-20;t+=.016;
     requestAnimationFrame(draw);
   }
-  resize();window.addEventListener('resize',resize,{passive:true});draw();
+  window.addEventListener('resize',function(){resize();},{passive:true});
+  requestAnimationFrame(function(){resize();draw();});
 })();
 
 /* ════════════════════════════════════════════════════════════
@@ -946,7 +953,8 @@ window.addEventListener('scroll',function(){
     ctx.fillText(hintText,W*0.48,H-15);
     t+=.016;requestAnimationFrame(draw);
   }
-  resize();window.addEventListener('resize',resize,{passive:true});draw();
+  window.addEventListener('resize',function(){resize();},{passive:true});
+  requestAnimationFrame(function(){resize();draw();});
 })();
 
 /* ════════════════════════════════════════════════════════════
@@ -1027,7 +1035,8 @@ window.addEventListener('scroll',function(){
     ctx.fillText('RING SIZE: 11   |   CLICK RESHUFFLE TO MIX',W/2,H-10);
     t+=.016;requestAnimationFrame(draw);
   }
-  resize();window.addEventListener('resize',resize,{passive:true});draw();
+  window.addEventListener('resize',function(){resize();},{passive:true});
+  requestAnimationFrame(function(){resize();draw();});
 })();
 
 /* ════════════════════════════════════════════════════════════
@@ -1218,17 +1227,25 @@ buildDossier();
     {label:'VALIDATORS\nVOTING',sub:'7/11 min',color:'#00c9a7'},
     {label:'BLOCK\nSEALED',sub:'broadcast',color:'#aaff00'},
   ];
-  function resize(){W=canvas.width=canvas.parentElement.clientWidth;H=canvas.height=parseInt(canvas.getAttribute('height'))||210;}
+  function resize(){
+    var pw=canvas.parentElement.clientWidth||canvas.parentElement.offsetWidth||window.innerWidth;
+    W=canvas.width=pw;
+    H=canvas.height=parseInt(canvas.getAttribute('height'))||300;
+  }
   function spawnPkt(fi){if(fi>=stages.length-1)return;packets.push({from:fi,to:fi+1,prog:0,spd:.022+Math.random()*.01});}
   function draw(){
-    if(!W)resize();ctx.clearRect(0,0,W,H);ctx.fillStyle='#050a10';ctx.fillRect(0,0,W,H);
+    if(!W||!H){resize();requestAnimationFrame(draw);return;}
+    if(document.hidden){requestAnimationFrame(draw);return;}
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#050a10';ctx.fillRect(0,0,W,H);
     phaseT++;if(phaseT>phaseDur){phaseT=0;phase=(phase+1)%stages.length;}
-    var bw=130,minGap=30,maxGap=100;
+    // bw scales with W so boxes never overflow on narrow screens
+    var bw=Math.max(70,Math.min(130,Math.floor((W-80)/(stages.length+1))));
+    var minGap=Math.max(10,Math.floor(W*.02)),maxGap=80;
     var totalBW=stages.length*bw;
     var gap=Math.max(minGap,Math.min(maxGap,(W-totalBW-40)/(stages.length-1)));
     var totalU=stages.length*bw+(stages.length-1)*gap;
-    var ox=(W-totalU)/2;
-    var sy=H/2-16;
+    var ox=Math.max(10,(W-totalU)/2);
+    var sy=H/2-20;
     var sx=stages.map(function(_,i){return ox+i*(bw+gap)+bw/2;});
 
     /* connector lines */
@@ -1271,7 +1288,7 @@ buildDossier();
         ctx.strokeStyle=s.color;ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
       }
       /* step number pill */
-      var pillY=sy+70;
+      var pillY=sy+62;
       ctx.save();
       rrect(ctx,x-24,pillY-14,48,26,13);
       ctx.fillStyle=active?('rgba('+hexRgb(s.color)+',.15)'):'rgba(21,34,51,.5)';
@@ -1279,18 +1296,20 @@ buildDossier();
       ctx.strokeStyle=active?s.color:'rgba(21,34,51,.7)';
       ctx.lineWidth=active?1.5:1;ctx.stroke();
       ctx.fillStyle=active?s.color:'rgba(74,122,144,.45)';
-      ctx.font='700 12px "Oxanium",sans-serif';ctx.textAlign='center';
+      ctx.font='700 11px "Oxanium",sans-serif';ctx.textAlign='center';
       ctx.fillText('0'+(i+1),x,pillY+4);
       ctx.restore();
     });
     /* vote label */
     var vc=phase>=3?Math.min(11,Math.floor((phaseT/phaseDur)*12)):0;
     if(phase>=4)vc=11;
-    ctx.fillStyle='rgba(0,201,167,.3)';ctx.font='700 12px "Space Mono",monospace';ctx.textAlign='center';
-    ctx.fillText(phase>=3?('VOTES: '+vc+'/11'+(vc>=7?' - THRESHOLD MET':'')):'AWAITING...',W/2,H-5);
+    ctx.fillStyle='rgba(0,201,167,.45)';ctx.font='700 11px "Space Mono",monospace';ctx.textAlign='center';
+    ctx.fillText(phase>=3?('VOTES: '+vc+'/11'+(vc>=7?' - THRESHOLD MET':'')):'AWAITING BLOCK...',W/2,H-10);
     t+=.016;requestAnimationFrame(draw);
   }
-  resize();window.addEventListener('resize',resize,{passive:true});draw();
+  resize();
+  window.addEventListener('resize',function(){resize();},{passive:true});
+  requestAnimationFrame(function(){resize();draw();});
 })();
 
 /* ════════════════════════════════════════════════════════════
@@ -1311,7 +1330,8 @@ buildDossier();
   var flashA=0,sealDone=false,sealHash='',bldT=0;
 
   function resize(){
-    W=canvas.width=canvas.parentElement.clientWidth;
+    var pw=canvas.parentElement.clientWidth||canvas.parentElement.offsetWidth||window.innerWidth;
+    W=canvas.width=pw;
     H=canvas.height=parseInt(canvas.getAttribute('height'))||400;
   }
 
@@ -1354,7 +1374,8 @@ buildDossier();
   document.getElementById('resetBtn').addEventListener('click',resetBlock);
 
   function draw(){
-    if(!W)resize();
+    if(!W||!H){resize();requestAnimationFrame(draw);return;}
+    if(document.hidden){requestAnimationFrame(draw);return;}
     ctx.clearRect(0,0,W,H);
     ctx.fillStyle='#080f1a';ctx.fillRect(0,0,W,H);
     var bx=16,by=16,bw=W-32,bh=H-32;
@@ -1455,7 +1476,9 @@ buildDossier();
     bldT+=.016;
     requestAnimationFrame(draw);
   }
-  resize();window.addEventListener('resize',resize,{passive:true});updateStats();draw();
+  window.addEventListener('resize',function(){resize();},{passive:true});
+  updateStats();
+  requestAnimationFrame(function(){resize();draw();});
 })();
 
 /* ════════════════════════════════════════════════════════════
@@ -1665,9 +1688,12 @@ buildDossier();
 ════════════════════════════════════════════════════════════ */
 var io=new IntersectionObserver(function(entries){
   entries.forEach(function(e,i){
-    if(e.isIntersecting)setTimeout(function(){e.target.classList.add('in');},i*50);
+    if(e.isIntersecting){
+      setTimeout(function(){e.target.classList.add('in');},i*60);
+      io.unobserve(e.target);
+    }
   });
-},{threshold:.06});
+},{threshold:0,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.fi').forEach(function(el){io.observe(el);});
 </script>
 </body>
