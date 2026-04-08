@@ -388,9 +388,9 @@ footer{background:var(--dp);border-top:1px solid var(--ln);padding:1.1rem 2.5rem
       <div class="dd-panel" id="dd4">
         <div class="dd-tag" style="color:var(--lime);">Layer 5 of 6</div>
         <div class="dd-name">RingCT + Bulletproofs</div>
-        <div class="dd-body">MLSAG signatures prove the sender owns an input without revealing which ring member is real. Bulletproof+ range proofs confirm all amounts are positive, 90% smaller than originals.</div>
+        <div class="dd-body">CLSAG signatures prove the sender owns an input without revealing which ring member is real. Bulletproof+ range proofs confirm all amounts are positive, 90% smaller than originals.</div>
         <div class="dd-fields">
-          <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">MLSAG signature</span><span class="ddf-size" style="color:var(--lime);">per input</span></div>
+          <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">CLSAG signature</span><span class="ddf-size" style="color:var(--lime);">per input</span></div>
           <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">outPk commitments</span><span class="ddf-size" style="color:var(--lime);">32 B each</span></div>
           <div class="ddf" style="border-color:var(--lime);"><span class="ddf-name" style="color:var(--lime);">Bulletproof+</span><span class="ddf-size" style="color:var(--lime);">~675 B / output</span></div>
         </div>
@@ -432,7 +432,7 @@ footer{background:var(--dp);border-top:1px solid var(--ln);padding:1.1rem 2.5rem
       <div class="fact-list">
         <div class="fact">Your spend hides among 10 randomly chosen decoys.</div>
         <div class="fact">Ring size is fixed at 11 for every transaction.</div>
-        <div class="fact">MLSAG signature covers all 11 members simultaneously.</div>
+        <div class="fact">CLSAG signature covers all 11 members simultaneously.</div>
         <div class="fact">Key image prevents spending the same output twice.</div>
       </div>
             <!-- Interactive key-image canvas demo -->
